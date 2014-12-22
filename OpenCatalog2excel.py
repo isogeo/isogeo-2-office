@@ -6,13 +6,11 @@ from __future__ import unicode_literals
 # Purpose:      Extract informations from an Isogeo openCatlog and store it into
 #               an Excel workbook.
 #
-# Author:       Julien Moura (@geojulien)
+# Author:       Julien Moura (@geojulien) & Valentin Blanlot (@bablot)
 #
 # Python:       2.7.x
 # Created:      14/08/2014
-# Updated:      21/12/2014
-#
-# Licence:      GPL 3
+# Updated:      22/12/2014
 #------------------------------------------------------------------------------
 
 ###############################################################################
