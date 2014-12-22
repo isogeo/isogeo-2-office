@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 #------------------------------------------------------------------------------
 # Name:         OpenCatalog to Excel
-# Purpose:      Get metadata from an Isogeo OpenCatlog and store it into
+# Purpose:      Get metadatas from an Isogeo OpenCatlog and store it into
 #               an Excel workbook.
 #
 # Author:       Julien Moura (@geojulien) & Valentin Blanlot (@bablot)
@@ -19,12 +19,10 @@ from __future__ import unicode_literals
 
 # Standard library
 import json
-from Tkinter import Tk, StringVar
-from ttk import Label, Button, Entry # widgets
-from urllib2 import Request, urlopen, URLError
-
 import os
-import platform
+from Tkinter import Tk, StringVar
+from ttk import Label, Button, Entry    # widgets
+from urllib2 import Request, urlopen, URLError
 
 # 3rd party library
 import xlwt
@@ -32,7 +30,6 @@ import xlwt
 ###############################################################################
 ######### Main program ############
 ###################################
-
 
 ##################### UI
 app = Tk()
@@ -50,7 +47,7 @@ ent_OpenCatalog = Entry(app, textvariable=url_input, width=100)
 ent_OpenCatalog.pack()
 
 # bouton
-Button(app, text="Excelization!", command=lambda:app.destroy()).pack()
+Button(app, text="Excelization!", command=lambda: app.destroy()).pack()
 
 # initialisation de l'UI
 app.mainloop()
@@ -92,8 +89,8 @@ book.set_owner(str('Isogeo - ') + str(','.join(li_owners)))
 
 # styles
 style_header = xlwt.easyxf('pattern: pattern solid, fore_colour black;'
-                            'font: colour white, bold True, height 220;'
-                            'align: horiz center')
+                           'font: colour white, bold True, height 220;'
+                           'align: horiz center')
 style_url = xlwt.easyxf(u'font: underline single')
 
 # sheets
@@ -127,9 +124,9 @@ for md in metadatas:
 
     # formatage des liens pour visualiser et éditer
     link_visu = 'HYPERLINK("{0}"; "{1}")'.format(url_OpenCatalog + "/m/" + md.get('_id'),
-                                            "Visualiser")
+                                                 "Visualiser")
     link_edit = 'HYPERLINK("{0}"; "{1}")'.format("https://app.isogeo.com/resources/" + md.get('_id'),
-                                            "Editer")
+                                                 "Editer")
     # écriture des informations dans chaque colonne correspondante
     sheet_mds.write(xls_line, 0, md.get("title"))
     sheet_mds.write(xls_line, 1, md.get("name"))
