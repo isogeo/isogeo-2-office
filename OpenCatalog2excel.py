@@ -85,7 +85,7 @@ li_ids_md = [md.get('_id') for md in metadatas]
 
 ##### Writing into an Excel file
 book = xlwt.Workbook(encoding='utf8')
-book.set_owner(str('Isogeo - ') + str(','.join(li_owners)))
+book.set_owner(str('Isogeo'))
 
 # styles
 style_header = xlwt.easyxf('pattern: pattern solid, fore_colour black;'
