@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 #------------------------------------------------------------------------------
 # Name:         OpenCatalog to Excel
-# Purpose:      Extract informations from an Isogeo openCatlog and store it into
+# Purpose:      Get metadata from an Isogeo OpenCatlog and store it into
 #               an Excel workbook.
 #
 # Author:       Julien Moura (@geojulien) & Valentin Blanlot (@bablot)
