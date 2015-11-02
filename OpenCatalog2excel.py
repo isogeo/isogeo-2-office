@@ -18,9 +18,11 @@ from __future__ import unicode_literals
 ###################################
 
 # Standard library
+from datetime import datetime
 import json
 from math import ceil
 import os
+from sys import exit
 from Tkinter import Tk, StringVar
 from ttk import Label, Button, Entry    # widgets
 from urllib2 import Request, urlopen, URLError
@@ -41,14 +43,50 @@ def md2wb(wbsheet, offset, li_mds):
         offset += 1
         # extraction des mots-clés et thématiques
         tags = md.get("tags")
-        li_motscles = [tags.get(tag) for tag in tags.keys() if tag.startswith('keyword:isogeo')]
-        li_theminspire = [tags.get(tag) for tag in tags.keys() if tag.startswith('keyword:inspire-theme')]
+        li_motscles = []
+        li_theminspire = []
+        srs = ""
+        owner = ""
+        for tag in tags.keys():
+            # free keywords
+            if tag.startswith('keyword:isogeo'):
+                li_motscles.append(tags.get(tag))
+                continue
+            else:
+                pass
+            # INSPIRE themes
+            if tag.startswith('keyword:inspire-theme'):
+                li_theminspire.append(tags.get(tag))
+                continue
+            else:
+                pass
+            # workgroup which owns the metadata
+            if tag.startswith('owner'):
+                owner = tags.get(tag)
+                continue
+            else:
+                pass
+            # coordinate system
+            if tag.startswith('coordinate-system'):
+                srs = tags.get(tag)
+                continue
+            else:
+                pass
 
         # formatage des liens pour visualiser et éditer
         link_visu = 'HYPERLINK("{0}"; "{1}")'.format(url_OpenCatalog + "/m/" + md.get('_id'),
                                                      "Visualiser")
         link_edit = 'HYPERLINK("{0}"; "{1}")'.format("https://app.isogeo.com/resources/" + md.get('_id'),
                                                      "Editer")
+        # format version
+
+        if md.get("formatVersion"):
+            format_version = u"{0} ({1} - {2})".format(md.get("format"),
+                                                       md.get("formatVersion"),
+                                                       md.get("encoding"))
+        else:
+            format_version = u""
+
         # écriture des informations dans chaque colonne correspondante
         wbsheet.write(offset, 0, md.get("title"))
         wbsheet.write(offset, 1, md.get("name"))
@@ -57,14 +95,23 @@ def md2wb(wbsheet, offset, li_mds):
         wbsheet.write(offset, 4, md.get("abstract"))
         wbsheet.write(offset, 5, " ; ".join(li_theminspire))
         wbsheet.write(offset, 6, md.get("type"))
-        wbsheet.write(offset, 7, md.get("format"))
+        wbsheet.write(offset, 7, format_version)
+        wbsheet.write(offset, 8, srs)
         wbsheet.write(offset, 9, md.get("features"))
-        wbsheet.write(offset, 10, xlwt.Formula(link_visu), style_url)
-        wbsheet.write(offset, 11, xlwt.Formula(link_edit), style_url)
+        wbsheet.write(offset, 10, md.get("geometry"))
+        wbsheet.write(offset, 11, owner)
+        wbsheet.write(offset, 12, md.get("created"))
+        wbsheet.write(offset, 13, md.get("modified"))
+        wbsheet.write(offset, 14, md.get("_created"))
+        wbsheet.write(offset, 15, md.get("_modified"))
+        # wbsheet.write(offset, 16, md.get("_creator"))
+        wbsheet.write(offset, 20, xlwt.Formula(link_visu), style_url)
+        wbsheet.write(offset, 21, xlwt.Formula(link_edit), style_url)
 
+    print(md.keys())
+    print(md.get("links"))
     # end of function
     return
-
 
 ###############################################################################
 ######### Main program ############
@@ -85,6 +132,7 @@ lb_invite.pack()
 
 # champ pour l'URL
 ent_OpenCatalog = Entry(app, textvariable=url_input, width=100)
+ent_OpenCatalog.insert(0, "http://open.isogeo.com/s/ad6451f1f9ca405ca6f78fabf46aeb10/Bue0ySfhmGOPw33jHMyaJtcOM4MY0")
 ent_OpenCatalog.pack()
 ent_OpenCatalog.focus_set()
 
@@ -120,8 +168,14 @@ sheet_mds.write(0, 6, "Type", style_header)
 sheet_mds.write(0, 7, "Format", style_header)
 sheet_mds.write(0, 8, "SRS", style_header)
 sheet_mds.write(0, 9, "Nombre d'objets", style_header)
-sheet_mds.write(0, 10, "Visualiser sur l'OpenCatalog", style_header)
-sheet_mds.write(0, 11, "Editer sur Isogeo", style_header)
+sheet_mds.write(0, 10, "Géométrie", style_header)
+sheet_mds.write(0, 11, "Propriétaire", style_header)
+sheet_mds.write(0, 12, "Données - Création", style_header)
+sheet_mds.write(0, 13, "Données - Modification", style_header)
+sheet_mds.write(0, 14, "Métadonnées - Création", style_header)
+sheet_mds.write(0, 15, "Métadonnées - Modification", style_header)
+sheet_mds.write(0, 20, "Visualiser sur l'OpenCatalog", style_header)
+sheet_mds.write(0, 21, "Editer sur Isogeo", style_header)
 
 
 ########################
@@ -136,18 +190,29 @@ share_token = url_OpenCatalog.rsplit('/')[5]
 
 
 #### Exemple sur un OpenCatalog
-# écriture de la requête à l'API
+# écriture de la requête de recherche à l'API
 search_req = Request('http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&_limit=100&_lang={2}&_offset={3}'.format(share_token, share_id, lang, start))
+
+# requête pour les caractéristiques du partage
+share_req = Request('http://v1.api.isogeo.com/shares/{0}?token={1}'.format(share_id, share_token))
 
 # envoi de la requête dans une boucle de test pour prévenir les erreurs
 try:
     search_resp = urlopen(search_req)
     search_rez = json.load(search_resp)
+    share_resp = urlopen(share_req)
+    share_rez = json.load(share_resp)
 except URLError, e:
     print(e)
 
 if not search_rez:
     print("Request failed. Check your connection state.")
+    exit()
+else:
+    pass
+
+# share caracteristics
+print(share_rez.keys())
 
 # tags
 tags = search_rez.get('tags')
@@ -186,7 +251,13 @@ md2wb(sheet_mds, 0, metadatas)
 # Sauvegarde du fichier Excel
 userhome = os.path.expanduser('~')
 desktop = userhome + '/Desktop/'
-book.save(desktop + r"OpenCatalog2excel.xls")
+dstamp = datetime.now()
+book.save(desktop + r"OpenCatalog2excel_{0}{1}{2}{3}{4}{5}.xls".format(dstamp.year,
+                                                                       dstamp.month,
+                                                                       dstamp.day,
+                                                                       dstamp.hour,
+                                                                       dstamp.minute,
+                                                                       dstamp.second))
 
 ###############################################################################
 ###### Stand alone program ########
