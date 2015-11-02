@@ -36,17 +36,13 @@ import xlwt
 
 def md2wb(wbsheet, offset, li_mds, li_catalogs):
     """
-    to describe
+    parses Isogeo metadatas and write it into the worksheet
     """
-    # # local variables
-    # # cell style handling return in-cell
-    # xls_wrap = easyxf('align: wrap True')
-
     # looping on metadata
     for md in li_mds:
-        # incrémente le numéro de ligne
+        # incrementing line number
         offset += 1
-        # extraction des mots-clés et thématiques
+        # extracting & parsing tags
         tags = md.get("tags")
         li_motscles = []
         li_theminspire = []
@@ -79,6 +75,12 @@ def md2wb(wbsheet, offset, li_mds, li_catalogs):
                 continue
             else:
                 pass
+            # format pretty print
+            if tag.startswith('format:'):
+                format_lbl = tags.get(tag)
+                continue
+            else:
+                pass
             # INSPIRE conformity
             if tag.startswith('conformity:inspire'):
                 inspire_valid = 1
@@ -86,19 +88,27 @@ def md2wb(wbsheet, offset, li_mds, li_catalogs):
             else:
                 pass
 
-        # formatage des liens pour visualiser et éditer
+        # formatting links to visualize on OpenCatalog and edit on APP
         link_visu = 'HYPERLINK("{0}"; "{1}")'.format(url_OpenCatalog + "/m/" + md.get('_id'),
                                                      "Visualiser")
         link_edit = 'HYPERLINK("{0}"; "{1}")'.format("https://app.isogeo.com/resources/" + md.get('_id'),
                                                      "Editer")
         # format version
-
         if md.get("formatVersion"):
-            format_version = u"{0} ({1} - {2})".format(md.get("format"),
+            format_version = u"{0} ({1} - {2})".format(format_lbl,
                                                        md.get("formatVersion"),
                                                        md.get("encoding"))
         else:
-            format_version = u""
+            format_version = format_lbl
+
+        # formatting contact details
+        contacts = md.get("contacts")
+        if len(contacts):
+            contacts_cct = ["{0} ({1}) ;\n".format(contact.get("contact").get("name"),
+                                                   contact.get("contact").get("email"))\
+                            for contact in contacts if contact.get("role") == "pointOfContact"]
+        else:
+            contacts_cct = ""
 
         # écriture des informations dans chaque colonne correspondante
         wbsheet.write(offset, 0, md.get("title"))
@@ -118,11 +128,13 @@ def md2wb(wbsheet, offset, li_mds, li_catalogs):
         wbsheet.write(offset, 14, md.get("_created"))
         wbsheet.write(offset, 15, md.get("_modified"))
         wbsheet.write(offset, 16, inspire_valid)
+        wbsheet.write(offset, 17, len(contacts))
+        wbsheet.write(offset, 18, contacts_cct, style_wrap)
         wbsheet.write(offset, 20, xlwt.Formula(link_visu), style_url)
         wbsheet.write(offset, 21, xlwt.Formula(link_edit), style_url)
 
-    print(md.keys())
-    print(md.get("links"))
+    print(sorted(md.keys()))
+
     # end of function
     return
 
@@ -188,9 +200,16 @@ sheet_mds.write(0, 12, "Données - Création", style_header)
 sheet_mds.write(0, 13, "Données - Modification", style_header)
 sheet_mds.write(0, 14, "Métadonnées - Création", style_header)
 sheet_mds.write(0, 15, "Métadonnées - Modification", style_header)
+sheet_mds.write(0, 16, "Conformité INSPIRE", style_header)
+sheet_mds.write(0, 17, "# contacts", style_header)
+sheet_mds.write(0, 18, "Points de contacts", style_header)
 sheet_mds.write(0, 20, "Visualiser sur l'OpenCatalog", style_header)
 sheet_mds.write(0, 21, "Editer sur Isogeo", style_header)
 
+# columns width
+sheet_mds.col(0).width = 50 * 100
+sheet_mds.col(1).width = 40 * 256
+sheet_mds.col(4).width = 75 * 256
 
 ##################### Calling Isogeo API
 
@@ -203,7 +222,7 @@ share_id = url_OpenCatalog.rsplit('/')[4]
 share_token = url_OpenCatalog.rsplit('/')[5]
 
 # écriture de la requête de recherche à l'API
-search_req = Request('http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&_limit=100&_lang={2}&_offset={3}'.format(share_token, share_id, lang, start))
+search_req = Request("http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&_limit=100&_lang={2}&_offset={3}&_include=contacts,links".format(share_token, share_id, lang, start))
 
 # requête pour les caractéristiques du partage
 share_req = Request('http://v1.api.isogeo.com/shares/{0}?token={1}'.format(share_id, share_token))
@@ -224,9 +243,7 @@ else:
     pass
 
 # share caracteristics
-print(share_rez.keys())
 li_catalogs = share_rez.get("catalogs")
-print(len(li_catalogs), li_catalogs[0])
 
 # tags
 tags = search_rez.get('tags')
@@ -244,7 +261,7 @@ if tot_results > 100:
     for idx in range(1, int(ceil(tot_results / 100)) + 1):
         start = idx * 100 + 1
         print(start)
-        search_req = Request('http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&_limit=100&_lang={2}&_offset={3}'.format(share_token, share_id, lang, start))
+        search_req = Request("http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&_limit=100&_lang={2}&_offset={3}&_include=contacts,links".format(share_token, share_id, lang, start))
         try:
             search_resp = urlopen(search_req)
             search_rez = json.load(search_resp)
