@@ -34,10 +34,15 @@ import xlwt
 ########## Functions ##############
 ###################################
 
-def md2wb(wbsheet, offset, li_mds):
+def md2wb(wbsheet, offset, li_mds, li_catalogs):
     """
     to describe
     """
+    # # local variables
+    # # cell style handling return in-cell
+    # xls_wrap = easyxf('align: wrap True')
+
+    # looping on metadata
     for md in li_mds:
         # incrémente le numéro de ligne
         offset += 1
@@ -47,6 +52,8 @@ def md2wb(wbsheet, offset, li_mds):
         li_theminspire = []
         srs = ""
         owner = ""
+        inspire_valid = 0
+        # looping on tags
         for tag in tags.keys():
             # free keywords
             if tag.startswith('keyword:isogeo'):
@@ -72,6 +79,12 @@ def md2wb(wbsheet, offset, li_mds):
                 continue
             else:
                 pass
+            # INSPIRE conformity
+            if tag.startswith('conformity:inspire'):
+                inspire_valid = 1
+                continue
+            else:
+                pass
 
         # formatage des liens pour visualiser et éditer
         link_visu = 'HYPERLINK("{0}"; "{1}")'.format(url_OpenCatalog + "/m/" + md.get('_id'),
@@ -92,7 +105,7 @@ def md2wb(wbsheet, offset, li_mds):
         wbsheet.write(offset, 1, md.get("name"))
         wbsheet.write(offset, 2, md.get("path"))
         wbsheet.write(offset, 3, " ; ".join(li_motscles))
-        wbsheet.write(offset, 4, md.get("abstract"))
+        wbsheet.write(offset, 4, md.get("abstract"), style_wrap)
         wbsheet.write(offset, 5, " ; ".join(li_theminspire))
         wbsheet.write(offset, 6, md.get("type"))
         wbsheet.write(offset, 7, format_version)
@@ -104,7 +117,7 @@ def md2wb(wbsheet, offset, li_mds):
         wbsheet.write(offset, 13, md.get("modified"))
         wbsheet.write(offset, 14, md.get("_created"))
         wbsheet.write(offset, 15, md.get("_modified"))
-        # wbsheet.write(offset, 16, md.get("_creator"))
+        wbsheet.write(offset, 16, inspire_valid)
         wbsheet.write(offset, 20, xlwt.Formula(link_visu), style_url)
         wbsheet.write(offset, 21, xlwt.Formula(link_edit), style_url)
 
@@ -153,6 +166,7 @@ style_header = xlwt.easyxf('pattern: pattern solid, fore_colour black;'
                            'font: colour white, bold True, height 220;'
                            'align: horiz center')
 style_url = xlwt.easyxf(u'font: underline single')
+style_wrap = xlwt.easyxf('align: wrap True')
 
 # sheets
 sheet_mds = book.add_sheet('Metadonnées', cell_overwrite_ok=True)
@@ -178,7 +192,7 @@ sheet_mds.write(0, 20, "Visualiser sur l'OpenCatalog", style_header)
 sheet_mds.write(0, 21, "Editer sur Isogeo", style_header)
 
 
-########################
+##################### Calling Isogeo API
 
 # copier/coller l’url de l’OpenCatalog créé
 url_OpenCatalog = url_input.get()
@@ -188,8 +202,6 @@ share_id = url_OpenCatalog.rsplit('/')[4]
 # isoler le token du partage
 share_token = url_OpenCatalog.rsplit('/')[5]
 
-
-#### Exemple sur un OpenCatalog
 # écriture de la requête de recherche à l'API
 search_req = Request('http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&_limit=100&_lang={2}&_offset={3}'.format(share_token, share_id, lang, start))
 
@@ -213,6 +225,8 @@ else:
 
 # share caracteristics
 print(share_rez.keys())
+li_catalogs = share_rez.get("catalogs")
+print(len(li_catalogs), li_catalogs[0])
 
 # tags
 tags = search_rez.get('tags')
@@ -220,11 +234,10 @@ li_owners = [tags.get(tag) for tag in tags.keys() if tag.startswith('owner')]
 
 # results
 tot_results = search_rez.get('total')
-print(tot_results)
 metadatas = search_rez.get('results')
 li_ids_md = [md.get('_id') for md in metadatas]
 
-# respecting Isogeo API limit
+# handling Isogeo API limit
 # reference: https://docs.google.com/document/d/11dayY1FH1NETn6mn9Pt2y3n8ywVUD0DoKbCi9ct9ZRo/edit#heading=h.bg6le8mcd07z
 if tot_results > 100:
     # if API returned more than one page of results, let's get the rest!
@@ -241,23 +254,20 @@ if tot_results > 100:
 else:
     pass
 
-    # metalist_input = [metadatas[i:i + 100] for i in range(0, len(metadatas), 100)]
-    # for sublist in metalist_input:
-    #     md2wb(sheet_mds, 0, metadatas)
-
-#
-md2wb(sheet_mds, 0, metadatas)
+# passing parameters to the Excel function
+md2wb(sheet_mds, 0, metadatas, li_catalogs)
 
 # Sauvegarde du fichier Excel
 userhome = os.path.expanduser('~')
 desktop = userhome + '/Desktop/'
 dstamp = datetime.now()
-book.save(desktop + r"OpenCatalog2excel_{0}{1}{2}{3}{4}{5}.xls".format(dstamp.year,
-                                                                       dstamp.month,
-                                                                       dstamp.day,
-                                                                       dstamp.hour,
-                                                                       dstamp.minute,
-                                                                       dstamp.second))
+book.save(desktop + r"OpenCatalog2excel_{0}_{1}{2}{3}{4}{5}{6}.xls".format(share_rez.get("name"),
+                                                                           dstamp.year,
+                                                                           dstamp.month,
+                                                                           dstamp.day,
+                                                                           dstamp.hour,
+                                                                           dstamp.minute,
+                                                                           dstamp.second))
 
 ###############################################################################
 ###### Stand alone program ########
