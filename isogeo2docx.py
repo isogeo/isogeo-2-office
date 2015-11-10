@@ -245,12 +245,10 @@ else:
     pass
 
 # setting Word
-dstamp = datetime.now()
-print("let's go!")
-
 for md in metadatas:
     docx_tpl = DocxTemplate("template_Isogeo.docx")
     md2docx(docx_tpl, 0, md, li_catalogs)  # passing parameters to the Word generator
+    dstamp = datetime.now()
     docx_tpl.save(r"output\OpenCatalog2word_{0}_{7}_{1}{2}{3}{4}{5}{6}.docx".format(share_rez.get("name"),
                                                                                     dstamp.year,
                                                                                     dstamp.month,
