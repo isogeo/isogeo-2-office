@@ -275,10 +275,8 @@ else:
 md2wb(sheet_mds, 0, metadatas, li_catalogs)
 
 # Sauvegarde du fichier Excel
-userhome = os.path.expanduser('~')
-desktop = userhome + '/Desktop/'
 dstamp = datetime.now()
-book.save(desktop + r"OpenCatalog2excel_{0}_{1}{2}{3}{4}{5}{6}.xls".format(share_rez.get("name"),
+book.save(r"output\OpenCatalog2excel_{0}_{1}{2}{3}{4}{5}{6}.xls".format(share_rez.get("name"),
                                                                            dstamp.year,
                                                                            dstamp.month,
                                                                            dstamp.day,
