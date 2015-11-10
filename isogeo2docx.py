@@ -46,6 +46,7 @@ def md2docx(docx_template, offset, md, li_catalogs):
     owner = ""
     inspire_valid = 0
     format_lbl = ""
+    fields = ["NR"]
     # looping on tags
     for tag in tags.keys():
         # free keywords
@@ -108,8 +109,8 @@ def md2docx(docx_template, offset, md, li_catalogs):
         contacts_cct = ""
 
     # formatting feature attributes
-    if md.get("type") == "vectorDataset":
-        fields = md.get("features")
+    if md.get("type") == "vectorDataset" and md.get("feature-attributes"):
+        fields= md.get("feature-attributes")
         # if len(fields):
     #       fields_cct = ["{0} ({1}) ;\n".format(contact.get("contact").get("name"),
     #                                            contact.get("contact").get("email"))\
@@ -117,7 +118,6 @@ def md2docx(docx_template, offset, md, li_catalogs):
     #     else:
     #       fields_cct = ""
     else:
-        fields = "NR"
         pass
 
 #     wbsheet.write(offset, 12, md.get("created"))
@@ -144,11 +144,12 @@ def md2docx(docx_template, offset, md, li_catalogs):
               'varContactsCount': len(contacts),
               'varContactsDetails': " ; \n".join(contacts_cct),
               'varSRS': srs,
-              'varPath': md.get("path"),
-              'varFieldsCount': len(fields),
+              # 'varPath': md.get("path"),
+              'varFieldsCount': len(fields)
               }
 
     # fillfull file
+    print(md.get("_id"))
     docx_template.render(context)
 
     # end of function
@@ -194,7 +195,7 @@ share_id = url_OpenCatalog.rsplit('/')[4]
 share_token = url_OpenCatalog.rsplit('/')[5]
 
 # écriture de la requête de recherche à l'API
-search_req = Request("http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&_limit=100&_lang={2}&_offset={3}&_include=contacts,links,attributes".format(share_token, share_id, lang, start))
+search_req = Request("http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&_limit=100&_lang={2}&_offset={3}&_include=contacts,links,feature-attributes".format(share_token, share_id, lang, start))
 
 # requête pour les caractéristiques du partage
 share_req = Request('http://v1.api.isogeo.com/shares/{0}?token={1}'.format(share_id, share_token))
@@ -233,7 +234,7 @@ if tot_results > 100:
     for idx in range(1, int(ceil(tot_results / 100)) + 1):
         start = idx * 100 + 1
         print(start)
-        search_req = Request("http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&_limit=100&_lang={2}&_offset={3}&_include=contacts,links".format(share_token, share_id, lang, start))
+        search_req = Request("http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&_limit=100&_lang={2}&_offset={3}&_include=contacts,links,feature-attributes".format(share_token, share_id, lang, start))
         try:
             search_resp = urlopen(search_req)
             search_rez = json.load(search_resp)
@@ -245,6 +246,7 @@ else:
 
 # setting Word
 dstamp = datetime.now()
+print("let's go!")
 
 for md in metadatas:
     docx_tpl = DocxTemplate("template_Isogeo.docx")
@@ -256,7 +258,7 @@ for md in metadatas:
                                                                                     dstamp.hour,
                                                                                     dstamp.minute,
                                                                                     dstamp.second,
-                                                                                    md.get("_id")[:5]))
+                                                                                    md.get("_id")[:8]))
 
 ###############################################################################
 ###### Stand alone program ########
