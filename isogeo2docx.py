@@ -110,14 +110,19 @@ def md2docx(docx_template, offset, md, li_catalogs):
 
     # formatting feature attributes
     if md.get("type") == "vectorDataset" and md.get("feature-attributes"):
-        fields= md.get("feature-attributes")
-        # if len(fields):
-    #       fields_cct = ["{0} ({1}) ;\n".format(contact.get("contact").get("name"),
-    #                                            contact.get("contact").get("email"))\
-    #                     for contact in contacts if contact.get("role") == "pointOfContact"]
-    #     else:
-    #       fields_cct = ""
+        fields = md.get("feature-attributes")
+        print(type(fields))
+        for field in fields[:2]:
+            print(field)
+        if len(fields):
+            print(len(fields))
+        #     fields_cct = [{"'name': '{0}', 'alias': '{1}', 'type': '{2}'".format(field.get("name"),
+        #                                                                          field.get("alias"),
+        #                                                                          field.get("dataType"),
+        #                                                                          field.get("description"))
+        #                 } for field in fields]
     else:
+        fields = []
         pass
 
 #     wbsheet.write(offset, 12, md.get("created"))
@@ -126,6 +131,12 @@ def md2docx(docx_template, offset, md, li_catalogs):
 #     wbsheet.write(offset, 15, md.get("_modified"))
 #     wbsheet.write(offset, 20, xlwt.Formula(link_visu), style_url)
 #     wbsheet.write(offset, 21, xlwt.Formula(link_edit), style_url)
+
+    # path to the resource
+    if md.get("path"):
+        localplace = md.get("path").replace("&", "&amp;")
+    else:
+        localplace = 'NR'
 
     # print(sorted(md.keys()))
     context = {
@@ -144,8 +155,9 @@ def md2docx(docx_template, offset, md, li_catalogs):
               'varContactsCount': len(contacts),
               'varContactsDetails': " ; \n".join(contacts_cct),
               'varSRS': srs,
-              # 'varPath': md.get("path"),
-              'varFieldsCount': len(fields)
+              'varPath': localplace,
+              'varFieldsCount': len(fields),
+              'items': list(fields)
               }
 
     # fillfull file
@@ -249,7 +261,7 @@ for md in metadatas:
     docx_tpl = DocxTemplate("template_Isogeo.docx")
     md2docx(docx_tpl, 0, md, li_catalogs)  # passing parameters to the Word generator
     dstamp = datetime.now()
-    docx_tpl.save(r"output\OpenCatalog2word_{0}_{7}_{1}{2}{3}{4}{5}{6}.docx".format(share_rez.get("name"),
+    docx_tpl.save(r"output\{0}_{7}_{1}{2}{3}{4}{5}{6}.docx".format(share_rez.get("name"),
                                                                                     dstamp.year,
                                                                                     dstamp.month,
                                                                                     dstamp.day,
