@@ -38,6 +38,10 @@ def md2docx(docx_template, offset, md, li_catalogs):
     """
     parses Isogeo metadatas and replace docx template
     """
+    # optional: print resource id (useful in debug mode)
+    print(md.get("_id"))
+
+    # TAGS #
     # extracting & parsing tags
     tags = md.get("tags")
     li_motscles = []
@@ -47,6 +51,7 @@ def md2docx(docx_template, offset, md, li_catalogs):
     inspire_valid = 0
     format_lbl = ""
     fields = ["NR"]
+
     # looping on tags
     for tag in tags.keys():
         # free keywords
@@ -91,6 +96,27 @@ def md2docx(docx_template, offset, md, li_catalogs):
 #                                                  "Visualiser")
 #     link_edit = 'HYPERLINK("{0}"; "{1}")'.format("https://app.isogeo.com/resources/" + md.get('_id'),
 #                                                  "Editer")
+
+
+    # CONTACTS #
+    contacts = md.get("contacts")
+    # formatting contacts
+    if len(contacts):
+        contacts_cct = ["{0} ({1}) ;\n".format(contact.get("contact").get("name"),
+                                               contact.get("contact").get("email"))\
+                        for contact in contacts if contact.get("role") == "pointOfContact"]
+    else:
+        contacts_cct = ""
+
+    # ATTRIBUTES #
+    # formatting feature attributes
+    if md.get("type") == "vectorDataset" and md.get("feature-attributes"):
+        fields = md.get("feature-attributes")
+    else:
+        fields = []
+        pass
+
+    # IDENTIFICATION #
     # format version
     if md.get("formatVersion"):
         format_version = u"{0} ({1} - {2})".format(format_lbl,
@@ -99,50 +125,30 @@ def md2docx(docx_template, offset, md, li_catalogs):
     else:
         format_version = format_lbl
 
-    # formatting contact details
-    contacts = md.get("contacts")
-    if len(contacts):
-        contacts_cct = ["{0} ({1}) ;\n".format(contact.get("contact").get("name"),
-                                               contact.get("contact").get("email"))\
-                        for contact in contacts if contact.get("role") == "pointOfContact"]
-    else:
-        contacts_cct = ""
-
-    # formatting feature attributes
-    if md.get("type") == "vectorDataset" and md.get("feature-attributes"):
-        fields = md.get("feature-attributes")
-        print(type(fields))
-        for field in fields[:2]:
-            print(field)
-        if len(fields):
-            print(len(fields))
-        #     fields_cct = [{"'name': '{0}', 'alias': '{1}', 'type': '{2}'".format(field.get("name"),
-        #                                                                          field.get("alias"),
-        #                                                                          field.get("dataType"),
-        #                                                                          field.get("description"))
-        #                 } for field in fields]
-    else:
-        fields = []
-        pass
-
-#     wbsheet.write(offset, 12, md.get("created"))
-#     wbsheet.write(offset, 13, md.get("modified"))
-#     wbsheet.write(offset, 14, md.get("_created"))
-#     wbsheet.write(offset, 15, md.get("_modified"))
-#     wbsheet.write(offset, 20, xlwt.Formula(link_visu), style_url)
-#     wbsheet.write(offset, 21, xlwt.Formula(link_edit), style_url)
-
     # path to the resource
     if md.get("path"):
         localplace = md.get("path").replace("&", "&amp;")
     else:
         localplace = 'NR'
 
-    # print(sorted(md.keys()))
+    # HISTORY #
+    # data events
+    data_created = md.get("created")
+    data_updated = md.get("modified")
+    data_published = md.get("published")
+
+    # METADATA #
+    md_created = md.get("_created")
+    md_updated = md.get("_modified")
+
+    # FILLFULLING THE TEMPLATE #
     context = {
               'varTitle': md.get("title"),
               'varAbstract': md.get("abstract"),
               'varNameTech': md.get("name"),
+              'varDataDtCrea': data_created,
+              'varDataDtUpda': data_updated,
+              'varDataDtPubl': data_published,
               'varFormat': format_version,
               'varGeometry': md.get("geometry"),
               'varObjectsCount': md.get("features"),
@@ -157,11 +163,13 @@ def md2docx(docx_template, offset, md, li_catalogs):
               'varSRS': srs,
               'varPath': localplace,
               'varFieldsCount': len(fields),
-              'items': list(fields)
+              'items': list(fields),
+              'varMdDtCrea': md_created,
+              'varMdDtUpda': md_updated,
+              'varMdDtExp': datetime.now(),
               }
 
     # fillfull file
-    print(md.get("_id"))
     docx_template.render(context)
 
     # end of function
@@ -259,16 +267,16 @@ else:
 # setting Word
 for md in metadatas:
     docx_tpl = DocxTemplate("template_Isogeo.docx")
-    md2docx(docx_tpl, 0, md, li_catalogs)  # passing parameters to the Word generator
     dstamp = datetime.now()
+    md2docx(docx_tpl, 0, md, li_catalogs)  # passing parameters to the Word generator
     docx_tpl.save(r"output\{0}_{7}_{1}{2}{3}{4}{5}{6}.docx".format(share_rez.get("name"),
-                                                                                    dstamp.year,
-                                                                                    dstamp.month,
-                                                                                    dstamp.day,
-                                                                                    dstamp.hour,
-                                                                                    dstamp.minute,
-                                                                                    dstamp.second,
-                                                                                    md.get("_id")[:8]))
+                                                                   dstamp.year,
+                                                                   dstamp.month,
+                                                                   dstamp.day,
+                                                                   dstamp.hour,
+                                                                   dstamp.minute,
+                                                                   dstamp.second,
+                                                                   md.get("_id")[:8]))
 
 ###############################################################################
 ###### Stand alone program ########
