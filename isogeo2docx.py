@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 #!/usr/bin/env python
-from __future__ import unicode_literals
+from __future__ import (print_function, unicode_literals)
 #------------------------------------------------------------------------------
 # Name:         OpenCatalog to Excel
 # Purpose:      Get metadatas from an Isogeo OpenCatlog and store it into
@@ -10,7 +10,7 @@ from __future__ import unicode_literals
 #
 # Python:       2.7.x
 # Created:      14/08/2014
-# Updated:      22/12/2014
+# Updated:      22/12/2015
 #------------------------------------------------------------------------------
 
 ###############################################################################
@@ -39,7 +39,8 @@ def md2docx(docx_template, offset, md, li_catalogs):
     parses Isogeo metadatas and replace docx template
     """
     # optional: print resource id (useful in debug mode)
-    print(md.get("_id"))
+    md_id = md.get("_id")
+    print(md_id)
 
     # TAGS #
     # extracting & parsing tags
@@ -91,12 +92,9 @@ def md2docx(docx_template, offset, md, li_catalogs):
         else:
             pass
 
-#     # formatting links to visualize on OpenCatalog and edit on APP
-#     link_visu = 'HYPERLINK("{0}"; "{1}")'.format(url_OpenCatalog + "/m/" + md.get('_id'),
-#                                                  "Visualiser")
-#     link_edit = 'HYPERLINK("{0}"; "{1}")'.format("https://app.isogeo.com/resources/" + md.get('_id'),
-#                                                  "Editer")
-
+    # formatting links to visualize on OpenCatalog and edit on APP
+    # link_visu = url_OpenCatalog + "/m/" + md_id
+    link_edit = "https://app.isogeo.com/resources/" + md_id
 
     # CONTACTS #
     contacts = md.get("contacts")
@@ -170,7 +168,11 @@ def md2docx(docx_template, offset, md, li_catalogs):
               }
 
     # fillfull file
-    docx_template.render(context)
+    try:
+        docx_template.render(context)
+        print('OK')
+    except:
+        print(u"Metadata error: check if there's any special character (<, <, &...) in different fields (attributes names and description...). Link: {0}".format(link_edit))
 
     # end of function
     return
@@ -228,14 +230,11 @@ share_id = url_OpenCatalog.rsplit('/')[4]
 share_token = url_OpenCatalog.rsplit('/')[5]
 
 # test if URL already contains some filters
-print(len(url_OpenCatalog.rsplit('/')))
 if len(url_OpenCatalog.rsplit('/')) == 8:
     filters = url_OpenCatalog.rsplit('/')[7]
 else:
     filters = ""
     pass
-
-print(filters)
 
 # écriture de la requête de recherche à l'API
 search_req = Request("http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&q={2}&_limit=100&_lang={3}&_offset={4}&_include=contacts,links,feature-attributes".format(share_token,
