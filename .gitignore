@@ -222,4 +222,7 @@ pip-log.txt
 
 output/
 templates/
+<<<<<<< HEAD
 # !templates/template_Isogeo.docx
+=======
+>>>>>>> 9eeff0bd8001e1a8441c37f7fa6cea4af0472d8d
