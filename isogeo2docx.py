@@ -227,8 +227,22 @@ share_id = url_OpenCatalog.rsplit('/')[4]
 # isoler le token du partage
 share_token = url_OpenCatalog.rsplit('/')[5]
 
+# test if URL already contains some filters
+print(len(url_OpenCatalog.rsplit('/')))
+if len(url_OpenCatalog.rsplit('/')) == 8:
+    filters = url_OpenCatalog.rsplit('/')[7]
+else:
+    filters = ""
+    pass
+
+print(filters)
+
 # écriture de la requête de recherche à l'API
-search_req = Request("http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&_limit=100&_lang={2}&_offset={3}&_include=contacts,links,feature-attributes".format(share_token, share_id, lang, start))
+search_req = Request("http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&q={2}&_limit=100&_lang={3}&_offset={4}&_include=contacts,links,feature-attributes".format(share_token,
+                                                                                                                                                                 share_id,
+                                                                                                                                                                 filters,
+                                                                                                                                                                 lang,
+                                                                                                                                                                 start))
 
 # requête pour les caractéristiques du partage
 share_req = Request('http://v1.api.isogeo.com/shares/{0}?token={1}'.format(share_id, share_token))
@@ -267,7 +281,11 @@ if tot_results > 100:
     for idx in range(1, int(ceil(tot_results / 100)) + 1):
         start = idx * 100 + 1
         print(start)
-        search_req = Request("http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&_limit=100&_lang={2}&_offset={3}&_include=contacts,links,feature-attributes".format(share_token, share_id, lang, start))
+        search_req = Request("http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&q={2}&_limit=100&_lang={3}&_offset={4}&_include=contacts,links,feature-attributes".format(share_token,
+                                                                                                                                                                               share_id,
+                                                                                                                                                                               filters,
+                                                                                                                                                                               lang,
+                                                                                                                                                                               start))
         try:
             search_resp = urlopen(search_req)
             search_rez = json.load(search_resp)
