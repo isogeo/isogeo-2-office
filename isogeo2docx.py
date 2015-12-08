@@ -170,7 +170,6 @@ def md2docx(docx_template, offset, md, li_catalogs):
     # fillfull file
     try:
         docx_template.render(context)
-        print('OK')
     except:
         print(u"Metadata error: check if there's any special character (<, <, &...) in different fields (attributes names and description...). Link: {0}".format(link_edit))
 
