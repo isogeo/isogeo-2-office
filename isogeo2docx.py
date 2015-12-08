@@ -20,6 +20,7 @@ from __future__ import (print_function, unicode_literals)
 # Standard library
 from datetime import datetime
 import json
+import locale
 from math import ceil
 from os import listdir, path
 from sys import exit
@@ -28,6 +29,7 @@ from ttk import Label, Button, Entry, Combobox    # widgets
 from urllib2 import Request, urlopen, URLError
 
 # 3rd party library
+from dateutil.parser import parse as dtparse
 from docxtpl import DocxTemplate
 
 ###############################################################################
@@ -100,8 +102,13 @@ def md2docx(docx_template, offset, md, li_catalogs):
     contacts = md.get("contacts")
     # formatting contacts
     if len(contacts):
-        contacts_cct = ["{0} ({1}) ;\n".format(contact.get("contact").get("name"),
-                                               contact.get("contact").get("email"))\
+        contacts_cct = ["{0} ({1})\n{2}\n{3}\n{4} ;\n\n".format(contact.get("contact").get("name"),
+                                               contact.get("contact").get("organization"),
+                                               contact.get("contact").get("email"),
+                                               contact.get("contact").get("phone"),
+                                               unicode(contact.get("contact").get("addressLine1"))
+                                               + u", " + unicode(contact.get("contact").get("zipCode"))
+                                               + u" " + unicode(contact.get("contact").get("city")))\
                         for contact in contacts if contact.get("role") == "pointOfContact"]
     else:
         contacts_cct = ""
@@ -131,29 +138,63 @@ def md2docx(docx_template, offset, md, li_catalogs):
 
     # HISTORY #
     # data events
-    data_created = md.get("created")
-    data_updated = md.get("modified")
-    data_published = md.get("published")
+    if md.get("created"):
+        data_created = dtparse(md.get("created")).strftime("%a %d %B %Y")
+    else:
+        data_created = "NR"
+    if md.get("modified"):
+        data_updated = dtparse(md.get("modified")).strftime("%a %d %B %Y")
+    else:
+        data_updated = "NR"
+    if md.get("published"):
+        data_published = dtparse(md.get("published")).strftime("%a %d %B %Y")
+    else:
+        data_published = "NR"
+
+    # validity
+    # for date manipulation: https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior
+    # could be independant from dateutil: datetime.datetime.strptime("2008-08-12T12:20:30.656234Z", "%Y-%m-%dT%H:%M:%S.Z")
+    if md.get("validFrom"):
+        valid_start = dtparse(md.get("validFrom")).strftime("%a %d %B %Y")
+    else:
+        valid_start = "NR"
+    # end validity date
+    if md.get("validTo"):
+        valid_end = dtparse(md.get("validTo")).strftime("%a %d %B %Y")
+    else:
+        valid_end = "NR"
+    # vailidty comment
+    if md.get("validyComment"):
+        valid_com = md.get("validyComment")
+    else:
+        valid_com = "NR"
 
     # METADATA #
-    md_created = md.get("_created")
-    md_updated = md.get("_modified")
+    md_created = dtparse(md.get("_created")).strftime("%a %d %B %Y (%Hh%M)")
+    md_updated = dtparse(md.get("_modified")).strftime("%a %d %B %Y (%Hh%M)")
 
     # FILLFULLING THE TEMPLATE #
     context = {
               'varTitle': md.get("title"),
               'varAbstract': md.get("abstract"),
               'varNameTech': md.get("name"),
-              'varDataDtCrea': data_created,
-              'varDataDtUpda': data_updated,
-              'varDataDtPubl': data_published,
+              'varCollectContext': md.get("collectionContext"),
+              'varCollectMethod': md.get("collectionMethod"),
+              'varDataDtCrea': data_created.decode('latin1'),
+              'varDataDtUpda': data_updated.decode('latin1'),
+              'varDataDtPubl': data_published.decode('latin1'),
+              'varValidityStart': valid_start.decode('latin1'),
+              'varValidityEnd': valid_end.decode('latin1'),
+              'validityComment': valid_com,
               'varFormat': format_version,
               'varGeometry': md.get("geometry"),
               'varObjectsCount': md.get("features"),
               'varKeywords': " ; ".join(li_motscles),
+              'varKeywordsCount': len(li_motscles),
               'varType': md.get("type"),
               'varOwner': owner,
               'varScale': md.get("scale"),
+              'varTopologyInfo': md.get("topologicalConsistency"),
               'varInspireTheme': " ; ".join(li_theminspire),
               'varInspireConformity': inspire_valid,
               'varContactsCount': len(contacts),
@@ -162,16 +203,17 @@ def md2docx(docx_template, offset, md, li_catalogs):
               'varPath': localplace,
               'varFieldsCount': len(fields),
               'items': list(fields),
-              'varMdDtCrea': md_created,
-              'varMdDtUpda': md_updated,
-              'varMdDtExp': datetime.now(),
+              'varMdDtCrea': md_created.decode('latin1'),
+              'varMdDtUpda': md_updated.decode('latin1'),
+              'varMdDtExp': datetime.now().strftime("%a %d %B %Y (%Hh%M)").decode('latin1'),
               }
 
     # fillfull file
     try:
         docx_template.render(context)
-    except:
+    except Exception, e:
         print(u"Metadata error: check if there's any special character (<, <, &...) in different fields (attributes names and description...). Link: {0}".format(link_edit))
+        print(e)
 
     # end of function
     return
@@ -180,8 +222,10 @@ def md2docx(docx_template, offset, md, li_catalogs):
 ######### Main program ############
 ###################################
 
+# locale
+locale.setlocale(locale.LC_ALL, str("fra_fra"))
+
 # list available templates
-from os import getcwd
 templates = [path.abspath(path.join(r'templates', tpl)) for tpl in listdir(r'templates') if path.splitext(tpl)[1].lower() == ".docx"]  # languages
 
 
@@ -200,7 +244,7 @@ lb_input_oc = Label(app, text="Coller l'URL d'un OpenCatalog").pack()
 
 # champ pour l'URL
 ent_OpenCatalog = Entry(app, textvariable=url_input, width=100)
-ent_OpenCatalog.insert(0, "http://open.isogeo.com/s/ad6451f1f9ca405ca6f78fabf46aeb10/Bue0ySfhmGOPw33jHMyaJtcOM4MY0")
+ent_OpenCatalog.insert(0, "http://open.isogeo.com/s/ad6451f1f9ca405ca6f78fabf46aeb10/Bue0ySfhmGOPw33jHMyaJtcOM4MY0/q/keyword:inspire-theme:administrativeunits")
 ent_OpenCatalog.pack()
 ent_OpenCatalog.focus_set()
 
@@ -235,12 +279,16 @@ else:
     filters = ""
     pass
 
+# setting the psubresources to include
+includes = "conditions,contacts,coordinate-system,events,feature-attributes,keywords,limitations,links,specifications"
+
 # écriture de la requête de recherche à l'API
-search_req = Request("http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&q={2}&_limit=100&_lang={3}&_offset={4}&_include=contacts,links,feature-attributes".format(share_token,
-                                                                                                                                                                 share_id,
-                                                                                                                                                                 filters,
-                                                                                                                                                                 lang,
-                                                                                                                                                                 start))
+search_req = Request("http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&q={2}&_limit=100&_lang={3}&_offset={4}&_include={5}".format(share_token,
+                                                                                                                                         share_id,
+                                                                                                                                         filters,
+                                                                                                                                         lang,
+                                                                                                                                         start,
+                                                                                                                                         includes))
 
 # requête pour les caractéristiques du partage
 share_req = Request('http://v1.api.isogeo.com/shares/{0}?token={1}'.format(share_id, share_token))
@@ -279,11 +327,12 @@ if tot_results > 100:
     for idx in range(1, int(ceil(tot_results / 100)) + 1):
         start = idx * 100 + 1
         print(start)
-        search_req = Request("http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&q={2}&_limit=100&_lang={3}&_offset={4}&_include=contacts,links,feature-attributes".format(share_token,
-                                                                                                                                                                               share_id,
-                                                                                                                                                                               filters,
-                                                                                                                                                                               lang,
-                                                                                                                                                                               start))
+        search_req = Request("http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&q={2}&_limit=100&_lang={3}&_offset={4}&_include={5}".format(share_token,
+                                                                                                                                                 share_id,
+                                                                                                                                                 filters,
+                                                                                                                                                 lang,
+                                                                                                                                                 start,
+                                                                                                                                                 includes))
         try:
             search_resp = urlopen(search_req)
             search_rez = json.load(search_resp)
