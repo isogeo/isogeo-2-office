@@ -21,10 +21,10 @@ from __future__ import unicode_literals
 from datetime import datetime
 import json
 from math import ceil
-import os
+from os import listdir, path
 from sys import exit
-from Tkinter import Tk, StringVar
-from ttk import Label, Button, Entry    # widgets
+from Tkinter import Tk, StringVar, OptionMenu
+from ttk import Label, Button, Entry, Combobox    # widgets
 from urllib2 import Request, urlopen, URLError
 
 # 3rd party library
@@ -179,24 +179,37 @@ def md2docx(docx_template, offset, md, li_catalogs):
 ######### Main program ############
 ###################################
 
+# list available templates
+from os import getcwd
+templates = [path.abspath(path.join(r'templates', tpl)) for tpl in listdir(r'templates') if path.splitext(tpl)[1].lower() == ".docx"]  # languages
+
+
 ##################### UI
 app = Tk()
 app.title('OpenCatalog ===> Word')
 
 # variables
 url_input = StringVar(app)
+tpl_input = StringVar(app)
 lang = "fr"
 start = 0
 
 # étiquette
-lb_invite = Label(app, text="Colle ici ton OpenCatalog")
-lb_invite.pack()
+lb_input_oc = Label(app, text="Coller l'URL d'un OpenCatalog").pack()
 
 # champ pour l'URL
 ent_OpenCatalog = Entry(app, textvariable=url_input, width=100)
 ent_OpenCatalog.insert(0, "http://open.isogeo.com/s/ad6451f1f9ca405ca6f78fabf46aeb10/Bue0ySfhmGOPw33jHMyaJtcOM4MY0")
 ent_OpenCatalog.pack()
 ent_OpenCatalog.focus_set()
+
+# pick a template
+lb_input_tpl = Label(app, text="Choisir un template").pack()
+droplist = Combobox(app,
+                textvariable=tpl_input,
+                values=templates,
+                width=100)
+droplist.pack()
 
 # bouton
 Button(app, text="Wordification !", command=lambda: app.destroy()).pack()
@@ -206,7 +219,7 @@ app.mainloop()
 
 ##################### Calling Isogeo API
 
-# copier/coller l’url de l’OpenCatalog créé
+# get the OpenCatalog URL
 url_OpenCatalog = url_input.get()
 
 # isoler l’identifiant du partage
@@ -264,9 +277,11 @@ if tot_results > 100:
 else:
     pass
 
+print(tpl_input.get())
+
 # setting Word
 for md in metadatas:
-    docx_tpl = DocxTemplate("template_Isogeo.docx")
+    docx_tpl = DocxTemplate(path.realpath(tpl_input.get()))
     dstamp = datetime.now()
     md2docx(docx_tpl, 0, md, li_catalogs)  # passing parameters to the Word generator
     docx_tpl.save(r"output\{0}_{7}_{1}{2}{3}{4}{5}{6}.docx".format(share_rez.get("name"),
