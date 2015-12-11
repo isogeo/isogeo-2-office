@@ -1,0 +1,1237 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"mot",
+				"mots_final"
+			],
+			[
+				"tag",
+				"tag_re"
+			],
+			[
+				"li_",
+				"li_words_ok"
+			],
+			[
+				"off",
+				"offer_processed"
+			],
+			[
+				"cont",
+				"contenus_offres"
+			],
+			[
+				"to",
+				"top100-table"
+			],
+			[
+				"ty",
+				"typ_contrat"
+			],
+			[
+				"types",
+				"types_contrats"
+			],
+			[
+				"tye",
+				"types_contrats"
+			],
+			[
+				"type",
+				"types"
+			],
+			[
+				"fid",
+				"field_milsec"
+			],
+			[
+				"publ",
+				"publication"
+			],
+			[
+				"li",
+				"li_id_r"
+			],
+			[
+				"check-",
+				"check-source"
+			],
+			[
+				"dat",
+				"date_object"
+			],
+			[
+				"offe",
+				"offers_ids"
+			],
+			[
+				"date",
+				"datetime"
+			],
+			[
+				"dta",
+				"datetime"
+			],
+			[
+				"time",
+				"timedelta"
+			],
+			[
+				"offer",
+				"offer_count"
+			],
+			[
+				"reset_m",
+				"reset_main_table"
+			],
+			[
+				"import",
+				"import_final"
+			],
+			[
+				"chec",
+				"check-source"
+			],
+			[
+				"check",
+				"check-all"
+			],
+			[
+				"not",
+				"not_uniq_id_u"
+			],
+			[
+				"un",
+				"uniq"
+			],
+			[
+				"li_i",
+				"li_id_u"
+			],
+			[
+				"set",
+				"set_id_u"
+			],
+			[
+				"src",
+				"src_status"
+			],
+			[
+				"repo",
+				"report_status"
+			],
+			[
+				"report",
+				"report_details"
+			],
+			[
+				"che",
+				"check_integrity_source"
+			],
+			[
+				"works",
+				"worksheet_path"
+			],
+			[
+				"sour",
+				"source"
+			],
+			[
+				"su",
+				"summary"
+			],
+			[
+				"cl",
+				"clean_offer"
+			],
+			[
+				"pro",
+				"prompt_creation"
+			],
+			[
+				"exi",
+				"exit"
+			],
+			[
+				"mir",
+				"mirror_table"
+			],
+			[
+				"tb",
+				"tables"
+			],
+			[
+				"source",
+				"source_path"
+			],
+			[
+				"id",
+				"identifié"
+			],
+			[
+				"file",
+				"file_path"
+			],
+			[
+				"BDD",
+				"BDD_JOB_v3"
+			],
+			[
+				"def",
+				"defs	Method"
+			],
+			[
+				"tim",
+				"timeline"
+			],
+			[
+				"sr",
+				"script	Tag"
+			],
+			[
+				"last",
+				"last50"
+			],
+			[
+				"get",
+				"getWeekNumber"
+			],
+			[
+				"no",
+				"no_commas"
+			],
+			[
+				"read",
+				"read_raw_file"
+			],
+			[
+				"fil",
+				"filesToProcess"
+			],
+			[
+				"lis",
+				"list_files"
+			],
+			[
+				"files",
+				"filesToProcess"
+			],
+			[
+				"even",
+				"event15Layer"
+			],
+			[
+				"ev",
+				"event15Layer"
+			],
+			[
+				"evt_e",
+				"evt_end_epc"
+			],
+			[
+				"evt",
+				"evt_start_epc"
+			],
+			[
+				"str",
+				"strptime"
+			],
+			[
+				"evt_s",
+				"evt_start_input"
+			],
+			[
+				"la",
+				"latitude"
+			],
+			[
+				"geocod",
+				"Geocoder"
+			],
+			[
+				"part",
+				"participantMarker"
+			],
+			[
+				"OpenBee",
+				"openBeerMaps"
+			],
+			[
+				"br",
+				"brasseries_art"
+			],
+			[
+				"b",
+				"brasseries"
+			],
+			[
+				"over",
+				"overpassQuery"
+			],
+			[
+				"pr",
+				"properties"
+			],
+			[
+				"open",
+				"openBeerMaps"
+			],
+			[
+				"partici",
+				"participant"
+			],
+			[
+				"participan",
+				"participant"
+			],
+			[
+				"parti",
+				"participants"
+			],
+			[
+				"P",
+				"Participants"
+			],
+			[
+				"pa",
+				"participantsLayer"
+			],
+			[
+				"ADR_C",
+				"ADR_COUNTRY"
+			],
+			[
+				"fe",
+				"featColl"
+			],
+			[
+				"r",
+				"row_count"
+			],
+			[
+				"stat",
+				"statistiker"
+			],
+			[
+				"metr",
+				"MetricsManager"
+			],
+			[
+				"dico",
+				"dico_global"
+			],
+			[
+				"el",
+				"elif"
+			],
+			[
+				"dico_",
+				"dico_annex"
+			],
+			[
+				"Met",
+				"MetricsManager"
+			],
+			[
+				"sto",
+				"store_metrics"
+			],
+			[
+				"Exc",
+				"Exception"
+			],
+			[
+				"prox",
+				"prox_server"
+			],
+			[
+				"prox_",
+				"prox_port"
+			],
+			[
+				"opt_p",
+				"opt_proxy"
+			],
+			[
+				"chang",
+				"change_lang"
+			],
+			[
+				"Uni",
+				"UnicodeDecodeError"
+			],
+			[
+				"save",
+				"saved"
+			],
+			[
+				"unic",
+				"UnicodeDecodeError"
+			],
+			[
+				"er",
+				"error"
+			],
+			[
+				"saved",
+				"saved_path"
+			],
+			[
+				"GetFet",
+				"GetFeatureCount"
+			],
+			[
+				"text",
+				"textos"
+			],
+			[
+				"isogeo",
+				"isogeo2desktop"
+			],
+			[
+				"proxy",
+				"proxy_user"
+			],
+			[
+				"def_pr",
+				"def_proxy_pswd"
+			],
+			[
+				"def_pro",
+				"def_proxy_user"
+			],
+			[
+				"def_p",
+				"def_proxy_port"
+			],
+			[
+				"outu",
+				"output_alt"
+			],
+			[
+				"oper",
+				"opersys"
+			],
+			[
+				"recu",
+				"reccuring_file"
+			],
+			[
+				"recr",
+				"reccuring_file"
+			],
+			[
+				"Me",
+				"MetadatorVersion"
+			],
+			[
+				"form",
+				"format"
+			],
+			[
+				"Re",
+				"Read_TAB"
+			],
+			[
+				"url",
+				"url_input"
+			],
+			[
+				"styl",
+				"style_url"
+			],
+			[
+				"xls",
+				"xls_line"
+			],
+			[
+				"ow",
+				"li_owners"
+			],
+			[
+				"l_",
+				"li_motscles"
+			],
+			[
+				"typ",
+				"typ_keyword"
+			],
+			[
+				"searc",
+				"search_rez"
+			],
+			[
+				"sear",
+				"search_rez"
+			],
+			[
+				"se",
+				"search_rez"
+			],
+			[
+				"seac",
+				"search_resp"
+			],
+			[
+				"req",
+				"req_search"
+			],
+			[
+				"re",
+				"req_search"
+			],
+			[
+				"shar",
+				"share_id"
+			],
+			[
+				"req_",
+				"req_MD"
+			],
+			[
+				"techno",
+				"technos_get"
+			],
+			[
+				"technos",
+				"technos_totaux"
+			],
+			[
+				"tech",
+				"technos_get"
+			],
+			[
+				"pror",
+				"proprietaire"
+			],
+			[
+				"tes",
+				"test_technos"
+			],
+			[
+				"las",
+				"last_time"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "isogeo2xls.py",
+			"settings":
+			{
+				"buffer_size": 10841,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "isogeo2docx.py",
+			"settings":
+			{
+				"buffer_size": 10051,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"Pack",
+				"Package Control: Install Package"
+			],
+			[
+				"upgr",
+				"Package Control: Upgrade/Overwrite All Packages"
+			],
+			[
+				"isnta",
+				"Package Control: Install Package"
+			],
+			[
+				"Upgra",
+				"Package Control: Upgrade Package"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"in",
+				"Package Control: Install Package"
+			],
+			[
+				"INs",
+				"Package Control: Install Package"
+			],
+			[
+				"Ud",
+				"Package Control: Upgrade/Overwrite All Packages"
+			],
+			[
+				"Install",
+				"Package Control: Install Package"
+			],
+			[
+				"jsh",
+				"JSHint: Set Linting Preferences"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: in",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 400.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+			"import urllib.request,os; pr='Preferences.sublime-settings'; ip='ignored_packages'; n='Package Control'; s=sublime.load_settings(pr); ig=s.get(ip); ig.append(n); s.set(ip,ig); sublime.save_settings('Preferences.sublime-settings'); pf=n+'.sublime-package'; urllib.request.install_opener(urllib.request.build_opener(urllib.request.ProxyHandler())); by=urllib.request.urlopen('https://packagecontrol.io/'+pf.replace(' ','%20')).read(); open(os.path.join(sublime.installed_packages_path(),pf),'wb').write(by); ig.remove(n); s.set(ip,ig); sublime.save_settings(pr); print('Package Control: 3.0.0 upgrade successful!')",
+			"import urllib.request,os,hashlib; h = '7183a2d3e96f11eeadd761d777e62404' + 'e330c659d4bb41d3bdf022e94cab3cd0'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by) "
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office"
+	],
+	"file_history":
+	[
+		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Commercial/Projets/45_Total/3_REALISATION/3_Catalogage/rules-engine/rules-engine/data.json",
+		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Commercial/Projets/45_Total/3_REALISATION/3_Catalogage/rules-engine/rules-engine/rules.json",
+		"/C/Users/julien.moura/Documents/GIS Database/IGN/GeoFLA/2015/dptFrance.csvt",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/utils/modules/testeur_semantik_nltk.py",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/fr/SUMMARY.md",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/en/SUMMARY.md",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/home.html",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/en/introduction/share.md",
+		"/C/Users/julien.moura/Downloads/ez_setup.py",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/fr/releases_notes/README.md",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/fr/features/publish/webservices.md",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/fr/features/inventory/README.md",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/en/quickstart/README.md",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/en/introduction/cataloging.md",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/en/introduction/update.md",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/en/guidedtour/README.md",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/en/features/scan-daemon/scandaemon_new_db.md",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/fr/start/login_reset.md",
+		"/C/Users/julien.moura/Downloads/Mask/Mask.MBX",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/en/introduction/documentation.md",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/.gitignore",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/views.py",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/urls.py",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/base.html",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/contrats.html",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/settings.py",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/utils/modules/analyseur.py",
+		"/C/Users/julien.moura/Documents/GitHub/JM/Flujitos/Flujitos_class.py",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/historik/georezo2elpaso.py",
+		"/C/Users/julien.moura/Documents/GitHub/JM/Flujitos/Flujitos.py",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/utils/jobs_georezo.py",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/utils/DatabaseSizeSummary.py",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/utils/modules/test_serializer_semantic.py",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/utils/modules/test_filter.py",
+		"/C/Users/julien.moura/AppData/Roaming/Thunderbird/Profiles/jl0iteiw.default/signature_isogeo.html",
+		"/C/Users/julien.moura/Downloads/servir_fichiers_statiques_django_1.3_et_1.4/project/settings.py",
+		"/C/Users/julien.moura/Downloads/servir_fichiers_statiques_django_1.3_et_1.4/project/manage.py",
+		"/C/Users/julien.moura/Downloads/servir_fichiers_statiques_django_1.3_et_1.4/example_nginx.conf",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/ElPaso.log",
+		"/C/Users/julien.moura/Downloads/freebie-footer-templates/css/footer-distributed.css",
+		"/C/Users/julien.moura/Downloads/freebie-footer-templates/footer-distributed.html",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/style.css",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/bootstrap.css",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/bootstrap.min.css",
+		"/C/Users/julien.moura/Documents/GitHub/Web/startbootstrap-sb-admin-2/README.md",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/semantique.html",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/timeline.html",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/models.py",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/static/json/mots_geomatique.json",
+		"/C/Users/julien.moura/Documents/GitHub/Web/startbootstrap-sb-admin-2/pages/tables.html",
+		"/C/Users/julien.moura/Documents/GitHub/Web/startbootstrap-sb-admin-2/dist/js/sb-admin-2.js",
+		"/C/Users/julien.moura/Documents/GitHub/Web/startbootstrap-sb-admin-2/bower_components/datatables-responsive/Readme.md",
+		"/C/Users/julien.moura/Documents/GitHub/Web/startbootstrap-sb-admin-2/bower_components/datatables-plugins/filtering/index.html",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/jobs_georezo.py",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/sb-admin-2.css",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/fr/introduction/update.md",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/fr/introduction/cataloging.md",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/doc/tpl_nginx.conf",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/nginx.conf",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/doc/tpl_nginx_elpaso.conf",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/elpaso",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/doc/tpl_elpaso.conf",
+		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Community Management/Aide en ligne/Traduction/livraison_v2-12/releases_notes/README.md",
+		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Community Management/Aide en ligne/Traduction/livraison_v2-12/releases_notes/appendices.md",
+		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Community Management/Aide en ligne/Traduction/livraison_v2-12/quickstart/README.md",
+		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Community Management/Aide en ligne/Traduction/livraison_v2-12/guidedtour/README.md",
+		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Commercial/Projets/33_CA_BELFORT/3_REALISATION/SRS/RGF93 Lambert Zone 7 (CC48).prj",
+		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Commercial/Projets/33_CA_BELFORT/3_REALISATION/SRS/esriwkt.db",
+		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Commercial/Projets/10_AEV/06_REALISATION/03_Catalogage/Existant/aev_matched_2015-06-30.csv",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/utils/modules/models.py",
+		"/C/Users/julien.moura/Documents/GitHub/Web/startbootstrap-sb-admin-2/pages/index.html",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/templates/jobs/wordcloud.js",
+		"/C/Users/julien.moura/Documents/GitHub/Web/d3-cloud/examples/simple.html",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/templates/jobs/base.html",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/templates/jobs/semantique_test.html",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/static/json/contrats_month.json",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/utils/modules/test_serialize_dates.py",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/reset_testeur.py",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/elpaso.sqlite",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/last_id_georezo.txt",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/en/features/publish/share_opencatalog.md",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/historik/import_georezo_historique.py",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/analyseur.py",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/utils/reset_testeur.py",
+		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Commercial/Projets/33_CA_BELFORT/3_REALISATION/SRS/oracle.db",
+		"/C/Users/julien.moura/Downloads/RGF93 Lambert Zone 7 (CC48).prj",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/en/features/inventory/search.md",
+		"/C/Users/julien.moura/AppData/Local/Temp/search.md",
+		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Community Management/Aide en ligne/Traduction/test/features/inventory/README.md",
+		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Community Management/Aide en ligne/Traduction/test/Isogeo_Help_EN_Part1_240615_V2/features/inventory/search.md",
+		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Community Management/Aide en ligne/Traduction/test/Isogeo_Help_EN_Part1_240615_V2/features/inventory/README.md",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/README.md",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/historik/diagnostic.txt",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/historik/toImport/bizarreries_connues.txt",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/historik/test_new_jobs_georezo.py",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/ElPaso.log.1",
+		"/C/Users/julien.moura/Downloads/esriwkt.db",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/README.md",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/book.json",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/LANGS.md",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/local_build.bat",
+		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Community Management/Aide en ligne/changeset_211_212",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/package.json",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/templates/jobs/multibarchart.js",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/requirements.txt",
+		"/C/Users/julien.moura/AppData/Roaming/nltk_data/tokenizers/punkt/french.pickle",
+		"/C/Users/julien.moura/AppData/Roaming/nltk_data/tokenizers/punkt/czech.pickle",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/static/json/last50.json",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/utils/output.txt",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/elpaso_ST.sublime-project",
+		"/C/Users/julien.moura/AppData/Roaming/Sublime Text 3/Packages/Default/Default (Windows).sublime-keymap",
+		"/C/Users/julien.moura/AppData/Roaming/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/C/Users/julien.moura/Documents/GitHub/JM/DicoGIS/DicoGIS.py",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/timeline.css",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/utils/modules/test_gen_timeline.py",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/templates/jobs/contrats.html",
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/models 2.py",
+		"/C/Users/julien.moura/Documents/GitHub/JM/Paris-Beer-Week-2015/data/raw_data/xlsx2data.py",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/templates/jobs/timeline.html",
+		"//nas.hq.isogeo.fr/SIG/SIG_DATA_SERVICE/PROJET/REFERENTIEL/Limites_Administratives/EPCI/2013-12/epci-20150303-50m.prj",
+		"//nas.hq.isogeo.fr/SIG/SIG_DATA_SERVICE/PROJET/REFERENTIEL/Limites_Administratives/EPCI/2013-12/epci-20131220-5m.prj",
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/utils/modules/testeur_semantik.py",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/fr/README.md",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/word_counter.py",
+		"/C/Users/julien.moura/Documents/GitHub/JM/DicoGIS/modules/utils/Geodata_Explorer.py",
+		"/C/Users/julien.moura/Documents/GitHub/Web/startbootstrap-sb-admin-2/dist/css/timeline.css",
+		"/C/Users/julien.moura/Documents/GitHub/Web/startbootstrap-sb-admin-2/dist/css/sb-admin-2.css",
+		"/C/Users/julien.moura/Documents/GitHub/Web/startbootstrap-sb-admin-2/index.html"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 90.0,
+		"where_history":
+		[
+			"C:\\Users\\julien.moura\\Documents\\GitHub\\Passerelle_INSPIRE-OpenData\\geogw",
+			"C:\\Users\\julien.moura\\Documents\\GitHub\\georatp"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"nltk",
+			"navbar-nav",
+			"navbar",
+			"footer",
+			"navbar",
+			"search",
+			"info",
+			"panel",
+			"update",
+			"ESRI|RGF93.CC44|PROJCS[\"RGF93_CC44\",GEOGCS[\"GCS_RGF93\",DATUM[\"D_RGF_1993\",SPHEROID[\"GRS_1980\",6378137,298.257222101]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Lambert_Conformal_Conic\"],PARAMETER[\"standard_parallel_1\",43.25],PARAMETER[\"standard_parallel_2\",44.75],PARAMETER[\"latitude_of_origin\",44],PARAMETER[\"central_meridian\",3],PARAMETER[\"false_easting\",1700000],PARAMETER[\"false_northing\",3200000],UNIT[\"Meter\",1]]",
+			"integrity",
+			"check-all",
+			"week_start_date",
+			"check_date",
+			"PROJCS[\"RGF93_CC44\",GEOGCS[\"GCS_RGF93\",DATUM[\"D_RGF_1993\",SPHEROID[\"GRS_1980\",6378137,298.257222101]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Lambert_Conformal_Conic\"],PARAMETER[\"standard_parallel_1\",43.25],PARAMETER[\"standard_parallel_2\",44.75],PARAMETER[\"latitude_of_origin\",44],PARAMETER[\"central_meridian\",3],PARAMETER[\"false_easting\",1700000],PARAMETER[\"false_northing\",3200000],UNIT[\"Meter\",1]]",
+			"FME et les systèmes de projection français\nPage : \n4\n/ \n4\nESRI|NTF.Lambert\n-\n1|PROJCS[\"NTF_Lambert_Zone_I\",GEOGCS[\"GCS_NTF\",DATUM[\"D_NTF\",SPHEROID[\"Clarke_188\n0_IGN\",6378249.2,293.46602]\n], \nPRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Lambert_Co\nnformal_Conic\"], \nPARAMETER[\"False_Easting\",600000.0],PARAMETER[\"False_Northing\",200000.0],PARAMETE\nR[\"Central_Meridian\",2.3372291667], \nPARAMETER[\"Standard_Parallel_1\",48.598\n5227778],PARAMETER[\"Standard_Parallel_2\",50\n.3959116667],PARAMETER[\"Scale_Factor\",1.0], \nPARAMETER[\"Latitude_Of_Origin\",49.5],UNIT[\"Meter\",1.0]]",
+			"PROJCS[\"RGF_1993_Lambert_Zone_7\",GEOGCS[\"GCS_RGF_1993\",DATUM[\"D_RGF_1993\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Lambert_Conformal_Conic\"],PARAMETER[\"False_Easting\",1700000.0],PARAMETER[\"False_Northing\",7200000.0],PARAMETER[\"Central_Meridian\",3.0],PARAMETER[\"Standard_Parallel_1\",47.25],PARAMETER[\"Standard_Parallel_2\",48.75],PARAMETER[\"Latitude_Of_Origin\",48.0],UNIT[\"Meter\",1.0]]",
+			"reset",
+			"conn",
+			"offer_text",
+			"summary",
+			"commit",
+			"kind",
+			"timeline",
+			"f",
+			"chart",
+			"addTo",
+			"second",
+			"strftime(",
+			"epoch",
+			"paris_tz",
+			"pytz",
+			"collapse",
+			".png",
+			"fa-",
+			"NAME\": null",
+			"stamenTonerLite",
+			"stamenToner",
+			"\\\"",
+			"\\/",
+			"stamenTonerLite",
+			"stame",
+			"é",
+			"highlight",
+			"openBeerMap",
+			"openBeerMaps",
+			"markerClusters",
+			"feature",
+			"museums",
+			"theater",
+			"museum",
+			"museumSearch",
+			"museums",
+			"museum",
+			"participantsLayer",
+			"museumLayer",
+			"museums",
+			"layer",
+			"feature.properties",
+			"ADD",
+			"search",
+			"uid",
+			"metric",
+			"stats",
+			"Feat",
+			"prin",
+			"Feature",
+			"Callable",
+			"featur",
+			"1st",
+			"self.opt_proxy",
+			"vie",
+			"see",
+			"see vi",
+			"see",
+			"caz",
+			"Read_PostG",
+			"shp",
+			"GDB",
+			"gdb",
+			"save",
+			"self.logger",
+			"load",
+			"options",
+			"mActionMetadataCtxtXML",
+			"menu",
+			";",
+			"prin",
+			"metadator",
+			"metadator_",
+			"print",
+			"prin",
+			"platf",
+			"startfile",
+			"path",
+			"getc",
+			"chdir",
+			"Read_SH",
+			"Read_S",
+			"message = ",
+			"command = ",
+			"columnspan = ",
+			"S  +",
+			"+W+E",
+			"N+S",
+			"pady = ",
+			"padx = ",
+			"sticky = ",
+			"column = ",
+			"row = ",
+			"state = ",
+			"parent = ",
+			"title = ",
+			"name = ",
+			"text = ",
+			"data.gouv.fr",
+			"http://data.gouv.fr",
+			"datagouv.fr",
+			"section2",
+			"\\",
+			"Mots",
+			"250952",
+			"252351",
+			"click",
+			"inser",
+			"print",
+			"insert",
+			"getStats"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"default",
+			"offer_text_clean",
+			"offer_text",
+			"\"",
+			"/",
+			"",
+			"&eacute;",
+			"openBeerMapLayer",
+			"participantLayer",
+			"gxt",
+			"GXT",
+			"gxt",
+			";",
+			"message=",
+			"command=",
+			"columnspan=",
+			"S +",
+			" + W + E",
+			"N + S ",
+			"pady=",
+			"padx=",
+			"sticky=",
+			"column=",
+			"row=",
+			"state=",
+			"parent=",
+			"title=",
+			"name=",
+			"text=",
+			"features",
+			"features/",
+			"/",
+			"self.dictionarize_fdb",
+			"self.dico_fdb",
+			"spadb",
+			"line.fdb",
+			"caz_egdb",
+			"opt_egdb",
+			"self.li_egdb",
+			"spadb",
+			"dico_spadb",
+			"spadbpath",
+			"parent",
+			"feuyMAPS",
+			"text",
+			"dwg",
+			"self.feuyCDAO",
+			"self.feuyFGDB",
+			"self.feuyRS",
+			"self.feuyVC",
+			"self.feuyPG",
+			"txt",
+			"geopdf_v.",
+			"dico_geopdf",
+			"PDF",
+			"geopdf",
+			"self.geopdf",
+			"in_pdf",
+			"dico_geopdf",
+			"dio_geopdf",
+			"pdfpath",
+			"dico_geopdf",
+			"tel",
+			"%',",
+			"%",
+			"%'",
+			"%",
+			"state=",
+			"background=",
+			"bg=",
+			"command=",
+			"message=",
+			"columnspan=",
+			"pady=",
+			"padx=",
+			"rowspan=",
+			"text=",
+			"name=",
+			"xscrollcommand=",
+			"yscrollcommand=",
+			"sticky=",
+			"column=",
+			"row=",
+			"file=",
+			"name=",
+			"master=",
+			"height=",
+			"width=",
+			"dxf",
+			"DXF",
+			"dico_dxf",
+			"dxfpath",
+			"gdb_infos",
+			"lambda: ",
+			"message=",
+			"title=",
+			"width=",
+			"sticky=\"NSEW\"",
+			"variable=",
+			"command=",
+			"pady=",
+			"padx=",
+			"columnspan=",
+			"column=",
+			"row=",
+			"sticky=\"NSWE\"",
+			"text=",
+			"1403478000000",
+			"1405897200",
+			"1405292400",
+			"1404687600",
+			"1404082800",
+			"1403478000",
+			"1406502000",
+			"1388534400",
+			"-",
+			"/07/",
+			"\"semaine 30\"",
+			"\"semaine 29\"",
+			"\"semaine 28\"",
+			"\"semaine 27\"",
+			"\"semaine 26\"",
+			"\"semaine 25\"",
+			"self.xls_erreur",
+			"opersys",
+			"pdfpath",
+			"line_vectors",
+			"-"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "isogeo2xls.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 10841,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3663,
+								3663
+							]
+						],
+						"settings":
+						{
+							"WordCountShouldRun": false,
+							"WordCountSyntax": "python",
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1749.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "isogeo2docx.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 10051,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"WordCountShouldRun": false,
+							"WordCountSyntax": "python",
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2779.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 27.0
+	},
+	"input":
+	{
+		"height": 35.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 167.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.markdown":
+	{
+		"height": 94.0
+	},
+	"pinned_build_system": "",
+	"project": "isogeo2office.sublime-project",
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 198.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
