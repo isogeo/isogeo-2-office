@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 #!/usr/bin/env python
-from __future__ import unicode_literals
-#------------------------------------------------------------------------------
+from __future__ import (print_function, unicode_literals)
+# ------------------------------------------------------------------------------
 # Name:         OpenCatalog to Excel
 # Purpose:      Get metadatas from an Isogeo OpenCatlog and store it into
 #               an Excel workbook.
@@ -10,8 +10,8 @@ from __future__ import unicode_literals
 #
 # Python:       2.7.x
 # Created:      14/08/2014
-# Updated:      22/12/2014
-#------------------------------------------------------------------------------
+# Updated:      12/12/2015
+# ------------------------------------------------------------------------------
 
 ###############################################################################
 ########### Libraries #############
@@ -21,7 +21,6 @@ from __future__ import unicode_literals
 from datetime import datetime
 import json
 from math import ceil
-import os
 from sys import exit
 from Tkinter import Tk, StringVar
 from ttk import Label, Button, Entry    # widgets
@@ -80,6 +79,7 @@ def md2wb(wbsheet, offset, li_mds, li_catalogs):
                 format_lbl = tags.get(tag)
                 continue
             else:
+                format_lbl = "NR"
                 pass
             # INSPIRE conformity
             if tag.startswith('conformity:inspire'):
