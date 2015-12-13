@@ -221,6 +221,5 @@ pip-log.txt
 #############
 
 output/
-templates/
-
-# !templates/template_Isogeo.docx
+#templates/
+!templates/template_Isogeo.docx
