@@ -531,7 +531,7 @@
 			"file": "isogeo2docx.py",
 			"settings":
 			{
-				"buffer_size": 10051,
+				"buffer_size": 14068,
 				"line_ending": "Windows"
 			}
 		}
@@ -654,6 +654,7 @@
 	],
 	"file_history":
 	[
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/Passerelle_INSPIRE-OpenData/geogw/doc/README_csw2datagouvfr.md",
 		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Commercial/Projets/45_Total/3_REALISATION/3_Catalogage/rules-engine/rules-engine/data.json",
 		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Commercial/Projets/45_Total/3_REALISATION/3_Catalogage/rules-engine/rules-engine/rules.json",
 		"/C/Users/julien.moura/Documents/GIS Database/IGN/GeoFLA/2015/dptFrance.csvt",
@@ -780,8 +781,7 @@
 		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/word_counter.py",
 		"/C/Users/julien.moura/Documents/GitHub/JM/DicoGIS/modules/utils/Geodata_Explorer.py",
 		"/C/Users/julien.moura/Documents/GitHub/Web/startbootstrap-sb-admin-2/dist/css/timeline.css",
-		"/C/Users/julien.moura/Documents/GitHub/Web/startbootstrap-sb-admin-2/dist/css/sb-admin-2.css",
-		"/C/Users/julien.moura/Documents/GitHub/Web/startbootstrap-sb-admin-2/index.html"
+		"/C/Users/julien.moura/Documents/GitHub/Web/startbootstrap-sb-admin-2/dist/css/sb-admin-2.css"
 	],
 	"find":
 	{
@@ -1115,7 +1115,7 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 10051,
+						"buffer_size": 14068,
 						"regions":
 						{
 						},
@@ -1128,7 +1128,6 @@
 						],
 						"settings":
 						{
-							"WordCountShouldRun": false,
 							"WordCountSyntax": "python",
 							"syntax": "Packages/Python/Python.tmLanguage",
 							"tab_size": 2,
