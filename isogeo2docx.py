@@ -36,7 +36,7 @@ from docxtpl import DocxTemplate
 ########## Functions ##############
 ###################################
 
-def md2docx(docx_template, offset, md, li_catalogs):
+def md2docx(docx_template, offset, md, li_catalogs, url_base):
     """
     parses Isogeo metadatas and replace docx template
     """
@@ -51,7 +51,7 @@ def md2docx(docx_template, offset, md, li_catalogs):
     li_theminspire = []
     srs = ""
     owner = ""
-    inspire_valid = 0
+    inspire_valid = "Non"
     format_lbl = ""
     fields = ["NR"]
 
@@ -89,27 +89,29 @@ def md2docx(docx_template, offset, md, li_catalogs):
             pass
         # INSPIRE conformity
         if tag.startswith('conformity:inspire'):
-            inspire_valid = 1
+            inspire_valid = "Oui"
             continue
         else:
             pass
 
     # formatting links to visualize on OpenCatalog and edit on APP
-    # link_visu = url_OpenCatalog + "/m/" + md_id
+    link_visu = url_base + "m/" + md_id
     link_edit = "https://app.isogeo.com/resources/" + md_id
 
     # CONTACTS #
     contacts = md.get("contacts")
     # formatting contacts
     if len(contacts):
-        contacts_cct = ["{0} ({1})\n{2}\n{3}\n{4} ;\n\n".format(contact.get("contact").get("name"),
-                                               contact.get("contact").get("organization"),
-                                               contact.get("contact").get("email"),
-                                               contact.get("contact").get("phone"),
-                                               unicode(contact.get("contact").get("addressLine1"))
-                                               + u", " + unicode(contact.get("contact").get("zipCode"))
-                                               + u" " + unicode(contact.get("contact").get("city")))\
-                        for contact in contacts if contact.get("role") == "pointOfContact"]
+        contacts_cct = ["{5} {0} ({1})\n{2}\n{3}\n{4} ;\n\n".format(contact.get("contact").get("name"),
+                                                                    contact.get("contact").get("organization"),
+                                                                    contact.get("contact").get("email"),
+                                                                    contact.get("contact").get("phone"),
+                                                                    unicode(contact.get("contact").get("addressLine1"))
+                                                                    + u", " + unicode(contact.get("contact").get("zipCode"))
+                                                                    + u" " + unicode(contact.get("contact").get("city")),
+                                                                    contact.get("role"))
+                        for contact in contacts]
+                        # for contact in contacts if contact.get("role") == "pointOfContact"]
     else:
         contacts_cct = ""
 
@@ -150,6 +152,26 @@ def md2docx(docx_template, offset, md, li_catalogs):
         data_published = dtparse(md.get("published")).strftime("%a %d %B %Y")
     else:
         data_published = "NR"
+
+    # CGUs AND lIMITATIONS #
+    cgus = md.get("conditions")
+    # formatting contacts
+    if cgus:
+        cgus_cct = ["{1} {0} ({2}) ;\n\n".format(cgu.get("description"),
+                                                 cgu.get("license").get("name"),
+                                                 cgu.get("license").get("link"))\
+                    for cgu in cgus if cgu.get('license')]
+    else:
+        cgus_cct = ""
+
+    limitations = md.get("limitations")
+    # formatting contacts
+    if limitations:
+        limits_cct = ["Type : {0} - Restriction : {1} ;\n\n".format(lim.get("type"),
+                                                                    lim.get("restriction"))\
+                    for lim in limitations]
+    else:
+        limits_cct = ""
 
     # validity
     # for date manipulation: https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior
@@ -197,6 +219,8 @@ def md2docx(docx_template, offset, md, li_catalogs):
               'varTopologyInfo': md.get("topologicalConsistency"),
               'varInspireTheme': " ; ".join(li_theminspire),
               'varInspireConformity': inspire_valid,
+              'varInspireLimitation': " ; \n".join(limits_cct),
+              'varCGUs': " ; \n".join(cgus_cct),
               'varContactsCount': len(contacts),
               'varContactsDetails': " ; \n".join(contacts_cct),
               'varSRS': srs,
@@ -206,6 +230,8 @@ def md2docx(docx_template, offset, md, li_catalogs):
               'varMdDtCrea': md_created.decode('latin1'),
               'varMdDtUpda': md_updated.decode('latin1'),
               'varMdDtExp': datetime.now().strftime("%a %d %B %Y (%Hh%M)").decode('latin1'),
+              'varViewOC': link_visu,
+              'varEditAPP': link_edit,
               }
 
     # fillfull file
@@ -244,7 +270,7 @@ lb_input_oc = Label(app, text="Coller l'URL d'un OpenCatalog").pack()
 
 # champ pour l'URL
 ent_OpenCatalog = Entry(app, textvariable=url_input, width=100)
-ent_OpenCatalog.insert(0, "http://open.isogeo.com/s/ad6451f1f9ca405ca6f78fabf46aeb10/Bue0ySfhmGOPw33jHMyaJtcOM4MY0/q/keyword:inspire-theme:administrativeunits")
+ent_OpenCatalog.insert(0, "https://open.isogeo.com/s/ad6451f1f9ca405ca6f78fabf46aeb10/Bue0ySfhmGOPw33jHMyaJtcOM4MY0/q/keyword:inspire-theme:administrativeunits")
 ent_OpenCatalog.pack()
 ent_OpenCatalog.focus_set()
 
@@ -264,8 +290,15 @@ app.mainloop()
 
 ##################### Calling Isogeo API
 
-# get the OpenCatalog URL
+# get the OpenCatalog URL given
 url_OpenCatalog = url_input.get()
+if not url_OpenCatalog[-1] == '/':
+    url_OpenCatalog = url_OpenCatalog + '/'
+else:
+    pass
+
+# get the clean
+url_base = url_OpenCatalog[0:url_OpenCatalog.index(url_OpenCatalog.rsplit('/')[6])]
 
 # isoler l’identifiant du partage
 share_id = url_OpenCatalog.rsplit('/')[4]
@@ -291,7 +324,7 @@ search_req = Request("http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&q={
                                                                                                                                          includes))
 
 # requête pour les caractéristiques du partage
-share_req = Request('http://v1.api.isogeo.com/shares/{0}?token={1}'.format(share_id, share_token))
+share_req = Request('https://v1.api.isogeo.com/shares/{0}?token={1}'.format(share_id, share_token))
 
 # envoi de la requête dans une boucle de test pour prévenir les erreurs
 try:
@@ -327,12 +360,12 @@ if tot_results > 100:
     for idx in range(1, int(ceil(tot_results / 100)) + 1):
         start = idx * 100 + 1
         print(start)
-        search_req = Request("http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&q={2}&_limit=100&_lang={3}&_offset={4}&_include={5}".format(share_token,
-                                                                                                                                                 share_id,
-                                                                                                                                                 filters,
-                                                                                                                                                 lang,
-                                                                                                                                                 start,
-                                                                                                                                                 includes))
+        search_req = Request("https://v1.api.isogeo.com/resources/search?ct={0}&s={1}&q={2}&_limit=100&_lang={3}&_offset={4}&_include={5}".format(share_token,
+                                                                                                                                                  share_id,
+                                                                                                                                                  filters,
+                                                                                                                                                  lang,
+                                                                                                                                                  start,
+                                                                                                                                                  includes))
         try:
             search_resp = urlopen(search_req)
             search_rez = json.load(search_resp)
@@ -348,15 +381,16 @@ print(tpl_input.get())
 for md in metadatas:
     docx_tpl = DocxTemplate(path.realpath(tpl_input.get()))
     dstamp = datetime.now()
-    md2docx(docx_tpl, 0, md, li_catalogs)  # passing parameters to the Word generator
-    docx_tpl.save(r"output\{0}_{7}_{1}{2}{3}{4}{5}{6}.docx".format(share_rez.get("name"),
+    md2docx(docx_tpl, 0, md, li_catalogs, url_base)  # passing parameters to the Word generator
+    docx_tpl.save(r"output\{0}_{8}_{7}_{1}{2}{3}{4}{5}{6}.docx".format(share_rez.get("name"),
                                                                    dstamp.year,
                                                                    dstamp.month,
                                                                    dstamp.day,
                                                                    dstamp.hour,
                                                                    dstamp.minute,
                                                                    dstamp.second,
-                                                                   md.get("_id")[:8]))
+                                                                   md.get("_id")[:5],
+                                                                   md.get("title")[:15]))
 
 ###############################################################################
 ###### Stand alone program ########
