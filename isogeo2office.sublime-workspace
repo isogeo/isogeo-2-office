@@ -523,15 +523,18 @@
 			"file": "isogeo2xls.py",
 			"settings":
 			{
-				"buffer_size": 10841,
+				"buffer_size": 10849,
 				"line_ending": "Windows"
 			}
 		},
 		{
+			"contents": "# -*- coding: UTF-8 -*-\n#!/usr/bin/env python\nfrom __future__ import (print_function, unicode_literals)\n#------------------------------------------------------------------------------\n# Name:         OpenCatalog to Excel\n# Purpose:      Get metadatas from an Isogeo OpenCatlog and store it into\n#               an Excel workbook.\n#\n# Author:       Julien Moura (@geojulien) & Valentin Blanlot (@bablot)\n#\n# Python:       2.7.x\n# Created:      14/08/2014\n# Updated:      22/12/2015\n#------------------------------------------------------------------------------\n\n###############################################################################\n########### Libraries #############\n###################################\n\n# Standard library\nfrom datetime import datetime\nimport json\nimport locale\nfrom math import ceil\nfrom os import listdir, path\nfrom sys import exit\nfrom Tkinter import Tk, StringVar, OptionMenu\nfrom ttk import Label, Button, Entry, Combobox    # widgets\n\nfrom urllib2 import Request, urlopen, URLError\n\n# 3rd party library\nfrom dateutil.parser import parse as dtparse\nfrom docxtpl import DocxTemplate\n\n###############################################################################\n########## Functions ##############\n###################################\n\ndef md2docx(docx_template, offset, md, li_catalogs, url_base):\n    \"\"\"\n    parses Isogeo metadatas and replace docx template\n    \"\"\"\n    # optional: print resource id (useful in debug mode)\n    md_id = md.get(\"_id\")\n    print(md_id)\n\n    # TAGS #\n    # extracting & parsing tags\n    tags = md.get(\"tags\")\n    li_motscles = []\n    li_theminspire = []\n    srs = \"\"\n    owner = \"\"\n    inspire_valid = \"Non\"\n    format_lbl = \"\"\n    fields = [\"NR\"]\n\n    # looping on tags\n    for tag in tags.keys():\n        # free keywords\n        if tag.startswith('keyword:isogeo'):\n            li_motscles.append(tags.get(tag))\n            continue\n        else:\n            pass\n        # INSPIRE themes\n        if tag.startswith('keyword:inspire-theme'):\n            li_theminspire.append(tags.get(tag))\n            continue\n        else:\n            pass\n        # workgroup which owns the metadata\n        if tag.startswith('owner'):\n            owner = tags.get(tag)\n            continue\n        else:\n            pass\n        # coordinate system\n        if tag.startswith('coordinate-system'):\n            srs = tags.get(tag)\n            continue\n        else:\n            pass\n        # format pretty print\n        if tag.startswith('format'):\n            format_lbl = tags.get(tag)\n            continue\n        else:\n            pass\n        # INSPIRE conformity\n        if tag.startswith('conformity:inspire'):\n            inspire_valid = \"Oui\"\n            continue\n        else:\n            pass\n\n    # formatting links to visualize on OpenCatalog and edit on APP\n    link_visu = url_base + \"m/\" + md_id\n    link_edit = \"https://app.isogeo.com/resources/\" + md_id\n\n    # CONTACTS #\n    contacts = md.get(\"contacts\")\n    # formatting contacts\n    if len(contacts):\n        contacts_cct = [\"{5} {0} ({1})\\n{2}\\n{3}\\n{4} ;\\n\\n\".format(contact.get(\"contact\").get(\"name\"),\n                                                                    contact.get(\"contact\").get(\"organization\"),\n                                                                    contact.get(\"contact\").get(\"email\"),\n                                                                    contact.get(\"contact\").get(\"phone\"),\n                                                                    unicode(contact.get(\"contact\").get(\"addressLine1\"))\n                                                                    + u\", \" + unicode(contact.get(\"contact\").get(\"zipCode\"))\n                                                                    + u\" \" + unicode(contact.get(\"contact\").get(\"city\")),\n                                                                    contact.get(\"role\"))\n                        for contact in contacts]\n                        # for contact in contacts if contact.get(\"role\") == \"pointOfContact\"]\n    else:\n        contacts_cct = \"\"\n\n    # ATTRIBUTES #\n    # formatting feature attributes\n    if md.get(\"type\") == \"vectorDataset\" and md.get(\"feature-attributes\"):\n        fields = md.get(\"feature-attributes\")\n    else:\n        fields = []\n        pass\n\n    # IDENTIFICATION #\n    # format version\n    if md.get(\"formatVersion\"):\n        format_version = u\"{0} ({1} - {2})\".format(format_lbl,\n                                                   md.get(\"formatVersion\"),\n                                                   md.get(\"encoding\"))\n    else:\n        format_version = format_lbl\n\n    # path to the resource\n    if md.get(\"path\"):\n        localplace = md.get(\"path\").replace(\"&\", \"&amp;\")\n    else:\n        localplace = 'NR'\n\n    # HISTORY #\n    # data events\n    if md.get(\"created\"):\n        data_created = dtparse(md.get(\"created\")).strftime(\"%a %d %B %Y\")\n    else:\n        data_created = \"NR\"\n    if md.get(\"modified\"):\n        data_updated = dtparse(md.get(\"modified\")).strftime(\"%a %d %B %Y\")\n    else:\n        data_updated = \"NR\"\n    if md.get(\"published\"):\n        data_published = dtparse(md.get(\"published\")).strftime(\"%a %d %B %Y\")\n    else:\n        data_published = \"NR\"\n\n    # CGUs AND lIMITATIONS #\n    cgus = md.get(\"conditions\")\n    # formatting contacts\n    if cgus:\n        cgus_cct = [\"{1} {0} ({2}) ;\\n\\n\".format(cgu.get(\"description\"),\n                                                 cgu.get(\"license\").get(\"name\"),\n                                                 cgu.get(\"license\").get(\"link\"))\\\n                    for cgu in cgus if cgu.get('license')]\n    else:\n        cgus_cct = \"\"\n\n    limitations = md.get(\"limitations\")\n    # formatting contacts\n    if limitations:\n        limits_cct = [\"Type : {0} - Restriction : {1} ;\\n\\n\".format(lim.get(\"type\"),\n                                                                    lim.get(\"restriction\"))\\\n                    for lim in limitations]\n    else:\n        limits_cct = \"\"\n\n    # validity\n    # for date manipulation: https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior\n    # could be independant from dateutil: datetime.datetime.strptime(\"2008-08-12T12:20:30.656234Z\", \"%Y-%m-%dT%H:%M:%S.Z\")\n    if md.get(\"validFrom\"):\n        valid_start = dtparse(md.get(\"validFrom\")).strftime(\"%a %d %B %Y\")\n    else:\n        valid_start = \"NR\"\n    # end validity date\n    if md.get(\"validTo\"):\n        valid_end = dtparse(md.get(\"validTo\")).strftime(\"%a %d %B %Y\")\n    else:\n        valid_end = \"NR\"\n    # vailidty comment\n    if md.get(\"validyComment\"):\n        valid_com = md.get(\"validyComment\")\n    else:\n        valid_com = \"NR\"\n\n    # METADATA #\n    md_created = dtparse(md.get(\"_created\")).strftime(\"%a %d %B %Y (%Hh%M)\")\n    md_updated = dtparse(md.get(\"_modified\")).strftime(\"%a %d %B %Y (%Hh%M)\")\n\n    # FILLFULLING THE TEMPLATE #\n    context = {\n              'varTitle': md.get(\"title\"),\n              'varAbstract': md.get(\"abstract\"),\n              'varNameTech': md.get(\"name\"),\n              'varCollectContext': md.get(\"collectionContext\"),\n              'varCollectMethod': md.get(\"collectionMethod\"),\n              'varDataDtCrea': data_created.decode('latin1'),\n              'varDataDtUpda': data_updated.decode('latin1'),\n              'varDataDtPubl': data_published.decode('latin1'),\n              'varValidityStart': valid_start.decode('latin1'),\n              'varValidityEnd': valid_end.decode('latin1'),\n              'validityComment': valid_com,\n              'varFormat': format_version,\n              'varGeometry': md.get(\"geometry\"),\n              'varObjectsCount': md.get(\"features\"),\n              'varKeywords': \" ; \".join(li_motscles),\n              'varKeywordsCount': len(li_motscles),\n              'varType': md.get(\"type\"),\n              'varOwner': owner,\n              'varScale': md.get(\"scale\"),\n              'varTopologyInfo': md.get(\"topologicalConsistency\"),\n              'varInspireTheme': \" ; \".join(li_theminspire),\n              'varInspireConformity': inspire_valid,\n              'varInspireLimitation': \" ; \\n\".join(limits_cct),\n              'varCGUs': \" ; \\n\".join(cgus_cct),\n              'varContactsCount': len(contacts),\n              'varContactsDetails': \" ; \\n\".join(contacts_cct),\n              'varSRS': srs,\n              'varPath': localplace,\n              'varFieldsCount': len(fields),\n              'items': list(fields),\n              'varMdDtCrea': md_created.decode('latin1'),\n              'varMdDtUpda': md_updated.decode('latin1'),\n              'varMdDtExp': datetime.now().strftime(\"%a %d %B %Y (%Hh%M)\").decode('latin1'),\n              'varViewOC': link_visu,\n              'varEditAPP': link_edit,\n              }\n\n    # fillfull file\n    try:\n        docx_template.render(context)\n    except Exception, e:\n        print(u\"Metadata error: check if there's any special character (<, <, &...) in different fields (attributes names and description...). Link: {0}\".format(link_edit))\n        print(e)\n\n    # end of function\n    return\n\n###############################################################################\n######### Main program ############\n###################################\n\n# locale\nlocale.setlocale(locale.LC_ALL, str(\"fra_fra\"))\n\n# list available templates\ntemplates = [path.abspath(path.join(r'templates', tpl)) for tpl in listdir(r'templates') if path.splitext(tpl)[1].lower() == \".docx\"]  # languages\n\n\n##################### UI\napp = Tk()\napp.title('OpenCatalog ===> Word')\n\n# variables\nurl_input = StringVar(app)\ntpl_input = StringVar(app)\nlang = \"fr\"\nstart = 0\n\n# étiquette\nlb_input_oc = Label(app, text=\"Coller l'URL d'un OpenCatalog\").pack()\n\n# champ pour l'URL\nent_OpenCatalog = Entry(app, textvariable=url_input, width=100)\nent_OpenCatalog.insert(0, \"https://open.isogeo.com/s/ad6451f1f9ca405ca6f78fabf46aeb10/Bue0ySfhmGOPw33jHMyaJtcOM4MY0/q/keyword:inspire-theme:administrativeunits\")\nent_OpenCatalog.pack()\nent_OpenCatalog.focus_set()\n\n# pick a template\nlb_input_tpl = Label(app, text=\"Choisir un template\").pack()\ndroplist = Combobox(app,\n                textvariable=tpl_input,\n                values=templates,\n                width=100)\ndroplist.pack()\n\n# bouton\nButton(app, text=\"Wordification !\", command=lambda: app.destroy()).pack()\n\n# initialisation de l'UI\napp.mainloop()\n\n##################### Calling Isogeo API\n\n# get the OpenCatalog URL given\nurl_OpenCatalog = url_input.get()\nif not url_OpenCatalog[-1] == '/':\n    url_OpenCatalog = url_OpenCatalog + '/'\nelse:\n    pass\n\n# get the clean\nurl_base = url_OpenCatalog[0:url_OpenCatalog.index(url_OpenCatalog.rsplit('/')[6])]\n\n# isoler l’identifiant du partage\nshare_id = url_OpenCatalog.rsplit('/')[4]\n# isoler le token du partage\nshare_token = url_OpenCatalog.rsplit('/')[5]\n\n# test if URL already contains some filters\nif len(url_OpenCatalog.rsplit('/')) == 8:\n    filters = url_OpenCatalog.rsplit('/')[7]\nelse:\n    filters = \"\"\n    pass\n\n# setting the psubresources to include\nincludes = \"conditions,contacts,coordinate-system,events,feature-attributes,keywords,limitations,links,specifications\"\n\n# écriture de la requête de recherche à l'API\nsearch_req = Request(\"http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&q={2}&_limit=100&_lang={3}&_offset={4}&_include={5}\".format(share_token,\n                                                                                                                                         share_id,\n                                                                                                                                         filters,\n                                                                                                                                         lang,\n                                                                                                                                         start,\n                                                                                                                                         includes))\n\n# requête pour les caractéristiques du partage\nshare_req = Request('https://v1.api.isogeo.com/shares/{0}?token={1}'.format(share_id, share_token))\n\n# envoi de la requête dans une boucle de test pour prévenir les erreurs\ntry:\n    search_resp = urlopen(search_req)\n    search_rez = json.load(search_resp)\n    share_resp = urlopen(share_req)\n    share_rez = json.load(share_resp)\nexcept URLError, e:\n    print(e)\n\nif not search_rez:\n    print(\"Request failed. Check your connection state.\")\n    exit()\nelse:\n    pass\n\n# share caracteristics\nli_catalogs = share_rez.get(\"catalogs\")\n\n# tags\ntags = search_rez.get('tags')\nli_owners = [tags.get(tag) for tag in tags.keys() if tag.startswith('owner')]\n\n# results\ntot_results = search_rez.get('total')\nmetadatas = search_rez.get('results')\nli_ids_md = [md.get('_id') for md in metadatas]\n\n# handling Isogeo API limit\n# reference: https://docs.google.com/document/d/11dayY1FH1NETn6mn9Pt2y3n8ywVUD0DoKbCi9ct9ZRo/edit#heading=h.bg6le8mcd07z\nif tot_results > 100:\n    # if API returned more than one page of results, let's get the rest!\n    for idx in range(1, int(ceil(tot_results / 100)) + 1):\n        start = idx * 100 + 1\n        print(start)\n        search_req = Request(\"https://v1.api.isogeo.com/resources/search?ct={0}&s={1}&q={2}&_limit=100&_lang={3}&_offset={4}&_include={5}\".format(share_token,\n                                                                                                                                                  share_id,\n                                                                                                                                                  filters,\n                                                                                                                                                  lang,\n                                                                                                                                                  start,\n                                                                                                                                                  includes))\n        try:\n            search_resp = urlopen(search_req)\n            search_rez = json.load(search_resp)\n        except URLError, e:\n            print(e)\n        metadatas.extend(search_rez.get('results'))\nelse:\n    pass\n\nprint(tpl_input.get())\n\n# setting Word\nfor md in metadatas:\n    docx_tpl = DocxTemplate(path.realpath(tpl_input.get()))\n    dstamp = datetime.now()\n    md2docx(docx_tpl, 0, md, li_catalogs, url_base)  # passing parameters to the Word generator\n    docx_tpl.save(r\"output\\{0}_{8}_{7}_{1}{2}{3}{4}{5}{6}.docx\".format(share_rez.get(\"name\"),\n                                                                   dstamp.year,\n                                                                   dstamp.month,\n                                                                   dstamp.day,\n                                                                   dstamp.hour,\n                                                                   dstamp.minute,\n                                                                   dstamp.second,\n                                                                   md.get(\"_id\")[:5],\n                                                                   md.get(\"title\")[:15]))\n\n###############################################################################\n###### Stand alone program ########\n###################################\n\n# if __name__ == '__main__':\n#     \"\"\" standalone execution \"\"\"\n#     main()\n",
 			"file": "isogeo2docx.py",
+			"file_size": 16029,
+			"file_write_time": 130947291803982340,
 			"settings":
 			{
-				"buffer_size": 14068,
+				"buffer_size": 15619,
 				"line_ending": "Windows"
 			}
 		}
@@ -654,6 +657,13 @@
 	],
 	"file_history":
 	[
+		"/C/Users/julien.moura/.qgis2/python/plugins/QuickOSM/quick_osm.py",
+		"/C/Users/julien.moura/.qgis2/python/plugins/QuickOSM/controller/process.py",
+		"/C/Users/julien.moura/.qgis2/python/plugins/QuickOSM/core/query_factory.py",
+		"/C/Users/julien.moura/.qgis2/python/plugins/QuickOSM/config.json",
+		"/C/Users/julien.moura/.qgis2/python/plugins/QuickOSM/resources_rc.py",
+		"/C/Users/julien.moura/.qgis2/python/plugins/QuickOSM/LICENCE",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/.gitignore",
 		"/C/Users/julien.moura/Documents/GitHub/Isogeo/Passerelle_INSPIRE-OpenData/geogw/doc/README_csw2datagouvfr.md",
 		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Commercial/Projets/45_Total/3_REALISATION/3_Catalogage/rules-engine/rules-engine/data.json",
 		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Commercial/Projets/45_Total/3_REALISATION/3_Catalogage/rules-engine/rules-engine/rules.json",
@@ -774,14 +784,7 @@
 		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/models 2.py",
 		"/C/Users/julien.moura/Documents/GitHub/JM/Paris-Beer-Week-2015/data/raw_data/xlsx2data.py",
 		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/templates/jobs/timeline.html",
-		"//nas.hq.isogeo.fr/SIG/SIG_DATA_SERVICE/PROJET/REFERENTIEL/Limites_Administratives/EPCI/2013-12/epci-20150303-50m.prj",
-		"//nas.hq.isogeo.fr/SIG/SIG_DATA_SERVICE/PROJET/REFERENTIEL/Limites_Administratives/EPCI/2013-12/epci-20131220-5m.prj",
-		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/utils/modules/testeur_semantik.py",
-		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/fr/README.md",
-		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/word_counter.py",
-		"/C/Users/julien.moura/Documents/GitHub/JM/DicoGIS/modules/utils/Geodata_Explorer.py",
-		"/C/Users/julien.moura/Documents/GitHub/Web/startbootstrap-sb-admin-2/dist/css/timeline.css",
-		"/C/Users/julien.moura/Documents/GitHub/Web/startbootstrap-sb-admin-2/dist/css/sb-admin-2.css"
+		"//nas.hq.isogeo.fr/SIG/SIG_DATA_SERVICE/PROJET/REFERENTIEL/Limites_Administratives/EPCI/2013-12/epci-20150303-50m.prj"
 	],
 	"find":
 	{
@@ -1074,7 +1077,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -1083,30 +1086,29 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 10841,
+						"buffer_size": 10849,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3663,
-								3663
+								381,
+								381
 							]
 						],
 						"settings":
 						{
-							"WordCountShouldRun": false,
 							"WordCountSyntax": "python",
 							"syntax": "Packages/Python/Python.tmLanguage",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1749.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
@@ -1115,7 +1117,7 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 14068,
+						"buffer_size": 15619,
 						"regions":
 						{
 						},
@@ -1123,7 +1125,7 @@
 						[
 							[
 								0,
-								0
+								15619
 							]
 						],
 						"settings":
@@ -1134,10 +1136,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 2779.0,
+						"translation.y": 260.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 0,
 					"type": "text"
 				}
 			]

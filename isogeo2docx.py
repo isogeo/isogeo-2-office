@@ -24,7 +24,7 @@ import locale
 from math import ceil
 from os import listdir, path
 from sys import exit
-from Tkinter import Tk, StringVar, OptionMenu
+from Tkinter import Tk, StringVar
 from ttk import Label, Button, Entry, Combobox    # widgets
 from urllib2 import Request, urlopen, URLError
 
@@ -35,6 +35,7 @@ from docxtpl import DocxTemplate
 ###############################################################################
 ########## Functions ##############
 ###################################
+
 
 def md2docx(docx_template, offset, md, li_catalogs, url_base):
     """
@@ -244,6 +245,14 @@ def md2docx(docx_template, offset, md, li_catalogs, url_base):
     # end of function
     return
 
+
+def remove_accents(input_str, substitute=u""):
+    """
+    Clean string from special characters
+    source: http://stackoverflow.com/a/5843560
+    """
+    return unicode(substitute).join(char for char in input_str if char.isalnum())
+
 ###############################################################################
 ######### Main program ############
 ###################################
@@ -375,9 +384,8 @@ if tot_results > 100:
 else:
     pass
 
-print(tpl_input.get())
-
-# setting Word
+## WORDIZING METADATAS #################
+print("Template applied: ", tpl_input.get())
 for md in metadatas:
     docx_tpl = DocxTemplate(path.realpath(tpl_input.get()))
     dstamp = datetime.now()
@@ -390,7 +398,7 @@ for md in metadatas:
                                                                    dstamp.minute,
                                                                    dstamp.second,
                                                                    md.get("_id")[:5],
-                                                                   md.get("title")[:15]))
+                                                                   remove_accents(md.get("title")[:15], "_")))
 
 ###############################################################################
 ###### Stand alone program ########

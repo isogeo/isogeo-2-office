@@ -3,8 +3,8 @@
 from __future__ import (print_function, unicode_literals)
 # ------------------------------------------------------------------------------
 # Name:         OpenCatalog to Excel
-# Purpose:      Get metadatas from an Isogeo OpenCatlog and store it into
-#               an Excel workbook.
+# Purpose:      Get metadatas from an Isogeo OpenCatalog and store it into
+#               an Excel workbook (.xls).
 #
 # Author:       Julien Moura (@geojulien) & Valentin Blanlot (@bablot)
 #
