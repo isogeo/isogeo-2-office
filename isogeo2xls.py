@@ -20,6 +20,7 @@ from __future__ import (print_function, unicode_literals)
 # Standard library
 from datetime import datetime
 import json
+import locale
 from math import ceil
 from sys import exit
 from Tkinter import Tk, StringVar
@@ -27,6 +28,7 @@ from ttk import Label, Button, Entry    # widgets
 from urllib2 import Request, urlopen, URLError
 
 # 3rd party library
+from dateutil.parser import parse as dtparse
 import xlwt
 
 ###############################################################################
@@ -88,6 +90,20 @@ def md2wb(wbsheet, offset, li_mds, li_catalogs):
             else:
                 pass
 
+        # HISTORY ###########
+        if md.get("created"):
+            data_created = dtparse(md.get("created")).strftime("%a %d %B %Y")
+        else:
+            data_created = "NR"
+        if md.get("modified"):
+            data_updated = dtparse(md.get("modified")).strftime("%a %d %B %Y")
+        else:
+            data_updated = "NR"
+        if md.get("published"):
+            data_published = dtparse(md.get("published")).strftime("%a %d %B %Y")
+        else:
+            data_published = "NR"
+
         # formatting links to visualize on OpenCatalog and edit on APP
         link_visu = 'HYPERLINK("{0}"; "{1}")'.format(url_OpenCatalog + "/m/" + md.get('_id'),
                                                      "Visualiser")
@@ -110,6 +126,10 @@ def md2wb(wbsheet, offset, li_mds, li_catalogs):
         else:
             contacts_cct = ""
 
+        # METADATA #
+        md_created = dtparse(md.get("_created")).strftime("%a %d %B %Y (%Hh%M)")
+        md_updated = dtparse(md.get("_modified")).strftime("%a %d %B %Y (%Hh%M)")
+
         # écriture des informations dans chaque colonne correspondante
         wbsheet.write(offset, 0, md.get("title"))
         wbsheet.write(offset, 1, md.get("name"))
@@ -123,10 +143,10 @@ def md2wb(wbsheet, offset, li_mds, li_catalogs):
         wbsheet.write(offset, 9, md.get("features"))
         wbsheet.write(offset, 10, md.get("geometry"))
         wbsheet.write(offset, 11, owner)
-        wbsheet.write(offset, 12, md.get("created"))
-        wbsheet.write(offset, 13, md.get("modified"))
-        wbsheet.write(offset, 14, md.get("_created"))
-        wbsheet.write(offset, 15, md.get("_modified"))
+        wbsheet.write(offset, 12, data_created.decode('latin1'))
+        wbsheet.write(offset, 13, data_updated.decode('latin1'))
+        wbsheet.write(offset, 14, md_created.decode('latin1'))
+        wbsheet.write(offset, 15, md_updated.decode('latin1'))
         wbsheet.write(offset, 16, inspire_valid)
         wbsheet.write(offset, 17, len(contacts))
         wbsheet.write(offset, 18, contacts_cct, style_wrap)
@@ -141,6 +161,9 @@ def md2wb(wbsheet, offset, li_mds, li_catalogs):
 ###############################################################################
 ######### Main program ############
 ###################################
+
+# locale
+locale.setlocale(locale.LC_ALL, str("fra_fra"))
 
 ##################### UI
 app = Tk()
@@ -203,6 +226,7 @@ sheet_mds.write(0, 15, "Métadonnées - Modification", style_header)
 sheet_mds.write(0, 16, "Conformité INSPIRE", style_header)
 sheet_mds.write(0, 17, "# contacts", style_header)
 sheet_mds.write(0, 18, "Points de contacts", style_header)
+sheet_mds.write(0, 19, "Points de contacts", style_header)
 sheet_mds.write(0, 20, "Visualiser sur l'OpenCatalog", style_header)
 sheet_mds.write(0, 21, "Editer sur Isogeo", style_header)
 
@@ -213,19 +237,36 @@ sheet_mds.col(4).width = 75 * 256
 
 ##################### Calling Isogeo API
 
-# copier/coller l’url de l’OpenCatalog créé
+# get the OpenCatalog URL given
 url_OpenCatalog = url_input.get()
+if not url_OpenCatalog[-1] == '/':
+    url_OpenCatalog = url_OpenCatalog + '/'
+else:
+    pass
+
+# get the clean
+url_base = url_OpenCatalog[0:url_OpenCatalog.index(url_OpenCatalog.rsplit('/')[6])]
 
 # isoler l’identifiant du partage
 share_id = url_OpenCatalog.rsplit('/')[4]
 # isoler le token du partage
 share_token = url_OpenCatalog.rsplit('/')[5]
 
+# test if URL already contains some filters
+if len(url_OpenCatalog.rsplit('/')) == 8:
+    filters = url_OpenCatalog.rsplit('/')[7]
+else:
+    filters = ""
+    pass
+
+# setting the psubresources to include
+includes = "conditions,contacts,coordinate-system,events,feature-attributes,keywords,limitations,links,specifications"
+
 # écriture de la requête de recherche à l'API
-search_req = Request("http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&_limit=100&_lang={2}&_offset={3}&_include=contacts,links".format(share_token, share_id, lang, start))
+search_req = Request("http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&q={2}&_limit=100&_lang={3}&_offset={4}&_include={5}".format(share_token, share_id, filters, lang, start, includes))
 
 # requête pour les caractéristiques du partage
-share_req = Request('http://v1.api.isogeo.com/shares/{0}?token={1}'.format(share_id, share_token))
+share_req = Request('https://v1.api.isogeo.com/shares/{0}?token={1}'.format(share_id, share_token))
 
 # envoi de la requête dans une boucle de test pour prévenir les erreurs
 try:
@@ -251,6 +292,7 @@ li_owners = [tags.get(tag) for tag in tags.keys() if tag.startswith('owner')]
 
 # results
 tot_results = search_rez.get('total')
+print("Total :  ", tot_results)
 metadatas = search_rez.get('results')
 li_ids_md = [md.get('_id') for md in metadatas]
 
@@ -261,7 +303,7 @@ if tot_results > 100:
     for idx in range(1, int(ceil(tot_results / 100)) + 1):
         start = idx * 100 + 1
         print(start)
-        search_req = Request("http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&_limit=100&_lang={2}&_offset={3}&_include=contacts,links".format(share_token, share_id, lang, start))
+        search_req = Request("https://v1.api.isogeo.com/resources/search?ct={0}&s={1}&q={2}&_limit=100&_lang={3}&_offset={4}&_include={5}".format(share_token, share_id, filters, lang, start, includes))
         try:
             search_resp = urlopen(search_req)
             search_rez = json.load(search_resp)
@@ -276,13 +318,13 @@ md2wb(sheet_mds, 0, metadatas, li_catalogs)
 
 # Sauvegarde du fichier Excel
 dstamp = datetime.now()
-book.save(r"output\OpenCatalog2excel_{0}_{1}{2}{3}{4}{5}{6}.xls".format(share_rez.get("name"),
-                                                                           dstamp.year,
-                                                                           dstamp.month,
-                                                                           dstamp.day,
-                                                                           dstamp.hour,
-                                                                           dstamp.minute,
-                                                                           dstamp.second))
+book.save(r"output\isogeo2xls_{0}_{1}{2}{3}{4}{5}{6}.xls".format(share_rez.get("name"),
+                                                                 dstamp.year,
+                                                                 dstamp.month,
+                                                                 dstamp.day,
+                                                                 dstamp.hour,
+                                                                 dstamp.minute,
+                                                                 dstamp.second))
 
 ###############################################################################
 ###### Stand alone program ########
