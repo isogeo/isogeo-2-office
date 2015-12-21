@@ -359,6 +359,7 @@ li_owners = [tags.get(tag) for tag in tags.keys() if tag.startswith('owner')]
 
 # results
 tot_results = search_rez.get('total')
+print("Total :  ", tot_results)
 metadatas = search_rez.get('results')
 li_ids_md = [md.get('_id') for md in metadatas]
 
