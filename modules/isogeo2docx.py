@@ -33,6 +33,26 @@ from dateutil.parser import parse as dtparse
 from docxtpl import DocxTemplate
 
 ###############################################################################
+########### Classes ###############
+###################################
+
+class Isogeo2docx(object):
+    """
+    docstring for Isogeo
+    """
+    def __init__(self, docx_template, search_results, url_base):
+        """ Isogeo connection parameters
+
+        docx_template -- application identifier
+        search_results -- application
+        url_base -- language asked for localized tags (INSPIRE themes)
+        """
+        super(Isogeo, self).__init__()
+        self.id = client_id
+        self.ct = client_secret
+
+
+###############################################################################
 ########## Functions ##############
 ###################################
 

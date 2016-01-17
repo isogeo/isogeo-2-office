@@ -32,6 +32,33 @@ from dateutil.parser import parse as dtparse
 import xlwt
 
 ###############################################################################
+########### Classes ###############
+###################################
+
+class Isogeo2xlsx(object):
+    """
+    docstring for Isogeo
+    """
+    def __init__(self, client_id, client_secret, lang="en", proxy=None):
+        """ Isogeo connection parameters
+
+        Keyword arguments:
+        client_id -- application identifier
+        client_secret -- application
+        secret lang -- language asked for localized tags (INSPIRE themes).
+        Could be "en" [DEFAULT] or "fr".
+        proxy -- to pass through the local
+        proxy. Optional. Must be a dict { 'protocol':
+        'http://username:password@proxy_url:port' }.\ e.g.: {'http':
+        'http://martin:p4ssW0rde@10.1.68.1:5678',\ 'https':
+        'http://martin:p4ssW0rde@10.1.68.1:5678'}")
+        """
+        super(Isogeo, self).__init__()
+        self.id = client_id
+        self.ct = client_secret
+
+
+###############################################################################
 ########## Functions ##############
 ###################################
 
