@@ -1,0 +1,35 @@
+# Common requirements
+# -----------------------
+# This file collects all required third-party applications that are needed
+# to run this project. Later you can install all these apps in a row
+# using pip. Example:
+#
+#     pip install -r requirements.txt
+#
+#   It's higly recomended to use it within a virtualenv.
+#
+#
+#
+
+virtualenv
+
+# dates
+python-dateutil
+arrow
+pytz
+
+# UI
+pyttk
+
+# REST API
+requests
+
+# Excel
+openpyxl
+xlwt
+
+# templating OOXML
+# choose between 64 / 32 bits version by commenting/uncommenting lines below
+.\lib\lxml-3.5.0-cp27-none-win_amd64.whl
+#.\lib\lxml-3.5.0-cp27-none-win32.whl
+docxtpl
