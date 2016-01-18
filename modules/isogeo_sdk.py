@@ -493,7 +493,7 @@ if __name__ == '__main__':
     else:
         pass
 
-    config = ConfigParser.RawConfigParser()
+    config = ConfigParser.SafeConfigParser()
     config.read(r"isogeo_params.ini")
 
     share_id = config.get('auth', 'app_id')
@@ -549,7 +549,7 @@ if __name__ == '__main__':
     # actions number
     count_view = isogeo.search(jeton,
                                query="action:view",
-                               page_size=1,
+                               page_size=0,
                                whole_share=0,
                                prot="http",
                                preprocess=0)
