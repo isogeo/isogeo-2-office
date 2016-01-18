@@ -277,12 +277,6 @@ def remove_accents(input_str, substitute=u""):
 ######### Main program ############
 ###################################
 
-# locale
-locale.setlocale(locale.LC_ALL, str("fra_fra"))
-
-# list available templates
-templates = [path.abspath(path.join(r'templates', tpl)) for tpl in listdir(r'templates') if path.splitext(tpl)[1].lower() == ".docx"]  # languages
-
 
 ##################### UI
 app = Tk()
@@ -319,107 +313,8 @@ app.mainloop()
 
 ##################### Calling Isogeo API
 
-# get the OpenCatalog URL given
-url_OpenCatalog = url_input.get()
-if not url_OpenCatalog[-1] == '/':
-    url_OpenCatalog = url_OpenCatalog + '/'
-else:
-    pass
 
-# get the clean
-url_base = url_OpenCatalog[0:url_OpenCatalog.index(url_OpenCatalog.rsplit('/')[6])]
 
-# isoler l’identifiant du partage
-share_id = url_OpenCatalog.rsplit('/')[4]
-# isoler le token du partage
-share_token = url_OpenCatalog.rsplit('/')[5]
-
-# test if URL already contains some filters
-if len(url_OpenCatalog.rsplit('/')) == 8:
-    filters = url_OpenCatalog.rsplit('/')[7]
-else:
-    filters = ""
-    pass
-
-# setting the psubresources to include
-includes = "conditions,contacts,coordinate-system,events,feature-attributes,keywords,limitations,links,specifications"
-
-# écriture de la requête de recherche à l'API
-search_req = Request("http://v1.api.isogeo.com/resources/search?ct={0}&s={1}&q={2}&_limit=100&_lang={3}&_offset={4}&_include={5}".format(share_token,
-                                                                                                                                         share_id,
-                                                                                                                                         filters,
-                                                                                                                                         lang,
-                                                                                                                                         start,
-                                                                                                                                         includes))
-
-# requête pour les caractéristiques du partage
-share_req = Request('https://v1.api.isogeo.com/shares/{0}?token={1}'.format(share_id, share_token))
-
-# envoi de la requête dans une boucle de test pour prévenir les erreurs
-try:
-    search_resp = urlopen(search_req)
-    search_rez = json.load(search_resp)
-    share_resp = urlopen(share_req)
-    share_rez = json.load(share_resp)
-except URLError, e:
-    print(e)
-
-if not search_rez:
-    print("Request failed. Check your connection state.")
-    exit()
-else:
-    pass
-
-# share caracteristics
-li_catalogs = share_rez.get("catalogs")
-
-# tags
-tags = search_rez.get('tags')
-li_owners = [tags.get(tag) for tag in tags.keys() if tag.startswith('owner')]
-
-# results
-tot_results = search_rez.get('total')
-print("Total :  ", tot_results)
-metadatas = search_rez.get('results')
-li_ids_md = [md.get('_id') for md in metadatas]
-
-# handling Isogeo API limit
-# reference: https://docs.google.com/document/d/11dayY1FH1NETn6mn9Pt2y3n8ywVUD0DoKbCi9ct9ZRo/edit#heading=h.bg6le8mcd07z
-if tot_results > 100:
-    # if API returned more than one page of results, let's get the rest!
-    for idx in range(1, int(ceil(tot_results / 100)) + 1):
-        start = idx * 100 + 1
-        print(start)
-        search_req = Request("https://v1.api.isogeo.com/resources/search?ct={0}&s={1}&q={2}&_limit=100&_lang={3}&_offset={4}&_include={5}".format(share_token,
-                                                                                                                                                  share_id,
-                                                                                                                                                  filters,
-                                                                                                                                                  lang,
-                                                                                                                                                  start,
-                                                                                                                                                  includes))
-        try:
-            search_resp = urlopen(search_req)
-            search_rez = json.load(search_resp)
-        except URLError, e:
-            print(e)
-        metadatas.extend(search_rez.get('results'))
-else:
-    pass
-
-## WORDIZING METADATAS #################
-print("Template applied: ", tpl_input.get())
-for md in metadatas:
-    docx_tpl = DocxTemplate(path.realpath(tpl_input.get()))
-    dstamp = datetime.now()
-    md2docx(docx_tpl, 0, md, li_catalogs, url_base)  # passing parameters to the Word generator
-    docx_tpl.save(r"output\{0}_{8}_{7}_{1}{2}{3}{4}{5}{6}.docx".format(share_rez.get("name"),
-                                                                   dstamp.year,
-                                                                   dstamp.month,
-                                                                   dstamp.day,
-                                                                   dstamp.hour,
-                                                                   dstamp.minute,
-                                                                   dstamp.second,
-                                                                   md.get("_id")[:5],
-                                                                   remove_accents(md.get("title")[:15], "_")))
 
 ###############################################################################
 ###### Stand alone program ########

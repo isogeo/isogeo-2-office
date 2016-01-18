@@ -39,7 +39,7 @@ class Isogeo2xlsx(object):
     """
     docstring for Isogeo
     """
-    def __init__(self, client_id, client_secret, lang="en", proxy=None):
+    def __init__(self, wbsheet, offset, li_mds, li_catalogs):
         """ Isogeo connection parameters
 
         Keyword arguments:
