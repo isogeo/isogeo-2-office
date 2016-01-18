@@ -39,7 +39,8 @@ from modules.isogeo2docx import Isogeo2docx
 ########### Classes ###############
 ###################################
 
-class Isogeo2Office(Tk):
+
+class Isogeo2office(Tk):
     """
     docstring for Isogeo to Office
     """
@@ -58,9 +59,6 @@ class Isogeo2Office(Tk):
 
     def resource(self, id_resource):
         pass
-
-
-
 
 
 # ###############################################################################
