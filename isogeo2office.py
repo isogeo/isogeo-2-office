@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 #!/usr/bin/env python
-from __future__ import (print_function, unicode_literals)
+from __future__ import (absolute_import, print_function, unicode_literals)
 #------------------------------------------------------------------------------
 # Name:         Isogeo
 # Purpose:      Get metadatas from an Isogeo share and store it into files
@@ -19,13 +19,10 @@ from __future__ import (print_function, unicode_literals)
 # Standard library
 import ConfigParser
 from datetime import datetime
-import json
-import locale
-from math import ceil
 from os import listdir, path
 from sys import exit
 from Tkinter import Tk, StringVar, IntVar    # GUI
-from ttk import Label, Button, Entry, Combobox, Frame   # widgets
+from ttk import Label, Button, Entry, Combobox, Labelframe   # widgets
 
 # 3rd party library
 
@@ -45,22 +42,70 @@ class Isogeo2office(Tk):
     docstring for Isogeo to Office
     """
     def __init__(self, _lang):
-        super(Isogeo, self).__init__()
-        # loading settings
+        super(Isogeo2office, self).__init__()
+        # ------------ Settings ----------------
         self.settings_load()
         app_id = self.setting.get('auth').get('app_id')
         app_secret = self.setting.get('auth').get('app_secret')
         client_lang = self.setting.get('basics').get('def_codelang')
 
-        # Isogeo connection
+        # ------------ Isogeo authentification ----------------
         self.isogeo = Isogeo(client_id=app_id,
                              client_secret=app_secret,
                              lang=client_lang)
         self.token = self.isogeo.connect()
 
-
-        # variables
+        # ------------ Variables ----------------
         li_tpls = [path.abspath(path.join(r'templates', tpl)) for tpl in listdir(r'templates') if path.splitext(tpl)[1].lower() == ".docx"]
+
+        # ------------ UI ----------------
+        self.title('isogeo2office - ToolBox')
+
+        # Frames
+        self.FrGlobal = Labelframe(self,
+                                   name='global',
+                                   text='Générique')
+
+        self.FrExcel = Labelframe(self,
+                                  name='excel',
+                                  text='Fichier Excel')
+
+        self.FrWord = Labelframe(self,
+                                 name='word',
+                                 text='Fichier Word')
+
+        # ## GLOBAL ##
+        url_input = StringVar(self)
+
+        # étiquette
+        lb_input_oc = Label(self.FrGlobal,
+                            text="Coller l'URL d'un OpenCatalog").pack()
+        ent_OpenCatalog = Entry(FrGlobal,
+                                textvariable=url_input,
+                                width=100)
+        # ent_OpenCatalog.insert(0, "https://open.isogeo.com/s/ad6451f1f9ca405ca6f78fabf46aeb10/Bue0ySfhmGOPw33jHMyaJtcOM4MY0/q/keyword:inspire-theme:administrativeunits")
+        ent_OpenCatalog.pack()
+        ent_OpenCatalog.focus_set()
+
+        droplist.pack()
+
+        # ## EXCEL ##
+
+
+        # ## WORD ##
+        # variables
+        tpl_input = StringVar(self)
+        # pick a template
+        lb_input_tpl = Label(self.FrWord,
+                             text="Choisir un template").pack()
+        droplist = Combobox(self.FrWord,
+                            textvariable=tpl_input,
+                            values=li_tpls,
+                            width=100)
+        Button(self.FrWord,
+               text="Wordification !",
+               command=lambda: app.destroy()).pack()
+
 
     def get_basic_metrics(self):
         """ TO DO
@@ -114,6 +159,16 @@ class Isogeo2office(Tk):
     def process_excelization(self, id_resource):
         """ TO DO
         """
+
+        # Sauvegarde du fichier Excel
+        dstamp = datetime.now()
+        book.save(r"output\isogeo2xls_{0}_{1}{2}{3}{4}{5}{6}.xls".format(share_rez.get("name"),
+                                                                         dstamp.year,
+                                                                         dstamp.month,
+                                                                         dstamp.day,
+                                                                         dstamp.hour,
+                                                                         dstamp.minute,
+                                                                         dstamp.second))
 
         # end of method
         return
