@@ -21,8 +21,9 @@ import ConfigParser
 from datetime import datetime
 from os import listdir, path
 from sys import exit
-from Tkinter import Tk, StringVar, IntVar    # GUI
-from ttk import Label, Button, Entry, Combobox, Labelframe   # widgets
+from tkFileDialog import askopenfilename
+from Tkinter import Tk, StringVar, IntVar, Frame    # GUI
+from ttk import Label, Button, Entry, Combobox, Labelframe, Checkbutton   # widgets
 
 # 3rd party library
 
@@ -41,19 +42,24 @@ class Isogeo2office(Tk):
     """
     docstring for Isogeo to Office
     """
-    def __init__(self, _lang):
-        super(Isogeo2office, self).__init__()
+    def __init__(self):
+        Tk.__init__(self)
         # ------------ Settings ----------------
         self.settings_load()
-        app_id = self.setting.get('auth').get('app_id')
-        app_secret = self.setting.get('auth').get('app_secret')
-        client_lang = self.setting.get('basics').get('def_codelang')
+        app_id = self.settings.get('auth').get('app_id')
+        app_secret = self.settings.get('auth').get('app_secret')
+        client_lang = self.settings.get('basics').get('def_codelang')
 
         # ------------ Isogeo authentification ----------------
         self.isogeo = Isogeo(client_id=app_id,
                              client_secret=app_secret,
                              lang=client_lang)
         self.token = self.isogeo.connect()
+
+        # # ------------ Isogeo search ----------------
+        # self.search_results = self.isogeo.search(self.token,
+        #                                          sub_resources=self.isogeo.sub_resources_available,
+        #                                          preprocess=1)
 
         # ------------ Variables ----------------
         li_tpls = [path.abspath(path.join(r'templates', tpl)) for tpl in listdir(r'templates') if path.splitext(tpl)[1].lower() == ".docx"]
@@ -62,23 +68,26 @@ class Isogeo2office(Tk):
         self.title('isogeo2office - ToolBox')
 
         # Frames
-        self.FrGlobal = Labelframe(self,
+        FrGlobal = Labelframe(self,
                                    name='global',
                                    text='Générique')
 
-        self.FrExcel = Labelframe(self,
+        FrExcel = Labelframe(self,
                                   name='excel',
                                   text='Fichier Excel')
 
-        self.FrWord = Labelframe(self,
+        FrWord = Labelframe(self,
                                  name='word',
                                  text='Fichier Word')
 
         # ## GLOBAL ##
         url_input = StringVar(self)
 
-        # étiquette
-        lb_input_oc = Label(self.FrGlobal,
+        # lb_count_avail_resources = Label(FrGlobal,
+        #                                  text="{} métadonnées partagées".format(self.search_results.get('total'))).pack()
+
+        # OpenCatalog URL
+        lb_input_oc = Label(FrGlobal,
                             text="Coller l'URL d'un OpenCatalog").pack()
         ent_OpenCatalog = Entry(FrGlobal,
                                 textvariable=url_input,
@@ -87,24 +96,91 @@ class Isogeo2office(Tk):
         ent_OpenCatalog.pack()
         ent_OpenCatalog.focus_set()
 
-        droplist.pack()
+        FrGlobal.pack()
+
+        # ------------------------------------------------------------
 
         # ## EXCEL ##
+        # variables
+        output_xl = StringVar(self)
+        self.opt_xl_join = IntVar(FrExcel)
+        self.input_xl = ""
+        li_input_xl_cols = []
+        self.input_xl_join_col = StringVar()
 
+        # output file
+        lb_output_xl = Label(FrExcel,
+                             text="Nom du fichier en sortie: ").pack()
+        ent_output_xl = Entry(FrExcel,
+                              text="Nom du fichier en sortie: ",
+                              textvariable=output_xl,
+                              width=100).pack()
+        
+        # matching with another Excel file
+        FrInputXlJoin = Frame(FrExcel)
+        print(dir(FrInputXlJoin))
+        caz_xl_join = Checkbutton(FrExcel,
+                                  text=u'Joindre avec un autre fichier Excel',
+                                  variable=self.opt_xl_join,
+                                  onvalue=FrInputXlJoin.pack(),
+                                  offvalue=FrInputXlJoin.pack_forget)
+        caz_xl_join.pack()
+
+        bt_browse_input_xl = Button(FrInputXlJoin,
+                                    text="Choisir un fichier en entrée",
+                                    command=lambda: self.get_input_xl()).pack()
+        lb_input_xl = Label(FrInputXlJoin,
+                             text=self.input_xl).pack()
+
+        cb_input_xl_cols = Combobox(FrInputXlJoin,
+                                    textvariable=self.input_xl_join_col,
+                                    values=li_input_xl_cols,
+                                    width=100)
+        cb_input_xl_cols.pack()
+
+
+        # FrInputXlJoin.pack()
+            
+        Button(FrExcel,
+               text="Excelization !",
+               command=lambda: process_excelization()).pack()
+
+        FrExcel.pack()
+
+        # ------------------------------------------------------------
 
         # ## WORD ##
         # variables
         tpl_input = StringVar(self)
         # pick a template
-        lb_input_tpl = Label(self.FrWord,
+        lb_input_tpl = Label(FrWord,
                              text="Choisir un template").pack()
-        droplist = Combobox(self.FrWord,
-                            textvariable=tpl_input,
-                            values=li_tpls,
-                            width=100)
-        Button(self.FrWord,
+        cb_available_tpl = Combobox(FrWord,
+                                    textvariable=tpl_input,
+                                    values=li_tpls,
+                                    width=100)
+        cb_available_tpl.pack()
+
+        Button(FrWord,
                text="Wordification !",
-               command=lambda: app.destroy()).pack()
+               command=lambda: process_wordification()).pack()
+        # 
+        
+        FrWord.pack()
+        # ------------------------------------------------------------
+
+    def get_input_xl(self):
+        """
+        """
+        self.input_xl = askopenfilename(parent=self,
+                                        filetypes=[("Excel (2003) files","*.xls")],
+                                        title=u"Choisir le fichier Excel à partir duquel faire la jointure")
+
+        if self.input_xl:
+            print(self.input_xl)
+            return
+        else:
+            print(u'Aucun fichier sélectionné')
 
 
     def get_basic_metrics(self):
@@ -118,6 +194,7 @@ class Isogeo2office(Tk):
 
         # end of method
         return len(empty_search.get('results'))
+
 
     def get_search_results(self):
         """ TO DO

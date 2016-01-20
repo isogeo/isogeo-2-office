@@ -4,6 +4,42 @@
 		"selected_items":
 		[
 			[
+				"sea",
+				"search_results"
+			],
+			[
+				"inpu",
+				"input_xl_join_col"
+			],
+			[
+				"li_",
+				"li_input_xl_cols"
+			],
+			[
+				"proc",
+				"process_wordification"
+			],
+			[
+				"out",
+				"output_xls"
+			],
+			[
+				"client_",
+				"client_lang"
+			],
+			[
+				"app",
+				"app_id"
+			],
+			[
+				"sett",
+				"settings_load"
+			],
+			[
+				"my",
+				"my_config_parser_dict"
+			],
+			[
 				"Iso",
 				"Isogeo2Office"
 			],
@@ -14,10 +50,6 @@
 			[
 				"tag",
 				"tag_re"
-			],
-			[
-				"li_",
-				"li_words_ok"
 			],
 			[
 				"off",
@@ -482,38 +514,6 @@
 			[
 				"req",
 				"req_search"
-			],
-			[
-				"re",
-				"req_search"
-			],
-			[
-				"shar",
-				"share_id"
-			],
-			[
-				"req_",
-				"req_MD"
-			],
-			[
-				"techno",
-				"technos_get"
-			],
-			[
-				"technos",
-				"technos_totaux"
-			],
-			[
-				"tech",
-				"technos_get"
-			],
-			[
-				"pror",
-				"proprietaire"
-			],
-			[
-				"tes",
-				"test_technos"
 			]
 		]
 	},
@@ -523,23 +523,7 @@
 			"file": "isogeo2office.py",
 			"settings":
 			{
-				"buffer_size": 1858,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "requirements.txt",
-			"settings":
-			{
-				"buffer_size": 607,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "README.md",
-			"settings":
-			{
-				"buffer_size": 2803,
+				"buffer_size": 10349,
 				"line_ending": "Windows"
 			}
 		},
@@ -547,15 +531,7 @@
 			"file": "modules/isogeo_sdk.py",
 			"settings":
 			{
-				"buffer_size": 22491,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "settings.ini",
-			"settings":
-			{
-				"buffer_size": 467,
+				"buffer_size": 22492,
 				"line_ending": "Windows"
 			}
 		},
@@ -563,7 +539,7 @@
 			"file": "modules/isogeo2xls.py",
 			"settings":
 			{
-				"buffer_size": 13205,
+				"buffer_size": 9198,
 				"line_ending": "Windows"
 			}
 		},
@@ -571,7 +547,7 @@
 			"file": "modules/isogeo2docx.py",
 			"settings":
 			{
-				"buffer_size": 16540,
+				"buffer_size": 10527,
 				"line_ending": "Windows"
 			}
 		},
@@ -703,18 +679,21 @@
 	],
 	"file_history":
 	[
-		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office/modules/__init__.py",
-		"/D/Mes documents/GitHub/Isogeo/isogeo-plugin-qgis/Isogeo/isogeo_plugin.py",
+		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office/settings.ini",
+		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office/modules/isogeo_sdk.py",
+		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office/modules/isogeo_params.ini",
+		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office/isogeo2xls.py",
+		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office/isogeo2docx.py",
+		"/D/Mes documents/GitHub/Perso/DicoGIS/DicoGIS.py",
 		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office/requirements.txt",
 		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office/README.md",
+		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office/modules/__init__.py",
+		"/D/Mes documents/GitHub/Isogeo/isogeo-plugin-qgis/Isogeo/isogeo_plugin.py",
 		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office/setup2exe_oc2xls.py",
 		"/C/Users/Risor/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
 		"/C/Users/Risor/AppData/Roaming/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
-		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office/modules/isogeo_sdk.py",
 		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office/modules/isogeo2docx.py",
 		"/D/Mes documents/GitHub/Perso/DicoGIS/requirements.txt",
-		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office/isogeo2docx.py",
-		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office/isogeo2xls.py",
 		"/C/Users/julien.moura/.qgis2/python/plugins/QuickOSM/quick_osm.py",
 		"/C/Users/julien.moura/.qgis2/python/plugins/QuickOSM/controller/process.py",
 		"/C/Users/julien.moura/.qgis2/python/plugins/QuickOSM/core/query_factory.py",
@@ -827,14 +806,11 @@
 		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Community Management/Aide en ligne/changeset_211_212",
 		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/package.json",
 		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/templates/jobs/multibarchart.js",
-		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/requirements.txt",
-		"/C/Users/julien.moura/AppData/Roaming/nltk_data/tokenizers/punkt/french.pickle",
-		"/C/Users/julien.moura/AppData/Roaming/nltk_data/tokenizers/punkt/czech.pickle",
-		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/static/json/last50.json"
+		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/requirements.txt"
 	],
 	"find":
 	{
-		"height": 35.0
+		"height": 36.0
 	},
 	"find_in_files":
 	{
@@ -1123,7 +1099,7 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 0,
 			"sheets":
 			[
 				{
@@ -1132,15 +1108,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1858,
+						"buffer_size": 10349,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1499,
-								1499
+								5033,
+								5033
 							]
 						],
 						"settings":
@@ -1150,194 +1126,110 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 660.0,
+						"translation.y": 2170.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 3,
+			"sheets":
+			[
+				{
+					"buffer": 1,
+					"file": "modules/isogeo_sdk.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 22492,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								19368,
+								19009
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 10878.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "modules/isogeo2xls.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 9198,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2610.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "modules/isogeo2docx.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 10527,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								10527,
+								10527
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 5340.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 1,
-					"file": "requirements.txt",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 607,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								319,
-								319
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "README.md",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2803,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2621,
-								2621
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Markdown/Markdown.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "modules/isogeo_sdk.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 22491,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3116,
-								780
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 456.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
-					"type": "text"
-				},
-				{
 					"buffer": 4,
-					"file": "settings.ini",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 467,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								78,
-								7
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				}
-			]
-		},
-		{
-			"selected": 2,
-			"sheets":
-			[
-				{
-					"buffer": 5,
-					"file": "modules/isogeo2xls.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 13205,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1223,
-								1223
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 475.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 7,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "modules/isogeo2docx.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 16540,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								955,
-								896
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 135.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
-					"type": "text"
-				},
-				{
-					"buffer": 7,
 					"file": "/D/Mes documents/GitHub/Perso/DicoGIS/DicoGIS.py",
 					"semi_transient": false,
 					"settings":
@@ -1349,8 +1241,8 @@
 						"selection":
 						[
 							[
-								5495,
-								5495
+								33836,
+								34027
 							]
 						],
 						"settings":
@@ -1360,10 +1252,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1963.0,
+						"translation.y": 13311.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 1,
 					"type": "text"
 				}
 			]
@@ -1397,7 +1289,7 @@
 		"cols":
 		[
 			0.0,
-			0.68526759041,
+			0.555363321799,
 			1.0
 		],
 		"rows":
