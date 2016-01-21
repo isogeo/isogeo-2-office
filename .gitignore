@@ -225,9 +225,16 @@ pip-log.txt
 ## Custom
 #############
 
-#templates/
+templates/*
 !templates/template_Isogeo.docx
 
-input/
-output/
+input/*
+!input/README.md
+
+output/*
+!output/README.md
+
+# virtual environments
+venv/
 virtenv/
+virtualenv/
