@@ -33,13 +33,14 @@ Desktop toolbox using Isogeo REST API to export metadatas into Microsoft Office 
 2. Add Python to the environment path, with the System Advanced Settings or with *powershell* typing `[Environment]::SetEnvironmentVariable("Path", "$env:Path;C:\Python27\;C:\Python27\Scripts\", "User")` ;
 3. Download [get_pip.py](https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py) and execute it from a *powershell* prompt as administrator: `python get_pip.py` ;
 4. Download the repository, open an admin *powershell* inside and execute: `pip install virtualenv` ;
-5. Execute: `set-executionpolicy RemoteSigned` to allow powershell advanced scripts. ;
-5. Create the environment: `virtualenv virtenv --no-site-packages` ;
-6. Activate it: `.\virtenv\Scripts\activate.ps1`. Your prompt should have changed. ;
-7. Get the dependencies, choosing between 32 / bits versions: `pip install -r requirements_64bits.txt`
-8. Assuming you have installed Python in C:\Python27\, copy the *tcl* folder from C:\Python27\ over to the root of the new virtenv (see: http://stackoverflow.com/a/30377257). Avoiding this error: "This probably means that tk wasn't installed properly.". Your virtenv folder should look like this:
+5. Create 2 subfolders named `input` and `output`;
+6. Execute: `set-executionpolicy RemoteSigned` to allow powershell advanced scripts. ;
+7. Create the environment: `virtualenv virtenv --no-site-packages` ;
+8. Activate it: `.\virtenv\Scripts\activate.ps1`. Your prompt should have changed. ;
+9. Get the dependencies, choosing between 32 / bits versions: `pip install -r requirements_64bits.txt`
+10. Assuming you have installed Python in C:\Python27\, copy the *tcl* folder from C:\Python27\ over to the root of the new virtenv (see: http://stackoverflow.com/a/30377257). Avoiding this error: "This probably means that tk wasn't installed properly.". Your virtenv folder should look like this:
 	![Virtenv folder structure](img/virtualenv_content.png)
-9. Create a Windows shortcut: Right clic > New > Shortcut and insert this command replacing with the absolute paths (removing brackets): `C:\Windows\System32\cmd.exe /k "{absolute_path_to_the_folder}\isogeo2office\virtenv\Scripts\python {absolute_path_to_the_folder}\isogeo2office\isogeo2office.py"`
+11. Create a Windows shortcut: Right clic > New > Shortcut and insert this command replacing with the absolute paths (removing brackets): `C:\Windows\System32\cmd.exe /k "{absolute_path_to_the_folder}\isogeo2office\virtenv\Scripts\python {absolute_path_to_the_folder}\isogeo2office\isogeo2office.py"`
 
 
 # Support
