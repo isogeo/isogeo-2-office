@@ -29,17 +29,19 @@ Desktop toolbox using Isogeo REST API to export metadatas into Microsoft Office 
 
 # Detailed deployment
 
-1. Download and install the last Python 2.7.x version: https://www.python.org/downloads/windows ;
+1. Download and install the last Python 2.7.x version (64bits version is recomended except if you use Python with incompatibilty like arcpy): https://www.python.org/downloads/windows ;
 2. Add Python to the environment path, with the System Advanced Settings or with *powershell* typing `[Environment]::SetEnvironmentVariable("Path", "$env:Path;C:\Python27\;C:\Python27\Scripts\", "User")` ;
 3. Download [get_pip.py](https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py) and execute it from a *powershell* prompt as administrator: `python get_pip.py` ;
 4. Download the repository, open an admin *powershell* inside and execute: `pip install virtualenv` ;
-5. Execute: `set-executionpolicy RemoteSigned` to allow powershell advanced scripts ;
+5. Execute: `set-executionpolicy RemoteSigned` to allow powershell advanced scripts. ;
 5. Create the environment: `virtualenv virtenv --no-site-packages` ;
 6. Activate it: `.\virtenv\Scripts\activate.ps1`. Your prompt should have changed. ;
-7. Get the dependencies: `pip install -r requirements.txt`
+7. Get the dependencies, choosing between 32 / bits versions: `pip install -r requirements_64bits.txt`
+8. Assuming you have installed Python in C:\Python27\, copy the *tcl* folder from C:\Python27\ over to the root of the new virtenv (see: http://stackoverflow.com/a/30377257). Avoiding this error: "This probably means that tk wasn't installed properly.". Your virtenv folder should look like this:
+	![Virtenv folder structure](img/virtualenv_content.png)
+9. Create a Windows shortcut: Right clic > New > Shortcut and insert this command replacing with the absolute paths (removing brackets): `C:\Windows\System32\cmd.exe /k "{absolute_path_to_the_folder}\isogeo2office\virtenv\Scripts\python {absolute_path_to_the_folder}\isogeo2office\isogeo2office.py"`
 
-Be careful, by default, the requirements file installs the 64 bits version of lxml. Change it (comment/uncomment) if you are on a 32 bits platform.
 
 # Support
 
-This application is not part of Isogeo license contract and won't be supported or maintained as well. If you need help, send a mail to <support+isogeo2office@isogeo.fr>
+This application is not part of Isogeo license contract and won't be supported or maintained as well. If you need help, send a mail to <projets+isogeo2office@isogeo.fr>
