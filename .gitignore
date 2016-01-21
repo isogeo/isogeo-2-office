@@ -215,12 +215,19 @@ pip-log.txt
 #Mr Developer
 .mr.developer.cfg
 
+#############
+## Sublime Text
+#############
+
+*.sublime-workspace
 
 #############
 ## Custom
 #############
 
-output/
 #templates/
 !templates/template_Isogeo.docx
-*.sublime-workspace
+
+input/
+output/
+virtenv/
