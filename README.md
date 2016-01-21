@@ -39,7 +39,9 @@ Desktop toolbox using Isogeo REST API to export metadatas into Microsoft Office 
 8. Activate it: `.\virtenv\Scripts\activate.ps1`. Your prompt should have changed. ;
 9. Get the dependencies, choosing between 32 / bits versions: `pip install -r requirements_64bits.txt`
 10. Assuming you have installed Python in C:\Python27\, copy the *tcl* folder from C:\Python27\ over to the root of the new virtenv (see: http://stackoverflow.com/a/30377257). Avoiding this error: "This probably means that tk wasn't installed properly.". Your virtenv folder should look like this:
+
 	![Virtenv folder structure](img/virtualenv_content.png)
+
 11. Create a Windows shortcut: Right clic > New > Shortcut and insert this command replacing with the absolute paths (removing brackets): `C:\Windows\System32\cmd.exe /k "{absolute_path_to_the_folder}\isogeo2office\virtenv\Scripts\python {absolute_path_to_the_folder}\isogeo2office\isogeo2office.py"`
 
 
