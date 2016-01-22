@@ -32,17 +32,20 @@ Desktop toolbox using Isogeo REST API to export metadatas into Microsoft Office 
 1. Download and install the last Python 2.7.x version (64bits version is recomended except if you use Python with incompatibilty like arcpy): https://www.python.org/downloads/windows ;
 2. Add Python to the environment path, with the System Advanced Settings or with *powershell* typing `[Environment]::SetEnvironmentVariable("Path", "$env:Path;C:\Python27\;C:\Python27\Scripts\", "User")` ;
 3. Download [get_pip.py](https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py) and execute it from a *powershell* prompt as administrator: `python get_pip.py` ;
-4. Download the repository, open an admin *powershell* inside and execute: `pip install virtualenv` ;
-5. Create 2 subfolders named `input` and `output`;
-6. Execute: `set-executionpolicy RemoteSigned` to allow powershell advanced scripts. ;
-7. Create the environment: `virtualenv virtenv --no-site-packages` ;
-8. Activate it: `.\virtenv\Scripts\activate.ps1`. Your prompt should have changed. ;
-9. Get the dependencies, choosing between 32 / bits versions: `pip install -r requirements_64bits.txt`
-10. Assuming you have installed Python in C:\Python27\, copy the *tcl* folder from C:\Python27\ over to the root of the new virtenv (see: http://stackoverflow.com/a/30377257). Avoiding this error: "This probably means that tk wasn't installed properly.". Your virtenv folder should look like this:
+4. Download the repository, open an **admin** *powershell* inside and execute: `pip install virtualenv` ;
+5. Execute: `set-executionpolicy RemoteSigned` to allow powershell advanced scripts. ;
+6. Create the environment: `virtualenv virtenv --no-site-packages` ;
+7. Activate it: `.\virtenv\Scripts\activate.ps1`. Your prompt should have changed. ;
+8. Get the dependencies, choosing between 32/64 bits versions: `pip install -r requirements_32bits.txt` or `pip install -r requirements_64bits.txt` ;
+9. Assuming you have installed Python in C:\Python27\, copy the *tcl* folder from C:\Python27\ over to the root of the new virtenv (see: http://stackoverflow.com/a/30377257). Avoiding this error: "This probably means that tk wasn't installed properly.". You can do that from your admin powershell prompt executing: `Copy-Item c:\python27\tcl\* {absolute_path_to_the_folder}\isogeo-2-office\virtenv\tcl -recurse`:
+
+	![Virtenv folder structure](img/virtualenv_ps_copy_tcl.png)
+
+	Your virtenv folder should look like this:
 
 	![Virtenv folder structure](img/virtualenv_content.png)
 
-11. Create a Windows shortcut: Right clic > New > Shortcut and insert this command replacing with the absolute paths (removing brackets): `C:\Windows\System32\cmd.exe /k "{absolute_path_to_the_folder}\isogeo2office\virtenv\Scripts\python {absolute_path_to_the_folder}\isogeo2office\isogeo2office.py"`
+10. Create a Windows shortcut: Right clic > New > Shortcut and insert this command replacing with the absolute paths (removing brackets): `C:\Windows\System32\cmd.exe /k "{absolute_path_to_the_folder}\isogeo2office\virtenv\Scripts\python {absolute_path_to_the_folder}\isogeo2office\isogeo2office.py"`
 
 
 # Support
