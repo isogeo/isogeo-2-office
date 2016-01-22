@@ -37,7 +37,7 @@ Desktop toolbox using Isogeo REST API to export metadatas into Microsoft Office 
 6. Create the environment: `virtualenv virtenv --no-site-packages` ;
 7. Activate it: `.\virtenv\Scripts\activate.ps1`. Your prompt should have changed. ;
 8. Get the dependencies, choosing between 32/64 bits versions: `pip install -r requirements_32bits.txt` or `pip install -r requirements_64bits.txt` ;
-9. Assuming you have installed Python in C:\Python27\, copy the *tcl* folder from C:\Python27\ over to the root of the new virtenv (see: http://stackoverflow.com/a/30377257). Avoiding this error: "This probably means that tk wasn't installed properly.". You can do that from your admin powershell prompt executing: `Copy-Item c:\python27\tcl\* {absolute_path_to_the_folder}\isogeo-2-office\virtenv\tcl -recurse`:
+9. Assuming you have installed Python in C:\Python27\, copy the *tcl* folder from C:\Python27\ over to the root of the new virtenv (see: http://stackoverflow.com/a/30377257). Avoiding this error: "This probably means that tk wasn't installed properly.". You can do that from your admin powershell prompt executing: `Copy-Item -Path c:\python27\tcl\* -Destination {absolute_path_to_the_folder}\isogeo-2-office\virtenv\tcl -recurse -Container: $true`:
 
 	![Virtenv folder structure](img/virtualenv_ps_copy_tcl.png)
 
