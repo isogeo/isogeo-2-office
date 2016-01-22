@@ -166,10 +166,11 @@ class Isogeo2office(Tk):
                command=lambda: process_wordification()).pack()
         # packing frame
         fr_word.pack()
-        # ------------------------------------------------------------
+
+# ----------------------------------------------------------------------------
 
     def get_input_xl(self):
-        """
+        """ Get the path of the input Excel file with a browse dialog
         """
         self.input_xl = askopenfilename(parent=self,
                                         filetypes=[("Excel 2010 files","*.xlsx"),("Excel 2003 files","*.xls")],
@@ -210,6 +211,8 @@ class Isogeo2office(Tk):
         """
         pass
 
+# ----------------------------------------------------------------------------
+
     def settings_load(self):
         """ TO DO
         """
@@ -227,6 +230,8 @@ class Isogeo2office(Tk):
         # end of method
         return
 
+# ----------------------------------------------------------------------------
+
     def get_url_base(self, url_input):
         """ TO DO
         """
@@ -241,6 +246,8 @@ class Isogeo2office(Tk):
 
         # end of method
         return url_output
+
+# ----------------------------------------------------------------------------
 
     def process_excelization(self, id_resource):
         """ TO DO
