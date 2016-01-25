@@ -17,8 +17,10 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 ###################################
 
 # Standard library
-import ConfigParser
+from ConfigParser import SafeConfigParser
 from datetime import datetime
+import logging      # log files
+from logging.handlers import RotatingFileHandler
 from os import listdir, path
 from sys import exit
 from tkFileDialog import askopenfilename
@@ -33,15 +35,39 @@ from modules.isogeo_sdk import Isogeo
 from modules.isogeo2xls import Isogeo2xlsx
 from modules.isogeo2docx import Isogeo2docx
 
-###############################################################################
-########### Classes ###############
-###################################
 
+
+# ############################################################################
+# ########## Global ###############
+# ##################################
+
+# VERSION
+_version = "1.0-beta1"
+
+# LOG FILE ##
+# see: http://sametmax.com/ecrire-des-logs-en-python/
+logger = logging.getLogger()
+logging.captureWarnings(True)
+logger.setLevel(logging.DEBUG)  # all errors will be get
+log_form = logging.Formatter('%(asctime)s || %(levelname)s || %(message)s')
+logfile = RotatingFileHandler('isogeo2office.log', 'a', 5000000, 1)
+logfile.setLevel(logging.DEBUG)
+logfile.setFormatter(log_form)
+logger.addHandler(logfile)
+logger.info('\n\t\t ============== Isogeo => Office =============')
+
+
+# ############################################################################
+# ########## Classes ###############
+# ##################################
 
 class Isogeo2office(Tk):
-    """
+    """ UI Class to 
     docstring for Isogeo to Office
     """
+    # attributes and global actions
+    logger.info('Version: {0}'.format(_version))
+
     def __init__(self):
         Tk.__init__(self)
         # ------------ Settings ----------------
@@ -176,11 +202,26 @@ class Isogeo2office(Tk):
                                         filetypes=[("Excel 2010 files","*.xlsx"),("Excel 2003 files","*.xls")],
                                         title=u"Choisir le fichier Excel à partir duquel faire la jointure")
 
+        # testing file choosen
         if self.input_xl:
             print(self.input_xl)
-            return
+            pass
+        elif path.splittext(self.input_xl)[1] != ".xlsx":
+            print("Pas le bon format")
         else:
             print(u'Aucun fichier sélectionné')
+            return
+
+        # get headers names
+        xlsx_in = load_workbook(filename=self.input_xl,
+                                read_only=True,
+                                guess_types=True,
+                                use_iterators=True)
+        ws1 = xlsx_in.worksheets[0]  # ws = première feuille
+        cols_names = [ws1.cell(row=ws1.min_row, column=col).value for col in range(1, ws1.max_column)]
+
+        # end of method
+        return
 
     def ui_switch_xljoiner(self):
         """ Enable/disable the form for input xl to join.
@@ -216,7 +257,7 @@ class Isogeo2office(Tk):
     def settings_load(self):
         """ TO DO
         """
-        config = ConfigParser.SafeConfigParser()
+        config = SafeConfigParser()
         config.read(r"settings.ini")
         self.settings = {s:dict(config.items(s)) for s in config.sections()}
 
