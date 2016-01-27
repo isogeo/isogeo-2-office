@@ -24,8 +24,8 @@ from logging.handlers import RotatingFileHandler
 from os import listdir, path
 from sys import exit
 from tkFileDialog import askopenfilename
-from Tkinter import Tk, StringVar, IntVar, Frame    # GUI
-from ttk import Label, Button, Entry, Combobox, Labelframe, Checkbutton   # widgets
+from Tkinter import Tk, StringVar, IntVar, PhotoImage   # GUI
+from ttk import Label, Button, Entry, Combobox, Labelframe, Checkbutton, Image, Style   # widgets
 
 # 3rd party library
 from openpyxl import load_workbook
@@ -34,7 +34,6 @@ from openpyxl import load_workbook
 from modules.isogeo_sdk import Isogeo
 from modules.isogeo2xls import Isogeo2xlsx
 from modules.isogeo2docx import Isogeo2docx
-
 
 
 # ############################################################################
@@ -76,11 +75,11 @@ class Isogeo2office(Tk):
         app_secret = self.settings.get('auth').get('app_secret')
         client_lang = self.settings.get('basics').get('def_codelang')
 
-        # ------------ Isogeo authentification ----------------
-        self.isogeo = Isogeo(client_id=app_id,
-                             client_secret=app_secret,
-                             lang=client_lang)
-        self.token = self.isogeo.connect()
+        # # ------------ Isogeo authentification ----------------
+        # self.isogeo = Isogeo(client_id=app_id,
+        #                      client_secret=app_secret,
+        #                      lang=client_lang)
+        # self.token = self.isogeo.connect()
 
         # # ------------ Isogeo search ----------------
         # self.search_results = self.isogeo.search(self.token,
@@ -92,6 +91,9 @@ class Isogeo2office(Tk):
 
         # ------------ UI ----------------
         self.title('isogeo2office - ToolBox')
+        icon = Image("photo", file=r'img/favicon.ico')
+        self.call('wm', 'iconphoto', self._w, icon)
+        self.style = Style().theme_use('clam')
 
         # Frames
         fr_global = Labelframe(self,
@@ -108,6 +110,13 @@ class Isogeo2office(Tk):
 
         # ## GLOBAL ##
         url_input = StringVar(self)
+        # logo
+        logo_isogeo = PhotoImage(file=r'img/logo_isogeo.gif')
+        Label(fr_global,
+              borderwidth=2,
+              image=logo_isogeo).grid(row=1, rowspan=2,
+                                     column=0, padx=2,
+                                     pady=2, sticky="W")
 
         # lb_count_avail_resources = Label(fr_global,
         #                                  text="{} métadonnées partagées".format(self.search_results.get('total'))).pack()
@@ -122,7 +131,7 @@ class Isogeo2office(Tk):
         ent_opencatalog.pack()
         ent_opencatalog.focus_set()
 
-        fr_global.pack()
+        fr_global.grid(row=1, sticky="WE")
 
         # ------------------------------------------------------------
 
@@ -171,7 +180,7 @@ class Isogeo2office(Tk):
                text="Excelization !",
                command=lambda: process_excelization()).pack()
 
-        fr_excel.pack()
+        fr_excel.grid(row=2)
 
         # ------------------------------------------------------------
 
@@ -191,7 +200,7 @@ class Isogeo2office(Tk):
                text="Wordification !",
                command=lambda: process_wordification()).pack()
         # packing frame
-        fr_word.pack()
+        fr_word.grid(row=3)
 
 # ----------------------------------------------------------------------------
 
