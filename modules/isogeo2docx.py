@@ -10,7 +10,7 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 #
 # Python:       2.7.x
 # Created:      14/08/2014
-# Updated:      22/12/2015
+# Updated:      28/01/2016
 #------------------------------------------------------------------------------
 
 ###############################################################################
@@ -22,6 +22,10 @@ from datetime import datetime
 
 # 3rd party library
 from dateutil.parser import parse as dtparse
+from docxtpl import DocxTemplate
+
+# Custom modules
+from isogeo_sdk import Isogeo
 
 ###############################################################################
 ########### Classes ###############
@@ -31,7 +35,7 @@ class Isogeo2docx(object):
     """
     docstring for Isogeo
     """
-    def __init__(self, docx_template, search_results, url_base):
+    def __init__(self):
         """ Isogeo connection parameters
 
         docx_template -- Word document template to use
@@ -41,7 +45,7 @@ class Isogeo2docx(object):
         super(Isogeo2docx, self).__init__()
 
 
-    def md2docx(self, docx_template, offset, md, li_catalogs, url_base):
+    def md2docx(self, docx_template, md, url_base):
         """
         parses Isogeo metadatas and replace docx template
         """
@@ -261,7 +265,63 @@ class Isogeo2docx(object):
 # ###################################
 
 if __name__ == '__main__':
-    """ standalone execution """
-    # imports
-    from docxtpl import DocxTemplate
-    Isogeo2docx()
+    """ Standalone execution and tests
+    """
+    # ------------ Specific imports ---------------------
+    from ConfigParser import SafeConfigParser   # to manage options.ini
+    from datetime import datetime
+    from os import path
+
+    # ------------ Settings from ini file ----------------
+    if not path.isfile(path.realpath(r"..\settings.ini")):
+        print("ERROR: to execute this script as standalone, you need to store your Isogeo application settings in a isogeo_params.ini file. You can use the template to set your own.")
+        import sys
+        sys.exit()
+    else:
+        pass
+
+    config = SafeConfigParser()
+    config.read(r"..\settings.ini")
+
+    settings = {s: dict(config.items(s)) for s in config.sections()}
+    app_id = settings.get('auth').get('app_id')
+    app_secret = settings.get('auth').get('app_secret')
+    client_lang = settings.get('basics').get('def_codelang')
+
+    # ------------ Connecting to Isogeo API ----------------
+    # instanciating the class
+    isogeo = Isogeo(client_id=app_id,
+                    client_secret=app_secret,
+                    lang="fr")
+
+    token = isogeo.connect()
+
+    # ------------ Isogeo search --------------------------
+    search_results = isogeo.search(token,
+                                   sub_resources=isogeo.sub_resources_available,
+                                   preprocess=1)
+
+    # ------------ REAL START ----------------------------
+    url_oc = "http://open.isogeo.com/s/c502e8f7c9da4c3aacdf3d905672d54c/Q4SvPfiIIslbdwkbWRFJLk7XWo4G0/"
+    toDocx = Isogeo2docx()
+
+    for md in search_results.get("results"):
+        tpl = DocxTemplate(path.realpath(r"..\templates\template_Isogeo.docx"))
+        toDocx.md2docx(tpl, md, url_oc)
+        dstamp = datetime.now()
+        if not md.get('name'):
+            md_name = "NR"
+        elif '.' in md.get('name'):
+            md_name = md.get("name").split(".")[1]
+        else:
+            md_name = md.get("name")
+        tpl.save(r"..\output\{0}_{8}_{7}_{1}{2}{3}{4}{5}{6}.docx".format("TestDemoDev",
+                                                                         dstamp.year,
+                                                                         dstamp.month,
+                                                                         dstamp.day,
+                                                                         dstamp.hour,
+                                                                         dstamp.minute,
+                                                                         dstamp.second,
+                                                                         md.get("_id")[:5],
+                                                                         md_name))
+        del tpl
