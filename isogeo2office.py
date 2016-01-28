@@ -22,10 +22,10 @@ from datetime import datetime
 import logging      # log files
 from logging.handlers import RotatingFileHandler
 from os import listdir, path
-from sys import exit
+from sys import argv, exit
 from tkFileDialog import askopenfilename
-from Tkinter import Tk, StringVar, IntVar, PhotoImage   # GUI
-from ttk import Label, Button, Entry, Combobox, Labelframe, Checkbutton, Image, Style   # widgets
+from Tkinter import Tk, StringVar, IntVar, Image, PhotoImage   # GUI
+from ttk import Label, Button, Entry, Combobox, Labelframe, Checkbutton,  Style   # widgets
 
 # 3rd party library
 from openpyxl import load_workbook
@@ -67,7 +67,14 @@ class Isogeo2office(Tk):
     # attributes and global actions
     logger.info('Version: {0}'.format(_version))
 
-    def __init__(self):
+    def __init__(self, ui_launcher=1):
+        """
+        """
+        #
+        if not ui_launcher:
+            self.no_ui_launcher()
+        else:
+            pass
         Tk.__init__(self)
         # ------------ Settings ----------------
         self.settings_load()
@@ -91,7 +98,7 @@ class Isogeo2office(Tk):
 
         # ------------ UI ----------------
         self.title('isogeo2office - ToolBox')
-        icon = Image("photo", file=r'img/favicon.ico')
+        icon = Image("photo", file=r'img/favicon_isogeo.gif')
         self.call('wm', 'iconphoto', self._w, icon)
         self.style = Style().theme_use('clam')
 
@@ -112,11 +119,11 @@ class Isogeo2office(Tk):
         url_input = StringVar(self)
         # logo
         logo_isogeo = PhotoImage(file=r'img/logo_isogeo.gif')
-        Label(fr_global,
+        Label(self,
               borderwidth=2,
               image=logo_isogeo).grid(row=1, rowspan=2,
-                                     column=0, padx=2,
-                                     pady=2, sticky="W")
+                                      column=0, padx=2,
+                                      pady=2, sticky="W")
 
         # lb_count_avail_resources = Label(fr_global,
         #                                  text="{} métadonnées partagées".format(self.search_results.get('total'))).pack()
@@ -338,11 +345,28 @@ class Isogeo2office(Tk):
         # end of method
         return
 
+# ----------------------------------------------------------------------------
+
+    def no_ui_launcher(self):
+        """ Execute the scripts without displaying the UI and using
+        settings.ini
+        """
+        logger.info('Launched from command prompt')
+        exit()
+        pass
+
 # ###############################################################################
 # ###### Stand alone program ########
 # ###################################
 
 if __name__ == '__main__':
-    """ standalone execution """
-    app = Isogeo2office()
-    app.mainloop()
+    """ standalone execution
+    """
+    print(argv[1])
+    if argv[1] == 1:
+        print("launch UI")
+        app = Isogeo2office(ui_launcher=1)
+        app.mainloop()
+    else:
+        print("launch without UI")
+        app = Isogeo2office(ui_launcher=0)
