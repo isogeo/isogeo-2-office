@@ -10,7 +10,7 @@ from __future__ import (print_function, unicode_literals)
 #
 # Python:       2.7.x
 # Created:      14/08/2014
-# Updated:      12/12/2015
+# Updated:      30/01/2015
 # ------------------------------------------------------------------------------
 
 # ##############################################################################
@@ -19,16 +19,14 @@ from __future__ import (print_function, unicode_literals)
 
 # Standard library
 from datetime import datetime
-import json
-import locale
 from math import ceil
 from sys import exit
 from Tkinter import Tk, StringVar
 from ttk import Label, Button, Entry    # widgets
-from urllib2 import Request, urlopen, URLError
 
 # 3rd party library
 from dateutil.parser import parse as dtparse
+from openpyxl import Workbook
 import xlwt
 
 # ##############################################################################s
@@ -230,5 +228,40 @@ class Isogeo2xlsx(object):
 ###################################
 
 if __name__ == '__main__':
-    """ standalone execution """
+    """ Standalone execution and tests
+    """
+    # ------------ Specific imports ---------------------
+    from ConfigParser import SafeConfigParser   # to manage options.ini
+    from os import path
+
+    # ------------ Settings from ini file ----------------
+    if not path.isfile(path.realpath(r"..\settings.ini")):
+        print("ERROR: to execute this script as standalone, you need to store your Isogeo application settings in a isogeo_params.ini file. You can use the template to set your own.")
+        import sys
+        sys.exit()
+    else:
+        pass
+
+    config = SafeConfigParser()
+    config.read(r"..\settings.ini")
+
+    settings = {s: dict(config.items(s)) for s in config.sections()}
+    app_id = settings.get('auth').get('app_id')
+    app_secret = settings.get('auth').get('app_secret')
+    client_lang = settings.get('basics').get('def_codelang')
+
+    # ------------ Connecting to Isogeo API ----------------
+    # instanciating the class
+    isogeo = Isogeo(client_id=app_id,
+                    client_secret=app_secret,
+                    lang="fr")
+
+    token = isogeo.connect()
+
+    # ------------ Isogeo search --------------------------
+    search_results = isogeo.search(token,
+                                   sub_resources=isogeo.sub_resources_available,
+                                   preprocess=1)
+
+    # ------------ REAL START ----------------------------
     Isogeo2xlsx()
