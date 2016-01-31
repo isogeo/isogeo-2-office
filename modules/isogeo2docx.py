@@ -24,9 +24,6 @@ from datetime import datetime
 from dateutil.parser import parse as dtparse
 from docxtpl import DocxTemplate
 
-# Custom modules
-from isogeo_sdk import Isogeo
-
 ###############################################################################
 ########### Classes ###############
 ###################################
@@ -271,6 +268,9 @@ if __name__ == '__main__':
     from ConfigParser import SafeConfigParser   # to manage options.ini
     from datetime import datetime
     from os import path
+
+    # Custom modules
+    from isogeo_sdk import Isogeo
 
     # ------------ Settings from ini file ----------------
     if not path.isfile(path.realpath(r"..\settings.ini")):
