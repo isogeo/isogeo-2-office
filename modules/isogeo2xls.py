@@ -19,10 +19,7 @@ from __future__ import (print_function, unicode_literals)
 
 # Standard library
 from datetime import datetime
-from math import ceil
 from sys import exit
-from Tkinter import Tk, StringVar
-from ttk import Label, Button, Entry    # widgets
 
 # 3rd party library
 from dateutil.parser import parse as dtparse
@@ -38,7 +35,7 @@ class Isogeo2xlsx(object):
     """
     docstring for Isogeo
     """
-    def __init__(self, wbsheet, offset, li_mds, li_catalogs):
+    def __init__(self):
         """ Isogeo connection parameters
 
         Keyword arguments:
@@ -46,9 +43,11 @@ class Isogeo2xlsx(object):
         """
         super(Isogeo2xlsx, self).__init__()
 
-        book = xlwt.Workbook(encoding='utf8')
-        book.set_owner(str('Isogeo'))
-        md2wb(sheet_mds, 0, metadatas, li_catalogs)
+        self.wb = Workbook()
+
+        # book = xlwt.Workbook(encoding='utf8')
+        # book.set_owner(str('Isogeo'))
+        # md2wb(sheet_mds, 0, metadatas, li_catalogs)
 
     def md2wb(self, wbsheet, offset, li_mds, li_catalogs):
         """
@@ -173,6 +172,8 @@ class Isogeo2xlsx(object):
         # end of function
         return
 
+    # ------------ Setting workbook ---------------------
+
     def set_workbook_structure(self):
         """ TO DO
         """
@@ -218,10 +219,59 @@ class Isogeo2xlsx(object):
         # end of method
         return
 
+    def set_worsheets(self, has_vector=1, has_raster=1, has_service=1, has_resource=1):
+        """ adds news sheets depending on present metadata types
+        """
+        if has_vector:
+            ws_vector = self.create_sheet(title="Vecteurs")
+            self.headers_maker(ws_vector, 1)
+        elif has_raster:
+            ws_raster = self.create_sheet(title="Raster")
+            self.headers_maker(ws_raster, 2)
+        elif has_service:
+            ws_services = self.create_sheet(title="Services")
+            self.headers_maker(ws_services, 3)
+        elif has_resource:
+            ws_resources = self.create_sheet(title="Ressources")
+            self.headers_maker(ws_resources, 4)
+        # end of method
+        return
+
+    def headers_maker(self, ws, type=1):
+        """ adds news sheets depending on present metadata types
+        """
+        # common headers
+        ws.write(0, 0, "Titre", style_header)
+        ws.write(0, 1, "Nom de la ressource", style_header)
+        ws.write(0, 2, "Emplacement", style_header)
+        ws.write(0, 3, "Mots-clés", style_header)
+        ws.write(0, 4, "Résumé", style_header)
+        ws.write(0, 5, "Thématiques INPIRES", style_header)
+        ws.write(0, 6, "Type", style_header)
+        ws.write(0, 7, "Format", style_header)
+        ws.write(0, 8, "SRS", style_header)
+        ws.write(0, 9, "Nombre d'objets", style_header)
+        ws.write(0, 10, "Géométrie", style_header)
+        ws.write(0, 11, "Propriétaire", style_header)
+        ws.write(0, 12, "Données - Création", style_header)
+        ws.write(0, 13, "Données - Modification", style_header)
+        ws.write(0, 14, "Métadonnées - Création", style_header)
+        ws.write(0, 15, "Métadonnées - Modification", style_header)
+        ws.write(0, 16, "Conformité INSPIRE", style_header)
+        ws.write(0, 17, "# contacts", style_header)
+        ws.write(0, 18, "Points de contacts", style_header)
+        ws.write(0, 19, "Points de contacts", style_header)
+        ws.write(0, 20, "Visualiser sur l'OpenCatalog", style_header)
+        ws.write(0, 21, "Editer sur Isogeo", style_header)
 
 
+        # print properties
+        ws.print_options.horizontalCentered = True
+        ws.print_options.verticalCentered = True
+        ws.page_setup.fitToWidth = 1
 
-
+        # end of method
+        return
 
 ###############################################################################
 ###### Stand alone program ########
@@ -232,7 +282,11 @@ if __name__ == '__main__':
     """
     # ------------ Specific imports ---------------------
     from ConfigParser import SafeConfigParser   # to manage options.ini
+    from datetime import datetime
     from os import path
+
+    # Custom modules
+    from isogeo_sdk import Isogeo
 
     # ------------ Settings from ini file ----------------
     if not path.isfile(path.realpath(r"..\settings.ini")):
