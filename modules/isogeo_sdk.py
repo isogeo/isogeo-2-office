@@ -3,7 +3,7 @@
 from __future__ import (print_function, unicode_literals)
 #------------------------------------------------------------------------------
 # Name:         Isogeo
-# Purpose:      Get metadatas from an Isogeo share
+# Purpose:      Python minimalist SDK to use Isogeo API
 #
 # Author:       Julien Moura (@geojulien)
 #
