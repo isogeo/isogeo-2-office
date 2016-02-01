@@ -1,21 +1,22 @@
 # -*- coding: UTF-8 -*-
 #!/usr/bin/env python
 from __future__ import (absolute_import, print_function, unicode_literals)
-#------------------------------------------------------------------------------
-# Name:         OpenCatalog to Excel
-# Purpose:      Get metadatas from an Isogeo OpenCatlog and store it into
-#               an Excel workbook.
+# ------------------------------------------------------------------------------
+# Name:         Isogeo to Microsoft Word 2010
+# Purpose:      Get metadatas from an Isogeo share and store it into
+#               a Word document for each metadata. It's one of the submodules
+#               of isogeo2office (https://bitbucket.org/isogeo/isogeo-2-office).
 #
-# Author:       Julien Moura (@geojulien) & Valentin Blanlot (@bablot)
+# Author:       Julien Moura (@geojulien)
 #
 # Python:       2.7.x
 # Created:      14/08/2014
 # Updated:      28/01/2016
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-###############################################################################
-########### Libraries #############
-###################################
+# ##############################################################################
+# ########## Libraries #############
+# ##################################
 
 # Standard library
 from datetime import datetime
@@ -24,9 +25,10 @@ from datetime import datetime
 from dateutil.parser import parse as dtparse
 from docxtpl import DocxTemplate
 
-###############################################################################
-########### Classes ###############
-###################################
+
+# ##############################################################################
+# ########## Classes ###############
+# ##################################
 
 class Isogeo2docx(object):
     """
@@ -40,7 +42,6 @@ class Isogeo2docx(object):
         url_base -- language asked for localized tags (INSPIRE themes)
         """
         super(Isogeo2docx, self).__init__()
-
 
     def md2docx(self, docx_template, md, url_base):
         """
