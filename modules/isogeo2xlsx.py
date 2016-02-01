@@ -1,16 +1,17 @@
 # -*- coding: UTF-8 -*-
 #!/usr/bin/env python
-from __future__ import (print_function, unicode_literals)
+from __future__ import (absolute_import, print_function, unicode_literals)
 # ------------------------------------------------------------------------------
-# Name:         OpenCatalog to Excel
-# Purpose:      Get metadatas from an Isogeo OpenCatalog and store it into
-#               an Excel workbook (.xls).
+# Name:         Isogeo to Microsoft Excel 2010
+# Purpose:      Get metadatas from an Isogeo share and store it into
+#               a Excel worksheet. It's one of the submodules of
+#               isogeo2office (https://bitbucket.org/isogeo/isogeo-2-office).
 #
-# Author:       Julien Moura (@geojulien) & Valentin Blanlot (@bablot)
+# Author:       Julien Moura (@geojulien)
 #
 # Python:       2.7.x
 # Created:      14/08/2014
-# Updated:      30/01/2015
+# Updated:      30/01/2016
 # ------------------------------------------------------------------------------
 
 # ##############################################################################
@@ -26,12 +27,12 @@ from dateutil.parser import parse as dtparse
 from openpyxl import Workbook
 import xlwt
 
-# ##############################################################################s
+# ##############################################################################
 # ########## Classes ###############
 # ##################################
 
 
-class Isogeo2xlsx(object):
+class Isogeo2xlsx(Workbook):
     """
     docstring for Isogeo
     """
@@ -42,8 +43,9 @@ class Isogeo2xlsx(object):
 
         """
         super(Isogeo2xlsx, self).__init__()
+        # super(Isogeo2xlsx, self).__init__(write_only=True)
 
-        self.wb = Workbook()
+        # self.wb = Workbook()
 
         # book = xlwt.Workbook(encoding='utf8')
         # book.set_owner(str('Isogeo'))
@@ -219,51 +221,87 @@ class Isogeo2xlsx(object):
         # end of method
         return
 
-    def set_worsheets(self, has_vector=1, has_raster=1, has_service=1, has_resource=1):
+    def set_worksheets(self, has_vector=1, has_raster=1, has_service=1, has_resource=1):
         """ adds news sheets depending on present metadata types
         """
         if has_vector:
-            ws_vector = self.create_sheet(title="Vecteurs")
-            self.headers_maker(ws_vector, 1)
-        elif has_raster:
+            self.ws_vector = self.create_sheet(title="Vecteurs")
+            self.headers_maker(self.ws_vector, 1)
+        else:
+            pass
+
+        if has_raster:
             ws_raster = self.create_sheet(title="Raster")
             self.headers_maker(ws_raster, 2)
-        elif has_service:
+        else:
+            pass
+
+        if has_service:
             ws_services = self.create_sheet(title="Services")
             self.headers_maker(ws_services, 3)
-        elif has_resource:
+        else:
+            pass
+
+        if has_resource:
             ws_resources = self.create_sheet(title="Ressources")
             self.headers_maker(ws_resources, 4)
+        else:
+            pass
+
         # end of method
         return
 
-    def headers_maker(self, ws, type=1):
+    def headers_maker(self, ws, md_type=1):
         """ adds news sheets depending on present metadata types
         """
-        # common headers
-        ws.write(0, 0, "Titre", style_header)
-        ws.write(0, 1, "Nom de la ressource", style_header)
-        ws.write(0, 2, "Emplacement", style_header)
-        ws.write(0, 3, "Mots-clés", style_header)
-        ws.write(0, 4, "Résumé", style_header)
-        ws.write(0, 5, "Thématiques INPIRES", style_header)
-        ws.write(0, 6, "Type", style_header)
-        ws.write(0, 7, "Format", style_header)
-        ws.write(0, 8, "SRS", style_header)
-        ws.write(0, 9, "Nombre d'objets", style_header)
-        ws.write(0, 10, "Géométrie", style_header)
-        ws.write(0, 11, "Propriétaire", style_header)
-        ws.write(0, 12, "Données - Création", style_header)
-        ws.write(0, 13, "Données - Modification", style_header)
-        ws.write(0, 14, "Métadonnées - Création", style_header)
-        ws.write(0, 15, "Métadonnées - Modification", style_header)
-        ws.write(0, 16, "Conformité INSPIRE", style_header)
-        ws.write(0, 17, "# contacts", style_header)
-        ws.write(0, 18, "Points de contacts", style_header)
-        ws.write(0, 19, "Points de contacts", style_header)
-        ws.write(0, 20, "Visualiser sur l'OpenCatalog", style_header)
-        ws.write(0, 21, "Editer sur Isogeo", style_header)
+        # COMMON HEADERS ####
+        ws['A1'] = "Titre"
+        ws['B1'] = "Résumé"
+        ws['C1'] = "Emplacement"
+        ws['L1'] = "Données - Création"
+        ws['M1'] = "Données - Modification"
+        ws['Q1'] = "Métadonnées - Création"
+        ws['R1'] = "Métadonnées - Modification"
 
+        # ws.write(0, 0, "Titre", style_header)
+        # ws.write(0, 1, "Nom de la ressource", style_header)
+        # ws.write(0, 2, "Emplacement", style_header)
+        # ws.write(0, 3, "Mots-clés", style_header)
+        # ws.write(0, 4, "Résumé", style_header)
+        # ws.write(0, 5, "Thématiques INPIRES", style_header)
+        # ws.write(0, 6, "Type", style_header)
+        # ws.write(0, 7, "Format", style_header)
+        # ws.write(0, 8, "SRS", style_header)
+        # ws.write(0, 9, "Nombre d'objets", style_header)
+        # ws.write(0, 10, "Géométrie", style_header)
+        # ws.write(0, 11, "Propriétaire", style_header)
+
+        # ws.write(0, 16, "Conformité INSPIRE", style_header)
+        # ws.write(0, 17, "# contacts", style_header)
+        # ws.write(0, 18, "Points de contacts", style_header)
+        # ws.write(0, 19, "Points de contacts", style_header)
+        # ws.write(0, 20, "Visualiser sur l'OpenCatalog", style_header)
+        # ws.write(0, 21, "Editer sur Isogeo", style_header)
+
+        # SPECIFIC FIELDS by kind of resources #####
+        if md_type == 1:
+            # vector dataset
+            pass
+        elif md_type == 2:
+            # raster dataset
+            pass
+        elif md_type == 3:
+            # service
+            ws['C1'] = "URL du service"
+            pass
+        elif md_type == 4:
+            # resource
+            pass
+
+        # TUNNING ####
+        # frozen panes
+        c = ws['B2']
+        ws.freeze_panes = c
 
         # print properties
         ws.print_options.horizontalCentered = True
@@ -318,4 +356,14 @@ if __name__ == '__main__':
                                    preprocess=1)
 
     # ------------ REAL START ----------------------------
-    Isogeo2xlsx()
+    wb = Isogeo2xlsx()
+    wb.set_worksheets()
+
+    # saving the test file
+    dstamp = datetime.now()
+    wb.save(r"..\output\test_isogeo2xlsx_{0}{1}{2}{3}{4}{5}.xlsx".format(dstamp.year,
+                                                                         dstamp.month,
+                                                                         dstamp.day,
+                                                                         dstamp.hour,
+                                                                         dstamp.minute,
+                                                                         dstamp.second))
