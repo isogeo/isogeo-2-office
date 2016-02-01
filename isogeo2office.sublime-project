@@ -4,5 +4,6 @@
 		{
 			"path": "."
 		}
-	]
+	],
+	"virtualenv": "C:\\Users\\julien.moura\\Documents\\GitHub\\Isogeo\\isogeo2office\\virtenv"
 }
