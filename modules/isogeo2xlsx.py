@@ -258,23 +258,24 @@ class Isogeo2xlsx(Workbook):
         ws['A1'] = "Titre"
         ws['B1'] = "Résumé"
         ws['C1'] = "Emplacement"
+        ws['D1'] = "Groupe de travail"
+        ws['E1'] = "Mots-clés"
+        ws['F1'] = "Thématique(s) INSPIRE"
+        ws['G1'] = "Thématique(s) INSPIRE"
+        ws['H1'] = "Format (version)"
+        ws['I1'] = "Thématique(s) INSPIRE"
+
+
+
         ws['L1'] = "Données - Création"
         ws['M1'] = "Données - Modification"
         ws['Q1'] = "Métadonnées - Création"
         ws['R1'] = "Métadonnées - Modification"
 
-        # ws.write(0, 0, "Titre", style_header)
         # ws.write(0, 1, "Nom de la ressource", style_header)
-        # ws.write(0, 2, "Emplacement", style_header)
-        # ws.write(0, 3, "Mots-clés", style_header)
-        # ws.write(0, 4, "Résumé", style_header)
-        # ws.write(0, 5, "Thématiques INPIRES", style_header)
-        # ws.write(0, 6, "Type", style_header)
-        # ws.write(0, 7, "Format", style_header)
-        # ws.write(0, 8, "SRS", style_header)
-        # ws.write(0, 9, "Nombre d'objets", style_header)
-        # ws.write(0, 10, "Géométrie", style_header)
-        # ws.write(0, 11, "Propriétaire", style_header)
+
+
+
 
         # ws.write(0, 16, "Conformité INSPIRE", style_header)
         # ws.write(0, 17, "# contacts", style_header)
@@ -286,9 +287,17 @@ class Isogeo2xlsx(Workbook):
         # SPECIFIC FIELDS by kind of resources #####
         if md_type == 1:
             # vector dataset
+            ws['I1'] = "Géométrie"
+            ws['J1'] = "Objets"
+            ws['K1'] = "Attributs"
+
+            # ws.write(0, 9, "Nombre d'objets", style_header)
+            # ws.write(0, 10, "Géométrie", style_header)
             pass
         elif md_type == 2:
             # raster dataset
+            ws['F1'] = "Thématique(s) INSPIRE"
+            ws['F1'] = "Thématique(s) INSPIRE"
             pass
         elif md_type == 3:
             # service
