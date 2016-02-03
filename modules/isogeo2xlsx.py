@@ -255,57 +255,130 @@ class Isogeo2xlsx(Workbook):
         """ adds news sheets depending on present metadata types
         """
         # COMMON HEADERS ####
+        # Identification
         ws['A1'] = "Titre"
-        ws['B1'] = "Résumé"
-        ws['C1'] = "Emplacement"
-        ws['D1'] = "Groupe de travail"
-        ws['E1'] = "Mots-clés"
-        ws['F1'] = "Thématique(s) INSPIRE"
-        ws['G1'] = "Thématique(s) INSPIRE"
-        ws['H1'] = "Format (version)"
-        ws['I1'] = "Thématique(s) INSPIRE"
+        ws['B1'] = "Nom"
+        ws['C1'] = "Résumé"
+        ws['D1'] = "Emplacement"
+        ws['E1'] = "Groupe de travail"
+        ws['F1'] = "Mots-clés"
 
 
-
-        ws['L1'] = "Données - Création"
-        ws['M1'] = "Données - Modification"
-        ws['Q1'] = "Métadonnées - Création"
-        ws['R1'] = "Métadonnées - Modification"
-
-        # ws.write(0, 1, "Nom de la ressource", style_header)
-
-
-
-
-        # ws.write(0, 16, "Conformité INSPIRE", style_header)
-        # ws.write(0, 17, "# contacts", style_header)
-        # ws.write(0, 18, "Points de contacts", style_header)
-        # ws.write(0, 19, "Points de contacts", style_header)
-        # ws.write(0, 20, "Visualiser sur l'OpenCatalog", style_header)
-        # ws.write(0, 21, "Editer sur Isogeo", style_header)
 
         # SPECIFIC FIELDS by kind of resources #####
-        if md_type == 1:
-            # vector dataset
-            ws['I1'] = "Géométrie"
-            ws['J1'] = "Objets"
-            ws['K1'] = "Attributs"
+        if md_type == 1 or md_type == 2:
+            """ vector & raster dataset """
+            # INSPIRE
+            ws['T1'] = "Thématique(s) INSPIRE"
+            ws['U1'] = "Conformité INSPIRE"
 
-            # ws.write(0, 9, "Nombre d'objets", style_header)
-            # ws.write(0, 10, "Géométrie", style_header)
-            pass
-        elif md_type == 2:
-            # raster dataset
-            ws['F1'] = "Thématique(s) INSPIRE"
-            ws['F1'] = "Thématique(s) INSPIRE"
-            pass
+            # History
+            ws['J1'] = "Contexte de collecte"
+            ws['K1'] = "Méthode de collecte"
+            ws['L1'] = "Début de validité"
+            ws['M1'] = "Fin de validité"
+            ws['N1'] = "Fréquence de mise à jour"
+            ws['O1'] = "Commentaire"
+            ws['P1'] = "Création"
+            ws['Q1'] = "# mises à jour"
+            ws['R1'] = "Dernière mise à jour"
+            ws['S1'] = "Publication"
+
+            # CGUs
+            ws['V1'] = "Conditions"
+            ws['W1'] = "Limitations"
+
+
+            if md_type == 1:
+                """ only vectors """
+                ws['I1'] = "Géométrie"
+                ws['J1'] = "Objets"
+                ws['K1'] = "Attributs"
+                pass
+            elif md_type == 2:
+                # raster dataset
+                pass
+
+            # Metadata
+            ws['AN'] = "MD - ID"
+            ws['AO'] = "MD - Création"
+            ws['AP'] = "MD - Modification"
+            ws['AQ'] = "MD - Langue"
+
+        # ------------ SERVICES ---------------------
         elif md_type == 3:
-            # service
+            """ service metadata """
             ws['C1'] = "URL du service"
+
+
+            # CGUs
+            ws['V1'] = "Conditions"
+            ws['W1'] = "Limitations"
+
+            # Contacts
+            ws['G1'] = "Contacts"
+            ws['H1'] = "Point de contact"
+            ws['I1'] = "Autres contacts"
+
+            # Metadata
+            ws['AN'] = "MD - ID"
+            ws['AO'] = "MD - Création"
+            ws['AP'] = "MD - Modification"
+            ws['AQ'] = "MD - Langue"
             pass
+
+        # ------------ RESOURCES ---------------------
         elif md_type == 4:
-            # resource
+            """ resource metadata """
+            # CGUs
+            ws['V1'] = "Conditions"
+            ws['W1'] = "Limitations"
+
+            # Contacts
+            ws['G1'] = "Contacts"
+            ws['H1'] = "Point de contact"
+            ws['I1'] = "Autres contacts"
+
+            # Metadata
+            ws['AN'] = "MD - ID"
+            ws['AO'] = "MD - Création"
+            ws['AP'] = "MD - Modification"
+            ws['AQ'] = "MD - Langue"
+
             pass
+
+
+
+
+
+
+
+
+
+        # Technical informations
+        ws['X1'] = "Format (version - encodage)"
+        ws['Y1'] = "SRS (EPSG)"
+        ws['Z1'] = "Emprise"
+        ws['AA'] = "Géométrie"
+        ws['AB'] = "# Objets"
+        ws['AC'] = "# Attributs"
+        ws['AD'] = "Attributs (A-Z)"
+        ws['AE'] = "Résolution"
+        ws['AF'] = "Echelle"
+        ws['AG'] = "Spécifications"
+        ws['AH'] = "Cohérence topologique"
+
+        # Links & related resources
+        ws['AI'] = "Téléchargeable"
+        ws['AJ'] = "Visualisable"
+        ws['AK'] = "Autres"
+        ws['AL'] = "Editer"
+        ws['AM'] = "Consulter"
+
+
+
+
+
 
         # TUNNING ####
         # frozen panes
@@ -376,3 +449,11 @@ if __name__ == '__main__':
                                                                          dstamp.hour,
                                                                          dstamp.minute,
                                                                          dstamp.second))
+
+
+
+
+### DEV NOTES
+# http://wiki.openstreetmap.org/wiki/FR:Parcourir#URL_avec_bbox
+# http://wiki.openstreetmap.org/wiki/Layer_URL_parameter
+# https://www.openstreetmap.org/?bbox=22.3418234%2C57.5129102%2C22.5739625%2C57.6287332&layers=H&box=yes
