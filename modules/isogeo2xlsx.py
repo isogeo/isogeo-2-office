@@ -20,12 +20,11 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 
 # Standard library
 from datetime import datetime
-from sys import exit
 
 # 3rd party library
 from dateutil.parser import parse as dtparse
 from openpyxl import Workbook
-import xlwt
+from openpyxl.worksheet.properties import WorksheetProperties
 
 # ##############################################################################
 # ########## Classes ###############
@@ -34,8 +33,156 @@ import xlwt
 
 class Isogeo2xlsx(Workbook):
     """
-    docstring for Isogeo
+    docstring for Isogeo2xlsx
     """
+    li_cols_vector = [
+                        "Titre",
+                        "Nom",
+                        "Résumé",
+                        "Emplacement",
+                        "Groupe de travail",
+                        "Mots-clés",
+                        "Thématique(s) INSPIRE",
+                        "Conformité INSPIRE",
+                        "Contexte de collecte",
+                        "Méthode de collecte",
+                        "Début de validité",
+                        "Fin de validité",
+                        "Fréquence de mise à jour",
+                        "Commentaire",
+                        "Création",
+                        "# mises à jour",
+                        "Dernière mise à jour",
+                        "Publication",
+                        "Format (version - encodage)",
+                        "SRS (EPSG)",
+                        "Emprise",
+                        "Géométrie",
+                        "Résolution",
+                        "Echelle",
+                        "# Objets",
+                        "# Attributs",
+                        "Attributs (A-Z)",
+                        "Spécifications",
+                        "Cohérence topologique",
+                        "Conditions",
+                        "Limitations",
+                        "# Contacts",
+                        "Points de contact",
+                        "Autres contacts",
+                        "Téléchargeable",
+                        "Visualisable",
+                        "Autres",
+                        "Editer",
+                        "Consulter",
+                        "MD - ID",
+                        "MD - Création",
+                        "MD - Modification",
+                        "MD - Langue",
+                    ]
+
+    li_cols_raster = [
+                        "Titre",
+                        "Nom",
+                        "Résumé",
+                        "Emplacement",
+                        "Groupe de travail",
+                        "Mots-clés",
+                        "Thématique(s) INSPIRE",
+                        "Conformité INSPIRE",
+                        "Contexte de collecte",
+                        "Méthode de collecte",
+                        "Début de validité",
+                        "Fin de validité",
+                        "Fréquence de mise à jour",
+                        "Commentaire",
+                        "Création",
+                        "# mises à jour",
+                        "Dernière mise à jour",
+                        "Publication",
+                        "Format (version - encodage)",
+                        "SRS (EPSG)",
+                        "Emprise",
+                        "Résolution",
+                        "Echelle",
+                        "Attributs (A-Z)",
+                        "Spécifications",
+                        "Cohérence topologique",
+                        "Conditions",
+                        "Limitations",
+                        "# Contacts",
+                        "Points de contact",
+                        "Autres contacts",
+                        "Téléchargeable",
+                        "Visualisable",
+                        "Autres",
+                        "Editer",
+                        "Consulter",
+                        "MD - ID",
+                        "MD - Création",
+                        "MD - Modification",
+                        "MD - Langue",
+                    ]
+
+    li_cols_service = [
+                        "Titre",
+                        "Nom",
+                        "Résumé",
+                        "Emplacement",
+                        "Groupe de travail",
+                        "Mots-clés",
+                        "Conformité INSPIRE",
+                        "Création",
+                        "# mises à jour",
+                        "Dernière mise à jour",
+                        "Publication",
+                        "Format (version)",
+                        "Emprise",
+                        "Spécifications",
+                        "Conditions",
+                        "Limitations",
+                        "# Contacts",
+                        "Points de contact",
+                        "Autres contacts",
+                        "Téléchargeable",
+                        "Visualisable",
+                        "Autres",
+                        "Editer",
+                        "Consulter",
+                        "MD - ID",
+                        "MD - Création",
+                        "MD - Modification",
+                        "MD - Langue",
+                        ]
+
+    li_cols_resource = [
+                        "Titre",
+                        "Nom",
+                        "Résumé",
+                        "Emplacement",
+                        "Groupe de travail",
+                        "Mots-clés",
+                        "Création",
+                        "# mises à jour",
+                        "Dernière mise à jour",
+                        "Publication",
+                        "Format (version)",
+                        "Conditions",
+                        "Limitations",
+                        "# Contacts",
+                        "Points de contact",
+                        "Autres contacts",
+                        "Téléchargeable",
+                        "Visualisable",
+                        "Autres",
+                        "Editer",
+                        "Consulter",
+                        "MD - ID",
+                        "MD - Création",
+                        "MD - Modification",
+                        "MD - Langue",
+                    ]
+
     def __init__(self):
         """ Isogeo connection parameters
 
@@ -45,11 +192,9 @@ class Isogeo2xlsx(Workbook):
         super(Isogeo2xlsx, self).__init__()
         # super(Isogeo2xlsx, self).__init__(write_only=True)
 
-        # self.wb = Workbook()
-
-        # book = xlwt.Workbook(encoding='utf8')
-        # book.set_owner(str('Isogeo'))
-        # md2wb(sheet_mds, 0, metadatas, li_catalogs)
+        # deleting the default worksheet
+        ws = self.active
+        self.remove_sheet(ws)
 
     def md2wb(self, wbsheet, offset, li_mds, li_catalogs):
         """
@@ -224,171 +369,50 @@ class Isogeo2xlsx(Workbook):
     def set_worksheets(self, has_vector=1, has_raster=1, has_service=1, has_resource=1):
         """ adds news sheets depending on present metadata types
         """
+        # SHEETS & HEADERS
         if has_vector:
             self.ws_vector = self.create_sheet(title="Vecteurs")
-            self.headers_maker(self.ws_vector, 1)
+            # headers
+            self.ws_vector.append([i for i in self.li_cols_vector])
         else:
             pass
 
         if has_raster:
-            ws_raster = self.create_sheet(title="Raster")
-            self.headers_maker(ws_raster, 2)
+            self.ws_raster = self.create_sheet(title="Raster")
+            # headers
+            self.ws_raster.append([i for i in self.li_cols_raster])
         else:
             pass
 
         if has_service:
-            ws_services = self.create_sheet(title="Services")
-            self.headers_maker(ws_services, 3)
+            self.ws_services = self.create_sheet(title="Services")
+            # headers
+            self.ws_services.append([i for i in self.li_cols_service])
         else:
             pass
 
         if has_resource:
-            ws_resources = self.create_sheet(title="Ressources")
-            self.headers_maker(ws_resources, 4)
+            self.ws_resources = self.create_sheet(title="Ressources")
+            # headers
+            self.ws_resources.append([i for i in self.li_cols_resource])
         else:
             pass
 
-        # end of method
-        return
+        # CLEAN UP & TUNNING
+        for sheet in self.worksheets:
+            # Freezing panes
+            c = sheet['B2']
+            sheet.freeze_panes = c
 
-    def headers_maker(self, ws, md_type=1):
-        """ adds news sheets depending on present metadata types
-        """
-        # COMMON HEADERS ####
-        # Identification
-        ws['A1'] = "Titre"
-        ws['B1'] = "Nom"
-        ws['C1'] = "Résumé"
-        ws['D1'] = "Emplacement"
-        ws['E1'] = "Groupe de travail"
-        ws['F1'] = "Mots-clés"
+            # Print properties
+            sheet.print_options.horizontalCentered = True
+            sheet.print_options.verticalCentered = True
+            sheet.page_setup.fitToWidth = 1
+            sheet.page_setup.orientation = sheet.ORIENTATION_LANDSCAPE
 
-
-
-        # SPECIFIC FIELDS by kind of resources #####
-        if md_type == 1 or md_type == 2:
-            """ vector & raster dataset """
-            # INSPIRE
-            ws['T1'] = "Thématique(s) INSPIRE"
-            ws['U1'] = "Conformité INSPIRE"
-
-            # History
-            ws['J1'] = "Contexte de collecte"
-            ws['K1'] = "Méthode de collecte"
-            ws['L1'] = "Début de validité"
-            ws['M1'] = "Fin de validité"
-            ws['N1'] = "Fréquence de mise à jour"
-            ws['O1'] = "Commentaire"
-            ws['P1'] = "Création"
-            ws['Q1'] = "# mises à jour"
-            ws['R1'] = "Dernière mise à jour"
-            ws['S1'] = "Publication"
-
-            # CGUs
-            ws['V1'] = "Conditions"
-            ws['W1'] = "Limitations"
-
-
-            if md_type == 1:
-                """ only vectors """
-                ws['I1'] = "Géométrie"
-                ws['J1'] = "Objets"
-                ws['K1'] = "Attributs"
-                pass
-            elif md_type == 2:
-                # raster dataset
-                pass
-
-            # Metadata
-            ws['AN'] = "MD - ID"
-            ws['AO'] = "MD - Création"
-            ws['AP'] = "MD - Modification"
-            ws['AQ'] = "MD - Langue"
-
-        # ------------ SERVICES ---------------------
-        elif md_type == 3:
-            """ service metadata """
-            ws['C1'] = "URL du service"
-
-
-            # CGUs
-            ws['V1'] = "Conditions"
-            ws['W1'] = "Limitations"
-
-            # Contacts
-            ws['G1'] = "Contacts"
-            ws['H1'] = "Point de contact"
-            ws['I1'] = "Autres contacts"
-
-            # Metadata
-            ws['AN'] = "MD - ID"
-            ws['AO'] = "MD - Création"
-            ws['AP'] = "MD - Modification"
-            ws['AQ'] = "MD - Langue"
-            pass
-
-        # ------------ RESOURCES ---------------------
-        elif md_type == 4:
-            """ resource metadata """
-            # CGUs
-            ws['V1'] = "Conditions"
-            ws['W1'] = "Limitations"
-
-            # Contacts
-            ws['G1'] = "Contacts"
-            ws['H1'] = "Point de contact"
-            ws['I1'] = "Autres contacts"
-
-            # Metadata
-            ws['AN'] = "MD - ID"
-            ws['AO'] = "MD - Création"
-            ws['AP'] = "MD - Modification"
-            ws['AQ'] = "MD - Langue"
-
-            pass
-
-
-
-
-
-
-
-
-
-        # Technical informations
-        ws['X1'] = "Format (version - encodage)"
-        ws['Y1'] = "SRS (EPSG)"
-        ws['Z1'] = "Emprise"
-        ws['AA'] = "Géométrie"
-        ws['AB'] = "# Objets"
-        ws['AC'] = "# Attributs"
-        ws['AD'] = "Attributs (A-Z)"
-        ws['AE'] = "Résolution"
-        ws['AF'] = "Echelle"
-        ws['AG'] = "Spécifications"
-        ws['AH'] = "Cohérence topologique"
-
-        # Links & related resources
-        ws['AI'] = "Téléchargeable"
-        ws['AJ'] = "Visualisable"
-        ws['AK'] = "Autres"
-        ws['AL'] = "Editer"
-        ws['AM'] = "Consulter"
-
-
-
-
-
-
-        # TUNNING ####
-        # frozen panes
-        c = ws['B2']
-        ws.freeze_panes = c
-
-        # print properties
-        ws.print_options.horizontalCentered = True
-        ws.print_options.verticalCentered = True
-        ws.page_setup.fitToWidth = 1
+            # Others properties
+            wsprops = sheet.sheet_properties
+            wsprops.filterMode = True
 
         # end of method
         return

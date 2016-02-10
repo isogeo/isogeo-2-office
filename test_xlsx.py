@@ -14,7 +14,7 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 
 from os import path
 
-from openpyxl import load_workbook
+from openpyxl import load_workbook, Workbook
 
 
 # ----------------------------------------------------------------------------
@@ -43,3 +43,31 @@ print("\n", dir(ws), "\n\n")
 cols_names = [ws.cell(row=ws.min_row, column=col).value for col in range(1, ws.max_column)]
 
 print(cols_names)
+
+# ------------------------------- WRITING
+wb_output = Workbook()
+ws = wb_output.active
+
+
+li_cols = ("titsbdfkjbsdfmsqe", "summary", "youhou")
+
+for irow in range(10):
+    ws.append([i for i in li_cols])
+
+
+# ws = wb_output.active
+
+# # ws.auto_filter.ref = "A2:B5"
+# ws.auto_filter.add_filter_column(0, ["title"])
+# ws.auto_filter.add_sort_condition('A:C')
+
+wsprops = ws.sheet_properties
+wsprops.filterMode = True
+ws.auto_filter.add_filter_column(1, [], True)
+
+# for dimension in ws.column_dimensions.values():
+#     dimension.auto_size = True
+
+# ws.column_dimensions['A'].auto_size = True
+
+wb_output.save(r"output\wb_test.xlsx") 
