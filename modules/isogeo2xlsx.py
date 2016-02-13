@@ -196,191 +196,151 @@ class Isogeo2xlsx(Workbook):
         ws = self.active
         self.remove_sheet(ws)
 
-    def md2wb(self, wbsheet, offset, li_mds, li_catalogs):
-        """
-        parses Isogeo metadatas and write it into the worksheet
-        """
-        # looping on metadata
-        for md in li_mds:
-            # incrementing line number
-            offset += 1
-            # extracting & parsing tags
-            tags = md.get("tags")
-            li_motscles = []
-            li_theminspire = []
-            srs = ""
-            owner = ""
-            inspire_valid = 0
-            # looping on tags
-            for tag in tags.keys():
-                # free keywords
-                if tag.startswith('keyword:isogeo'):
-                    li_motscles.append(tags.get(tag))
-                    continue
-                else:
-                    pass
-                # INSPIRE themes
-                if tag.startswith('keyword:inspire-theme'):
-                    li_theminspire.append(tags.get(tag))
-                    continue
-                else:
-                    pass
-                # workgroup which owns the metadata
-                if tag.startswith('owner'):
-                    owner = tags.get(tag)
-                    continue
-                else:
-                    pass
-                # coordinate system
-                if tag.startswith('coordinate-system'):
-                    srs = tags.get(tag)
-                    continue
-                else:
-                    pass
-                # format pretty print
-                if tag.startswith('format:'):
-                    format_lbl = tags.get(tag)
-                    continue
-                else:
-                    format_lbl = "NR"
-                    pass
-                # INSPIRE conformity
-                if tag.startswith('conformity:inspire'):
-                    inspire_valid = 1
-                    continue
-                else:
-                    pass
 
-            # HISTORY ###########
-            if md.get("created"):
-                data_created = dtparse(md.get("created")).strftime("%a %d %B %Y")
-            else:
-                data_created = "NR"
-            if md.get("modified"):
-                data_updated = dtparse(md.get("modified")).strftime("%a %d %B %Y")
-            else:
-                data_updated = "NR"
-            if md.get("published"):
-                data_published = dtparse(md.get("published")).strftime("%a %d %B %Y")
-            else:
-                data_published = "NR"
+    # def md2wb(self, wbsheet, offset, li_mds, li_catalogs):
+    #     """
+    #     parses Isogeo metadatas and write it into the worksheet
+    #     """
+    #     # looping on metadata
+    #     for md in li_mds:
+    #         # incrementing line number
+    #         offset += 1
+    #         # extracting & parsing tags
+    #         tags = md.get("tags")
+    #         li_motscles = []
+    #         li_theminspire = []
+    #         srs = ""
+    #         owner = ""
+    #         inspire_valid = 0
+    #         # looping on tags
+    #         for tag in tags.keys():
+    #             # free keywords
+    #             if tag.startswith('keyword:isogeo'):
+    #                 li_motscles.append(tags.get(tag))
+    #                 continue
+    #             else:
+    #                 pass
+    #             # INSPIRE themes
+    #             if tag.startswith('keyword:inspire-theme'):
+    #                 li_theminspire.append(tags.get(tag))
+    #                 continue
+    #             else:
+    #                 pass
+    #             # workgroup which owns the metadata
+    #             if tag.startswith('owner'):
+    #                 owner = tags.get(tag)
+    #                 continue
+    #             else:
+    #                 pass
+    #             # coordinate system
+    #             if tag.startswith('coordinate-system'):
+    #                 srs = tags.get(tag)
+    #                 continue
+    #             else:
+    #                 pass
+    #             # format pretty print
+    #             if tag.startswith('format:'):
+    #                 format_lbl = tags.get(tag)
+    #                 continue
+    #             else:
+    #                 format_lbl = "NR"
+    #                 pass
+    #             # INSPIRE conformity
+    #             if tag.startswith('conformity:inspire'):
+    #                 inspire_valid = 1
+    #                 continue
+    #             else:
+    #                 pass
 
-            # formatting links to visualize on OpenCatalog and edit on APP
-            link_visu = 'HYPERLINK("{0}"; "{1}")'.format(url_OpenCatalog + "/m/" + md.get('_id'),
-                                                         "Visualiser")
-            link_edit = 'HYPERLINK("{0}"; "{1}")'.format("https://app.isogeo.com/resources/" + md.get('_id'),
-                                                         "Editer")
-            # format version
-            if md.get("formatVersion"):
-                format_version = u"{0} ({1} - {2})".format(format_lbl,
-                                                           md.get("formatVersion"),
-                                                           md.get("encoding"))
-            else:
-                format_version = format_lbl
+    #         # HISTORY ###########
+    #         if md.get("created"):
+    #             data_created = dtparse(md.get("created")).strftime("%a %d %B %Y")
+    #         else:
+    #             data_created = "NR"
+    #         if md.get("modified"):
+    #             data_updated = dtparse(md.get("modified")).strftime("%a %d %B %Y")
+    #         else:
+    #             data_updated = "NR"
+    #         if md.get("published"):
+    #             data_published = dtparse(md.get("published")).strftime("%a %d %B %Y")
+    #         else:
+    #             data_published = "NR"
 
-            # formatting contact details
-            contacts = md.get("contacts")
-            if len(contacts):
-                contacts_cct = ["{0} ({1}) ;\n".format(contact.get("contact").get("name"),
-                                                       contact.get("contact").get("email"))\
-                                for contact in contacts if contact.get("role") == "pointOfContact"]
-            else:
-                contacts_cct = ""
+    #         # formatting links to visualize on OpenCatalog and edit on APP
+    #         link_visu = 'HYPERLINK("{0}"; "{1}")'.format(url_OpenCatalog + "/m/" + md.get('_id'),
+    #                                                      "Visualiser")
+    #         link_edit = 'HYPERLINK("{0}"; "{1}")'.format("https://app.isogeo.com/resources/" + md.get('_id'),
+    #                                                      "Editer")
+    #         # format version
+    #         if md.get("formatVersion"):
+    #             format_version = u"{0} ({1} - {2})".format(format_lbl,
+    #                                                        md.get("formatVersion"),
+    #                                                        md.get("encoding"))
+    #         else:
+    #             format_version = format_lbl
 
-            # METADATA #
-            md_created = dtparse(md.get("_created")).strftime("%a %d %B %Y (%Hh%M)")
-            md_updated = dtparse(md.get("_modified")).strftime("%a %d %B %Y (%Hh%M)")
+    #         # formatting contact details
+    #         contacts = md.get("contacts")
+    #         if len(contacts):
+    #             contacts_cct = ["{0} ({1}) ;\n".format(contact.get("contact").get("name"),
+    #                                                    contact.get("contact").get("email"))\
+    #                             for contact in contacts if contact.get("role") == "pointOfContact"]
+    #         else:
+    #             contacts_cct = ""
 
-            # écriture des informations dans chaque colonne correspondante
-            wbsheet.write(offset, 0, md.get("title"))
-            wbsheet.write(offset, 1, md.get("name"))
-            wbsheet.write(offset, 2, md.get("path"))
-            wbsheet.write(offset, 3, " ; ".join(li_motscles))
-            wbsheet.write(offset, 4, md.get("abstract"), style_wrap)
-            wbsheet.write(offset, 5, " ; ".join(li_theminspire))
-            wbsheet.write(offset, 6, md.get("type"))
-            wbsheet.write(offset, 7, format_version)
-            wbsheet.write(offset, 8, srs)
-            wbsheet.write(offset, 9, md.get("features"))
-            wbsheet.write(offset, 10, md.get("geometry"))
-            wbsheet.write(offset, 11, owner)
-            wbsheet.write(offset, 12, data_created.decode('latin1'))
-            wbsheet.write(offset, 13, data_updated.decode('latin1'))
-            wbsheet.write(offset, 14, md_created.decode('latin1'))
-            wbsheet.write(offset, 15, md_updated.decode('latin1'))
-            wbsheet.write(offset, 16, inspire_valid)
-            wbsheet.write(offset, 17, len(contacts))
-            wbsheet.write(offset, 18, contacts_cct, style_wrap)
-            wbsheet.write(offset, 20, xlwt.Formula(link_visu), style_url)
-            wbsheet.write(offset, 21, xlwt.Formula(link_edit), style_url)
+    #         # METADATA #
+    #         md_created = dtparse(md.get("_created")).strftime("%a %d %B %Y (%Hh%M)")
+    #         md_updated = dtparse(md.get("_modified")).strftime("%a %d %B %Y (%Hh%M)")
 
-        print(sorted(md.keys()))
+    #         # écriture des informations dans chaque colonne correspondante
+    #         wbsheet.write(offset, 0, md.get("title"))
+    #         wbsheet.write(offset, 1, md.get("name"))
+    #         wbsheet.write(offset, 2, md.get("path"))
+    #         wbsheet.write(offset, 3, " ; ".join(li_motscles))
+    #         wbsheet.write(offset, 4, md.get("abstract"), style_wrap)
+    #         wbsheet.write(offset, 5, " ; ".join(li_theminspire))
+    #         wbsheet.write(offset, 6, md.get("type"))
+    #         wbsheet.write(offset, 7, format_version)
+    #         wbsheet.write(offset, 8, srs)
+    #         wbsheet.write(offset, 9, md.get("features"))
+    #         wbsheet.write(offset, 10, md.get("geometry"))
+    #         wbsheet.write(offset, 11, owner)
+    #         wbsheet.write(offset, 12, data_created.decode('latin1'))
+    #         wbsheet.write(offset, 13, data_updated.decode('latin1'))
+    #         wbsheet.write(offset, 14, md_created.decode('latin1'))
+    #         wbsheet.write(offset, 15, md_updated.decode('latin1'))
+    #         wbsheet.write(offset, 16, inspire_valid)
+    #         wbsheet.write(offset, 17, len(contacts))
+    #         wbsheet.write(offset, 18, contacts_cct, style_wrap)
+    #         wbsheet.write(offset, 20, xlwt.Formula(link_visu), style_url)
+    #         wbsheet.write(offset, 21, xlwt.Formula(link_edit), style_url)
 
-        # end of function
-        return
+    #     print(sorted(md.keys()))
+
+    #     # end of function
+    #     return
 
     # ------------ Setting workbook ---------------------
-
-    def set_workbook_structure(self):
-        """ TO DO
-        """
-        # styles
-        style_header = xlwt.easyxf('pattern: pattern solid, fore_colour black;'
-                                   'font: colour white, bold True, height 220;'
-                                   'align: horiz center')
-        style_url = xlwt.easyxf(u'font: underline single')
-        style_wrap = xlwt.easyxf('align: wrap True')
-
-        # sheets
-        sheet_mds = book.add_sheet('Metadonnées', cell_overwrite_ok=True)
-
-        # headers
-        sheet_mds.write(0, 0, "Titre", style_header)
-        sheet_mds.write(0, 1, "Nom de la ressource", style_header)
-        sheet_mds.write(0, 2, "Emplacement", style_header)
-        sheet_mds.write(0, 3, "Mots-clés", style_header)
-        sheet_mds.write(0, 4, "Résumé", style_header)
-        sheet_mds.write(0, 5, "Thématiques INPIRES", style_header)
-        sheet_mds.write(0, 6, "Type", style_header)
-        sheet_mds.write(0, 7, "Format", style_header)
-        sheet_mds.write(0, 8, "SRS", style_header)
-        sheet_mds.write(0, 9, "Nombre d'objets", style_header)
-        sheet_mds.write(0, 10, "Géométrie", style_header)
-        sheet_mds.write(0, 11, "Propriétaire", style_header)
-        sheet_mds.write(0, 12, "Données - Création", style_header)
-        sheet_mds.write(0, 13, "Données - Modification", style_header)
-        sheet_mds.write(0, 14, "Métadonnées - Création", style_header)
-        sheet_mds.write(0, 15, "Métadonnées - Modification", style_header)
-        sheet_mds.write(0, 16, "Conformité INSPIRE", style_header)
-        sheet_mds.write(0, 17, "# contacts", style_header)
-        sheet_mds.write(0, 18, "Points de contacts", style_header)
-        sheet_mds.write(0, 19, "Points de contacts", style_header)
-        sheet_mds.write(0, 20, "Visualiser sur l'OpenCatalog", style_header)
-        sheet_mds.write(0, 21, "Editer sur Isogeo", style_header)
-
-        # columns width
-        sheet_mds.col(0).width = 50 * 100
-        sheet_mds.col(1).width = 40 * 256
-        sheet_mds.col(4).width = 75 * 256
-
-        # end of method
-        return
 
     def set_worksheets(self, has_vector=1, has_raster=1, has_service=1, has_resource=1):
         """ adds news sheets depending on present metadata types
         """
         # SHEETS & HEADERS
         if has_vector:
-            self.ws_vector = self.create_sheet(title="Vecteurs")
+            self.ws_vectors = self.create_sheet(title="Vecteurs")
             # headers
-            self.ws_vector.append([i for i in self.li_cols_vector])
+            self.ws_vectors.append([i for i in self.li_cols_vector])
+            # initialize line counter
+            self.idx_vector = 1
         else:
             pass
 
         if has_raster:
-            self.ws_raster = self.create_sheet(title="Raster")
+            self.ws_rasters = self.create_sheet(title="Raster")
             # headers
-            self.ws_raster.append([i for i in self.li_cols_raster])
+            self.ws_rasters.append([i for i in self.li_cols_raster])
+            # initialize line counter
+            self.idx_raster = 1
         else:
             pass
 
@@ -388,6 +348,8 @@ class Isogeo2xlsx(Workbook):
             self.ws_services = self.create_sheet(title="Services")
             # headers
             self.ws_services.append([i for i in self.li_cols_service])
+            # initialize line counter
+            self.idx_service = 1
         else:
             pass
 
@@ -395,6 +357,8 @@ class Isogeo2xlsx(Workbook):
             self.ws_resources = self.create_sheet(title="Ressources")
             # headers
             self.ws_resources.append([i for i in self.li_cols_resource])
+            # initialize line counter
+            self.idx_resource = 1
         else:
             pass
 
@@ -413,6 +377,77 @@ class Isogeo2xlsx(Workbook):
             # Others properties
             wsprops = sheet.sheet_properties
             wsprops.filterMode = True
+
+        # end of method
+        return
+
+    # ------------ Writing metadata ---------------------
+
+    def store_metadatas(self, metadata):
+        """ TO DOCUMENT
+        """
+        if metadata.get("type") == "vectorDataset":
+            self.idx_vector += 1
+            self.store_md_vector(metadata)
+            return
+        elif metadata.get("type") == "rasterDataset":
+            self.idx_raster += 1
+            self.store_md_raster(metadata)
+            return
+        elif metadata.get("type") == "service":
+            self.idx_service += 1
+            self.store_md_service(metadata)
+            return
+        elif metadata.get("type") == "resource":
+            self.idx_resource += 1
+            self.store_md_resource(metadata)
+            return     
+        else:
+            print("Type of metadata is not recognized/handled: " + metadata.get("type"))
+            pass
+        # end of method
+        return
+
+    def store_md_vector(self, md_vector):
+        """ TO DOCUMENT
+        """
+        self.ws_vectors["A{}".format(self.idx_vector)] = md_vector.get('title')
+        self.ws_vectors["B{}".format(self.idx_vector)] = md_vector.get('abstract')
+
+
+        # end of method
+        return
+
+
+    def store_md_raster(self, md_raster):
+        """ TO DOCUMENT
+        """
+        self.ws_rasters["A{}".format(self.idx_raster)] = md_raster.get('title')
+        self.ws_rasters["B{}".format(self.idx_raster)] = md_raster.get('abstract')
+
+
+        # end of method
+        return
+
+
+    def store_md_service(self, md_service):
+        """ TO DOCUMENT
+        """
+        self.ws_services["A{}".format(self.idx_service)] = md_service.get('title')
+        self.ws_services["B{}".format(self.idx_service)] = md_service.get('abstract')
+
+
+        # end of method
+        return
+
+
+    def store_md_resource(self, md_resource):
+        """ TO DOCUMENT
+        """
+        self.ws_resources["A{}".format(self.idx_resource)] = md_resource.get('title')
+        self.ws_resources["B{}".format(self.idx_resource)] = md_resource.get('abstract')
+
+
 
         # end of method
         return
@@ -464,6 +499,11 @@ if __name__ == '__main__':
     # ------------ REAL START ----------------------------
     wb = Isogeo2xlsx()
     wb.set_worksheets()
+
+    # parsing metadata
+    for md in search_results.get('results'):
+        wb.store_metadatas(md)
+
 
     # saving the test file
     dstamp = datetime.now()
