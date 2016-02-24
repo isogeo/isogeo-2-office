@@ -401,7 +401,7 @@ class Isogeo2xlsx(Workbook):
         elif metadata.get("type") == "resource":
             self.idx_resource += 1
             self.store_md_resource(metadata)
-            return     
+            return
         else:
             print("Type of metadata is not recognized/handled: " + metadata.get("type"))
             pass
@@ -412,8 +412,21 @@ class Isogeo2xlsx(Workbook):
         """ TO DOCUMENT
         """
         self.ws_vectors["A{}".format(self.idx_vector)] = md_vector.get('title')
-        self.ws_vectors["B{}".format(self.idx_vector)] = md_vector.get('abstract')
-
+        self.ws_vectors["B{}".format(self.idx_vector)] = md_vector.get('name')
+        self.ws_vectors["C{}".format(self.idx_vector)] = md_vector.get('abstract')
+        self.ws_vectors["D{}".format(self.idx_vector)] = md_vector.get('path')
+        self.ws_vectors["E{}".format(self.idx_vector)] = md_vector.get('owner')
+        self.ws_vectors["F{}".format(self.idx_vector)] = " ; ".join(md_vector.get('inspire_themes'))
+        self.ws_vectors["G{}".format(self.idx_vector)] = md_vector.get('inspire_valid')
+        self.ws_vectors["H{}".format(self.idx_vector)] = md_vector.get('collectionContext')
+        self.ws_vectors["I{}".format(self.idx_vector)] = md_vector.get('collectionMethod')
+        self.ws_vectors["J{}".format(self.idx_vector)] = md_vector.get('validFrom')
+        self.ws_vectors["K{}".format(self.idx_vector)] = md_vector.get('validTo')
+        self.ws_vectors["L{}".format(self.idx_vector)] = md_vector.get('updateFrequency')
+        self.ws_vectors["M{}".format(self.idx_vector)] = md_vector.get('validComment')
+        self.ws_vectors["N{}".format(self.idx_vector)] = md_vector.get('')
+        self.ws_vectors["O{}".format(self.idx_vector)] = md_vector.get('validComment')
+        self.ws_vectors["P{}".format(self.idx_vector)] = md_vector.get('validComment')
 
         # end of method
         return
