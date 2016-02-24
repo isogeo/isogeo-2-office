@@ -28,6 +28,7 @@ from ttk import Label, Button, Entry    # widgets
 from urllib2 import Request, urlopen, URLError
 
 # 3rd party library
+import arrow
 from dateutil.parser import parse as dtparse
 import xlwt
 
@@ -119,7 +120,9 @@ def md2wb(wbsheet, offset, li_mds, li_catalogs):
 
         # HISTORY ###########
         if md.get("created"):
-            data_created = dtparse(md.get("created")).strftime("%a %d %B %Y")
+            data_created = arrow.get(md.get("created"))
+            data_created = "{0} ({1})".format(data_created.format("dddd D MMMM YYYY", "fr_FR"),
+                                              data_created.humanize(locale="fr_FR"))
         else:
             data_created = "NR"
         if md.get("modified"):
@@ -170,7 +173,7 @@ def md2wb(wbsheet, offset, li_mds, li_catalogs):
         wbsheet.write(offset, 9, md.get("features"))
         wbsheet.write(offset, 10, md.get("geometry"))
         wbsheet.write(offset, 11, owner)
-        wbsheet.write(offset, 12, data_created.decode('latin1'))
+        wbsheet.write(offset, 12, data_created.encode('utf8', errors='replace'))
         wbsheet.write(offset, 13, data_updated.decode('latin1'))
         wbsheet.write(offset, 14, md_created.decode('latin1'))
         wbsheet.write(offset, 15, md_updated.decode('latin1'))
@@ -220,7 +223,7 @@ app.mainloop()
 ##################### Excel sheet creation
 
 ##### Writing into an Excel file
-book = xlwt.Workbook(encoding='utf8')
+book = xlwt.Workbook(encoding="UTF-8")
 book.set_owner(str('Isogeo'))
 
 # styles
