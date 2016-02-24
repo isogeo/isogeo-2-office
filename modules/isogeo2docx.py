@@ -22,6 +22,7 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 from datetime import datetime
 
 # 3rd party library
+import arrow
 from dateutil.parser import parse as dtparse
 from docxtpl import DocxTemplate
 
@@ -31,17 +32,34 @@ from docxtpl import DocxTemplate
 # ##################################
 
 class Isogeo2docx(object):
-    """
-    docstring for Isogeo
-    """
-    def __init__(self):
-        """ Isogeo connection parameters
+    """ An :class:`Isogeo2docx` object.
 
-        docx_template -- Word document template to use
-        search_results -- application
-        url_base -- language asked for localized tags (INSPIRE themes)
+    """
+    def __init__(self, default_values=("NR", "1970-01-01T00:00:00+00:00")):
+        """ Common variables for Word processing
+
+        default_values (optional) -- values used to replace missing values.
+        Must be a tuple with 2 values structure:
+            (
+            str_for_missing_strings_and_integers,
+            str_for_missing_dates
+            )
         """
         super(Isogeo2docx, self).__init__()
+
+        # ------------ VARIABLES ---------------------
+        # test variables
+        if type(default_values) != tuple:
+            raise TypeError(self.__init__.__doc__)
+        else:
+            pass
+        if len(default_values) != 2:
+            raise ValueError(self.__init__.__doc__)
+        else:
+            pass
+
+        # set variables
+        self.default_values = default_values
 
     def md2docx(self, docx_template, md, url_base):
         """
@@ -90,7 +108,7 @@ class Isogeo2docx(object):
                 pass
             # format pretty print
             if tag.startswith('format'):
-                format_lbl = tags.get(tag)
+                format_lbl = tags.get(tag, self.missing_values())
                 continue
             else:
                 pass
@@ -132,31 +150,49 @@ class Isogeo2docx(object):
 
         # IDENTIFICATION #
         # format version
-        if md.get("formatVersion"):
-            format_version = u"{0} ({1} - {2})".format(format_lbl,
-                                                       md.get("formatVersion"),
-                                                       md.get("encoding"))
-        else:
-            format_version = format_lbl
+        # if md.get("formatVersion"):
+        #     format_version = u"{0} ({1} - {2})".format(format_lbl,
+        #                                                md.get("formatVersion", "NR"),
+        #                                                md.get("encoding", "NR"))
+        # else:
+        #     format_version = format_lbl
+
+        format_version = u"{0} ({1} - {2})".format(format_lbl,
+                                                   md.get("formatVersion",
+                                                          self.missing_values()
+                                                          ),
+                                                   md.get("encoding",
+                                                          self.missing_values()
+                                                          )
+                                                   )
 
         # path to the resource
-        if md.get("path"):
-            localplace = md.get("path").replace("&", "&amp;")
-        else:
-            localplace = 'NR'
+        localplace = md.get("path", self.missing_values()).replace("&", "&amp;")
+        # if md.get("path"):
+        #     localplace = md.get("path").replace("&", "&amp;")
+        # else:
+        #     localplace = 'NR'
 
         # HISTORY #
         # data events
+
         if md.get("created"):
-            data_created = dtparse(md.get("created")).strftime("%a %d %B %Y")
+            data_created = dtparse(md.get("created",
+                                          self.missing_values(1))
+                                   ).strftime("%a %d %B %Y")
+            # data_created = arrow.get(md.get("created", self.missing_values(1))).format("dddd D MMMM YYYY")
         else:
             data_created = "NR"
         if md.get("modified"):
-            data_updated = dtparse(md.get("modified")).strftime("%a %d %B %Y")
+            data_updated = dtparse(md.get("modified",
+                                          self.missing_values(1))
+                                   ).strftime("%a %d %B %Y")
         else:
             data_updated = "NR"
         if md.get("published"):
-            data_published = dtparse(md.get("published")).strftime("%a %d %B %Y")
+            data_published = dtparse(md.get("published",
+                                            self.missing_values(1))
+                                     ).strftime("%a %d %B %Y")
         else:
             data_published = "NR"
 
@@ -192,11 +228,8 @@ class Isogeo2docx(object):
             valid_end = dtparse(md.get("validTo")).strftime("%a %d %B %Y")
         else:
             valid_end = "NR"
-        # vailidty comment
-        if md.get("validyComment"):
-            valid_com = md.get("validyComment")
-        else:
-            valid_com = "NR"
+        # validity comment
+        valid_com = md.get("validityComment", self.missing_values())
 
         # METADATA #
         md_created = dtparse(md.get("_created")).strftime("%a %d %B %Y (%Hh%M)")
@@ -204,11 +237,11 @@ class Isogeo2docx(object):
 
         # FILLFULLING THE TEMPLATE #
         context = {
-                  'varTitle': md.get("title"),
-                  'varAbstract': md.get("abstract"),
-                  'varNameTech': md.get("name"),
-                  'varCollectContext': md.get("collectionContext"),
-                  'varCollectMethod': md.get("collectionMethod"),
+                  'varTitle': md.get("title", self.missing_values()),
+                  'varAbstract': md.get("abstract", self.missing_values()),
+                  'varNameTech': md.get("name", self.missing_values()),
+                  'varCollectContext': md.get("collectionContext", self.missing_values()),
+                  'varCollectMethod': md.get("collectionMethod", self.missing_values()),
                   'varDataDtCrea': data_created.decode('latin1'),
                   'varDataDtUpda': data_updated.decode('latin1'),
                   'varDataDtPubl': data_published.decode('latin1'),
@@ -216,14 +249,14 @@ class Isogeo2docx(object):
                   'varValidityEnd': valid_end.decode('latin1'),
                   'validityComment': valid_com,
                   'varFormat': format_version,
-                  'varGeometry': md.get("geometry"),
-                  'varObjectsCount': md.get("features"),
+                  'varGeometry': md.get("geometry", self.missing_values()),
+                  'varObjectsCount': md.get("features", self.missing_values()),
                   'varKeywords': " ; ".join(li_motscles),
                   'varKeywordsCount': len(li_motscles),
-                  'varType': md.get("type"),
+                  'varType': md.get("type", self.missing_values()),
                   'varOwner': owner,
-                  'varScale': md.get("scale"),
-                  'varTopologyInfo': md.get("topologicalConsistency"),
+                  'varScale': md.get("scale", self.missing_values()),
+                  'varTopologyInfo': md.get("topologicalConsistency", self.missing_values()),
                   'varInspireTheme': " ; ".join(li_theminspire),
                   'varInspireConformity': inspire_valid,
                   'varInspireLimitation': " ; \n".join(limits_cct),
@@ -250,6 +283,19 @@ class Isogeo2docx(object):
 
         # end of function
         return
+
+    # ------------ UTILITIES ---------------------
+    def missing_values(self, idx_type=0):
+        """ Returns default values defined in the class as a tuple
+
+        idx_type (optional) -- index of the value type requested:
+
+            1: for strings and integers
+            2: for dates and datetimes
+        """
+        rpl_value = self.default_values[idx_type]
+        # end of method
+        return rpl_value
 
     def remove_accents(self, input_str, substitute=u""):
         """
@@ -299,8 +345,7 @@ if __name__ == '__main__':
 
     # ------------ Isogeo search --------------------------
     search_results = isogeo.search(token,
-                                   sub_resources=isogeo.sub_resources_available,
-                                   preprocess=1)
+                                   sub_resources=isogeo.sub_resources_available)
 
     # ------------ REAL START ----------------------------
     url_oc = "http://open.isogeo.com/s/c502e8f7c9da4c3aacdf3d905672d54c/Q4SvPfiIIslbdwkbWRFJLk7XWo4G0/"
