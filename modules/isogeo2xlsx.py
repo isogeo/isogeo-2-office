@@ -22,6 +22,7 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 from datetime import datetime
 
 # 3rd party library
+import arrow
 from dateutil.parser import parse as dtparse
 from openpyxl import Workbook
 from openpyxl.worksheet.properties import WorksheetProperties
@@ -408,59 +409,75 @@ class Isogeo2xlsx(Workbook):
         # end of method
         return
 
-    def store_md_vector(self, md_vector):
+    def store_md_vector(self, md):
         """ TO DOCUMENT
         """
-        self.ws_vectors["A{}".format(self.idx_vector)] = md_vector.get('title')
-        self.ws_vectors["B{}".format(self.idx_vector)] = md_vector.get('name')
-        self.ws_vectors["C{}".format(self.idx_vector)] = md_vector.get('abstract')
-        self.ws_vectors["D{}".format(self.idx_vector)] = md_vector.get('path')
-        self.ws_vectors["E{}".format(self.idx_vector)] = md_vector.get('owner')
-        self.ws_vectors["F{}".format(self.idx_vector)] = " ; ".join(md_vector.get('inspire_themes'))
-        self.ws_vectors["G{}".format(self.idx_vector)] = md_vector.get('inspire_valid')
-        self.ws_vectors["H{}".format(self.idx_vector)] = md_vector.get('collectionContext')
-        self.ws_vectors["I{}".format(self.idx_vector)] = md_vector.get('collectionMethod')
-        self.ws_vectors["J{}".format(self.idx_vector)] = md_vector.get('validFrom')
-        self.ws_vectors["K{}".format(self.idx_vector)] = md_vector.get('validTo')
-        self.ws_vectors["L{}".format(self.idx_vector)] = md_vector.get('updateFrequency')
-        self.ws_vectors["M{}".format(self.idx_vector)] = md_vector.get('validComment')
-        self.ws_vectors["N{}".format(self.idx_vector)] = md_vector.get('')
-        self.ws_vectors["O{}".format(self.idx_vector)] = md_vector.get('validComment')
-        self.ws_vectors["P{}".format(self.idx_vector)] = md_vector.get('validComment')
+        # IDENTIFICATION
+        self.ws_vectors["A{}".format(self.idx_vector)] = md.get('title')
+        self.ws_vectors["B{}".format(self.idx_vector)] = md.get('name')
+        self.ws_vectors["C{}".format(self.idx_vector)] = md.get('abstract')
+        self.ws_vectors["D{}".format(self.idx_vector)] = md.get('path')
+        self.ws_vectors["E{}".format(self.idx_vector)] = md.get('owner')
+        # INSPIRE
+        self.ws_vectors["F{}".format(self.idx_vector)] = " ; ".join(md.get('inspire_themes'))
+        self.ws_vectors["G{}".format(self.idx_vector)] = md.get('inspire_valid')
+        # HISTORY
+        self.ws_vectors["H{}".format(self.idx_vector)] = md.get('collectionContext')
+        self.ws_vectors["I{}".format(self.idx_vector)] = md.get('collectionMethod')
+        self.ws_vectors["J{}".format(self.idx_vector)] = md.get('validFrom')
+        self.ws_vectors["K{}".format(self.idx_vector)] = md.get('validTo')
+        self.ws_vectors["L{}".format(self.idx_vector)] = md.get('updateFrequency')
+        self.ws_vectors["M{}".format(self.idx_vector)] = md.get('validComment')
+        # EVENTS
+        if md.get("created"):
+            data_created = arrow.get(md.get("created"))
+            data_created = "{0} ({1})".format(data_created.format("dddd D MMMM YYYY", "fr_FR"),
+                                              data_created.humanize(locale="fr_FR"))
+        else:
+            data_created = "NR"
+        self.ws_vectors["N{}".format(self.idx_vector)] = data_created
+
+        self.ws_vectors["O{}".format(self.idx_vector)] = md.get('validComment')
+        self.ws_vectors["P{}".format(self.idx_vector)] = md.get('validComment')
 
         # end of method
         return
 
 
-    def store_md_raster(self, md_raster):
+    def store_md_raster(self, md):
         """ TO DOCUMENT
         """
-        self.ws_rasters["A{}".format(self.idx_raster)] = md_raster.get('title')
-        self.ws_rasters["B{}".format(self.idx_raster)] = md_raster.get('abstract')
-
+        self.ws_rasters["A{}".format(self.idx_raster)] = md.get('title')
+        self.ws_rasters["B{}".format(self.idx_raster)] = md.get('name')
+        self.ws_rasters["C{}".format(self.idx_raster)] = md.get('abstract')
+        self.ws_rasters["D{}".format(self.idx_raster)] = md.get('path')
+        self.ws_rasters["E{}".format(self.idx_raster)] = md.get('owner')
 
         # end of method
         return
 
 
-    def store_md_service(self, md_service):
+    def store_md_service(self, md):
         """ TO DOCUMENT
         """
-        self.ws_services["A{}".format(self.idx_service)] = md_service.get('title')
-        self.ws_services["B{}".format(self.idx_service)] = md_service.get('abstract')
-
+        self.ws_services["A{}".format(self.idx_service)] = md.get('title')
+        self.ws_services["B{}".format(self.idx_service)] = md.get('name')
+        self.ws_services["C{}".format(self.idx_service)] = md.get('abstract')
+        self.ws_services["D{}".format(self.idx_service)] = md.get('path')
+        self.ws_services["E{}".format(self.idx_service)] = md.get('owner')
 
         # end of method
         return
 
 
-    def store_md_resource(self, md_resource):
+    def store_md_resource(self, md):
         """ TO DOCUMENT
         """
-        self.ws_resources["A{}".format(self.idx_resource)] = md_resource.get('title')
-        self.ws_resources["B{}".format(self.idx_resource)] = md_resource.get('abstract')
-
-
+        self.ws_resources["A{}".format(self.idx_resource)] = md.get('title')
+        self.ws_resources["B{}".format(self.idx_resource)] = md.get('name')
+        self.ws_resources["C{}".format(self.idx_resource)] = md.get('abstract')
+        self.ws_resources["D{}".format(self.idx_resource)] = md.get('path')
+        self.ws_resources["E{}".format(self.idx_resource)] = md.get('owner')
 
         # end of method
         return
