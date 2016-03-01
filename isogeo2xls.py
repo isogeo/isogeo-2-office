@@ -126,11 +126,15 @@ def md2wb(wbsheet, offset, li_mds, li_catalogs):
         else:
             data_created = "NR"
         if md.get("modified"):
-            data_updated = dtparse(md.get("modified")).strftime("%a %d %B %Y")
+            data_updated = arrow.get(md.get("modified"))
+            data_updated = "{0} ({1})".format(data_updated.format("dddd D MMMM YYYY", "fr_FR"),
+                                              data_updated.humanize(locale="fr_FR"))
         else:
             data_updated = "NR"
         if md.get("published"):
-            data_published = dtparse(md.get("published")).strftime("%a %d %B %Y")
+            data_published = arrow.get(md.get("published"))
+            data_published = "{0} ({1})".format(data_published.format("dddd D MMMM YYYY", "fr_FR"),
+                                                data_published.humanize(locale="fr_FR"))
         else:
             data_published = "NR"
 
