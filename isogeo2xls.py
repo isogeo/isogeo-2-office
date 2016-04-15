@@ -178,7 +178,11 @@ def md2wb(wbsheet, offset, li_mds, li_catalogs):
         wbsheet.write(offset, 10, md.get("geometry"))
         wbsheet.write(offset, 11, owner)
         wbsheet.write(offset, 12, data_created.encode('utf8', errors='replace'))
-        wbsheet.write(offset, 13, data_updated.decode('latin1'))
+        try:
+            wbsheet.write(offset, 13, data_updated.decode('latin1'))
+        except UnicodeEncodeError:
+            print(link_edit)
+            wbsheet.write(offset, 13, data_updated)
         wbsheet.write(offset, 14, md_created.decode('latin1'))
         wbsheet.write(offset, 15, md_updated.decode('latin1'))
         wbsheet.write(offset, 16, inspire_valid)
