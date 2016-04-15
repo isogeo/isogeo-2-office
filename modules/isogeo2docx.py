@@ -20,10 +20,10 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 
 # Standard library
 from datetime import datetime
+import logging
 
 # 3rd party library
 import arrow
-from dateutil.parser import parse as dtparse
 from docxtpl import DocxTemplate
 
 
