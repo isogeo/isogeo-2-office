@@ -193,6 +193,7 @@ class Isogeo2xlsx(Workbook):
         # super(Isogeo2xlsx, self).__init__(write_only=True)
 
         # styles
+        self.s_date = Style(number_format='dd/mm/yyyy')
         self.s_error = Style(font=Font(color="FF0000"))
         self.s_header = Style(alignment=Alignment(horizontal='center',
                                                   vertical='center'
@@ -443,8 +444,10 @@ class Isogeo2xlsx(Workbook):
             link_path = r'=HYPERLINK("{0}","{1}")'.format(path.dirname(src_path),
                                                           src_path)
             self.ws_v["D{}".format(self.idx_v)] = link_path
+            logging.info("Path reachable")
         else:
             self.ws_v["D{}".format(self.idx_v)] = src_path
+            logging.info("Path not recognized nor reachable")
             pass
 
         # owner
@@ -468,8 +471,22 @@ class Isogeo2xlsx(Workbook):
         # HISTORY
         self.ws_v["I{}".format(self.idx_v)] = md.get("collectionContext", "")
         self.ws_v["J{}".format(self.idx_v)] = md.get("collectionMethod", "")
-        self.ws_v["K{}".format(self.idx_v)] = md.get("validFrom", "")
-        self.ws_v["L{}".format(self.idx_v)] = md.get("validTo", "")
+
+        # validity
+        if md.get("validFrom"):
+            valid_start = arrow.get(md.get("validFrom"))
+            valid_start = "{0}".format(valid_start.format("DD/MM/YYYY", "fr_FR"))
+        else:
+            valid_start = ""
+        self.ws_v["K{}".format(self.idx_v)] = valid_start
+        
+        if md.get("validTo"):
+            valid_end = arrow.get(md.get("validTo"))
+            valid_end = "{0}".format(valid_end.format("DD/MM/YYYY", "fr_FR"))
+        else:
+            valid_end = ""
+        self.ws_v["L{}".format(self.idx_v)] = valid_end
+
         self.ws_v["M{}".format(self.idx_v)] = md.get("updateFrequency", "")
         self.ws_v["N{}".format(self.idx_v)] = md.get("validComment", "")
 
@@ -480,7 +497,7 @@ class Isogeo2xlsx(Workbook):
             data_created = "{0} ({1})".format(data_created.format("DD/MM/YYYY", "fr_FR"),
                                               data_created.humanize(locale="fr_FR"))
         else:
-            data_created = "NR"
+            data_created = ""
         self.ws_v["O{}".format(self.idx_v)] = data_created
 
         # events count
@@ -492,7 +509,7 @@ class Isogeo2xlsx(Workbook):
             data_updated = "{0} ({1})".format(data_updated.format("DD/MM/YYYY", "fr_FR"),
                                               data_updated.humanize(locale="fr_FR"))
         else:
-            data_updated = "NR"
+            data_updated = ""
         self.ws_v["Q{}".format(self.idx_v)] = data_updated
 
         # TECHNICAL
@@ -500,7 +517,7 @@ class Isogeo2xlsx(Workbook):
         if 'format' in md.keys():
             format_lbl = next(v for k, v in tags.items() if 'format:' in k)
         else:
-            format_lbl = "NR"
+            format_lbl = ""
         self.ws_v["S{}".format(self.idx_v)] = u"{0} ({1} - {2})".format(format_lbl,
                                                                         md.get("formatVersion", "NR"),
                                                                         md.get("encoding", "NR"))
@@ -512,12 +529,16 @@ class Isogeo2xlsx(Workbook):
 
         # LINKS
         link_edit = r'=HYPERLINK("{0}","{1}")'.format("https://app.isogeo.com/resources/" + md.get("_id"),
-                                                      "Visualiser")
+                                                      "Editer")
         self.ws_v["AL{}".format(self.idx_v)] = link_edit
         self.ws_v["AL{}".format(self.idx_v)].style = self.s_link
 
         # STYLING
         self.ws_v["C{}".format(self.idx_v)].style = self.s_wrap
+        self.ws_v["I{}".format(self.idx_v)].style = self.s_wrap
+        self.ws_v["J{}".format(self.idx_v)].style = self.s_wrap
+        self.ws_v["K{}".format(self.idx_v)].style = self.s_date
+        self.ws_v["L{}".format(self.idx_v)].style = self.s_date
 
         # LOG
         logging.info("Vector metadata stored: {} ({})".format(md.get("name"),
