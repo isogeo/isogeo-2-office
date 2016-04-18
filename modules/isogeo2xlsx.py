@@ -484,6 +484,49 @@ class Isogeo2xlsx(Workbook):
             logging.info("Vector dataset without limitation")
             pass
 
+        # CONTACTS
+        contacts = md.get("contacts")
+        if len(contacts):
+            contacts_pt_cct = ["{0} ({1})".format(contact.get("contact").get("name"),
+                                                  contact.get("contact").get("email"))\
+                               for contact in contacts if contact.get("role") == "pointOfContact"]
+            contacts_other_cct = ["{0} ({1})".format(contact.get("contact").get("name"),
+                                                     contact.get("contact").get("email"))\
+                                  for contact in contacts if contact.get("role") != "pointOfContact"]
+            self.ws_v["AF{}".format(self.idx_v)] = len(contacts)
+            self.ws_v["AG{}".format(self.idx_v)] = " ;\n".join(contacts_pt_cct)
+            self.ws_v["AH{}".format(self.idx_v)] = " ;\n".join(contacts_other_cct)
+        else:
+            self.ws_v["AF{}".format(self.idx_v)] = 0
+            logging.info("Vector dataset without any contact")
+            contacts_cct = ""
+
+        # ACTIONS
+        self.ws_v["AI{}".format(self.idx_v)] = "action:download" in tags
+        self.ws_v["AJ{}".format(self.idx_v)] = "action:view" in tags
+        self.ws_v["AK{}".format(self.idx_v)] = "action:other" in tags
+
+        # METADATA
+        # id
+        self.ws_v["AN{}".format(self.idx_v)] = md.get("_id")
+
+        # creation
+        md_created = arrow.get(md.get("_created")[:19])
+        md_created = "{0} ({1})".format(md_created.format("DD/MM/YYYY",
+                                                          "fr_FR"),
+                                        md_created.humanize(locale="fr_FR"))
+        self.ws_v["AO{}".format(self.idx_v)] = md_created
+
+        # last update
+        md_updated = arrow.get(md.get("_modified")[:19])
+        md_updated = "{0} ({1})".format(md_updated.format("DD/MM/YYYY",
+                                                          "fr_FR"),
+                                        md_updated.humanize(locale="fr_FR"))
+        self.ws_v["AP{}".format(self.idx_v)] = md_updated
+
+        # lang
+        self.ws_v["AQ{}".format(self.idx_v)] = md.get("language")
+
         # LINKS
         link_edit = r'=HYPERLINK("{0}","{1}")'.format("https://app.isogeo.com/resources/" + md.get("_id"),
                                                       "Editer")
@@ -504,6 +547,8 @@ class Isogeo2xlsx(Workbook):
         self.ws_v["AC{}".format(self.idx_v)].style = self.s_wrap
         self.ws_v["AD{}".format(self.idx_v)].style = self.s_wrap
         self.ws_v["AE{}".format(self.idx_v)].style = self.s_wrap
+        self.ws_v["AG{}".format(self.idx_v)].style = self.s_wrap
+        self.ws_v["AH{}".format(self.idx_v)].style = self.s_wrap
 
         # LOG
         logging.info("Vector metadata stored: {} ({})".format(md.get("name"),
@@ -661,6 +706,7 @@ if __name__ == '__main__':
 
     # ------------ Isogeo search --------------------------
     includes = ["conditions",
+                "contacts",
                 "coordinate-system",
                 "events",
                 "feature-attributes",
