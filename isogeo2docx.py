@@ -6,7 +6,7 @@ from __future__ import (print_function, unicode_literals)
 # Purpose:      Get metadatas from an Isogeo OpenCatlog and store it into
 #               an Excel workbook.
 #
-# Author:       Julien Moura (@geojulien) & Valentin Blanlot (@bablot)
+# Author:       Julien Moura (@geojulien)
 #
 # Python:       2.7.x
 # Created:      14/08/2014

@@ -208,129 +208,6 @@ class Isogeo2xlsx(Workbook):
         ws = self.active
         self.remove_sheet(ws)
 
-    # def md2wb(self, wbsheet, offset, li_mds, li_catalogs):
-    #     """
-    #     parses Isogeo metadatas and write it into the worksheet
-    #     """
-    #     # looping on metadata
-    #     for md in li_mds:
-    #         # incrementing line number
-    #         offset += 1
-    #         # extracting & parsing tags
-    #         tags = md.get("tags")
-    #         li_motscles = []
-    #         li_theminspire = []
-    #         srs = ""
-    #         owner = ""
-    #         inspire_valid = 0
-    #         # looping on tags
-    #         for tag in tags.keys():
-    #             # free keywords
-    #             if tag.startswith('keyword:isogeo'):
-    #                 li_motscles.append(tags.get(tag))
-    #                 continue
-    #             else:
-    #                 pass
-    #             # INSPIRE themes
-    #             if tag.startswith('keyword:inspire-theme'):
-    #                 li_theminspire.append(tags.get(tag))
-    #                 continue
-    #             else:
-    #                 pass
-    #             # workgroup which owns the metadata
-    #             if tag.startswith('owner'):
-    #                 owner = tags.get(tag)
-    #                 continue
-    #             else:
-    #                 pass
-    #             # coordinate system
-    #             if tag.startswith('coordinate-system'):
-    #                 srs = tags.get(tag)
-    #                 continue
-    #             else:
-    #                 pass
-    #             # format pretty print
-    #             if tag.startswith('format:'):
-    #                 format_lbl = tags.get(tag)
-    #                 continue
-    #             else:
-    #                 format_lbl = "NR"
-    #                 pass
-    #             # INSPIRE conformity
-    #             if tag.startswith('conformity:inspire'):
-    #                 inspire_valid = 1
-    #                 continue
-    #             else:
-    #                 pass
-
-    #         # HISTORY ###########
-    #         if md.get("created"):
-    #             data_created = dtparse(md.get("created")).strftime("%a %d %B %Y")
-    #         else:
-    #             data_created = "NR"
-    #         if md.get("modified"):
-    #             data_updated = dtparse(md.get("modified")).strftime("%a %d %B %Y")
-    #         else:
-    #             data_updated = "NR"
-    #         if md.get("published"):
-    #             data_published = dtparse(md.get("published")).strftime("%a %d %B %Y")
-    #         else:
-    #             data_published = "NR"
-
-    #         # formatting links to visualize on OpenCatalog and edit on APP
-    #         link_visu = 'HYPERLINK("{0}"; "{1}")'.format(url_OpenCatalog + "/m/" + md.get('_id'),
-    #                                                      "Visualiser")
-    #         link_edit = 'HYPERLINK("{0}"; "{1}")'.format("https://app.isogeo.com/resources/" + md.get('_id'),
-    #                                                      "Editer")
-    #         # format version
-    #         if md.get("formatVersion"):
-    #             format_version = u"{0} ({1} - {2})".format(format_lbl,
-    #                                                        md.get("formatVersion"),
-    #                                                        md.get("encoding"))
-    #         else:
-    #             format_version = format_lbl
-
-    #         # formatting contact details
-    #         contacts = md.get("contacts")
-    #         if len(contacts):
-    #             contacts_cct = ["{0} ({1}) ;\n".format(contact.get("contact").get("name"),
-    #                                                    contact.get("contact").get("email"))\
-    #                             for contact in contacts if contact.get("role") == "pointOfContact"]
-    #         else:
-    #             contacts_cct = ""
-
-    #         # METADATA #
-    #         md_created = dtparse(md.get("_created")).strftime("%a %d %B %Y (%Hh%M)")
-    #         md_updated = dtparse(md.get("_modified")).strftime("%a %d %B %Y (%Hh%M)")
-
-    #         # écriture des informations dans chaque colonne correspondante
-    #         wbsheet.write(offset, 0, md.get("title"))
-    #         wbsheet.write(offset, 1, md.get("name"))
-    #         wbsheet.write(offset, 2, md.get("path"))
-    #         wbsheet.write(offset, 3, " ; ".join(li_motscles))
-    #         wbsheet.write(offset, 4, md.get("abstract"), style_wrap)
-    #         wbsheet.write(offset, 5, " ; ".join(li_theminspire))
-    #         wbsheet.write(offset, 6, md.get("type"))
-    #         wbsheet.write(offset, 7, format_version)
-    #         wbsheet.write(offset, 8, srs)
-    #         wbsheet.write(offset, 9, md.get("features"))
-    #         wbsheet.write(offset, 10, md.get("geometry"))
-    #         wbsheet.write(offset, 11, owner)
-    #         wbsheet.write(offset, 12, data_created.decode('latin1'))
-    #         wbsheet.write(offset, 13, data_updated.decode('latin1'))
-    #         wbsheet.write(offset, 14, md_created.decode('latin1'))
-    #         wbsheet.write(offset, 15, md_updated.decode('latin1'))
-    #         wbsheet.write(offset, 16, inspire_valid)
-    #         wbsheet.write(offset, 17, len(contacts))
-    #         wbsheet.write(offset, 18, contacts_cct, style_wrap)
-    #         wbsheet.write(offset, 20, xlwt.Formula(link_visu), style_url)
-    #         wbsheet.write(offset, 21, xlwt.Formula(link_edit), style_url)
-
-    #     print(sorted(md.keys()))
-
-    #     # end of function
-    #     return
-
     # ------------ Setting workbook ---------------------
 
     def set_worksheets(self, vector=1, raster=1, service=1, resource=1):
@@ -451,19 +328,25 @@ class Isogeo2xlsx(Workbook):
             pass
 
         # owner
-        self.ws_v["E{}".format(self.idx_v)] = next(v for k, v in tags.items() if 'owner:' in k)
+        self.ws_v["E{}".format(self.idx_v)] = next(v for k, v in tags.items()
+                                                   if 'owner:' in k)
 
-        # KEYWORDS
-        if md.get("keywords"):
-            self.ws_v["F{}".format(self.idx_v)] = " ; ".join([k.get("text") for k in md.get("keywords")])
+        # KEYWORDS & INSPIRE THEMES
+        keywords = []
+        inspire = []
+        if "keywords" in md.keys():
+            for k in md.get("keywords"):
+                if k.get("_tag").startswith("keyword:is"):
+                    keywords.append(k.get("text"))
+                elif k.get("_tag").startswith("keyword:in"):
+                    inspire.append(k.get("text"))
+                else:
+                    logging.info("Unknown keyword type: " + k.get("_tag"))
+                    continue
+            self.ws_v["F{}".format(self.idx_v)] = " ;\n".join(sorted(keywords))
+            self.ws_v["G{}".format(self.idx_v)] = " ;\n".join(sorted(inspire))
         else:
-            self.ws_v["F{}".format(self.idx_v)] = ""
-
-        # INSPIRE
-        if md.get("inspire-theme"):
-            self.ws_v["G{}".format(self.idx_v)] = " ; ".join([k.get("text") for k in md.get("inspire-theme")])
-        else:
-            self.ws_v["G{}".format(self.idx_v)] = ""
+            logging.info("Vector dataset without any keyword or INSPIRE theme")
 
         # conformity
         self.ws_v["H{}".format(self.idx_v)] = "conformity:inspire" in tags
@@ -479,7 +362,7 @@ class Isogeo2xlsx(Workbook):
         else:
             valid_start = ""
         self.ws_v["K{}".format(self.idx_v)] = valid_start
-        
+
         if md.get("validTo"):
             valid_end = arrow.get(md.get("validTo"))
             valid_end = "{0}".format(valid_end.format("DD/MM/YYYY", "fr_FR"))
@@ -494,7 +377,8 @@ class Isogeo2xlsx(Workbook):
         # data creation date
         if md.get("created"):
             data_created = arrow.get(md.get("created"))
-            data_created = "{0} ({1})".format(data_created.format("DD/MM/YYYY", "fr_FR"),
+            data_created = "{0} ({1})".format(data_created.format("DD/MM/YYYY",
+                                                                  "fr_FR"),
                                               data_created.humanize(locale="fr_FR"))
         else:
             data_created = ""
@@ -506,7 +390,8 @@ class Isogeo2xlsx(Workbook):
         # data last update
         if md.get("modified"):
             data_updated = arrow.get(md.get("created"))
-            data_updated = "{0} ({1})".format(data_updated.format("DD/MM/YYYY", "fr_FR"),
+            data_updated = "{0} ({1})".format(data_updated.format("DD/MM/YYYY",
+                                                                  "fr_FR"),
                                               data_updated.humanize(locale="fr_FR"))
         else:
             data_updated = ""
@@ -523,9 +408,81 @@ class Isogeo2xlsx(Workbook):
                                                                         md.get("encoding", "NR"))
 
         # SRS
-        srs = md.setdefault("coordinate-system", {"name":"NR", "code": "NR"})
+        srs = md.setdefault("coordinate-system", {"name": "NR", "code": "NR"})
         self.ws_v["T{}".format(self.idx_v)] = u"{0} ({1})".format(srs.get("name", "NR"),
                                                                   srs.get("code", "NR"))
+
+        # bounding box
+        bbox = md.get("envelope", None)
+        if bbox:
+            coords = bbox.get("coordinates")
+            bbox = "{}\n{}".format(coords[0][0], coords[0][-2])
+        else:
+            logging.info("Vector dataset without envelope.")
+            pass
+        self.ws_v["U{}".format(self.idx_v)] = bbox
+
+        # geometry
+        self.ws_v["V{}".format(self.idx_v)] = md.get("geometry")
+
+        # resolution
+        self.ws_v["W{}".format(self.idx_v)] = md.get("distance")
+
+        # scale
+        self.ws_v["X{}".format(self.idx_v)] = md.get("scale")
+
+        # features objects
+        self.ws_v["Y{}".format(self.idx_v)] = md.get("features")
+
+        # features attributes
+        fields = md.get("feature-attributes", None)
+        if fields:
+            # count
+            self.ws_v["Z{}".format(self.idx_v)] = len(fields)
+            # alphabetic list
+            fields_cct = sorted(["{0} ({1})".format(field.get("name"),
+                                                    "description" in field.keys())
+                                for field in fields])
+            self.ws_v["AA{}".format(self.idx_v)] = " ;\n".join(fields_cct)
+        else:
+            logging.info("Vector dataset without any feature attribute")
+            pass
+
+        # QUALITY
+        specs = md.get("specifications", None)
+        if specs:
+            specs_cct = sorted(["{0} ({1})".format(s.get("specification").get("name"),
+                                                   s.get("conformant"))
+                                for s in specs])
+            self.ws_v["AB{}".format(self.idx_v)] = " ;\n".join(specs_cct)
+        else:
+            logging.info("Vector dataset without specification.")
+            pass
+        # topology
+        self.ws_v["AC{}".format(self.idx_v)] = md.get("topologicalConsistency", "")
+
+        # CGUs
+        # conditions
+        conds = md.get("conditions", None)
+        if conds:
+            conds_cct = sorted(["{0}".format(c.setdefault("license", {"name": "No license"}).get("name"))
+                               for c in conds])
+            self.ws_v["AD{}".format(self.idx_v)] = " ;\n".join(conds_cct)
+        else:
+            logging.info("Vector dataset without conditions.")
+            pass
+
+        # limitations
+        limits = md.get("limitations", None)
+        if limits:
+            limits_cct = sorted(["{0} ({1}) {2}".format(l.get("type"),
+                                                        "{}".format(l.get("restriction", "NR")),
+                                                        "{}".format(l.get("directive", {"name": ""}).get("name")))
+                                for l in limits])
+            self.ws_v["AE{}".format(self.idx_v)] = " ;\n".join(limits_cct)
+        else:
+            logging.info("Vector dataset without limitation")
+            pass
 
         # LINKS
         link_edit = r'=HYPERLINK("{0}","{1}")'.format("https://app.isogeo.com/resources/" + md.get("_id"),
@@ -535,10 +492,18 @@ class Isogeo2xlsx(Workbook):
 
         # STYLING
         self.ws_v["C{}".format(self.idx_v)].style = self.s_wrap
+        self.ws_v["F{}".format(self.idx_v)].style = self.s_wrap
+        self.ws_v["G{}".format(self.idx_v)].style = self.s_wrap
         self.ws_v["I{}".format(self.idx_v)].style = self.s_wrap
         self.ws_v["J{}".format(self.idx_v)].style = self.s_wrap
         self.ws_v["K{}".format(self.idx_v)].style = self.s_date
         self.ws_v["L{}".format(self.idx_v)].style = self.s_date
+        self.ws_v["U{}".format(self.idx_v)].style = self.s_wrap
+        self.ws_v["AA{}".format(self.idx_v)].style = self.s_wrap
+        self.ws_v["AB{}".format(self.idx_v)].style = self.s_wrap
+        self.ws_v["AC{}".format(self.idx_v)].style = self.s_wrap
+        self.ws_v["AD{}".format(self.idx_v)].style = self.s_wrap
+        self.ws_v["AE{}".format(self.idx_v)].style = self.s_wrap
 
         # LOG
         logging.info("Vector metadata stored: {} ({})".format(md.get("name"),
@@ -667,7 +632,6 @@ if __name__ == '__main__':
     """
     # ------------ Specific imports ---------------------
     from ConfigParser import SafeConfigParser   # to manage options.ini
-    from datetime import datetime
 
     # Custom modules
     from isogeo_sdk import Isogeo
@@ -696,7 +660,14 @@ if __name__ == '__main__':
     token = isogeo.connect()
 
     # ------------ Isogeo search --------------------------
-    includes = ["coordinate-system", "events", "links"]
+    includes = ["conditions",
+                "coordinate-system",
+                "events",
+                "feature-attributes",
+                "keywords",
+                "limitations",
+                "links",
+                "specifications"]
 
     search_results = isogeo.search(token,
                                    sub_resources=includes,
