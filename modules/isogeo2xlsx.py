@@ -416,7 +416,12 @@ class Isogeo2xlsx(Workbook):
         bbox = md.get("envelope", None)
         if bbox:
             coords = bbox.get("coordinates")
-            bbox = "{}\n{}".format(coords[0][0], coords[0][-2])
+            if bbox.get("type") == "Polygon":
+                bbox = "{}\n{}".format(coords[0][0], coords[0][-2])
+            elif bbox.get("type") == "Point":
+                bbox = "Centroïde : {}{}".format(coords[0], coords[1])
+            else:
+                bbox = "Unknown envelope type (no point nor polygon): " + bbox.get("type")
         else:
             logging.info("Vector dataset without envelope.")
             pass
