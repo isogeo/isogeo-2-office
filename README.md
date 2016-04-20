@@ -3,7 +3,7 @@ isogeo2office
 
 Desktop toolbox using Isogeo REST API to export metadatas into Microsoft Office files.
 
-# Requirements
+## Requirements
 
 * Windows Operating System (Unix should work too but has not been tested)
 * Internet connection
@@ -14,20 +14,20 @@ Desktop toolbox using Isogeo REST API to export metadatas into Microsoft Office 
 * software able to read output files (*.docx, *.xlsx)
 * an Isogeo account (admin or 3rd party developer)
 
-# Quick installation and launch
+## Quick installation and launch
 
 1. Clone or download this repository ;
 2. Open a command prompt in the folder and launch `pip install -r requirements.txt`. If you are on a shared machine with various tools related to Python, it's higly recomended to use a virtual environment. See: Python Virtualenvs on Windows and a [Powershell wrapper](https://bitbucket.org/guillermooo/virtualenvwrapper-powershell/) ;
 3. Edit the *settings.ini* file and custom it with your informations. At less, you have to set *app_id* and *app_secret* with your own values. If you are behind a proxy, you should set the parameters too. ;
 4. Launch **isogeo2office.py**
 
-# Usage
+## Usage
 
 * as Isogeo administrator, select metadatas catalogs that you want to export sharing them with [APP](https://app.isogeo.com/admin/shares) ;
 * create your own Word template respecting the syntax `{{ varOwner }}` ;
 
 
-# Detailed deployment
+## Detailed deployment
 
 1. Download and install the last Python 2.7.x version (64bits version is recomended except if you use Python with incompatibilty like arcpy): https://www.python.org/downloads/windows ;
 2. Add Python to the environment path, with the System Advanced Settings or with *powershell* typing `[Environment]::SetEnvironmentVariable("Path", "$env:Path;C:\Python27\;C:\Python27\Scripts\", "User")` ;
@@ -45,9 +45,34 @@ Desktop toolbox using Isogeo REST API to export metadatas into Microsoft Office 
 
 	![Virtenv folder structure](img/virtualenv_content.png)
 
-10. Create a Windows shortcut: Right clic > New > Shortcut and insert this command replacing with the absolute paths (removing brackets): `C:\Windows\System32\cmd.exe /k "{absolute_path_to_the_folder}\isogeo2office\virtenv\Scripts\python {absolute_path_to_the_folder}\isogeo2office\isogeo2office.py"`
+
+## Tips
+
+### Shortcut
+
+Create a Windows shortcut: Right clic > New > Shortcut and insert this command replacing with the absolute paths (removing brackets): `C:\Windows\System32\cmd.exe /k "{absolute_path_to_the_folder}\isogeo2office\virtenv\Scripts\python {absolute_path_to_the_folder}\isogeo2office\isogeo2office.py"`
+
+## Scheduled task
+
+Program/script:
+
+```
+{absolute_path_to_the_folder}\virtenv\Scripts\python.exe
+```
+
+Arguments:
+
+```
+{absolute_path_to_the_folder}\isogeo2office.py
+```
+
+Launch in :
+
+```
+{absolute_path_to_the_folder}\
+```
 
 
-# Support
+## Support
 
 This application is not part of Isogeo license contract and won't be supported or maintained as well. If you need help, send a mail to <projets+isogeo2office@isogeo.fr>
