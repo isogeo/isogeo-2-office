@@ -35,7 +35,6 @@ from modules.isogeo_sdk import Isogeo
 from modules.isogeo2xls import Isogeo2xlsx
 from modules.isogeo2docx import Isogeo2docx
 
-
 # ############################################################################
 # ########## Global ###############
 # ##################################
@@ -363,7 +362,7 @@ if __name__ == '__main__':
     """ standalone execution
     """
     print(argv[1])
-    if argv[1] == 1:
+    if argv[1] == str(1):
         print("launch UI")
         app = Isogeo2office(ui_launcher=1)
         app.mainloop()
