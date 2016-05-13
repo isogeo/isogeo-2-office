@@ -155,7 +155,6 @@ class Isogeo2xlsx(Workbook):
               ]
 
     cols_rz = ["Titre",  # A
-               "Nom",  # B
                "Résumé",  # C
                "Emplacement",  # D
                "Groupe de travail",  # E
@@ -815,7 +814,7 @@ class Isogeo2xlsx(Workbook):
         # owner
         ws["E{}".format(idx)] = next(v for k, v in tags.items()
                                      if 'owner:' in k)
-        # KEYWORDS & INSPIRE THEMES
+        # KEYWORDS
         if "keywords" in md.keys():
             keywords = [k.get("text") for k in md.get("keywords")
                        if k.get("_tag").startswith("keyword:is")]
@@ -985,8 +984,40 @@ class Isogeo2xlsx(Workbook):
         ws["A{}".format(idx)] = md.get('title')
         ws["B{}".format(idx)] = md.get('name')
         ws["C{}".format(idx)] = md.get('abstract')
-        ws["D{}".format(idx)] = md.get('path')
+        ws["D{}".format(idx)] = md.get('path', "ND")
         ws["E{}".format(idx)] = md.get('owner')
+
+        # KEYWORDS
+        if "keywords" in md.keys():
+            keywords = [k.get("text") for k in md.get("keywords")
+                        if k.get("_tag").startswith("keyword:is")]
+            ws["F{}".format(idx)] = " ;\n".join(sorted(keywords))
+        else:
+            logging.info("Service without any keyword")
+
+        # EVENTS
+        # data creation date
+        if md.get("created"):
+            data_created = arrow.get(md.get("created"))
+            data_created = "{0} ({1})".format(data_created.format("DD/MM/YYYY",
+                                                                  "fr_FR"),
+                                              data_created.humanize(locale="fr_FR"))
+        else:
+            data_created = ""
+        ws["G{}".format(idx)] = data_created
+
+        # events count
+        ws["H{}".format(idx)] = len(md.get('events', ""))
+
+        # data last update
+        if md.get("modified"):
+            data_updated = arrow.get(md.get("created"))
+            data_updated = "{0} ({1})".format(data_updated.format("DD/MM/YYYY",
+                                                                  "fr_FR"),
+                                              data_updated.humanize(locale="fr_FR"))
+        else:
+            data_updated = ""
+        ws["I{}".format(idx)] = data_updated
 
         # TECHNICAL
         # format
@@ -995,8 +1026,90 @@ class Isogeo2xlsx(Workbook):
         else:
             format_lbl = "NR"
         ws["K{}".format(idx)] = u"{0} ({1} - {2})".format(format_lbl,
-                                                                          md.get("formatVersion", "NR"),
-                                                                          md.get("encoding", "NR"))
+                                                          md.get("formatVersion", "NR"),
+                                                          md.get("encoding", "NR"))
+
+        # CGUs
+        # conditions
+        conds = md.get("conditions", None)
+        if conds:
+            conds_cct = sorted(["{0}".format(c.setdefault("license",
+                                                          {"name": "No license"}).get("name"))
+                               for c in conds])
+            ws["L{}".format(idx)] = " ;\n".join(conds_cct)
+        else:
+            logging.info("Vector dataset without conditions.")
+            pass
+
+        # limitations
+        limits = md.get("limitations", None)
+        if limits:
+            limits_cct = sorted(["{0} ({1}) {2}".format(l.get("type"),
+                                                        "{}".format(l.get("restriction", "NR")),
+                                                        "{}".format(l.get("directive", {"name": ""}).get("name")))
+                                for l in limits])
+            ws["M{}".format(idx)] = " ;\n".join(limits_cct)
+        else:
+            logging.info("Service without limitation")
+            pass
+
+        # CONTACTS
+        contacts = md.get("contacts")
+        if len(contacts):
+            contacts_pt_cct = ["{0} ({1})".format(contact.get("contact").get("name"),
+                                                  contact.get("contact").get("email"))\
+                               for contact in contacts if contact.get("role") == "pointOfContact"]
+            contacts_other_cct = ["{0} ({1})".format(contact.get("contact").get("name"),
+                                                     contact.get("contact").get("email"))\
+                                  for contact in contacts if contact.get("role") != "pointOfContact"]
+            ws["N{}".format(idx)] = len(contacts)
+            ws["O{}".format(idx)] = " ;\n".join(contacts_pt_cct)
+            ws["P{}".format(idx)] = " ;\n".join(contacts_other_cct)
+        else:
+            ws["N{}".format(idx)] = 0
+            logging.info("Service without any contact")
+
+        # ACTIONS
+        ws["Q{}".format(idx)] = "action:download" in tags
+        ws["R{}".format(idx)] = "action:view" in tags
+        ws["S{}".format(idx)] = "action:other" in tags
+
+        # LINKS
+        link_edit = r'=HYPERLINK("{0}","{1}")'.format("https://app.isogeo.com/resources/" + md.get("_id"),
+                                                      "Editer")
+        ws["T{}".format(idx)] = link_edit
+        ws["T{}".format(idx)].style = self.s_link
+
+        # METADATA
+        # id
+        ws["X{}".format(idx)] = md.get("_id")
+
+        # creation
+        md_created = arrow.get(md.get("_created")[:19])
+        md_created = "{0} ({1})".format(md_created.format("DD/MM/YYYY",
+                                                          "fr_FR"),
+                                        md_created.humanize(locale="fr_FR"))
+        ws["W{}".format(idx)] = md_created
+
+        # last update
+        md_updated = arrow.get(md.get("_modified")[:19])
+        md_updated = "{0} ({1})".format(md_updated.format("DD/MM/YYYY",
+                                                          "fr_FR"),
+                                        md_updated.humanize(locale="fr_FR"))
+        ws["X{}".format(idx)] = md_updated
+
+        # lang
+        ws["Y{}".format(idx)] = md.get("language")
+
+        # STYLING
+        ws["C{}".format(idx)].style = self.s_wrap
+        ws["F{}".format(idx)].style = self.s_wrap
+        ws["M{}".format(idx)].style = self.s_wrap
+        ws["N{}".format(idx)].style = self.s_wrap
+        ws["O{}".format(idx)].style = self.s_wrap
+        ws["P{}".format(idx)].style = self.s_wrap
+        ws["R{}".format(idx)].style = self.s_wrap
+        ws["S{}".format(idx)].style = self.s_wrap
 
         # LOG
         logging.info("Resource metadata stored: {} ({})".format(md.get("name"),
