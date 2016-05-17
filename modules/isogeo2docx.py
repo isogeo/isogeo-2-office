@@ -177,22 +177,25 @@ class Isogeo2docx(object):
         # data events
 
         if md.get("created"):
-            data_created = dtparse(md.get("created",
-                                          self.missing_values(1))
-                                   ).strftime("%a %d %B %Y")
+            data_created = arrow.get(md.get("created")[:19])
+            data_created = "{0} ({1})".format(data_created.format("DD/MM/YYYY",
+                                                              "fr_FR"),
+                                              data_created.humanize(locale="fr_FR"))
             # data_created = arrow.get(md.get("created", self.missing_values(1))).format("dddd D MMMM YYYY")
         else:
             data_created = "NR"
         if md.get("modified"):
-            data_updated = dtparse(md.get("modified",
-                                          self.missing_values(1))
-                                   ).strftime("%a %d %B %Y")
+            data_updated = arrow.get(md.get("_created")[:19])
+            data_updated = "{0} ({1})".format(data_updated.format("DD/MM/YYYY",
+                                                              "fr_FR"),
+                                            data_updated.humanize(locale="fr_FR"))
         else:
             data_updated = "NR"
         if md.get("published"):
-            data_published = dtparse(md.get("published",
-                                            self.missing_values(1))
-                                     ).strftime("%a %d %B %Y")
+            data_published = arrow.get(md.get("_created")[:19])
+            data_published = "{0} ({1})".format(data_published.format("DD/MM/YYYY",
+                                                              "fr_FR"),
+                                                data_published.humanize(locale="fr_FR"))
         else:
             data_published = "NR"
 
@@ -220,20 +223,28 @@ class Isogeo2docx(object):
         # for date manipulation: https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior
         # could be independant from dateutil: datetime.datetime.strptime("2008-08-12T12:20:30.656234Z", "%Y-%m-%dT%H:%M:%S.Z")
         if md.get("validFrom"):
-            valid_start = dtparse(md.get("validFrom")).strftime("%a %d %B %Y")
+            valid_start = arrow.get(md.get("validFrom"))
+            valid_start = "{0}".format(valid_start.format("DD/MM/YYYY", "fr_FR"))
         else:
             valid_start = "NR"
         # end validity date
         if md.get("validTo"):
-            valid_end = dtparse(md.get("validTo")).strftime("%a %d %B %Y")
+            valid_end = arrow.get(md.get("validTo"))
+            valid_end = "{0}".format(valid_end.format("DD/MM/YYYY", "fr_FR"))
         else:
             valid_end = "NR"
         # validity comment
         valid_com = md.get("validityComment", self.missing_values())
 
         # METADATA #
-        md_created = dtparse(md.get("_created")).strftime("%a %d %B %Y (%Hh%M)")
-        md_updated = dtparse(md.get("_modified")).strftime("%a %d %B %Y (%Hh%M)")
+        md_created = arrow.get(md.get("_created")[:19])
+        md_created = "{0} ({1})".format(md_created.format("DD/MM/YYYY",
+                                                          "fr_FR"),
+                                        md_created.humanize(locale="fr_FR"))
+        md_updated = arrow.get(md.get("_modified")[:19])
+        md_updated = "{0} ({1})".format(md_updated.format("DD/MM/YYYY",
+                                                          "fr_FR"),
+                                        md_updated.humanize(locale="fr_FR"))
 
         # FILLFULLING THE TEMPLATE #
         context = {
@@ -275,11 +286,17 @@ class Isogeo2docx(object):
                   }
 
         # fillfull file
-        try:
-            docx_template.render(context)
-        except Exception, e:
-            print(u"Metadata error: check if there's any special character (<, <, &...) in different fields (attributes names and description...). Link: {0}".format(link_edit))
-            print(e)
+        docx_template.render(context)
+        # try:
+        #     docx_template.render(context)
+        # except UnicodeEncodeError, e:
+        #     print(u"Metadata error: check if there's any special character (<, <, &...) in different fields (attributes names and description...). Link: {0}".format(link_edit))
+        #     print(e)
+        # except UnicodeDecodeError, e:
+        #     print(u"Metadata error: check if there's any special character (<, <, &...) in different fields (attributes names and description...). Link: {0}".format(link_edit))
+        #     print(e)
+        # except Exception, e:
+        #     print(e, link_edit)
 
         # end of function
         return
