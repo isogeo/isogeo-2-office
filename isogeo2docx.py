@@ -18,6 +18,7 @@ from __future__ import (print_function, unicode_literals)
 ###################################
 
 # Standard library
+from ConfigParser import SafeConfigParser   # to manage options.ini
 from datetime import datetime
 import json
 import locale
@@ -31,6 +32,9 @@ from urllib2 import Request, urlopen, URLError
 # 3rd party library
 from dateutil.parser import parse as dtparse
 from docxtpl import DocxTemplate
+
+# Custom modules
+from modules.isogeo_sdk import Isogeo
 
 ###############################################################################
 ########### Classes ###############
@@ -284,6 +288,36 @@ locale.setlocale(locale.LC_ALL, str("fra_fra"))
 templates = [path.abspath(path.join(r'templates', tpl)) for tpl in listdir(r'templates') if path.splitext(tpl)[1].lower() == ".docx"]  # languages
 
 
+# ------------ Settings from ini file ----------------
+if not path.isfile(path.realpath(r"settings.ini")):
+    print("ERROR: to execute this script as standalone, you need to store your Isogeo application settings in a isogeo_params.ini file. You can use the template to set your own.")
+    import sys
+    sys.exit()
+else:
+    pass
+
+config = SafeConfigParser()
+config.read(r"settings.ini")
+
+settings = {s: dict(config.items(s)) for s in config.sections()}
+app_id = settings.get('auth').get('app_id')
+app_secret = settings.get('auth').get('app_secret')
+client_lang = settings.get('basics').get('def_codelang')
+
+# ------------ Connecting to Isogeo API ----------------
+# instanciating the class
+isogeo = Isogeo(client_id=app_id,
+                client_secret=app_secret,
+                lang="fr")
+
+token = isogeo.connect()
+
+# ------------ Isogeo search --------------------------
+search_results = isogeo.search(token,
+                               sub_resources=isogeo.sub_resources_available)
+
+
+
 ##################### UI
 app = Tk()
 app.title('OpenCatalog ===> Word')
@@ -405,7 +439,7 @@ if tot_results > 100:
 else:
     pass
 
-## WORDIZING METADATAS #################
+# # WORDIZING METADATAS #################
 print("Template applied: ", tpl_input.get())
 for md in metadatas:
     docx_tpl = DocxTemplate(path.realpath(tpl_input.get()))
@@ -425,12 +459,13 @@ for md in metadatas:
                                                                    dstamp.minute,
                                                                    dstamp.second,
                                                                    md.get("_id")[:5],
-                                                                   remove_accents(md.get("title")[:15], "")))
+                                                                   md_name))
 
-###############################################################################
-###### Stand alone program ########
-###################################
+# ############################################################################
+# ##### Stand alone program ########
+# ##################################
 
 # if __name__ == '__main__':
 #     """ standalone execution """
 #     main()
+
