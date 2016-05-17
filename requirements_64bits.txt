@@ -6,31 +6,32 @@
 #
 #     pip install -r requirements.txt
 #
-#   It's higly recomended to use it within a virtualenv.
+#   It's higly recomended to use it within a virtualenv and with git installed
 #
 #
 #
+
+# Isogeo
+git+https://github.com/Guts/isogeo-api-py-minsdk.git
 
 # dates
-python-dateutil
-arrow==0.7.0
-pytz==2015.7
+arrow
+pytz
 
 # UI
-pyttk==0.3.2
+pyttk
 
 # REST API
-requests==2.9.1
+requests
 
 # Excel
-openpyxl==2.3.3
-xlwt==1.0.0
+openpyxl
+xlwt
 
 # templating OOXML
 # choose between 64 / 32 bits version by commenting/uncommenting lines below
 .\lib\lxml-3.5.0-cp27-none-win_amd64.whl
-
-docxtpl==0.1.9
+docxtpl
 
 
 # -----------------------
