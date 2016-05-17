@@ -411,6 +411,12 @@ for md in metadatas:
     docx_tpl = DocxTemplate(path.realpath(tpl_input.get()))
     dstamp = datetime.now()
     md2docx(docx_tpl, 0, md, li_catalogs, url_base)  # passing parameters to the Word generator
+    if not md.get('name'):
+        md_name = "NR"
+    elif '.' in md.get('name'):
+        md_name = md.get("name").split(".")[1]
+    else:
+        md_name = md.get("name")
     docx_tpl.save(r"output\{0}_{8}_{7}_{1}{2}{3}{4}{5}{6}.docx".format(share_rez.get("name"),
                                                                    dstamp.year,
                                                                    dstamp.month,
@@ -419,7 +425,7 @@ for md in metadatas:
                                                                    dstamp.minute,
                                                                    dstamp.second,
                                                                    md.get("_id")[:5],
-                                                                   remove_accents(md.get("title")[:15], "_")))
+                                                                   remove_accents(md.get("title")[:15], "")))
 
 ###############################################################################
 ###### Stand alone program ########
