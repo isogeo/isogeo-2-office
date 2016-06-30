@@ -1,14 +1,15 @@
 Valeurs possibles du template
 =============================
 
-
-
-Variable remplacée dans le template
-Champ Isogeo correspondant
-Exemple
-Commentaires / précisions
-{{ varTitle }}
-Titre de la fiche de métadonnées
+| Variable remplacée dans le template | Champ Isogeo correspondant |
+| :---------------------------------- | :------------------------- |
+| {{ varTitle }} | (Titre de la fiche de métadonnées)[http://help.isogeo.com/fr/features/documentation/md_identification.html#titre] |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
 
 
 
