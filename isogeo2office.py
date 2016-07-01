@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 #!/usr/bin/env python
 from __future__ import (absolute_import, print_function, unicode_literals)
-#------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # Name:         Isogeo
 # Purpose:      Get metadatas from an Isogeo share and store it into files
 #
@@ -10,11 +10,11 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 # Python:       2.7.x
 # Created:      18/12/2015
 # Updated:      22/01/2016
-#------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 
-###############################################################################
-########### Libraries #############
-###################################
+# ############################################################################
+# ########## Libraries #############
+# ##################################
 
 # Standard library
 from ConfigParser import SafeConfigParser
@@ -25,13 +25,15 @@ from os import listdir, path
 from sys import argv, exit
 from tkFileDialog import askopenfilename
 from Tkinter import Tk, StringVar, IntVar, Image, PhotoImage   # GUI
-from ttk import Label, Button, Entry, Combobox, Labelframe, Checkbutton,  Style   # widgets
+from ttk import Label, Button, Entry, Checkbutton, Combobox  # advanced widgets
+from ttk import Labelframe, Progressbar, Style  # advanced widgets
 
 # 3rd party library
 from openpyxl import load_workbook
+from isogeo_pysdk import Isogeo
 
 # Custom modules
-from modules.isogeo_sdk import Isogeo
+# from modules.isogeo_sdk import Isogeo
 from modules.isogeo2xls import Isogeo2xlsx
 from modules.isogeo2docx import Isogeo2docx
 
@@ -40,7 +42,7 @@ from modules.isogeo2docx import Isogeo2docx
 # ##################################
 
 # VERSION
-_version = "1.0-beta1"
+_version = "1.1"
 
 # LOG FILE ##
 # see: http://sametmax.com/ecrire-des-logs-en-python/
@@ -52,7 +54,7 @@ logfile = RotatingFileHandler('isogeo2office.log', 'a', 5000000, 1)
 logfile.setLevel(logging.DEBUG)
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
-logger.info('\n\t\t ============== Isogeo => Office =============')
+logger.info('\n============== Isogeo => Office =============')
 
 
 # ############################################################################
@@ -60,7 +62,7 @@ logger.info('\n\t\t ============== Isogeo => Office =============')
 # ##################################
 
 class Isogeo2office(Tk):
-    """ UI Class to 
+    """ UI Class to
     docstring for Isogeo to Office
     """
     # attributes and global actions
@@ -81,19 +83,24 @@ class Isogeo2office(Tk):
         app_secret = self.settings.get('auth').get('app_secret')
         client_lang = self.settings.get('basics').get('def_codelang')
 
-        # # ------------ Isogeo authentification ----------------
-        # self.isogeo = Isogeo(client_id=app_id,
-        #                      client_secret=app_secret,
-        #                      lang=client_lang)
-        # self.token = self.isogeo.connect()
+        # ------------ Isogeo authentification ----------------
+        self.isogeo = Isogeo(client_id=app_id,
+                             client_secret=app_secret,
+                             lang=client_lang,
+                             platform="qa")
+        self.token = self.isogeo.connect()
 
-        # # ------------ Isogeo search ----------------
-        # self.search_results = self.isogeo.search(self.token,
-        #                                          sub_resources=self.isogeo.sub_resources_available,
-        #                                          preprocess=1)
+        # ------------ Isogeo search ----------------
+        self.search_results = self.isogeo.search(self.token,
+                                                 page_size=0,
+                                                 whole_share=0)
+
+        print(self.search_results.get("results"))
 
         # ------------ Variables ----------------
-        li_tpls = [path.abspath(path.join(r'templates', tpl)) for tpl in listdir(r'templates') if path.splitext(tpl)[1].lower() == ".docx"]
+        li_tpls = [path.abspath(path.join(r'templates', tpl))
+                   for tpl in listdir(r'templates')
+                   if path.splitext(tpl)[1].lower() == ".docx"]
 
         # ------------ UI ----------------
         self.title('isogeo2office - ToolBox')
@@ -116,6 +123,7 @@ class Isogeo2office(Tk):
 
         # ## GLOBAL ##
         url_input = StringVar(self)
+        url_input.set(self.settings.get('basics').get('def_oc'))
         # logo
         logo_isogeo = PhotoImage(file=r'img/logo_isogeo.gif')
         Label(self,
@@ -124,18 +132,35 @@ class Isogeo2office(Tk):
                                       column=0, padx=2,
                                       pady=2, sticky="W")
 
-        # lb_count_avail_resources = Label(fr_global,
-        #                                  text="{} métadonnées partagées".format(self.search_results.get('total'))).pack()
+        lb_count_avail_resources = Label(fr_global,
+                                         text="{} métadonnées partagées"\
+                                              .format(self.search_results.get('total'))).pack()
+
+        # Frame: Progression bar
+        self.FrProg = Labelframe(self,
+                                 name='progression',
+                                 text=self.blabla.get('gui_prog'))
+        # variables
+        self.status = StringVar(self.FrProg, '')
+        # widgets
+        self.prog_layers = Progressbar(self.FrProg,
+                                       orient="horizontal")
+        Label(master=self.FrProg,
+              textvariable=self.status,
+              foreground='DodgerBlue').pack()
+        # widgets placement
+        self.prog_layers.pack(expand=1, fill='both')
 
         # OpenCatalog URL
         lb_input_oc = Label(fr_global,
                             text="Coller l'URL d'un OpenCatalog").pack()
-        ent_opencatalog = Entry(fr_global,
-                                textvariable=url_input,
-                                width=100)
-        # ent_OpenCatalog.insert(0, "https://open.isogeo.com/s/ad6451f1f9ca405ca6f78fabf46aeb10/Bue0ySfhmGOPw33jHMyaJtcOM4MY0/q/keyword:inspire-theme:administrativeunits")
-        ent_opencatalog.pack()
-        ent_opencatalog.focus_set()
+        self.ent_opencatalog = Entry(fr_global,
+                                     textvariable=url_input,
+                                     width=100)
+        self.ent_opencatalog.pack()
+        self.ent_opencatalog.insert(0, "yhouh")
+        # self.settings.get('basics').get('def_oc')
+        self.ent_opencatalog.focus_set()
 
         fr_global.grid(row=1, sticky="WE")
 
@@ -155,7 +180,7 @@ class Isogeo2office(Tk):
         ent_output_xl = Entry(fr_excel,
                               text="Nom du fichier en sortie: ",
                               textvariable=output_xl,
-                              width=100).pack()
+                              width=50).pack()
 
         # matching with another Excel file
         self.fr_input_xl_join = Labelframe(fr_excel,
@@ -180,11 +205,12 @@ class Isogeo2office(Tk):
         cb_input_xl_cols.pack()
 
 
-        self.fr_input_xl_join.pack()
+        # TO COMPLETE
+        # self.fr_input_xl_join.pack()
 
         Button(fr_excel,
                text="Excelization !",
-               command=lambda: process_excelization()).pack()
+               command=lambda: self.process_excelization(output_xl)).pack()
 
         fr_excel.grid(row=2)
 
@@ -192,12 +218,12 @@ class Isogeo2office(Tk):
 
         # ## WORD ##
         # variables
-        tpl_input = StringVar(self)
+        self.tpl_input = StringVar(self)
         # pick a template
         lb_input_tpl = Label(fr_word,
                              text="Choisir un template").pack()
         cb_available_tpl = Combobox(fr_word,
-                                    textvariable=tpl_input,
+                                    textvariable=self.tpl_input,
                                     values=li_tpls,
                                     width=100)
         cb_available_tpl.pack()
@@ -305,19 +331,37 @@ class Isogeo2office(Tk):
 
 # ----------------------------------------------------------------------------
 
-    def process_excelization(self, id_resource):
+    def process_excelization(self, output_filename):
         """ TO DO
         """
+        includes = ["conditions",
+                    "contacts",
+                    "coordinate-system",
+                    "events",
+                    "feature-attributes",
+                    "keywords",
+                    "limitations",
+                    "links",
+                    "specifications"]
 
-        # Sauvegarde du fichier Excel
+        self.search_results = self.isogeo.search(self.token,
+                                                 page_size=0,
+                                                 whole_share=0)
+
+        # ------------ REAL START ----------------------------
+        wb = Isogeo2xlsx()
+        wb.set_worksheets()
+
+        # parsing metadata
+        for md in search_results.get('results'):
+            wb.store_metadatas(md)
+
+        # tunning
+        wb.tunning_worksheets()
+
+        # saving the test file
         dstamp = datetime.now()
-        book.save(r"output\isogeo2xls_{0}_{1}{2}{3}{4}{5}{6}.xls".format(share_rez.get("name"),
-                                                                         dstamp.year,
-                                                                         dstamp.month,
-                                                                         dstamp.day,
-                                                                         dstamp.hour,
-                                                                         dstamp.minute,
-                                                                         dstamp.second))
+        wb.save(r"output\{0}.xlsx".format())
 
         # end of method
         return
@@ -325,21 +369,26 @@ class Isogeo2office(Tk):
     def process_wordification(self, search_results):
         """ TO DO
         """
-        ## WORDIZING METADATAS #################
-        for md in metadatas:
-            docx_tpl = DocxTemplate(path.realpath(tpl_input.get()))
+        for md in search_results.get("results"):
+            tpl = DocxTemplate(path.realpath(self.tpl_input.get()))
+            toDocx.md2docx(tpl, md, url_oc)
             dstamp = datetime.now()
-            md2docx(docx_tpl, 0, md, li_catalogs, url_base)  # passing parameters to the Word generator
-            docx_tpl.save(r"output\{0}_{8}_{7}_{1}{2}{3}{4}{5}{6}.docx".format(share_rez.get("name"),
-                                                                           dstamp.year,
-                                                                           dstamp.month,
-                                                                           dstamp.day,
-                                                                           dstamp.hour,
-                                                                           dstamp.minute,
-                                                                           dstamp.second,
-                                                                           md.get("_id")[:5],
-                                                                           remove_accents(md.get("title")[:15], "_")))
-
+            if not md.get('name'):
+                md_name = "NR"
+            elif '.' in md.get('name'):
+                md_name = md.get("name").split(".")[1]
+            else:
+                md_name = md.get("name")
+            tpl.save(r"..\output\{0}_{8}_{7}_{1}{2}{3}{4}{5}{6}.docx".format("TestDemoDev",
+                                                                             dstamp.year,
+                                                                             dstamp.month,
+                                                                             dstamp.day,
+                                                                             dstamp.hour,
+                                                                             dstamp.minute,
+                                                                             dstamp.second,
+                                                                             md.get("_id")[:5],
+                                                                             md_name))
+            del tpl
 
         # end of method
         return
@@ -361,8 +410,10 @@ class Isogeo2office(Tk):
 if __name__ == '__main__':
     """ standalone execution
     """
-    print(argv[1])
-    if argv[1] == str(1):
+    if len(argv) < 2:
+        app = Isogeo2office(ui_launcher=1)
+        app.mainloop()
+    elif argv[1] == str(1):
         print("launch UI")
         app = Isogeo2office(ui_launcher=1)
         app.mainloop()

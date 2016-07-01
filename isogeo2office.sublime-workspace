@@ -4,6 +4,130 @@
 		"selected_items":
 		[
 			[
+				"outpu",
+				"output_xl"
+			],
+			[
+				"format",
+				"format_lbl"
+			],
+			[
+				"sr",
+				"src_path"
+			],
+			[
+				"link",
+				"link_path"
+			],
+			[
+				"tag",
+				"tags"
+			],
+			[
+				"data",
+				"data_updated"
+			],
+			[
+				"ws_r",
+				"ws_rz"
+			],
+			[
+				"cols_r",
+				"cols_rz"
+			],
+			[
+				"tunn",
+				"tunning_worksheets"
+			],
+			[
+				"lin",
+				"link_edit"
+			],
+			[
+				"search_",
+				"search_results"
+			],
+			[
+				"keywor",
+				"keywords"
+			],
+			[
+				"li_c",
+				"li_cols_vector"
+			],
+			[
+				"wb_",
+				"wb_output"
+			],
+			[
+				"xlsx",
+				"xlsx_in"
+			],
+			[
+				"md",
+				"md_type"
+			],
+			[
+				"set",
+				"set_worksheets"
+			],
+			[
+				"Isogeo",
+				"Isogeo2xlsx"
+			],
+			[
+				"searc",
+				"search_results"
+			],
+			[
+				"app_",
+				"app_secret"
+			],
+			[
+				"no",
+				"no_ui_launcher"
+			],
+			[
+				"fr",
+				"fr_global"
+			],
+			[
+				"xl",
+				"xlsheet"
+			],
+			[
+				"xls",
+				"xlsheet"
+			],
+			[
+				"X",
+				"XslxReader"
+			],
+			[
+				"che",
+				"check_input_xlsx"
+			],
+			[
+				"x",
+				"xlsx_path"
+			],
+			[
+				"input",
+				"input_xl"
+			],
+			[
+				"cols",
+				"cols_names"
+			],
+			[
+				"isogeo",
+				"isogeo2office"
+			],
+			[
+				"wb",
+				"wb_input"
+			],
+			[
 				"sea",
 				"search_results"
 			],
@@ -46,10 +170,6 @@
 			[
 				"mot",
 				"mots_final"
-			],
-			[
-				"tag",
-				"tag_re"
 			],
 			[
 				"off",
@@ -148,10 +268,6 @@
 				"li_id_u"
 			],
 			[
-				"set",
-				"set_id_u"
-			],
-			[
 				"src",
 				"src_status"
 			],
@@ -162,10 +278,6 @@
 			[
 				"report",
 				"report_details"
-			],
-			[
-				"che",
-				"check_integrity_source"
 			],
 			[
 				"works",
@@ -224,20 +336,12 @@
 				"timeline"
 			],
 			[
-				"sr",
-				"script	Tag"
-			],
-			[
 				"last",
 				"last50"
 			],
 			[
 				"get",
 				"getWeekNumber"
-			],
-			[
-				"no",
-				"no_commas"
 			],
 			[
 				"read",
@@ -410,152 +514,24 @@
 			[
 				"er",
 				"error"
-			],
-			[
-				"saved",
-				"saved_path"
-			],
-			[
-				"GetFet",
-				"GetFeatureCount"
-			],
-			[
-				"text",
-				"textos"
-			],
-			[
-				"isogeo",
-				"isogeo2desktop"
-			],
-			[
-				"proxy",
-				"proxy_user"
-			],
-			[
-				"def_pr",
-				"def_proxy_pswd"
-			],
-			[
-				"def_pro",
-				"def_proxy_user"
-			],
-			[
-				"def_p",
-				"def_proxy_port"
-			],
-			[
-				"outu",
-				"output_alt"
-			],
-			[
-				"oper",
-				"opersys"
-			],
-			[
-				"recu",
-				"reccuring_file"
-			],
-			[
-				"recr",
-				"reccuring_file"
-			],
-			[
-				"Me",
-				"MetadatorVersion"
-			],
-			[
-				"form",
-				"format"
-			],
-			[
-				"Re",
-				"Read_TAB"
-			],
-			[
-				"url",
-				"url_input"
-			],
-			[
-				"styl",
-				"style_url"
-			],
-			[
-				"xls",
-				"xls_line"
-			],
-			[
-				"ow",
-				"li_owners"
-			],
-			[
-				"l_",
-				"li_motscles"
-			],
-			[
-				"typ",
-				"typ_keyword"
-			],
-			[
-				"searc",
-				"search_rez"
-			],
-			[
-				"sear",
-				"search_rez"
-			],
-			[
-				"se",
-				"search_rez"
-			],
-			[
-				"seac",
-				"search_resp"
-			],
-			[
-				"req",
-				"req_search"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
-			"file": "isogeo2office.py",
+			"file": "doc/word_templating.md",
 			"settings":
 			{
-				"buffer_size": 10349,
+				"buffer_size": 3482,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "modules/isogeo_sdk.py",
+			"file": "modules/isogeo2xlsx.py",
 			"settings":
 			{
-				"buffer_size": 22492,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "modules/isogeo2xls.py",
-			"settings":
-			{
-				"buffer_size": 9198,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "modules/isogeo2docx.py",
-			"settings":
-			{
-				"buffer_size": 10527,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "/D/Mes documents/GitHub/Perso/DicoGIS/DicoGIS.py",
-			"settings":
-			{
-				"buffer_size": 139122,
+				"buffer_size": 47866,
 				"line_ending": "Windows"
 			}
 		}
@@ -583,10 +559,18 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 392.0,
-		"last_filter": "",
+		"height": 196.0,
+		"last_filter": "virtu",
 		"selected_items":
 		[
+			[
+				"virtu",
+				"Virtualenv: Activate"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
 			[
 				"Pack",
 				"Package Control: Install Package"
@@ -632,10 +616,6 @@
 				"JSHint: Set Linting Preferences"
 			],
 			[
-				"inst",
-				"Package Control: Install Package"
-			],
-			[
 				"insta",
 				"Package Control: Install Package"
 			],
@@ -674,17 +654,77 @@
 	},
 	"expanded_folders":
 	[
-		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office",
-		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office/modules"
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/doc",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/modules",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/templates"
 	],
 	"file_history":
 	[
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/settings.ini",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/setup2exe.py",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/isogeo2office.py",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/doc/word_templating.md",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/fr/features/documentation/methodology.md",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/fr/features/documentation/md_edit_single.md",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/fr/features/documentation/md_history.md",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/requirements_32bits.txt",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/requirements_64bits.txt",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-api-py-minsdk/isogeo_pysdk/isogeo_sdk.py",
+		"/C/Users/julien.moura/Documents/GitHub/JM/DicoGIS/DicoGIS.py",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/isogeo2docx.py",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/isogeo2office.log",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/modules/isogeo_sdk.py",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/modules/isogeo2docx.py",
+		"/C/Users/julien.moura/Documents/GitHub/demo_ui.py",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/modules/isogeo_md_preprocessor.py",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/test.py",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/modules/isogeo2xlsx.py",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-api-py-minsdk/README.rst",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-api-py-minsdk/requirements.txt",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-plugin-qgis/Isogeo/isogeo_plugin.py",
+		"/C/Users/julien.moura/Documents/GitHub/JM/DicoGIS/modules/xlwriter/files2xlsx.py",
+		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Clients/_SUPPORT_SUIVI/05_Portail/recherche_geo_emprises.geojson",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-api-py-minsdk/.gitignore",
+		"/C/Users/julien.moura/Documents/gpmnsn/ISOGEO.pcf",
+		"//nas.hq.isogeo.fr/Pictures/2016/Team Isogeo/MakingOf/ReadMe.txt",
+		"/C/Users/julien.moura/Documents/GitHub/JM/Paris-Beer-Week/assets/js/app.js",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/virtenv/Lib/site-packages/openpyxl/worksheet/properties.py",
+		"/C/Users/julien.moura/Documents/GitHub/JM/DicoGIS/modules/isogeo/isogeo_sdk.py",
+		"/C/Users/julien.moura/Documents/GitHub/JM/DicoGIS/modules/georeaders/Infos_GDB.py",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/isogeo2xls.py",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-api-py-minsdk/isogeo_sdk.py",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-api-py-minsdk/isogeo_params_TPL.ini",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-plugin-qgis/.gitignore",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-api-py-minsdk/isogeo_params.ini",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/isogeo_api_sample_request_search_allIncludes.json",
+		"/C/Users/julien.moura/Documents/GitHub/JM/DicoGIS/requirements_64bits.txt",
+		"/C/Users/julien.moura/Documents/GitHub/JM/DicoGIS/requirements_32bits.txt",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/README.md",
+		"/C/Users/julien.moura/Documents/GitHub/JM/DicoGIS/README.md",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/test_xlsx.py",
+		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Commercial/Projets/_SUPPORT_SUIVI/XX_Statistiques par groupes de travail/StatsWorkGroup_201508.csv",
+		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Commercial/Projets/31_GPM_NANTES_STNAZAIRE/6_REALISATION/4_Intégration/Portail intranet/EmprisesGéo.json",
+		"/C/Users/julien.moura/Downloads/recherche_geo_emprises_sample.geojson",
+		"/C/Users/julien.moura/Downloads/departement.csv",
+		"/C/Users/julien.moura/Downloads/sql-pays.csv",
+		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Commercial/Projets/45_Total/3_REALISATION/3_Catalogage/Moteur de règles/rules.json",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/modules/isogeo2xls.py",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/modules/xlsx_reader.py",
+		"/C/Users/julien.moura/Documents/GitHub/JM/Paris-Beer-Week-2015/data/raw_data/xlsx2data.py",
+		"/C/Users/julien.moura/Documents/GitHub/JM/Paris-Beer-Week-2015/data/raw_data/getOpenBeerMap.py",
+		"/C/Users/julien.moura/Documents/GitHub/JM/Paris-Beer-Week-2015/data/raw_data/pbw_geocoder.py",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/.gitignore",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/output/README.md",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-plugin-qgis/README.md",
+		"/C/Users/julien.moura/Documents/GitHub/JM/DicoGIS/requirements.txt",
+		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/requirements2.txt",
+		"/D/Mes documents/GitHub/Perso/DicoGIS/DicoGIS.py",
 		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office/settings.ini",
 		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office/modules/isogeo_sdk.py",
 		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office/modules/isogeo_params.ini",
 		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office/isogeo2xls.py",
 		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office/isogeo2docx.py",
-		"/D/Mes documents/GitHub/Perso/DicoGIS/DicoGIS.py",
 		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office/requirements.txt",
 		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office/README.md",
 		"/D/Mes documents/GitHub/Isogeo/isogeo-2-office/modules/__init__.py",
@@ -700,7 +740,6 @@
 		"/C/Users/julien.moura/.qgis2/python/plugins/QuickOSM/config.json",
 		"/C/Users/julien.moura/.qgis2/python/plugins/QuickOSM/resources_rc.py",
 		"/C/Users/julien.moura/.qgis2/python/plugins/QuickOSM/LICENCE",
-		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo2office/.gitignore",
 		"/C/Users/julien.moura/Documents/GitHub/Isogeo/Passerelle_INSPIRE-OpenData/geogw/doc/README_csw2datagouvfr.md",
 		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Commercial/Projets/45_Total/3_REALISATION/3_Catalogage/rules-engine/rules-engine/data.json",
 		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Commercial/Projets/45_Total/3_REALISATION/3_Catalogage/rules-engine/rules-engine/rules.json",
@@ -749,64 +788,7 @@
 		"/C/Users/julien.moura/Documents/GitHub/Web/startbootstrap-sb-admin-2/README.md",
 		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/semantique.html",
 		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/timeline.html",
-		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/models.py",
-		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/static/json/mots_geomatique.json",
-		"/C/Users/julien.moura/Documents/GitHub/Web/startbootstrap-sb-admin-2/pages/tables.html",
-		"/C/Users/julien.moura/Documents/GitHub/Web/startbootstrap-sb-admin-2/dist/js/sb-admin-2.js",
-		"/C/Users/julien.moura/Documents/GitHub/Web/startbootstrap-sb-admin-2/bower_components/datatables-responsive/Readme.md",
-		"/C/Users/julien.moura/Documents/GitHub/Web/startbootstrap-sb-admin-2/bower_components/datatables-plugins/filtering/index.html",
-		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/jobs_georezo.py",
-		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/sb-admin-2.css",
-		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/fr/introduction/update.md",
-		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/fr/introduction/cataloging.md",
-		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/doc/tpl_nginx.conf",
-		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/nginx.conf",
-		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/doc/tpl_nginx_elpaso.conf",
-		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/elpaso",
-		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/doc/tpl_elpaso.conf",
-		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Community Management/Aide en ligne/Traduction/livraison_v2-12/releases_notes/README.md",
-		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Community Management/Aide en ligne/Traduction/livraison_v2-12/releases_notes/appendices.md",
-		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Community Management/Aide en ligne/Traduction/livraison_v2-12/quickstart/README.md",
-		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Community Management/Aide en ligne/Traduction/livraison_v2-12/guidedtour/README.md",
-		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Commercial/Projets/33_CA_BELFORT/3_REALISATION/SRS/RGF93 Lambert Zone 7 (CC48).prj",
-		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Commercial/Projets/33_CA_BELFORT/3_REALISATION/SRS/esriwkt.db",
-		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Commercial/Projets/10_AEV/06_REALISATION/03_Catalogage/Existant/aev_matched_2015-06-30.csv",
-		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/utils/modules/models.py",
-		"/C/Users/julien.moura/Documents/GitHub/Web/startbootstrap-sb-admin-2/pages/index.html",
-		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/templates/jobs/wordcloud.js",
-		"/C/Users/julien.moura/Documents/GitHub/Web/d3-cloud/examples/simple.html",
-		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/templates/jobs/base.html",
-		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/templates/jobs/semantique_test.html",
-		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/static/json/contrats_month.json",
-		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/utils/modules/test_serialize_dates.py",
-		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/reset_testeur.py",
-		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/elpaso.sqlite",
-		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/last_id_georezo.txt",
-		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/en/features/publish/share_opencatalog.md",
-		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/historik/import_georezo_historique.py",
-		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/analyseur.py",
-		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/utils/reset_testeur.py",
-		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Commercial/Projets/33_CA_BELFORT/3_REALISATION/SRS/oracle.db",
-		"/C/Users/julien.moura/Downloads/RGF93 Lambert Zone 7 (CC48).prj",
-		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/en/features/inventory/search.md",
-		"/C/Users/julien.moura/AppData/Local/Temp/search.md",
-		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Community Management/Aide en ligne/Traduction/test/features/inventory/README.md",
-		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Community Management/Aide en ligne/Traduction/test/Isogeo_Help_EN_Part1_240615_V2/features/inventory/search.md",
-		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Community Management/Aide en ligne/Traduction/test/Isogeo_Help_EN_Part1_240615_V2/features/inventory/README.md",
-		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/README.md",
-		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/historik/diagnostic.txt",
-		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/historik/toImport/bizarreries_connues.txt",
-		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/historik/test_new_jobs_georezo.py",
-		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/ElPaso.log.1",
-		"/C/Users/julien.moura/Downloads/esriwkt.db",
-		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/README.md",
-		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/book.json",
-		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/LANGS.md",
-		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/Help/local_build.bat",
-		"/C/Users/julien.moura/Google Drive/Racine Isogeo/Community Management/Aide en ligne/changeset_211_212",
-		"/C/Users/julien.moura/Documents/GitHub/Isogeo/isogeo-help/package.json",
-		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/templates/jobs/multibarchart.js",
-		"/C/Users/julien.moura/Documents/GitHub/JM/elpaso/requirements.txt"
+		"/C/Users/julien.moura/AppData/Local/Temp/fz3temp-1/models.py"
 	],
 	"find":
 	{
@@ -826,6 +808,38 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"progr",
+			"ent_",
+			"venem",
+			"wra",
+			"idx_resource",
+			"ws_resources",
+			"ws_services",
+			"idx_service",
+			"idx_raster",
+			"ws_rasters",
+			"li_cols_resource",
+			"li_cols_service",
+			"li_cols_raster",
+			"li_cols_vector",
+			"idx_vector",
+			"ws_vectors",
+			"WorksheetProperties",
+			"edit",
+			"From",
+			"isogeo",
+			"_",
+			" ",
+			"[ ",
+			" ]",
+			"]",
+			"offset",
+			"li_catalogs",
+			"exit",
+			"image",
+			"frWord",
+			"frExcel",
+			"frGlobal",
 			"nltk",
 			"navbar-nav",
 			"navbar",
@@ -921,39 +935,7 @@
 			"platf",
 			"startfile",
 			"path",
-			"getc",
-			"chdir",
-			"Read_SH",
-			"Read_S",
-			"message = ",
-			"command = ",
-			"columnspan = ",
-			"S  +",
-			"+W+E",
-			"N+S",
-			"pady = ",
-			"padx = ",
-			"sticky = ",
-			"column = ",
-			"row = ",
-			"state = ",
-			"parent = ",
-			"title = ",
-			"name = ",
-			"text = ",
-			"data.gouv.fr",
-			"http://data.gouv.fr",
-			"datagouv.fr",
-			"section2",
-			"\\",
-			"Mots",
-			"250952",
-			"252351",
-			"click",
-			"inser",
-			"print",
-			"insert",
-			"getStats"
+			"getc"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -961,6 +943,24 @@
 		"regex": false,
 		"replace_history":
 		[
+			"idx_rz",
+			"ws_rz",
+			"ws_s",
+			"idx_s",
+			"idx_r",
+			"ws_r",
+			"cols_rz",
+			"cols_s",
+			"cols_r",
+			"cols_v",
+			"idx_v",
+			"ws_v",
+			" ",
+			"_",
+			"",
+			"fr_word",
+			"fr_excel",
+			"fr_global",
 			"default",
 			"offer_text_clean",
 			"offer_text",
@@ -1070,25 +1070,7 @@
 			"text=",
 			"1403478000000",
 			"1405897200",
-			"1405292400",
-			"1404687600",
-			"1404082800",
-			"1403478000",
-			"1406502000",
-			"1388534400",
-			"-",
-			"/07/",
-			"\"semaine 30\"",
-			"\"semaine 29\"",
-			"\"semaine 28\"",
-			"\"semaine 27\"",
-			"\"semaine 26\"",
-			"\"semaine 25\"",
-			"self.xls_erreur",
-			"opersys",
-			"pdfpath",
-			"line_vectors",
-			"-"
+			"1405292400"
 		],
 		"reverse": false,
 		"show_context": true,
@@ -1104,29 +1086,27 @@
 			[
 				{
 					"buffer": 0,
-					"file": "isogeo2office.py",
+					"file": "doc/word_templating.md",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 10349,
+						"buffer_size": 3482,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								5033,
-								5033
+								785,
+								785
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/Markdown/Markdown.sublime-syntax"
 						},
 						"translation.x": 0.0,
-						"translation.y": 2170.0,
+						"translation.y": 299.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -1135,124 +1115,35 @@
 			]
 		},
 		{
-			"selected": 3,
+			"selected": 0,
 			"sheets":
 			[
 				{
 					"buffer": 1,
-					"file": "modules/isogeo_sdk.py",
+					"file": "modules/isogeo2xlsx.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 22492,
+						"buffer_size": 47866,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								19368,
-								19009
+								46369,
+								47623
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 10878.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "modules/isogeo2xls.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 9198,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 2610.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "modules/isogeo2docx.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 10527,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								10527,
-								10527
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 5340.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "/D/Mes documents/GitHub/Perso/DicoGIS/DicoGIS.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 139122,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								33836,
-								34027
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
+							"WordCountSyntax": "python.sublime-syntax",
+							"syntax": "Packages/Python/Python.sublime-syntax",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 13311.0,
+						"translation.y": 634220.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
@@ -1289,7 +1180,7 @@
 		"cols":
 		[
 			0.0,
-			0.555363321799,
+			0.962462462462,
 			1.0
 		],
 		"rows":
@@ -1301,7 +1192,7 @@
 	"menu_visible": true,
 	"output.exec":
 	{
-		"height": 167.0
+		"height": 191.0
 	},
 	"output.find_results":
 	{
@@ -1311,11 +1202,11 @@
 	{
 		"height": 94.0
 	},
-	"pinned_build_system": "",
+	"pinned_build_system": "Packages/Virtualenv/Python + Virtualenv.sublime-build",
 	"project": "isogeo2office.sublime-project",
 	"replace":
 	{
-		"height": 64.0
+		"height": 66.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -1353,7 +1244,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 186.0,
+	"side_bar_width": 50.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

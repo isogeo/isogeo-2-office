@@ -11,9 +11,6 @@
 #
 #
 
-# Isogeo
-git+https://github.com/Guts/isogeo-api-py-minsdk.git
-
 # dates
 arrow
 pytz
@@ -29,9 +26,12 @@ openpyxl
 xlwt
 
 # templating OOXML
-.\lib\lxml-3.5.0-cp27-none-win32.whl
+http://www.lfd.uci.edu/~gohlke/pythonlibs/6kbpejrn/lxml-3.6.0-cp27-cp27m-win32.whl
+# .\lib\lxml-3.5.0-cp27-none-win32.whl
 docxtpl
 
+# Isogeo
+isogeo-pysdk
 
 # -----------------------
 # All dependencies
