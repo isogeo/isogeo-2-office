@@ -85,16 +85,13 @@ class Isogeo2office(Tk):
         # ------------ Isogeo authentification ----------------
         self.isogeo = Isogeo(client_id=app_id,
                              client_secret=app_secret,
-                             lang=client_lang,
-                             platform="qa")
+                             lang=client_lang)
         self.token = self.isogeo.connect()
 
         # ------------ Isogeo search ----------------
         self.search_results = self.isogeo.search(self.token,
                                                  page_size=0,
                                                  whole_share=0)
-
-        print(self.search_results.get("results"))
 
         # ------------ Variables ----------------
         li_tpls = [path.abspath(path.join(r'templates', tpl))
@@ -138,7 +135,7 @@ class Isogeo2office(Tk):
         # Frame: Progression bar
         self.FrProg = Labelframe(self,
                                  name='progression',
-                                 text=self.blabla.get('gui_prog'))
+                                 text="Progression")
         # variables
         self.status = StringVar(self.FrProg, '')
         # widgets
@@ -304,7 +301,7 @@ class Isogeo2office(Tk):
         # end of method
         return
 
-    def settings_save(self, ):
+    def settings_save(self):
         """ TO DO
         """
 
