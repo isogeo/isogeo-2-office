@@ -33,8 +33,7 @@ from openpyxl import load_workbook
 from isogeo_pysdk import Isogeo
 
 # Custom modules
-# from modules.isogeo_sdk import Isogeo
-from modules.isogeo2xls import Isogeo2xlsx
+from modules.isogeo2xlsx import Isogeo2xlsx
 from modules.isogeo2docx import Isogeo2docx
 
 # ############################################################################

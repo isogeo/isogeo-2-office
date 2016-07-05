@@ -21,18 +21,18 @@ pyttk
 # REST API
 requests
 
+# Isogeo
+isogeo-pysdk
+
 # Excel
 openpyxl
 xlwt
 
 # templating OOXML
 # choose between 64 / 32 bits version by commenting/uncommenting lines below
-http://www.lfd.uci.edu/~gohlke/pythonlibs/6kbpejrn/lxml-3.6.0-cp27-cp27m-win_amd64.whl
-# .\lib\lxml-3.5.0-cp27-none-win_amd64.whl
+# http://www.lfd.uci.edu/~gohlke/pythonlibs/6kbpejrn/lxml-3.6.0-cp27-cp27m-win_amd64.whl
+.\lib\lxml-3.5.0-cp27-none-win_amd64.whl
 docxtpl
-
-# Isogeo
-isogeo-pysdk
 
 # -----------------------
 # All dependencies

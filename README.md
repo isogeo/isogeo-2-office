@@ -31,7 +31,7 @@ Desktop toolbox using Isogeo REST API to export metadatas into Microsoft Office 
 
 1. Download and install the last Python 2.7.x version (64bits version is recomended except if you use Python with incompatibilty like arcpy): https://www.python.org/downloads/windows ;
 2. Add Python to the environment path, with the System Advanced Settings or with *powershell* typing `[Environment]::SetEnvironmentVariable("Path", "$env:Path;C:\Python27\;C:\Python27\Scripts\", "User")` ;
-3. Download [get_pip.py](https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py) and execute it from a *powershell* prompt as administrator: `python get_pip.py` ;
+3. Download [get_pip.py](https://bootstrap.pypa.io/get-pip.py) and execute it from a *powershell* prompt as administrator: `python get_pip.py` ;
 4. Download the repository, open an **admin** *powershell* inside and execute: `pip install virtualenv` ;
 5. Execute: `set-executionpolicy RemoteSigned` to allow powershell advanced scripts. ;
 6. Create the environment: `virtualenv virtenv --no-site-packages` ;
