@@ -232,9 +232,11 @@ settings.ini
 templates/*
 !templates/template_Isogeo.docx
 
+# input folder
 input/*
 !input/README.md
 
+# output folder
 output/*
 !output/README.md
 
