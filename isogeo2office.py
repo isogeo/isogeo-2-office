@@ -48,12 +48,12 @@ _version = "1.1"
 logger = logging.getLogger()
 logging.captureWarnings(True)
 logger.setLevel(logging.DEBUG)  # all errors will be get
-log_form = logging.Formatter('%(asctime)s || %(levelname)s || %(message)s')
+log_form = logging.Formatter('%(asctime)s || %(levelname)s || %(module)s || %(message)s')
 logfile = RotatingFileHandler('isogeo2office.log', 'a', 5000000, 1)
 logfile.setLevel(logging.DEBUG)
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
-logger.info('\n============== Isogeo => Office =============')
+logger.info('\t============== Isogeo => Office =============')
 
 
 # ############################################################################
