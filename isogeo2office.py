@@ -27,14 +27,17 @@ from tkFileDialog import askopenfilename
 from Tkinter import Tk, StringVar, IntVar, Image, PhotoImage   # GUI
 from ttk import Label, Button, Entry, Checkbutton, Combobox  # advanced widgets
 from ttk import Labelframe, Progressbar, Style  # advanced widgets
+from webbrowser import open_new
 
 # 3rd party library
-from openpyxl import load_workbook
 from isogeo_pysdk import Isogeo
+from openpyxl import load_workbook
+import requests
 
 # Custom modules
 from modules.isogeo2xlsx import Isogeo2xlsx
 from modules.isogeo2docx import Isogeo2docx
+from modules import CheckNorris
 
 # ############################################################################
 # ########## Global ###############
@@ -86,11 +89,13 @@ class Isogeo2office(Tk):
         else:
             pass
         Tk.__init__(self)
+
         # ------------ Settings ----------------
         self.settings_load()
         app_id = self.settings.get('auth').get('app_id')
         app_secret = self.settings.get('auth').get('app_secret')
         client_lang = self.settings.get('basics').get('def_codelang')
+        def_oc = self.settings.get('basics').get('def_oc')
 
         # ------------ Isogeo authentification ----------------
         self.isogeo = Isogeo(client_id=app_id,
@@ -98,10 +103,12 @@ class Isogeo2office(Tk):
                              lang=client_lang)
         self.token = self.isogeo.connect()
 
-        # ------------ Isogeo search ----------------
+        # ------------ Isogeo search & shares ----------------
         self.search_results = self.isogeo.search(self.token,
                                                  page_size=0,
                                                  whole_share=0)
+        self.shares = self.isogeo.shares(self.token)
+        self.shares_info = self.get_shares_info()
 
         # ------------ Variables ----------------
         li_tpls = [path.abspath(path.join(r'templates', tpl))
@@ -109,27 +116,29 @@ class Isogeo2office(Tk):
                    if path.splitext(tpl)[1].lower() == ".docx"]
 
         # ------------ UI ----------------
-        self.title('isogeo2office - ToolBox')
-        icon = Image("photo", file=r'img/favicon_isogeo.gif')
-        self.call('wm', 'iconphoto', self._w, icon)
-        self.style = Style().theme_use('clam')
+        self.title("isogeo2office ToolBox - {0}".format(_version))
+        icon = Image("photo", file=r"img/favicon_isogeo.gif")
+        self.call("wm", "iconphoto", self._w, icon)
+        self.style = Style().theme_use("clam")
 
         # Frames
         fr_global = Labelframe(self,
-                               name='global',
-                               text="Générique")
+                               name="global",
+                               text="Général")
 
         fr_excel = Labelframe(self,
-                              name='excel',
-                              text="Export Excel")
+                              name="excel",
+                              text="Excel")
 
         fr_word = Labelframe(self,
-                             name='word',
-                             text="Export Word")
+                             name="word",
+                             text="Word")
 
         # ## GLOBAL ##
-        url_input = StringVar(self)
-        url_input.set(self.settings.get('basics').get('def_oc'))
+        self.app_metrics = StringVar(fr_global)
+        self.oc_msg = StringVar(fr_global)
+        self.url_input = StringVar(fr_global)
+
         # logo
         logo_isogeo = PhotoImage(file=r'img/logo_isogeo.gif')
         Label(self,
@@ -138,36 +147,36 @@ class Isogeo2office(Tk):
                                       column=0, padx=2,
                                       pady=2, sticky="W")
 
-        lb_count_avail_resources = Label(fr_global,
-                                         text="{} métadonnées partagées"\
-                                              .format(self.search_results.get('total'))).pack()
+        # metrics
+        self.app_metrics.set("{} métadonnées partagées via {} partages, appartenant à {} groupes de travail différents."\
+                             .format(self.search_results.get('total'),
+                                     len(self.shares),
+                                     len(self.shares_info[1])))
+        lb_app_metrics = Label(fr_global,
+                               textvariable=self.app_metrics)
 
-        # Frame: Progression bar
-        self.FrProg = Labelframe(self,
-                                 name='progression',
-                                 text="Progression")
-        # variables
-        self.status = StringVar(self.FrProg, '')
-        # widgets
-        self.prog_layers = Progressbar(self.FrProg,
-                                       orient="horizontal")
-        Label(master=self.FrProg,
-              textvariable=self.status,
-              foreground='DodgerBlue').pack()
-        # widgets placement
-        self.prog_layers.pack(expand=1, fill='both')
+        # OpenCatalog to display
+        self.lb_input_oc = Label(fr_global,
+                                 textvariable=self.oc_msg)
+        ent_opencatalog = Entry(fr_global,
+                                textvariable=self.url_input,
+                                width=100)
 
-        # OpenCatalog URL
-        lb_input_oc = Label(fr_global,
-                            text="Coller l'URL d'un OpenCatalog").pack()
-        self.ent_opencatalog = Entry(fr_global,
-                                     textvariable=url_input,
-                                     width=100)
-        self.ent_opencatalog.pack()
-        self.ent_opencatalog.insert(0, "yhouh")
-        # self.settings.get('basics').get('def_oc')
-        self.ent_opencatalog.focus_set()
+        if len(self.shares_info[2]) != 0:
+            logger.info("Any OpenCatalog found among the shares")
+            self.oc_msg.set("{} partages à cette application n'ont pas d'OpenCatalog."
+                            "\nAjouter l'application OpenCatalog en suivant les liens ci-dessous."
+                            "\nPuis redémarrer l'application.".format(len(self.shares_info[2])))
+            btn_open_shares = Button(fr_global,
+                                     text="Corriger les partages",
+                                     command=lambda: self.open_shares(self.shares_info[2]))            
+        else:
+            logger.info("All shares have an OpenCatalog")
 
+        # placement
+        lb_app_metrics.grid(row=1, column=1, sticky="WE")
+        self.lb_input_oc.grid(row=2, column=1, sticky="WE")
+        btn_open_shares.grid(row=2, column=2, sticky="WE")
         fr_global.grid(row=1, sticky="WE")
 
         # ------------------------------------------------------------
@@ -192,11 +201,6 @@ class Isogeo2office(Tk):
         self.fr_input_xl_join = Labelframe(fr_excel,
                                            name='excel_joiner',
                                            text="Jointure à partir d'un autre tableur Excel")
-        caz_xl_join = Checkbutton(fr_excel,
-                                  text=u'Joindre avec un autre fichier Excel',
-                                  variable=self.opt_xl_join,
-                                  command=lambda: self.ui_switch_xljoiner())
-        caz_xl_join.pack()
 
         bt_browse_input_xl = Button(self.fr_input_xl_join,
                                     text="Choisir un fichier en entrée",
@@ -211,14 +215,20 @@ class Isogeo2office(Tk):
         cb_input_xl_cols.pack()
 
 
-        # TO COMPLETE
+        # TO COMPLETE LATER
+        # caz_xl_join = Checkbutton(fr_excel,
+        #                   text=u'Joindre avec un autre fichier Excel',
+        #                   variable=self.opt_xl_join,
+        #                   command=lambda: self.ui_switch_xljoiner())
+        # caz_xl_join.pack()
+
         # self.fr_input_xl_join.pack()
 
         Button(fr_excel,
                text="Excelization !",
                command=lambda: self.process_excelization(output_xl)).pack()
 
-        fr_excel.grid(row=2)
+        fr_excel.grid(row=2, sticky="WE")
 
         # ------------------------------------------------------------
 
@@ -238,7 +248,7 @@ class Isogeo2office(Tk):
                text="Wordification !",
                command=lambda: process_wordification()).pack()
         # packing frame
-        fr_word.grid(row=3)
+        fr_word.grid(row=3, sticky="WE")
 
 # ----------------------------------------------------------------------------
 
@@ -299,6 +309,16 @@ class Isogeo2office(Tk):
         """
         pass
 
+    def open_shares(self, li_without_oc):
+        """ TO DO
+        """
+        for share in li_without_oc:
+            open_new(share)
+
+        # end of method
+        return
+
+
 # ----------------------------------------------------------------------------
 
     def settings_load(self):
@@ -319,6 +339,43 @@ class Isogeo2office(Tk):
         return
 
 # ----------------------------------------------------------------------------
+
+    def get_shares_info(self):
+        """TO DOCUMENT
+        """
+        # variables
+        li_oc = []
+        li_owners = []
+        li_without_oc = []
+        # parsing
+        for share in self.shares:
+            # Share caracteristics
+            share_name = share.get("name")
+            creator_name = share.get("_creator").get("contact").get("name")
+            creator_id = share.get("_creator").get("_tag")[6:]
+            share_url = "https://app.isogeo.com/groups/{}/admin/shares/{}"\
+                        .format(creator_id, share.get("_id"))
+
+            li_owners.append(creator_id)    # add to shares owners list
+            # OpenCatalog URL construction
+            share_details = self.isogeo.share(self.token, share_id=share.get("_id"))
+            url_OC = "http://open.isogeo.com/s/{}/{}".format(share.get("_id"),
+                                                             share_details.get("urlToken"))
+
+            # Testing URL
+            request = requests.get(url_OC)
+            if request.status_code != 200:
+                logger.info("No OpenCatalog set for this share: " + share_url)
+                li_without_oc.append(share_url)
+                continue
+            else:
+                pass
+            
+            # consolidate list of OpenCatalog available
+            li_oc.append((share_name, creator_id, creator_name, url_OC))
+            
+        # end of method
+        return li_oc, set(li_owners), li_without_oc
 
     def get_url_base(self, url_input):
         """ TO DO
