@@ -1,0 +1,1 @@
+from checknorris import CheckNorris

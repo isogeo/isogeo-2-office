@@ -70,7 +70,17 @@ class Isogeo2office(Tk):
     def __init__(self, ui_launcher=1):
         """
         """
-        #
+        # Invoke Check Norris
+        checker = CheckNorris()
+
+        # checking connection
+        if not checker.check_internet_connection():
+            logger.error('An Internet connection is required. Check your settings.')
+            exit()
+        else:
+            pass
+
+        # UI or not to UI
         if not ui_launcher:
             self.no_ui_launcher()
         else:
