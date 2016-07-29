@@ -18,6 +18,7 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 
 # Standard library
 import logging      # log files
+from os import path
 from time import sleep
 from Tkinter import Tk, StringVar
 from ttk import Label, Button, Entry
@@ -25,9 +26,6 @@ from webbrowser import open_new_tab
 
 # 3rd party library
 from isogeo_pysdk import Isogeo
-
-# custom
-from checknorris import CheckNorris
 
 # ############################################################################
 # ########## Classes ###############
@@ -38,26 +36,15 @@ class IsogeoAppAuth(Tk):
     """UI Class to
     docstring for Isogeo to Office
     """
-
     def __init__(self, prev_id="app_id", prev_secret="app_secret"):
         """ TO DOC
         """
-        # Invoke Check Norris
-        checker = CheckNorris()
-
-        # checking connection
-        if not checker.check_internet_connection():
-            logging.error('Internet connection required. Check your settings.')
-            exit()
-        else:
-            pass
-
         # instanciating
         Tk.__init__(self)
 
         # basics
         self.title(u'isogeo2office - Paramètres')
-        self.iconbitmap('../img/settings.ico')
+        self.iconbitmap(path.dirname(__file__) + r'/../img/settings.ico')
         self.resizable(width=False, height=False)
         self.focus_force()
 
@@ -101,6 +88,8 @@ class IsogeoAppAuth(Tk):
         btn_test.grid(row=1, column=3, rowspan=2, sticky="NSE")
         lb_msg.grid(row=3, columnspan=3, sticky="WE")
 
+        logging.info("UI form launched")
+
     def test_connection(self):
         """TODOC
         """
@@ -111,8 +100,10 @@ class IsogeoAppAuth(Tk):
             self.msg_bar.set("Tout est ok.")
             sleep(2)
             self.li_dest = [self.app_id.get(), self.app_secret.get()]
+            logging.info("New access id/secret granted")
             self.destroy()
         except Exception, e:
+            logging.error(e)
             self.msg_bar.set(e[1])
 
         # end of method

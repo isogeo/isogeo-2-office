@@ -39,6 +39,7 @@ import requests
 from modules.isogeo2xlsx import Isogeo2xlsx
 from modules.isogeo2docx import Isogeo2docx
 from modules import CheckNorris
+from modules import IsogeoAppAuth
 
 # ############################################################################
 # ########## Global ################
@@ -90,20 +91,29 @@ class Isogeo2office(Tk):
         else:
             pass
 
-        Tk.__init__(self)
-
         # ------------ Settings ----------------
         self.settings_load()
-        app_id = self.settings.get('auth').get('app_id')
-        app_secret = self.settings.get('auth').get('app_secret')
+        self.app_id = self.settings.get('auth').get('app_id')
+        self.app_secret = self.settings.get('auth').get('app_secret')
         client_lang = self.settings.get('basics').get('def_codelang')
         def_oc = self.settings.get('basics').get('def_oc')
 
         # ------------ Isogeo authentification ----------------
-        self.isogeo = Isogeo(client_id=app_id,
-                             client_secret=app_secret,
-                             lang=client_lang)
-        self.token = self.isogeo.connect()
+        try:
+            self.isogeo = Isogeo(client_id=self.app_id,
+                                 client_secret=self.app_secret,
+                                 lang=client_lang)
+            self.token = self.isogeo.connect()
+        except:
+            prompter = IsogeoAppAuth()
+            prompter.mainloop()
+            self.app_id = prompter.li_dest[0]
+            self.app_secret = prompter.li_dest[1]
+            self.isogeo = Isogeo(client_id=self.app_id,
+                                 client_secret=self.app_secret,
+                                 lang=client_lang)
+            self.token = self.isogeo.connect()
+            self.settings_save()
 
         # ------------ Isogeo search & shares ----------------
         self.search_results = self.isogeo.search(self.token,
@@ -118,6 +128,7 @@ class Isogeo2office(Tk):
                    if path.splitext(tpl)[1].lower() == ".docx"]
 
         # ------------ UI ----------------
+        Tk.__init__(self)
         self.title("isogeo2office - {0}".format(_version))
         icon = Image("photo", file=r"img/favicon_isogeo.gif")
         self.call("wm", "iconphoto", self._w, icon)
@@ -135,7 +146,6 @@ class Isogeo2office(Tk):
         fr_excel.grid(row=2, column=1, sticky="WE")
         fr_word.grid(row=3, column=1, sticky="WE")
         fr_process.grid(row=4, column=1, sticky="WE")
-
         
         # ------------------------------------------------------------
 
@@ -390,9 +400,15 @@ class Isogeo2office(Tk):
         # end of method
         return
 
-    def settings_save(self):
+    def settings_save(self, config_file=r"settings.ini"):
         """ TO DO
         """
+        config = SafeConfigParser()
+        config.read(path.realpath(config_file))
+        config.set('auth', 'app_id', self.app_id)
+        config.set('auth', 'app_secret', self.app_secret)
+        with open(path.realpath(config_file), 'wb') as configfile:
+            config.write(configfile)
 
         logger.info("Settings saved into: {}".format(config_file))
         # end of method
