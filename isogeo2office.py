@@ -23,11 +23,12 @@ import logging      # log files
 from logging.handlers import RotatingFileHandler
 from os import listdir, path
 from sys import argv, exit
+from time import sleep
 from tkFileDialog import askopenfilename
 from Tkinter import Tk, StringVar, IntVar, Image, PhotoImage   # GUI
 from ttk import Label, Button, Entry, Checkbutton, Combobox  # advanced widgets
 from ttk import Labelframe, Progressbar, Style  # advanced widgets
-from webbrowser import open_new
+from webbrowser import open_new_tab
 
 # 3rd party library
 from isogeo_pysdk import Isogeo
@@ -40,7 +41,7 @@ from modules.isogeo2docx import Isogeo2docx
 from modules import CheckNorris
 
 # ############################################################################
-# ########## Global ###############
+# ########## Global ################
 # ##################################
 
 # VERSION
@@ -88,6 +89,7 @@ class Isogeo2office(Tk):
             self.no_ui_launcher()
         else:
             pass
+
         Tk.__init__(self)
 
         # ------------ Settings ----------------
@@ -116,49 +118,48 @@ class Isogeo2office(Tk):
                    if path.splitext(tpl)[1].lower() == ".docx"]
 
         # ------------ UI ----------------
-        self.title("isogeo2office ToolBox - {0}".format(_version))
+        self.title("isogeo2office - {0}".format(_version))
         icon = Image("photo", file=r"img/favicon_isogeo.gif")
         self.call("wm", "iconphoto", self._w, icon)
         self.style = Style().theme_use("clam")
+        self.resizable(width=False, height=False)
+        self.focus_force()
 
         # Frames
-        fr_global = Labelframe(self,
-                               name="global",
-                               text="Général")
+        fr_isogeo = Labelframe(self, name="isogeo", text="Isogeo")
+        fr_excel = Labelframe(self, name="excel", text="Excel")
+        fr_word = Labelframe(self, name="word", text="Word")
+        fr_process = Labelframe(self, name="process", text="Lancer")
 
-        fr_excel = Labelframe(self,
-                              name="excel",
-                              text="Excel")
+        fr_isogeo.grid(row=1, column=1, sticky="WE")
+        fr_excel.grid(row=2, column=1, sticky="WE")
+        fr_word.grid(row=3, column=1, sticky="WE")
+        fr_process.grid(row=4, column=1, sticky="WE")
 
-        fr_word = Labelframe(self,
-                             name="word",
-                             text="Word")
+        
+        # ------------------------------------------------------------
 
         # ## GLOBAL ##
-        self.app_metrics = StringVar(fr_global)
-        self.oc_msg = StringVar(fr_global)
-        self.url_input = StringVar(fr_global)
+        self.app_metrics = StringVar(fr_isogeo)
+        self.oc_msg = StringVar(fr_isogeo)
+        self.url_input = StringVar(fr_isogeo)
 
         # logo
-        logo_isogeo = PhotoImage(file=r'img/logo_isogeo.gif')
-        Label(self,
-              borderwidth=2,
-              image=logo_isogeo).grid(row=1, rowspan=2,
-                                      column=0, padx=2,
-                                      pady=2, sticky="W")
+        self.logo_isogeo = PhotoImage(master=fr_isogeo, file=r'img/logo_isogeo.gif')
+        logo_isogeo = Label(fr_isogeo, borderwidth=2, image=self.logo_isogeo)
 
         # metrics
-        self.app_metrics.set("{} métadonnées partagées via {} partages, appartenant à {} groupes de travail différents."\
+        self.app_metrics.set("{} métadonnées partagées via {} partages,\nappartenant à {} groupes de travail différents."\
                              .format(self.search_results.get('total'),
                                      len(self.shares),
                                      len(self.shares_info[1])))
-        lb_app_metrics = Label(fr_global,
+        lb_app_metrics = Label(fr_isogeo,
                                textvariable=self.app_metrics)
 
         # OpenCatalog to display
-        self.lb_input_oc = Label(fr_global,
+        self.lb_input_oc = Label(fr_isogeo,
                                  textvariable=self.oc_msg)
-        ent_opencatalog = Entry(fr_global,
+        ent_opencatalog = Entry(fr_isogeo,
                                 textvariable=self.url_input,
                                 width=100)
 
@@ -167,17 +168,24 @@ class Isogeo2office(Tk):
             self.oc_msg.set("{} partages à cette application n'ont pas d'OpenCatalog."
                             "\nAjouter l'application OpenCatalog en suivant les liens ci-dessous."
                             "\nPuis redémarrer l'application.".format(len(self.shares_info[2])))
-            btn_open_shares = Button(fr_global,
+            btn_open_shares = Button(fr_isogeo,
                                      text="Corriger les partages",
-                                     command=lambda: self.open_shares(self.shares_info[2]))            
+                                     command=lambda: self.open_urls(self.shares_info[2]))            
         else:
             logger.info("All shares have an OpenCatalog")
+            self.oc_msg.set("Configuration OK.")
+            li_oc = [share[3] for share in self.shares_info[0]]
+            btn_open_shares = Button(fr_isogeo,
+                                     text="Consulter les partages",
+                                     command=lambda: self.open_urls(li_oc))
 
-        # placement
+        # griding widgets
+        logo_isogeo.grid(row=1, rowspan=3,
+                    column=0, padx=2,
+                    pady=2, sticky="W")
         lb_app_metrics.grid(row=1, column=1, sticky="WE")
         self.lb_input_oc.grid(row=2, column=1, sticky="WE")
         btn_open_shares.grid(row=2, column=2, sticky="WE")
-        fr_global.grid(row=1, sticky="WE")
 
         # ------------------------------------------------------------
 
@@ -185,35 +193,20 @@ class Isogeo2office(Tk):
         # variables
         output_xl = StringVar(self)
         self.opt_xl_join = IntVar(fr_excel)
+        self.input_xl_join_col = StringVar(fr_excel)
         self.input_xl = ""
         li_input_xl_cols = []
-        self.input_xl_join_col = StringVar()
+
+        # logo
+        self.logo_excel = PhotoImage(master=fr_excel, file=r'img/logo_excel2013.gif')
+        logo_excel = Label(fr_excel, borderwidth=2, image=self.logo_excel)\
 
         # output file
         lb_output_xl = Label(fr_excel,
-                             text="Nom du fichier en sortie: ").pack()
+                             text="Nom du fichier en sortie: ")
         ent_output_xl = Entry(fr_excel,
                               text="Nom du fichier en sortie: ",
-                              textvariable=output_xl,
-                              width=50).pack()
-
-        # matching with another Excel file
-        self.fr_input_xl_join = Labelframe(fr_excel,
-                                           name='excel_joiner',
-                                           text="Jointure à partir d'un autre tableur Excel")
-
-        bt_browse_input_xl = Button(self.fr_input_xl_join,
-                                    text="Choisir un fichier en entrée",
-                                    command=lambda: self.get_input_xl()).pack()
-        lb_input_xl = Label(self.fr_input_xl_join,
-                            text=self.input_xl).pack()
-
-        cb_input_xl_cols = Combobox(self.fr_input_xl_join,
-                                    textvariable=self.input_xl_join_col,
-                                    values=li_input_xl_cols,
-                                    width=100)
-        cb_input_xl_cols.pack()
-
+                              textvariable=output_xl)
 
         # TO COMPLETE LATER
         # caz_xl_join = Checkbutton(fr_excel,
@@ -224,32 +217,87 @@ class Isogeo2office(Tk):
 
         # self.fr_input_xl_join.pack()
 
-        Button(fr_excel,
-               text="Excelization !",
-               command=lambda: self.process_excelization(output_xl)).pack()
+        # # matching with another Excel file
+        # self.fr_input_xl_join = Labelframe(fr_excel,
+        #                                    name='excel_joiner',
+        #                                    text="Jointure à partir d'un autre tableur Excel")
 
-        fr_excel.grid(row=2, sticky="WE")
+        # bt_browse_input_xl = Button(self.fr_input_xl_join,
+        #                             text="Choisir un fichier en entrée",
+        #                             command=lambda: self.get_input_xl()).pack()
+        # lb_input_xl = Label(self.fr_input_xl_join,
+        #                     text=self.input_xl).pack()
+
+        # cb_input_xl_cols = Combobox(self.fr_input_xl_join,
+        #                             textvariable=self.input_xl_join_col,
+        #                             values=li_input_xl_cols,
+        #                             width=100)
+
+        # griding widgets
+        logo_excel.grid(row=1, rowspan=3,
+                        column=0, padx=2,
+                        pady=2, sticky="W")
+        lb_output_xl.grid(row=1, column=1)
+        ent_output_xl.grid(row=2, column=1)
 
         # ------------------------------------------------------------
 
         # ## WORD ##
         # variables
         self.tpl_input = StringVar(self)
+        
+        # logo
+        self.logo_word = PhotoImage(master=fr_word, file=r'img/logo_word2013.gif')
+        logo_word = Label(fr_word, borderwidth=2, image=self.logo_word)
+        
         # pick a template
         lb_input_tpl = Label(fr_word,
-                             text="Choisir un template").pack()
+                             text="Choisir un template")
         cb_available_tpl = Combobox(fr_word,
                                     textvariable=self.tpl_input,
-                                    values=li_tpls,
-                                    width=100)
-        cb_available_tpl.pack()
+                                    values=li_tpls)
+      
+        # griding widgets
+        logo_word.grid(row=1, rowspan=3,
+                       column=0, padx=2,
+                       pady=2, sticky="W")
+        lb_input_tpl.grid(row=1, column=1)
+        cb_available_tpl.grid(row=2, column=1)
 
-        Button(fr_word,
-               text="Wordification !",
-               command=lambda: process_wordification()).pack()
-        # packing frame
-        fr_word.grid(row=3, sticky="WE")
+        # ------------------------------------------------------------
 
+        # ## PROCESS ##
+        # variables
+        self.opt_excel = IntVar(fr_process)
+        self.opt_word = IntVar(fr_process)
+
+        # logo
+        self.logo_process = PhotoImage(master=fr_process, file=r'img/logo_process.gif')
+        logo_process = Label(fr_process, borderwidth=2, image=self.logo_process)
+
+        # options
+        caz_go_excel = Checkbutton(fr_process,
+                                   text=u'Exporter tout le catalogue en Excel',
+                                   variable=self.opt_excel)
+
+        caz_go_word = Checkbutton(fr_process,
+                                   text=u'Exporter chaque métadonnée en Word',
+                                   variable=self.opt_word)
+        
+        # launcher
+        self.btn_go = Button(fr_process,
+                             text="Lancer l'export",
+                             command=lambda: process_wordification())
+
+        # griding widgets
+        logo_process.grid(row=1, rowspan=3,
+                          column=0, padx=2,
+                          pady=2, sticky="W")
+        
+        caz_go_word.grid(row=2, column=1)
+        caz_go_excel.grid(row=2, column=2)
+        self.btn_go.grid(row=3, column=1, columnspan=2, sticky="WE")
+        
 # ----------------------------------------------------------------------------
 
     def get_input_xl(self):
@@ -309,11 +357,20 @@ class Isogeo2office(Tk):
         """
         pass
 
-    def open_shares(self, li_without_oc):
-        """ TO DO
+    def open_urls(self, li_url):
+        """ Open URLs in new tabs in the default brower.
+        It waits a few seconds between the first and the next URLs
+        to handle case when the webbrowser is not opened yet and let the
+        time to do.
         """
-        for share in li_without_oc:
-            open_new(share)
+        x = 1
+        for url in li_url:        
+            if x > 1: 
+                sleep()
+            else:
+                pass
+            open_new_tab(url)
+            x += 1
 
         # end of method
         return
@@ -321,12 +378,14 @@ class Isogeo2office(Tk):
 
 # ----------------------------------------------------------------------------
 
-    def settings_load(self):
+    def settings_load(self, config_file=r"settings.ini"):
         """ TO DO
         """
         config = SafeConfigParser()
         config.read(r"settings.ini")
         self.settings = {s:dict(config.items(s)) for s in config.sections()}
+
+        logger.info("Settings loaded from: {}".format(config_file))
 
         # end of method
         return
@@ -335,6 +394,7 @@ class Isogeo2office(Tk):
         """ TO DO
         """
 
+        logger.info("Settings saved into: {}".format(config_file))
         # end of method
         return
 
@@ -372,7 +432,7 @@ class Isogeo2office(Tk):
                 pass
             
             # consolidate list of OpenCatalog available
-            li_oc.append((share_name, creator_id, creator_name, url_OC))
+            li_oc.append((share_name, creator_id, creator_name, share_url, url_OC))
             
         # end of method
         return li_oc, set(li_owners), li_without_oc
@@ -463,6 +523,7 @@ class Isogeo2office(Tk):
         settings.ini
         """
         logger.info('Launched from command prompt')
+        self.settings_load()
         exit()
         pass
 
