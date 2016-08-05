@@ -25,9 +25,9 @@ from os import listdir, path
 from sys import argv, exit
 from time import sleep
 from tkFileDialog import askopenfilename
-from Tkinter import Tk, StringVar, IntVar, Image, PhotoImage   # GUI
+from Tkinter import Tk, StringVar, IntVar, Image, PhotoImage, VERTICAL   # GUI
 from ttk import Label, Button, Entry, Checkbutton, Combobox  # advanced widgets
-from ttk import Labelframe, Progressbar, Style  # advanced widgets
+from ttk import Labelframe, Progressbar, Separator, Style  # advanced widgets
 from webbrowser import open_new_tab
 
 # 3rd party library
@@ -59,7 +59,7 @@ logfile = RotatingFileHandler('isogeo2office_log.log', 'a', 5000000, 1)
 logfile.setLevel(logging.DEBUG)
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
-logger.info('\t============== Isogeo => Office =============')
+logger.info('\n\n\t============== Isogeo => Office =============')
 
 
 # ############################################################################
@@ -150,7 +150,7 @@ class Isogeo2office(Tk):
         self.title("isogeo2office - {0}".format(_version))
         icon = Image("photo", file=r"img/favicon_isogeo.gif")
         self.call("wm", "iconphoto", self._w, icon)
-        self.style = Style().theme_use("clam")
+        # self.style = Style().theme_use("clam")
         self.resizable(width=False, height=False)
         self.focus_force()
 
@@ -173,11 +173,12 @@ class Isogeo2office(Tk):
         self.url_input = StringVar(fr_isogeo)
 
         # logo
-        self.logo_isogeo = PhotoImage(master=fr_isogeo, file=r'img/logo_isogeo.gif')
+        self.logo_isogeo = PhotoImage(master=fr_isogeo,
+                                      file=r'img/logo_isogeo.gif')
         logo_isogeo = Label(fr_isogeo, borderwidth=2, image=self.logo_isogeo)
 
         # metrics
-        self.app_metrics.set(_("{} metadata in {} shares,\nowned by {} different workgroups.")\
+        self.app_metrics.set(_("{} metadata in {} shares,\nowned by {} workgroups.")\
                              .format(self.search_results.get('total'),
                                      len(self.shares),
                                      len(self.shares_info[1])))
@@ -204,16 +205,21 @@ class Isogeo2office(Tk):
             self.oc_msg.set(_("Configuration OK."))
             li_oc = [share[3] for share in self.shares_info[0]]
             btn_open_shares = Button(fr_isogeo,
-                                     text=_("Consult the shares"),
+                                     text=_("Consult\nthe shares"),
                                      command=lambda: self.open_urls(li_oc))
 
         # griding widgets
         logo_isogeo.grid(row=1, rowspan=3,
                          column=0, padx=2,
                          pady=2, sticky="W")
-        lb_app_metrics.grid(row=1, column=1, sticky="WE")
-        self.lb_input_oc.grid(row=2, column=1, sticky="WE")
-        btn_open_shares.grid(row=2, column=2, sticky="WE")
+        Separator(fr_isogeo, orient=VERTICAL).grid(row=1, rowspan=3,
+                                                   column=1, padx=2,
+                                                   pady=2, sticky="NSE")
+        lb_app_metrics.grid(row=1, column=2, sticky="WE")
+        self.lb_input_oc.grid(row=2, column=2, sticky="WE")
+        btn_open_shares.grid(row=1, rowspan=3,
+                             column=3, padx=4, pady=2,
+                             sticky="NSWE")
 
         # --------------------------------------------------------------------
 
@@ -224,6 +230,8 @@ class Isogeo2office(Tk):
         self.input_xl_join_col = StringVar(fr_excel)
         self.input_xl = ""
         li_input_xl_cols = []
+
+        self.output_xl.set(self.settings.get('basics').get('excel_out'))
 
         # logo
         self.logo_excel = PhotoImage(master=fr_excel,
@@ -265,8 +273,11 @@ class Isogeo2office(Tk):
         logo_excel.grid(row=1, rowspan=3,
                         column=0, padx=2,
                         pady=2, sticky="W")
-        lb_output_xl.grid(row=1, column=1)
-        ent_output_xl.grid(row=2, column=1)
+        Separator(fr_excel, orient=VERTICAL).grid(row=1, rowspan=3,
+                                                  column=1, padx=2,
+                                                  pady=2, sticky="NSE")
+        lb_output_xl.grid(row=2, column=2, sticky="W")
+        ent_output_xl.grid(row=3, column=2, sticky="W")
 
         # --------------------------------------------------------------------
 
@@ -289,8 +300,11 @@ class Isogeo2office(Tk):
         logo_word.grid(row=1, rowspan=3,
                        column=0, padx=2,
                        pady=2, sticky="W")
-        lb_input_tpl.grid(row=1, column=1)
-        cb_available_tpl.grid(row=2, column=1)
+        Separator(fr_word, orient=VERTICAL).grid(row=1, rowspan=3,
+                                                 column=1, padx=2,
+                                                 pady=2, sticky="NSE")
+        lb_input_tpl.grid(row=1, column=2)
+        cb_available_tpl.grid(row=2, column=2)
 
         # --------------------------------------------------------------------
 
@@ -298,6 +312,8 @@ class Isogeo2office(Tk):
         # variables
         self.opt_excel = IntVar(fr_process)
         self.opt_word = IntVar(fr_process)
+        self.opt_excel.set(int(self.settings.get('basics').get('excel_opt')))
+        self.opt_word.set(int(self.settings.get('basics').get('word_opt')))
 
         # logo
         self.logo_process = PhotoImage(master=fr_process,
@@ -318,15 +334,21 @@ class Isogeo2office(Tk):
         self.btn_go = Button(fr_process,
                              text=_("Launch"),
                              command=lambda: self.process())
+        # progression bar
+        self.progbar = Progressbar(fr_process,
+                                   orient="horizontal")
 
         # griding widgets
-        logo_process.grid(row=1, rowspan=3,
+        logo_process.grid(row=1, rowspan=5,
                           column=0, padx=2,
                           pady=2, sticky="W")
-
-        caz_go_word.grid(row=2, column=1)
-        caz_go_excel.grid(row=2, column=2)
-        self.btn_go.grid(row=3, column=1, columnspan=2, sticky="WE")
+        Separator(fr_process, orient=VERTICAL).grid(row=1, rowspan=4,
+                                                    column=1, padx=2,
+                                                    pady=2, sticky="NSE")
+        caz_go_word.grid(row=2, column=2, sticky="W")
+        caz_go_excel.grid(row=3, column=2, sticky="W")
+        self.btn_go.grid(row=4, column=2, columnspan=3, sticky="WE")
+        self.progbar.grid(row=5, column=2, columnspan=3, sticky="WE")
 
         logger.info("Main UI instanciated & displayed")
 
@@ -378,7 +400,7 @@ class Isogeo2office(Tk):
         x = 1
         for url in li_url:
             if x > 1:
-                sleep()
+                sleep(3)
             else:
                 pass
             open_new_tab(url)
@@ -405,9 +427,14 @@ class Isogeo2office(Tk):
         """Save settings into the ini file."""
         config = SafeConfigParser()
         config.read(path.realpath(config_file))
+        # new values
         config.set('auth', 'app_id', self.app_id)
         config.set('auth', 'app_secret', self.app_secret)
-        config.set('basics', 'out_excel', self.output_xl.get())
+        config.set('basics', 'excel_out', self.output_xl.get())
+        config.set('basics', 'excel_opt', str(self.opt_excel.get()))
+        config.set('basics', 'word_opt', str(self.opt_word.get()))
+        config.set('basics', 'word_tpl', self.tpl_input.get())
+        # writing
         with open(path.realpath(config_file), 'wb') as configfile:
             config.write(configfile)
 
@@ -451,6 +478,7 @@ class Isogeo2office(Tk):
             li_oc.append((share_name, creator_id, creator_name,
                           share_url, url_oc))
 
+        logger.info("Isogeo - Shares informations retrieved.")
         # end of method
         return li_oc, set(li_owners), li_without_oc
 
@@ -472,10 +500,16 @@ class Isogeo2office(Tk):
 
     def process(self):
         """Process export according to options set."""
+        if not (self.opt_excel.get() + self.opt_word.get()):
+            logger.error("Any export option selected.")
+            return
+        else:
+            pass
+
         # savings in ini file
         self.settings_save()
 
-        # Isogeo request
+        # prepare Isogeo request
         includes = ["conditions",
                     "contacts",
                     "coordinate-system",
@@ -488,14 +522,17 @@ class Isogeo2office(Tk):
 
         self.search_results = self.isogeo.search(self.token,
                                                  sub_resources=includes)
+        self.progbar["maximum"] = self.search_results.get("total")
+        logger.info("Isogeo - metadatas retrieved.")
         # export
         if self.opt_excel.get():
-
+            logger.info("Excel - START")
             self.process_excelization()
         else:
             pass
 
         if self.opt_word.get():
+            logger.info("WORD - START")
             self.process_wordification()
         else:
             pass
@@ -505,20 +542,34 @@ class Isogeo2office(Tk):
 
     def process_excelization(self):
         """Export metadatas shared into an Excel worksheet."""
+        # check infos required
+        if self.output_xl.get() == "":
+            self.output_xl.set("isogeo2xlsx")
+        else:
+            pass
+
+        # worksheet
         wb = Isogeo2xlsx()
         wb.set_worksheets()
 
         # parsing metadata
         for md in self.search_results.get('results'):
             wb.store_metadatas(md)
+            # progression bar
+            self.progbar["value"] = self.progbar["value"] + 1
+            self.update()
 
         # tunning
         wb.tunning_worksheets()
 
         # saving the test file
         # dstamp = datetime.now()
-        wb.save(r"output\{0}.xlsx".format(self.output_xl.get()))
+        out_xlsx_path = path.realpath(path.join(r"output",
+                                                self.output_xl.get() + ".xlsx"))
+        wb.save(out_xlsx_path)
 
+        logger.info("Excel - DONE {}"
+                    .format(out_xlsx_path))
         # end of method
         return
 
@@ -527,11 +578,30 @@ class Isogeo2office(Tk):
 
         Transformation is based on the template selected.
         """
+        # check infos required
+        if self.tpl_input.get() == "":
+            logger.error("Any template selected.")
+            return
+        else:
+            pass
+
+        # transformer
         to_docx = Isogeo2docx()
 
         for md in self.search_results.get("results"):
+            # get OpenCatalog related to each metadata
+            if len(self.shares) == 1:
+                url_oc = [share[3] for share in self.shares_info[0]][0]
+                print(url_oc)
+                pass
+            else:
+                print("ups")
+
+            # templating
             tpl = DocxTemplate(path.realpath(self.tpl_input.get()))
             to_docx.md2docx(tpl, md, url_oc)
+
+            # saving
             dstamp = datetime.now()
             if not md.get('name'):
                 md_name = "NR"
@@ -539,17 +609,23 @@ class Isogeo2office(Tk):
                 md_name = md.get("name").split(".")[1]
             else:
                 md_name = md.get("name")
-            tpl.save(r"..\output\{0}_{8}_{7}_{1}{2}{3}{4}{5}{6}.docx".format("TestDemoDev",
-                                                                             dstamp.year,
-                                                                             dstamp.month,
-                                                                             dstamp.day,
-                                                                             dstamp.hour,
-                                                                             dstamp.minute,
-                                                                             dstamp.second,
-                                                                             md.get("_id")[:5],
-                                                                             md_name))
+            out_docx_path = path.realpath(self.output_xl.get())
+            tpl.save(r"output\{0}_{8}_{7}_{1}{2}{3}{4}{5}{6}.docx".format("TestDemoDev",
+                                                                          dstamp.year,
+                                                                          dstamp.month,
+                                                                          dstamp.day,
+                                                                          dstamp.hour,
+                                                                          dstamp.minute,
+                                                                          dstamp.second,
+                                                                          md.get("_id")[:5],
+                                                                          md_name))
             del tpl
 
+            # progression bar
+            self.progbar["value"] = self.progbar["value"] + 1
+            self.update()
+
+        logger.info("Word - DONE: {}".format(out_docx_path))
         # end of method
         return
 
@@ -567,7 +643,7 @@ class Isogeo2office(Tk):
 # ###################################
 
 if __name__ == '__main__':
-    """ standalone execution
+    """standalone execution
     """
     if len(argv) < 2:
         app = Isogeo2office(ui_launcher=1)
