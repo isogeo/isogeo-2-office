@@ -2,14 +2,14 @@
 #!/usr/bin/env python
 from __future__ import (absolute_import, print_function, unicode_literals)
 # ----------------------------------------------------------------------------
-# Name:         Isogeo
-# Purpose:      Get metadatas from an Isogeo share and store it into files
+# Name:         Isogeo API minimal auth ui
+# Purpose:      Minimal UI form to check application id/secret and save it
 #
 # Author:       Julien Moura (@geojulien)
 #
 # Python:       2.7.x
-# Created:      18/12/2015
-# Updated:      22/01/2016
+# Created:      28/07/2016
+# Updated:      29/07/2016
 # ---------------------------------------------------------------------------
 
 # ############################################################################
@@ -17,6 +17,7 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 # ##################################
 
 # Standard library
+import gettext
 import logging      # log files
 from os import path
 from time import sleep
@@ -33,18 +34,36 @@ from isogeo_pysdk import Isogeo
 
 
 class IsogeoAppAuth(Tk):
-    """UI Class to
-    docstring for Isogeo to Office
-    """
-    def __init__(self, prev_id="app_id", prev_secret="app_secret"):
-        """ TO DOC
+    """UI class to configure client id/secret of an Isogeo 3rd party app."""
+
+    def __init__(self, prev_id="app_id", prev_secret="app_secret",
+                 app_name="Isogeo Application", lang=None):
+        """UI class to insert client id/secret of an Isogeo 3rd party application.
+
+        keyword arguments:
+            - prev_id: an eventual previous client ID to insert
+            - prev_secret: an eventual previous client secret to insert
         """
-        # instanciating
-        Tk.__init__(self)
+        Tk.__init__(self)  # instanciating
+
+        # localization
+        try:
+            # lang.install(unicode=1)
+            _ = lang.gettext
+            logging.info(u"Custom language set: {}"
+                         .format(_(u"English").decode("UTF8")))
+        except Exception, e:
+            logging.error(e)
+            _ = gettext.gettext
+            logging.info(u"Default language set: English")
 
         # basics
-        self.title(u'isogeo2office - Paramètres')
-        self.iconbitmap(path.dirname(__file__) + r'/../img/settings.ico')
+        self.title(_(u"{} - API authentication settings").format(app_name))
+        try:
+            self.iconbitmap(path.dirname(__file__) + r'/../img/settings.ico')
+        except:
+            logging.error(u"Icon file not reachable")
+            pass
         self.resizable(width=False, height=False)
         self.focus_force()
 
@@ -55,30 +74,31 @@ class IsogeoAppAuth(Tk):
         self.app_secret.set(prev_secret)
 
         self.msg_bar = StringVar(self)
-        self.msg_bar.set("Insérer les informations d'accès transmises par Isogeo.")
+        self.msg_bar.set(_(u"Insert access transmitted by Isogeo."))
 
         self.li_dest = []
         # form fields
         lb_input_id = Label(self,
-                            text="Client id :")
+                            text=_(u"Client id:"))
         ent_input_id = Entry(self,
                              textvariable=self.app_id,
                              width=70)
 
         lb_input_secret = Label(self,
-                                text="Client secret :")
+                                text=_(u"Client secret:"))
         ent_input_secret = Entry(self,
                                  textvariable=self.app_secret,
                                  width=70)
 
         # test button
         btn_test = Button(self,
-                          text="Check",
+                          text=_(u"Check"),
                           command=lambda: self.test_connection())
 
         # message
         lb_msg = Label(self,
-                       textvariable=self.msg_bar)
+                       textvariable=self.msg_bar,
+                       anchor='w')
 
         # griding widgets
         lb_input_id.grid(row=1, column=1, sticky="W")
@@ -88,16 +108,15 @@ class IsogeoAppAuth(Tk):
         btn_test.grid(row=1, column=3, rowspan=2, sticky="NSE")
         lb_msg.grid(row=3, columnspan=3, sticky="WE")
 
-        logging.info("UI form launched")
+        logging.info("API form launched")
 
     def test_connection(self):
-        """TODOC
-        """
+        """Check parameters entered."""
         try:
             self.isogeo = Isogeo(client_id=self.app_id.get(),
                                  client_secret=self.app_secret.get())
             self.token = self.isogeo.connect()
-            self.msg_bar.set("Tout est ok.")
+            self.msg_bar.set(_(u"Everything is fine."))
             sleep(2)
             self.li_dest = [self.app_id.get(), self.app_secret.get()]
             logging.info("New access id/secret granted")
@@ -109,7 +128,6 @@ class IsogeoAppAuth(Tk):
         # end of method
         return
 
-
 # ###############################################################################
 # ###### Stand alone program ########
 # ###################################
@@ -117,6 +135,7 @@ class IsogeoAppAuth(Tk):
 if __name__ == '__main__':
     """ standalone execution
     """
-    app = IsogeoAppAuth()
+    app = IsogeoAppAuth(prev_id="Here comes the client ID",
+                        prev_secret="Here comes the client secret")
     app.mainloop()
-    print("New access: ", app.li_dest)
+    print("New oAuth2 parameters: ", app.li_dest)
