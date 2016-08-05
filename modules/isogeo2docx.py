@@ -20,24 +20,26 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 
 # Standard library
 from datetime import datetime
+from itertools import izip_longest
 import logging
+import re
+from xml.sax.saxutils import escape  # '<' -> '&lt;'
 
 # 3rd party library
 import arrow
-from docxtpl import DocxTemplate
+from docxtpl import DocxTemplate, etree
 from isogeo_pysdk import Isogeo
-
 
 # ##############################################################################
 # ########## Classes ###############
 # ##################################
 
-class Isogeo2docx(object):
-    """ An :class:`Isogeo2docx` object.
 
-    """
+class Isogeo2docx(object):
+    """IsogeoToDocx class."""
+
     def __init__(self, default_values=("NR", "1970-01-01T00:00:00+00:00")):
-        """ Common variables for Word processing
+        """Common variables for Word processing.
 
         default_values (optional) -- values used to replace missing values.
         Must be a tuple with 2 values structure:
@@ -63,9 +65,7 @@ class Isogeo2docx(object):
         self.default_values = default_values
 
     def md2docx(self, docx_template, md, url_base):
-        """
-        parses Isogeo metadatas and replace docx template
-        """
+        """Parse Isogeo metadatas and replace docx template."""
         # optional: print resource id (useful in debug mode)
         md_id = md.get("_id")
         print(md_id)
@@ -98,6 +98,7 @@ class Isogeo2docx(object):
             # workgroup which owns the metadata
             if tag.startswith('owner'):
                 owner = tags.get(tag)
+                owner_id = tag[6:]
                 continue
             else:
                 pass
@@ -122,7 +123,7 @@ class Isogeo2docx(object):
 
         # formatting links to visualize on OpenCatalog and edit on APP
         link_visu = url_base + "m/" + md_id
-        link_edit = "https://app.isogeo.com/resources/" + md_id
+        link_edit = "https://app.isogeo.com/groups/{}/resources/{}".format(owner_id, md_id)
 
         # CONTACTS #
         contacts = md.get("contacts")
@@ -145,6 +146,14 @@ class Isogeo2docx(object):
         # formatting feature attributes
         if md.get("type") == "vectorDataset" and md.get("feature-attributes"):
             fields = md.get("feature-attributes")
+            # prevent invalid character for XML formatting
+            for f in fields:
+                for i in f.keys():
+                    t = f.get(i)
+                    if type(t) in (str, unicode):
+                        f[i] = self.clean_xml(t)
+                    else:
+                        pass
         else:
             fields = []
             pass
@@ -216,7 +225,7 @@ class Isogeo2docx(object):
         if limitations:
             limits_cct = ["Type : {0} - Restriction : {1} ;\n\n".format(lim.get("type"),
                                                                         lim.get("restriction"))\
-                        for lim in limitations]
+                         for lim in limitations]
         else:
             limits_cct = ""
 
@@ -249,17 +258,17 @@ class Isogeo2docx(object):
 
         # FILLFULLING THE TEMPLATE #
         context = {
-                  'varTitle': md.get("title", self.missing_values()),
-                  'varAbstract': md.get("abstract", self.missing_values()),
+                  'varTitle': self.clean_xml(md.get("title", self.missing_values())),
+                  'varAbstract': self.clean_xml(md.get("abstract", self.missing_values())),
                   'varNameTech': md.get("name", self.missing_values()),
-                  'varCollectContext': md.get("collectionContext", self.missing_values()),
-                  'varCollectMethod': md.get("collectionMethod", self.missing_values()),
+                  'varCollectContext': self.clean_xml(md.get("collectionContext", self.missing_values())),
+                  'varCollectMethod': self.clean_xml(md.get("collectionMethod", self.missing_values())),
                   'varDataDtCrea': data_created.decode('latin1'),
                   'varDataDtUpda': data_updated.decode('latin1'),
                   'varDataDtPubl': data_published.decode('latin1'),
                   'varValidityStart': valid_start.decode('latin1'),
                   'varValidityEnd': valid_end.decode('latin1'),
-                  'validityComment': valid_com,
+                  'validityComment': self.clean_xml(valid_com),
                   'varFormat': format_version,
                   'varGeometry': md.get("geometry", self.missing_values()),
                   'varObjectsCount': md.get("features", self.missing_values()),
@@ -268,11 +277,11 @@ class Isogeo2docx(object):
                   'varType': md.get("type", self.missing_values()),
                   'varOwner': owner,
                   'varScale': md.get("scale", self.missing_values()),
-                  'varTopologyInfo': md.get("topologicalConsistency", self.missing_values()),
+                  'varTopologyInfo': self.clean_xml(md.get("topologicalConsistency", self.missing_values())),
                   'varInspireTheme': " ; ".join(li_theminspire),
                   'varInspireConformity': inspire_valid,
                   'varInspireLimitation': " ; \n".join(limits_cct),
-                  'varCGUs': " ; \n".join(cgus_cct),
+                  'varCGUs': self.clean_xml(" ; \n".join(cgus_cct)),
                   'varContactsCount': len(contacts),
                   'varContactsDetails': " ; \n".join(contacts_cct),
                   'varSRS': srs,
@@ -287,24 +296,25 @@ class Isogeo2docx(object):
                   }
 
         # fillfull file
-        docx_template.render(context)
-        # try:
-        #     docx_template.render(context)
-        # except UnicodeEncodeError, e:
-        #     print(u"Metadata error: check if there's any special character (<, <, &...) in different fields (attributes names and description...). Link: {0}".format(link_edit))
-        #     print(e)
-        # except UnicodeDecodeError, e:
-        #     print(u"Metadata error: check if there's any special character (<, <, &...) in different fields (attributes names and description...). Link: {0}".format(link_edit))
-        #     print(e)
-        # except Exception, e:
-        #     print(e, link_edit)
+        try:
+            docx_template.render(context)
+            logging.info("Vector metadata stored: {} ({})".format(md.get("name"),
+                                                                  md.get("_id")))
+        except etree.XMLSyntaxError as e:
+            logging.error("Invalid character in XML: {}. "
+                          "Any special character (<, <, &...)? Check: {}".format(e, link_edit))
+        except (UnicodeEncodeError, UnicodeDecodeError) as e:
+            logging.error("Encoding error: {}. "
+                          "Any special character (<, <, &...)? Check: {}".format(e, link_edit))
+        except Exception as e:
+            logging.error("Unexpected error: {}. Check: {}".format(e, link_edit))
 
         # end of function
         return
 
     # ------------ UTILITIES ---------------------
     def missing_values(self, idx_type=0):
-        """ Returns default values defined in the class as a tuple
+        """Return default values defined in the class as a tuple.
 
         idx_type (optional) -- index of the value type requested:
 
@@ -316,11 +326,41 @@ class Isogeo2docx(object):
         return rpl_value
 
     def remove_accents(self, input_str, substitute=u""):
-        """
-        Clean string from special characters
+        """Clean string from special characters.
+
         source: http://stackoverflow.com/a/5843560
         """
         return unicode(substitute).join(char for char in input_str if char.isalnum())
+
+    def clean_xml(self, invalid_xml):
+        """Clean string of XML invalid characters.
+
+        source: http://stackoverflow.com/a/13322581/2556577
+        """
+        # assumptions:
+        #   doc = *( start_tag / end_tag / text )
+        #   start_tag = '<' name *attr [ '/' ] '>'
+        #   end_tag = '<' '/' name '>'
+        ws = r'[ \t\r\n]*'  # allow ws between any token
+        name = '[a-zA-Z]+'  # note: expand if necessary but the stricter the better
+        attr = '{name} {ws} = {ws} "[^"]*"'  # note: fragile against missing '"'; no "'"
+        start_tag = '< {ws} {name} {ws} (?:{attr} {ws})* /? {ws} >'
+        end_tag = '{ws}'.join(['<', '/', '{name}', '>'])
+        tag = '{start_tag} | {end_tag}'
+
+        assert '{{' not in tag
+        while '{' in tag:   # unwrap definitions
+            tag = tag.format(**vars())
+
+        tag_regex = re.compile('(%s)' % tag, flags=re.VERBOSE)
+
+        # escape &, <, > in the text
+        iters = [iter(tag_regex.split(invalid_xml))] * 2
+        pairs = izip_longest(*iters, fillvalue='')  # iterate 2 items at a time
+
+        # get the clean version
+        return ''.join(escape(text) + tag for text, tag in pairs)
+
 
 # ###############################################################################
 # ###### Stand alone program ########
@@ -335,9 +375,11 @@ if __name__ == '__main__':
 
     # ------------ Settings from ini file ----------------
     if not path.isfile(path.realpath(r"..\settings.ini")):
-        print("ERROR: to execute this script as standalone, you need to store your Isogeo application settings in a isogeo_params.ini file. You can use the template to set your own.")
-        import sys
-        sys.exit()
+        logging.error("To execute this script as standalone,"
+                      " you need to store your Isogeo application settings"
+                      " in a isogeo_params.ini file. You can use the template"
+                      " to set your own.")
+        raise ValueError("isogeo_params.ini file missing.")
     else:
         pass
 
