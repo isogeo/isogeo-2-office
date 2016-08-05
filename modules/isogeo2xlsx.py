@@ -25,6 +25,7 @@ from os import path
 
 # 3rd party library
 import arrow
+from isogeo_pysdk import Isogeo
 from openpyxl import Workbook
 from openpyxl.cell import get_column_letter
 from openpyxl.styles import Style, Font, Alignment
@@ -1153,9 +1154,6 @@ if __name__ == '__main__':
     # ------------ Specific imports ---------------------
     from ConfigParser import SafeConfigParser   # to manage options.ini
 
-    # Custom modules
-    from isogeo_sdk import Isogeo
-
     # ------------ Settings from ini file ----------------
     if not path.isfile(path.realpath(r"..\settings.ini")):
         logging.error("To execute this script as standalone, you need to store your Isogeo application settings in a isogeo_params.ini file. You can use the template to set your own.")
@@ -1191,8 +1189,7 @@ if __name__ == '__main__':
                 "specifications"]
 
     search_results = isogeo.search(token,
-                                   sub_resources=includes,
-                                   preprocess=0)
+                                   sub_resources=includes)
 
     # ------------ REAL START ----------------------------
     wb = Isogeo2xlsx()

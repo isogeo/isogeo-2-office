@@ -25,6 +25,7 @@ import logging
 # 3rd party library
 import arrow
 from docxtpl import DocxTemplate
+from isogeo_pysdk import Isogeo
 
 
 # ##############################################################################
@@ -330,11 +331,7 @@ if __name__ == '__main__':
     """
     # ------------ Specific imports ---------------------
     from ConfigParser import SafeConfigParser   # to manage options.ini
-    from datetime import datetime
     from os import path
-
-    # Custom modules
-    from isogeo_sdk import Isogeo
 
     # ------------ Settings from ini file ----------------
     if not path.isfile(path.realpath(r"..\settings.ini")):
