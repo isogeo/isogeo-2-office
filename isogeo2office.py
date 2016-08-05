@@ -2,7 +2,6 @@
 #!/usr/bin/env python
 from __future__ import (absolute_import, print_function, unicode_literals)
 # ----------------------------------------------------------------------------
-# Name:         Isogeo
 # Purpose:      Get metadatas from an Isogeo share and store it into files
 #
 # Author:       Julien Moura (@geojulien)
@@ -19,6 +18,7 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 # Standard library
 from ConfigParser import SafeConfigParser
 from datetime import datetime
+import gettext
 import logging      # log files
 from logging.handlers import RotatingFileHandler
 from os import listdir, path
@@ -31,6 +31,7 @@ from ttk import Labelframe, Progressbar, Style  # advanced widgets
 from webbrowser import open_new_tab
 
 # 3rd party library
+from docxtpl import DocxTemplate
 from isogeo_pysdk import Isogeo
 from openpyxl import load_workbook
 import requests
@@ -38,15 +39,15 @@ import requests
 # Custom modules
 from modules.isogeo2xlsx import Isogeo2xlsx
 from modules.isogeo2docx import Isogeo2docx
-from modules import CheckNorris
 from modules import IsogeoAppAuth
+from modules import CheckNorris
 
 # ############################################################################
 # ########## Global ################
 # ##################################
 
 # VERSION
-_version = "1.1"
+_version = "1.2"
 
 # LOG FILE ##
 # see: http://sametmax.com/ecrire-des-logs-en-python/
@@ -54,7 +55,7 @@ logger = logging.getLogger()
 logging.captureWarnings(True)
 logger.setLevel(logging.DEBUG)  # all errors will be get
 log_form = logging.Formatter('%(asctime)s || %(levelname)s || %(module)s || %(message)s')
-logfile = RotatingFileHandler('isogeo2office.log', 'a', 5000000, 1)
+logfile = RotatingFileHandler('isogeo2office_log.log', 'a', 5000000, 1)
 logfile.setLevel(logging.DEBUG)
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
@@ -66,21 +67,19 @@ logger.info('\t============== Isogeo => Office =============')
 # ##################################
 
 class Isogeo2office(Tk):
-    """ UI Class to
-    docstring for Isogeo to Office
-    """
+    """Main Class for Isogeo to Office."""
+
     # attributes and global actions
     logger.info('Version: {0}'.format(_version))
 
     def __init__(self, ui_launcher=1):
-        """
-        """
+        """Initiliazing isogeo2office with or without UI."""
         # Invoke Check Norris
         checker = CheckNorris()
 
         # checking connection
         if not checker.check_internet_connection():
-            logger.error('An Internet connection is required. Check your settings.')
+            logger.error('Internet connection required: check your settings.')
             exit()
         else:
             pass
@@ -91,43 +90,62 @@ class Isogeo2office(Tk):
         else:
             pass
 
-        # ------------ Settings ----------------
+        # ------------ Settings ----------------------------------------------
         self.settings_load()
         self.app_id = self.settings.get('auth').get('app_id')
         self.app_secret = self.settings.get('auth').get('app_secret')
-        client_lang = self.settings.get('basics').get('def_codelang')
-        def_oc = self.settings.get('basics').get('def_oc')
+        self.client_lang = self.settings.get('basics').get('def_codelang')
 
-        # ------------ Isogeo authentification ----------------
+        # ------------ Localization ------------------------------------------
+        if self.client_lang == "FR":
+            lang = gettext.translation('isogeo2office', localedir='i18n',
+                                       languages=["fr_FR"])
+            lang.install(unicode=1)
+        else:
+            lang = gettext
+            lang.install('isogeo2office', localedir='i18n', unicode=1)
+            pass
+        logger.info("Language applied: {}".format(_("English")))
+
+        # ------------ Isogeo authentication -------------------------------
         try:
             self.isogeo = Isogeo(client_id=self.app_id,
                                  client_secret=self.app_secret,
-                                 lang=client_lang)
+                                 lang=self.client_lang)
             self.token = self.isogeo.connect()
         except:
-            prompter = IsogeoAppAuth()
+            # if id/secret doesn't work, ask for a new one
+            prompter = IsogeoAppAuth(prev_id=self.app_id,
+                                     prev_secret=self.app_secret,
+                                     lang=lang)
             prompter.mainloop()
+            # check response
+            if len(prompter.li_dest) < 2:
+                logger.error(u"API authentication form didn't return anything.")
+                exit()
+            else:
+                pass
+
             self.app_id = prompter.li_dest[0]
             self.app_secret = prompter.li_dest[1]
             self.isogeo = Isogeo(client_id=self.app_id,
                                  client_secret=self.app_secret,
-                                 lang=client_lang)
+                                 lang=self.client_lang)
             self.token = self.isogeo.connect()
-            self.settings_save()
 
-        # ------------ Isogeo search & shares ----------------
+        # ------------ Isogeo search & shares --------------------------------
         self.search_results = self.isogeo.search(self.token,
                                                  page_size=0,
                                                  whole_share=0)
         self.shares = self.isogeo.shares(self.token)
         self.shares_info = self.get_shares_info()
 
-        # ------------ Variables ----------------
+        # ------------ Variables ---------------------------------------------
         li_tpls = [path.abspath(path.join(r'templates', tpl))
                    for tpl in listdir(r'templates')
                    if path.splitext(tpl)[1].lower() == ".docx"]
 
-        # ------------ UI ----------------
+        # ------------ UI ----------------------------------------------------
         Tk.__init__(self)
         self.title("isogeo2office - {0}".format(_version))
         icon = Image("photo", file=r"img/favicon_isogeo.gif")
@@ -140,14 +158,14 @@ class Isogeo2office(Tk):
         fr_isogeo = Labelframe(self, name="isogeo", text="Isogeo")
         fr_excel = Labelframe(self, name="excel", text="Excel")
         fr_word = Labelframe(self, name="word", text="Word")
-        fr_process = Labelframe(self, name="process", text="Lancer")
+        fr_process = Labelframe(self, name="process", text="Launch")
 
         fr_isogeo.grid(row=1, column=1, sticky="WE")
         fr_excel.grid(row=2, column=1, sticky="WE")
         fr_word.grid(row=3, column=1, sticky="WE")
         fr_process.grid(row=4, column=1, sticky="WE")
-        
-        # ------------------------------------------------------------
+
+        # --------------------------------------------------------------------
 
         # ## GLOBAL ##
         self.app_metrics = StringVar(fr_isogeo)
@@ -159,7 +177,7 @@ class Isogeo2office(Tk):
         logo_isogeo = Label(fr_isogeo, borderwidth=2, image=self.logo_isogeo)
 
         # metrics
-        self.app_metrics.set("{} métadonnées partagées via {} partages,\nappartenant à {} groupes de travail différents."\
+        self.app_metrics.set(_("{} metadata in {} shares,\nowned by {} different workgroups.")\
                              .format(self.search_results.get('total'),
                                      len(self.shares),
                                      len(self.shares_info[1])))
@@ -175,48 +193,48 @@ class Isogeo2office(Tk):
 
         if len(self.shares_info[2]) != 0:
             logger.info("Any OpenCatalog found among the shares")
-            self.oc_msg.set("{} partages à cette application n'ont pas d'OpenCatalog."
-                            "\nAjouter l'application OpenCatalog en suivant les liens ci-dessous."
-                            "\nPuis redémarrer l'application.".format(len(self.shares_info[2])))
+            self.oc_msg.set(_("{} shares don't have any OpenCatalog."
+                              "\nPlease add the OpenCatalog application following links below,"
+                              "\nthen reboot isogeo2office.").format(len(self.shares_info[2])))
             btn_open_shares = Button(fr_isogeo,
-                                     text="Corriger les partages",
-                                     command=lambda: self.open_urls(self.shares_info[2]))            
+                                     text=_("Fix the shares"),
+                                     command=lambda: self.open_urls(self.shares_info[2]))
         else:
             logger.info("All shares have an OpenCatalog")
-            self.oc_msg.set("Configuration OK.")
+            self.oc_msg.set(_("Configuration OK."))
             li_oc = [share[3] for share in self.shares_info[0]]
             btn_open_shares = Button(fr_isogeo,
-                                     text="Consulter les partages",
+                                     text=_("Consult the shares"),
                                      command=lambda: self.open_urls(li_oc))
 
         # griding widgets
         logo_isogeo.grid(row=1, rowspan=3,
-                    column=0, padx=2,
-                    pady=2, sticky="W")
+                         column=0, padx=2,
+                         pady=2, sticky="W")
         lb_app_metrics.grid(row=1, column=1, sticky="WE")
         self.lb_input_oc.grid(row=2, column=1, sticky="WE")
         btn_open_shares.grid(row=2, column=2, sticky="WE")
 
-        # ------------------------------------------------------------
+        # --------------------------------------------------------------------
 
         # ## EXCEL ##
         # variables
-        output_xl = StringVar(self)
+        self.output_xl = StringVar(self)
         self.opt_xl_join = IntVar(fr_excel)
         self.input_xl_join_col = StringVar(fr_excel)
         self.input_xl = ""
         li_input_xl_cols = []
 
         # logo
-        self.logo_excel = PhotoImage(master=fr_excel, file=r'img/logo_excel2013.gif')
+        self.logo_excel = PhotoImage(master=fr_excel,
+                                     file=r'img/logo_excel2013.gif')
         logo_excel = Label(fr_excel, borderwidth=2, image=self.logo_excel)\
 
         # output file
         lb_output_xl = Label(fr_excel,
-                             text="Nom du fichier en sortie: ")
+                             text=_("Output filename: "))
         ent_output_xl = Entry(fr_excel,
-                              text="Nom du fichier en sortie: ",
-                              textvariable=output_xl)
+                              textvariable=self.output_xl)
 
         # TO COMPLETE LATER
         # caz_xl_join = Checkbutton(fr_excel,
@@ -250,23 +268,23 @@ class Isogeo2office(Tk):
         lb_output_xl.grid(row=1, column=1)
         ent_output_xl.grid(row=2, column=1)
 
-        # ------------------------------------------------------------
+        # --------------------------------------------------------------------
 
         # ## WORD ##
         # variables
         self.tpl_input = StringVar(self)
-        
+
         # logo
         self.logo_word = PhotoImage(master=fr_word, file=r'img/logo_word2013.gif')
         logo_word = Label(fr_word, borderwidth=2, image=self.logo_word)
-        
+
         # pick a template
         lb_input_tpl = Label(fr_word,
-                             text="Choisir un template")
+                             text=_("Pick a template: "))
         cb_available_tpl = Combobox(fr_word,
                                     textvariable=self.tpl_input,
                                     values=li_tpls)
-      
+
         # griding widgets
         logo_word.grid(row=1, rowspan=3,
                        column=0, padx=2,
@@ -274,7 +292,7 @@ class Isogeo2office(Tk):
         lb_input_tpl.grid(row=1, column=1)
         cb_available_tpl.grid(row=2, column=1)
 
-        # ------------------------------------------------------------
+        # --------------------------------------------------------------------
 
         # ## PROCESS ##
         # variables
@@ -282,37 +300,40 @@ class Isogeo2office(Tk):
         self.opt_word = IntVar(fr_process)
 
         # logo
-        self.logo_process = PhotoImage(master=fr_process, file=r'img/logo_process.gif')
-        logo_process = Label(fr_process, borderwidth=2, image=self.logo_process)
+        self.logo_process = PhotoImage(master=fr_process,
+                                       file=r'img/logo_process.gif')
+        logo_process = Label(fr_process, borderwidth=2,
+                             image=self.logo_process)
 
         # options
         caz_go_excel = Checkbutton(fr_process,
-                                   text=u'Exporter tout le catalogue en Excel',
+                                   text=_(u'Export the whole shares into an Excel worksheet'),
                                    variable=self.opt_excel)
 
         caz_go_word = Checkbutton(fr_process,
-                                   text=u'Exporter chaque métadonnée en Word',
-                                   variable=self.opt_word)
-        
+                                  text=_(u'Export each metadata into a Word file'),
+                                  variable=self.opt_word)
+
         # launcher
         self.btn_go = Button(fr_process,
-                             text="Lancer l'export",
-                             command=lambda: process_wordification())
+                             text=_("Launch"),
+                             command=lambda: self.process())
 
         # griding widgets
         logo_process.grid(row=1, rowspan=3,
                           column=0, padx=2,
                           pady=2, sticky="W")
-        
+
         caz_go_word.grid(row=2, column=1)
         caz_go_excel.grid(row=2, column=2)
         self.btn_go.grid(row=3, column=1, columnspan=2, sticky="WE")
-        
+
+        logger.info("Main UI instanciated & displayed")
+
 # ----------------------------------------------------------------------------
 
     def get_input_xl(self):
-        """ Get the path of the input Excel file with a browse dialog
-        """
+        """Get the path of the input Excel file with a browse dialog."""
         self.input_xl = askopenfilename(parent=self,
                                         filetypes=[("Excel 2010 files","*.xlsx"),("Excel 2003 files","*.xls")],
                                         title=u"Choisir le fichier Excel à partir duquel faire la jointure")
@@ -339,8 +360,7 @@ class Isogeo2office(Tk):
         return
 
     def ui_switch_xljoiner(self):
-        """ Enable/disable the form for input xl to join.
-        """
+        """Enable/disable the form for input xl to join."""
         if self.opt_xl_join.get():
             self.fr_input_xl_join.pack()
         else:
@@ -348,34 +368,16 @@ class Isogeo2office(Tk):
         # end of function
         return
 
-
-    def get_basic_metrics(self):
-        """ TO DO
-        """
-        empty_search = self.isogeo.search(self.token,
-                                          # query="keyword:isogeo:2015",
-                                          page_size=0,
-                                          whole_share=0,
-                                          prot='http')
-
-        # end of method
-        return len(empty_search.get('results'))
-
-
-    def get_search_results(self):
-        """ TO DO
-        """
-        pass
-
     def open_urls(self, li_url):
-        """ Open URLs in new tabs in the default brower.
+        """Open URLs in new tabs in the default brower.
+
         It waits a few seconds between the first and the next URLs
         to handle case when the webbrowser is not opened yet and let the
         time to do.
         """
         x = 1
-        for url in li_url:        
-            if x > 1: 
+        for url in li_url:
+            if x > 1:
                 sleep()
             else:
                 pass
@@ -389,11 +391,10 @@ class Isogeo2office(Tk):
 # ----------------------------------------------------------------------------
 
     def settings_load(self, config_file=r"settings.ini"):
-        """ TO DO
-        """
+        """Load settings from the ini file."""
         config = SafeConfigParser()
         config.read(r"settings.ini")
-        self.settings = {s:dict(config.items(s)) for s in config.sections()}
+        self.settings = {s: dict(config.items(s)) for s in config.sections()}
 
         logger.info("Settings loaded from: {}".format(config_file))
 
@@ -401,12 +402,12 @@ class Isogeo2office(Tk):
         return
 
     def settings_save(self, config_file=r"settings.ini"):
-        """ TO DO
-        """
+        """Save settings into the ini file."""
         config = SafeConfigParser()
         config.read(path.realpath(config_file))
         config.set('auth', 'app_id', self.app_id)
         config.set('auth', 'app_secret', self.app_secret)
+        config.set('basics', 'out_excel', self.output_xl.get())
         with open(path.realpath(config_file), 'wb') as configfile:
             config.write(configfile)
 
@@ -417,8 +418,7 @@ class Isogeo2office(Tk):
 # ----------------------------------------------------------------------------
 
     def get_shares_info(self):
-        """TO DOCUMENT
-        """
+        """Get Isogeo shares informations from application."""
         # variables
         li_oc = []
         li_owners = []
@@ -435,27 +435,27 @@ class Isogeo2office(Tk):
             li_owners.append(creator_id)    # add to shares owners list
             # OpenCatalog URL construction
             share_details = self.isogeo.share(self.token, share_id=share.get("_id"))
-            url_OC = "http://open.isogeo.com/s/{}/{}".format(share.get("_id"),
+            url_oc = "http://open.isogeo.com/s/{}/{}".format(share.get("_id"),
                                                              share_details.get("urlToken"))
 
             # Testing URL
-            request = requests.get(url_OC)
+            request = requests.get(url_oc)
             if request.status_code != 200:
                 logger.info("No OpenCatalog set for this share: " + share_url)
                 li_without_oc.append(share_url)
                 continue
             else:
                 pass
-            
+
             # consolidate list of OpenCatalog available
-            li_oc.append((share_name, creator_id, creator_name, share_url, url_OC))
-            
+            li_oc.append((share_name, creator_id, creator_name,
+                          share_url, url_oc))
+
         # end of method
         return li_oc, set(li_owners), li_without_oc
 
     def get_url_base(self, url_input):
-        """ TO DO
-        """
+        """Get OpenCatalog base URL to add resource ID easily."""
         # get the OpenCatalog URL given
         if not url_input[-1] == '/':
             url_input = url_input + '/'
@@ -470,9 +470,12 @@ class Isogeo2office(Tk):
 
 # ----------------------------------------------------------------------------
 
-    def process_excelization(self, output_filename):
-        """ TO DO
-        """
+    def process(self):
+        """Process export according to options set."""
+        # savings in ini file
+        self.settings_save()
+
+        # Isogeo request
         includes = ["conditions",
                     "contacts",
                     "coordinate-system",
@@ -484,33 +487,51 @@ class Isogeo2office(Tk):
                     "specifications"]
 
         self.search_results = self.isogeo.search(self.token,
-                                                 page_size=0,
-                                                 whole_share=0)
+                                                 sub_resources=includes)
+        # export
+        if self.opt_excel.get():
 
-        # ------------ REAL START ----------------------------
+            self.process_excelization()
+        else:
+            pass
+
+        if self.opt_word.get():
+            self.process_wordification()
+        else:
+            pass
+
+        # end of method
+        return
+
+    def process_excelization(self):
+        """Export metadatas shared into an Excel worksheet."""
         wb = Isogeo2xlsx()
         wb.set_worksheets()
 
         # parsing metadata
-        for md in search_results.get('results'):
+        for md in self.search_results.get('results'):
             wb.store_metadatas(md)
 
         # tunning
         wb.tunning_worksheets()
 
         # saving the test file
-        dstamp = datetime.now()
-        wb.save(r"output\{0}.xlsx".format())
+        # dstamp = datetime.now()
+        wb.save(r"output\{0}.xlsx".format(self.output_xl.get()))
 
         # end of method
         return
 
-    def process_wordification(self, search_results):
-        """ TO DO
+    def process_wordification(self):
+        """Export each metadata shared to a Word document.
+
+        Transformation is based on the template selected.
         """
-        for md in search_results.get("results"):
+        to_docx = Isogeo2docx()
+
+        for md in self.search_results.get("results"):
             tpl = DocxTemplate(path.realpath(self.tpl_input.get()))
-            toDocx.md2docx(tpl, md, url_oc)
+            to_docx.md2docx(tpl, md, url_oc)
             dstamp = datetime.now()
             if not md.get('name'):
                 md_name = "NR"
@@ -535,13 +556,11 @@ class Isogeo2office(Tk):
 # ----------------------------------------------------------------------------
 
     def no_ui_launcher(self):
-        """ Execute the scripts without displaying the UI and using
-        settings.ini
-        """
+        """Execute scripts without UI and using settings.ini."""
         logger.info('Launched from command prompt')
         self.settings_load()
         exit()
-        pass
+        return
 
 # ###############################################################################
 # ###### Stand alone program ########
