@@ -72,6 +72,17 @@ Launch in :
 {absolute_path_to_the_folder}\
 ```
 
+## Localization
+
+It uses `.pot`, `.po` and `.mo`files to manage translations with Python gettext implementation.
+
+`.pot`file generated with:
+
+```batch
+python C:\Python27\Tools\i18n\pygettext.py -d i18n\isogeo2office isogeo2office.py
+```
+
+`.po`and `.mo` files edited and made with [POEdit](https://poedit.net/).
 
 ## Support
 
