@@ -22,10 +22,11 @@ import gettext
 import logging      # log files
 from logging.handlers import RotatingFileHandler
 from os import listdir, path
+import platform  # about operating systems
 from sys import argv, exit
 from time import sleep
 from tkFileDialog import askopenfilename
-from Tkinter import Tk, StringVar, IntVar, Image, PhotoImage, VERTICAL   # GUI
+from Tkinter import Tk, StringVar, IntVar, Image, PhotoImage, VERTICAL, ACTIVE, DISABLED   # GUI
 from ttk import Label, Button, Entry, Checkbutton, Combobox  # advanced widgets
 from ttk import Labelframe, Progressbar, Separator, Style  # advanced widgets
 from webbrowser import open_new_tab
@@ -47,15 +48,16 @@ from modules import CheckNorris
 # ##################################
 
 # VERSION
-_version = "1.2"
+_version = "1.5"
 
 # LOG FILE ##
 # see: http://sametmax.com/ecrire-des-logs-en-python/
 logger = logging.getLogger()
 logging.captureWarnings(True)
 logger.setLevel(logging.DEBUG)  # all errors will be get
-log_form = logging.Formatter('%(asctime)s || %(levelname)s || %(module)s || %(message)s')
-logfile = RotatingFileHandler('isogeo2office_log.log', 'a', 5000000, 1)
+log_form = logging.Formatter("%(asctime)s || %(levelname)s "
+                             "|| %(module)s || %(message)s")
+logfile = RotatingFileHandler("isogeo2office_log.log", "a", 5000000, 1)
 logfile.setLevel(logging.DEBUG)
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
@@ -70,6 +72,7 @@ class Isogeo2office(Tk):
     """Main Class for Isogeo to Office."""
 
     # attributes and global actions
+    logging.info('OS: {0}'.format(platform.platform()))
     logger.info('Version: {0}'.format(_version))
 
     def __init__(self, ui_launcher=1):
@@ -117,11 +120,11 @@ class Isogeo2office(Tk):
             # if id/secret doesn't work, ask for a new one
             prompter = IsogeoAppAuth(prev_id=self.app_id,
                                      prev_secret=self.app_secret,
-                                     lang=lang)
+                                     lang=self.client_lang)
             prompter.mainloop()
             # check response
             if len(prompter.li_dest) < 2:
-                logger.error(u"API authentication form didn't return anything.")
+                logger.error(u"API authentication form returned nothing.")
                 exit()
             else:
                 pass
@@ -150,20 +153,24 @@ class Isogeo2office(Tk):
         self.title("isogeo2office - {0}".format(_version))
         icon = Image("photo", file=r"img/favicon_isogeo.gif")
         self.call("wm", "iconphoto", self._w, icon)
-        # self.style = Style().theme_use("clam")
+        # self.style = Style().theme_use("alt")
         self.resizable(width=False, height=False)
         self.focus_force()
+        self.msg_bar = StringVar(self)
+        self.msg_bar.set(_(u"Pick your options and clic the launch button"))
 
         # Frames
         fr_isogeo = Labelframe(self, name="isogeo", text="Isogeo")
         fr_excel = Labelframe(self, name="excel", text="Excel")
         fr_word = Labelframe(self, name="word", text="Word")
         fr_process = Labelframe(self, name="process", text="Launch")
+        status_bar = Label(self, textvariable=self.msg_bar, anchor='w')
 
         fr_isogeo.grid(row=1, column=1, sticky="WE")
         fr_excel.grid(row=2, column=1, sticky="WE")
         fr_word.grid(row=3, column=1, sticky="WE")
         fr_process.grid(row=4, column=1, sticky="WE")
+        status_bar.grid(row=5, column=1, sticky="WE")
 
         # --------------------------------------------------------------------
 
@@ -178,14 +185,16 @@ class Isogeo2office(Tk):
         logo_isogeo = Label(fr_isogeo, borderwidth=2, image=self.logo_isogeo)
 
         # metrics
-        self.app_metrics.set(_("{} metadata in {} shares,\nowned by {} workgroups.")\
+        self.app_metrics.set(_("{} metadata in\n"
+                               "{} shares owned by\n"
+                               "{} workgroups.")
                              .format(self.search_results.get('total'),
                                      len(self.shares),
                                      len(self.shares_info[1])))
         lb_app_metrics = Label(fr_isogeo,
                                textvariable=self.app_metrics)
 
-        # OpenCatalog to display
+        # OpenCatalog check
         self.lb_input_oc = Label(fr_isogeo,
                                  textvariable=self.oc_msg)
         ent_opencatalog = Entry(fr_isogeo,
@@ -200,13 +209,34 @@ class Isogeo2office(Tk):
             btn_open_shares = Button(fr_isogeo,
                                      text=_("Fix the shares"),
                                      command=lambda: self.open_urls(self.shares_info[2]))
+            status_launch = DISABLED
         else:
             logger.info("All shares have an OpenCatalog")
             self.oc_msg.set(_("Configuration OK."))
             li_oc = [share[3] for share in self.shares_info[0]]
             btn_open_shares = Button(fr_isogeo,
-                                     text=_("Consult\nthe shares"),
+                                     text=_("\U0001F6E0 Admin shares"),
                                      command=lambda: self.open_urls(li_oc))
+            status_launch = ACTIVE
+
+        # settings
+        btn_settings = Button(fr_isogeo,
+                              text=_(u"\U0001F510 Settings"),
+                              command=lambda: self.ui_settings_prompt())
+
+        # contact
+        mailto = _("mailto:Isogeo%20Projects%20"
+                   "<projects+isogeo2office@isogeo.com>?"
+                   "subject=[Isogeo2office]%20Question")
+        btn_contact = Button(fr_isogeo,
+                             text=_(u"\U0001F582 Contact"),
+                             command=lambda: open_new_tab(mailto))
+
+        # source
+        url_src = "https://bitbucket.org/isogeo/isogeo-2-office"
+        btn_src = Button(fr_isogeo,
+                         text=_(u"\U0001F56C Report"),
+                         command=lambda: open_new_tab(url_src))
 
         # griding widgets
         logo_isogeo.grid(row=1, rowspan=3,
@@ -215,11 +245,20 @@ class Isogeo2office(Tk):
         Separator(fr_isogeo, orient=VERTICAL).grid(row=1, rowspan=3,
                                                    column=1, padx=2,
                                                    pady=2, sticky="NSE")
-        lb_app_metrics.grid(row=1, column=2, sticky="WE")
+        lb_app_metrics.grid(row=1, column=2, rowspan=3, sticky="NWE")
         self.lb_input_oc.grid(row=2, column=2, sticky="WE")
-        btn_open_shares.grid(row=1, rowspan=3,
-                             column=3, padx=4, pady=2,
-                             sticky="NSWE")
+        btn_open_shares.grid(row=1, rowspan=1,
+                             column=3, padx=2, pady=2,
+                             sticky="NWE")
+        btn_settings.grid(row=2, rowspan=1,
+                          column=3, padx=2, pady=2,
+                          sticky="NWE")
+        btn_contact.grid(row=1, rowspan=1,
+                         column=4, padx=2, pady=2,
+                         sticky="NWE")
+        btn_src.grid(row=2, rowspan=1,
+                     column=4, padx=2, pady=2,
+                     sticky="NWE")
 
         # --------------------------------------------------------------------
 
@@ -296,6 +335,9 @@ class Isogeo2office(Tk):
                                     textvariable=self.tpl_input,
                                     values=li_tpls)
 
+        # specific options
+
+
         # griding widgets
         logo_word.grid(row=1, rowspan=3,
                        column=0, padx=2,
@@ -332,8 +374,10 @@ class Isogeo2office(Tk):
 
         # launcher
         self.btn_go = Button(fr_process,
-                             text=_("Launch"),
-                             command=lambda: self.process())
+                             text=_(u"\U0001F680 Launch"),
+                             command=lambda: self.process(),
+                             state=status_launch)
+
         # progression bar
         self.progbar = Progressbar(fr_process,
                                    orient="horizontal")
@@ -342,7 +386,7 @@ class Isogeo2office(Tk):
         logo_process.grid(row=1, rowspan=5,
                           column=0, padx=2,
                           pady=2, sticky="W")
-        Separator(fr_process, orient=VERTICAL).grid(row=1, rowspan=4,
+        Separator(fr_process, orient=VERTICAL).grid(row=1, rowspan=5,
                                                     column=1, padx=2,
                                                     pady=2, sticky="NSE")
         caz_go_word.grid(row=2, column=2, sticky="W")
@@ -357,17 +401,17 @@ class Isogeo2office(Tk):
     def get_input_xl(self):
         """Get the path of the input Excel file with a browse dialog."""
         self.input_xl = askopenfilename(parent=self,
-                                        filetypes=[("Excel 2010 files","*.xlsx"),("Excel 2003 files","*.xls")],
-                                        title=u"Choisir le fichier Excel à partir duquel faire la jointure")
+                                        filetypes=[("Excel 2010", "*.xlsx")],
+                                        title=_(u"Pick the Excel to merge"))
 
         # testing file choosen
         if self.input_xl:
             print(self.input_xl)
             pass
         elif path.splittext(self.input_xl)[1] != ".xlsx":
-            print("Pas le bon format")
+            print("Invalid format")
         else:
-            print(u'Aucun fichier sélectionné')
+            print(_(u'Any file selected'))
             return
 
         # get headers names
@@ -376,7 +420,8 @@ class Isogeo2office(Tk):
                                 guess_types=True,
                                 use_iterators=True)
         ws1 = xlsx_in.worksheets[0]  # ws = première feuille
-        cols_names = [ws1.cell(row=ws1.min_row, column=col).value for col in range(1, ws1.max_column)]
+        cols_names = [ws1.cell(row=ws1.min_row, column=col).value
+                      for col in range(1, ws1.max_column)]
 
         # end of method
         return
@@ -443,6 +488,26 @@ class Isogeo2office(Tk):
         return
 
 # ----------------------------------------------------------------------------
+
+    def ui_settings_prompt(self):
+        """Get Isogeo settings from another form"""
+        prompter = IsogeoAppAuth(prev_id=self.app_id,
+                                 prev_secret=self.app_secret,
+                                 lang=self.client_lang)
+        prompter.mainloop()
+        # check response
+        if len(prompter.li_dest) < 2:
+            logger.error(u"API authentication form returned nothing.")
+            exit()
+            return 0
+        else:
+            pass
+
+        self.app_id = prompter.li_dest[0]
+        self.app_secret = prompter.li_dest[1]
+
+        # end of method
+        return 1
 
     def get_shares_info(self):
         """Get Isogeo shares informations from application."""
@@ -527,12 +592,14 @@ class Isogeo2office(Tk):
         # export
         if self.opt_excel.get():
             logger.info("Excel - START")
+            self.progbar["value"] = 0
             self.process_excelization()
         else:
             pass
 
         if self.opt_word.get():
             logger.info("WORD - START")
+            self.progbar["value"] = 0
             self.process_wordification()
         else:
             pass

@@ -21,8 +21,8 @@ import gettext
 import logging      # log files
 from os import path
 from time import sleep
-from Tkinter import Tk, StringVar
-from ttk import Label, Button, Entry
+from Tkinter import Tk, StringVar, HORIZONTAL
+from ttk import Label, Button, Entry, Separator
 from webbrowser import open_new_tab
 
 # 3rd party library
@@ -90,12 +90,22 @@ class IsogeoAppAuth(Tk):
                                  textvariable=self.app_secret,
                                  width=70)
 
-        # test button
+        # buttons
         btn_test = Button(self,
-                          text=_(u"Check"),
+                          text=_(u"\U0001F5F8 Check"),
                           command=lambda: self.test_connection())
+        mailto = _("mailto:Isogeo%20Projects%20"
+                   "<projects+isogeo2office@isogeo.com>?"
+                   "subject=[Isogeo2office]%20Access request")
+        btn_contact = Button(self,
+                             text=_(u"\U0001F582 Request access"),
+                             command=lambda: open_new_tab(mailto))
 
         # message
+        Separator(self, orient=HORIZONTAL).grid(row=3,
+                                                column=1,
+                                                columnspan=2,
+                                                sticky="WE")
         lb_msg = Label(self,
                        textvariable=self.msg_bar,
                        anchor='w')
@@ -105,8 +115,9 @@ class IsogeoAppAuth(Tk):
         ent_input_id.grid(row=1, column=2, sticky="W")
         lb_input_secret.grid(row=2, column=1, sticky="W")
         ent_input_secret.grid(row=2, column=2, sticky="W")
-        btn_test.grid(row=1, column=3, rowspan=2, sticky="NSE")
-        lb_msg.grid(row=3, columnspan=3, sticky="WE")
+        btn_test.grid(row=1, column=3, rowspan=2, sticky="NSWE")
+        btn_contact.grid(row=3, column=3, rowspan=2, sticky="NSE")
+        lb_msg.grid(row=4, column=1, columnspan=2, sticky="WE")
 
         logging.info("API form launched")
 
