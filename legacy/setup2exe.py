@@ -58,11 +58,11 @@ build_options = dict(build_base='build/temp_build',
 py2exe_options = dict(excludes=['_ssl',  # Exclude _ssl
                                 'pyreadline', 'doctest', 'email',
                                 'optparse', 'pickle'],  # Exclude standard lib
-                      includes=['lxml.etree', 'lxml._elementpath', 'gzip'],
+                      includes=['lxml.etree', 'lxml._elementpath', 'gzip', 'urllib3'],
                       dll_excludes=['MSVCP90.dll'],
-                      compressed=1,  # Compress library.zip
-                      optimize=2,
-                      # bundle_files = 1,
+                      compressed=0,  # Compress library.zip
+                      optimize=0,
+                      bundle_files=3,
                       dist_dir='build/isogeo2office_{}'.format(_version)
                       )
 
@@ -82,10 +82,15 @@ setup(name="isogeo2office - {}".format(_version),
                            "img/logo_Word2013.gif",
                            "img/logo_Excel2013.gif",
                            "img/logo_process.gif"]),
+                  # translations
+                  ("i18n", ["i18n/isogeo2office.pot"]),
+                  ("i18n/fr_FR/LC_MESSAGES", ["i18n/fr_FR/LC_MESSAGES/isogeo2office.mo"]),
                   # templates
                   ("templates", ["templates/template_Isogeo.docx"]),
                   # output
                   ("output", ["output/README.md"]),
+                  # misc
+                  ("", ["LICENSE"]),
                   ],
       options={'py2exe': py2exe_options,
                'build': build_options},
