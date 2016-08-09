@@ -56,33 +56,37 @@ Create a Windows shortcut: Right clic > New > Shortcut and insert this command r
 
 Program/script:
 
-```
-{absolute_path_to_the_folder}\virtenv\Scripts\python.exe
-```
+`{absolute_path_to_the_folder}\virtenv\Scripts\python.exe`
 
 Arguments:
 
-```
-{absolute_path_to_the_folder}\isogeo2office.py
-```
+`{absolute_path_to_the_folder}\isogeo2office.py`
 
 Launch in :
 
-```
-{absolute_path_to_the_folder}\
-```
+`{absolute_path_to_the_folder}\`
 
 ## Localization
 
-It uses `.pot`, `.po` and `.mo`files to manage translations with Python gettext implementation.
+It uses `.pot`, `.po` and `.mo`files to manage translations with [Python gettext implementation](https://docs.python.org/2/library/gettext.html#internationalizing-your-programs-and-modules).
 
 `.pot`file generated with:
 
-```batch
+```bash
 python C:\Python27\Tools\i18n\pygettext.py -d i18n\isogeo2office isogeo2office.py
 ```
 
 `.po`and `.mo` files edited and made with [POEdit](https://poedit.net/).
+
+## Windows executable
+
+To generate it:
+
+1. Open a prompt command and enter into the virtual environment ;
+2. Add development requirements: `pip install -r requirements_dev.txt` ;
+3. Run: `pyinstaller isogeo2office.spec`
+
+The one-folder executable is located in *dist* folder.
 
 ## Support
 
