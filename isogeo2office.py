@@ -326,9 +326,13 @@ class Isogeo2office(Tk):
         # ## WORD ##
         # variables
         self.tpl_input = StringVar(fr_word)
-        self.out_word_prefix = StringVar(fr_word, "isogeo2docx_")
-        self.word_opt_id = IntVar(fr_word, 1)
-        self.word_opt_date = IntVar(fr_word, 1)
+        self.out_word_prefix = StringVar(fr_word, self.settings.get("basics")
+                                                      .get("word_out_prefix",
+                                                           "isogeo2docx_"))
+        self.word_opt_id = IntVar(fr_word, self.settings.get("basics")
+                                               .get("word_opt_id", 5))
+        self.word_opt_date = IntVar(fr_word, self.settings.get("basics")
+                                                 .get("word_opt_date", 1))
 
         val_uid = (self.register(self.entry_validate_uid),
                    '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
@@ -354,7 +358,7 @@ class Isogeo2office(Tk):
         ent_out_word_prefix = Entry(fr_word, textvariable=self.out_word_prefix)
         ent_out_word_uid = Entry(fr_word, textvariable=self.word_opt_id,
                                  width=2, validate="key", validatecommand=val_uid)
-        ent_out_word_date = Entry(fr_word, textvariable=self.word_opt_id,
+        ent_out_word_date = Entry(fr_word, textvariable=self.word_opt_date,
                                   width=2, validate="key", validatecommand=val_date)
 
         # griding widgets
@@ -520,9 +524,10 @@ class Isogeo2office(Tk):
                            trigger_type, widget_name):
         """Ensure that the users enters a boolean value in the UID option field.
 
-        see: http://stackoverflow.com/a/8960839"""
+        see: http://stackoverflow.com/a/8960839
+        """
         if(action == '1'):
-            if text in '01' and len(prior_value + text) < 2:
+            if text in '012345678' and len(prior_value + text) < 2:
                 try:
                     float(value_if_allowed)
                     return True
@@ -538,7 +543,8 @@ class Isogeo2office(Tk):
                             trigger_type, widget_name):
         """Ensure that the users neters a valid value in the date option field.
 
-        see: http://stackoverflow.com/a/8960839"""
+        see: http://stackoverflow.com/a/8960839
+        """
         if(action == '1'):
             if text in '012' and len(prior_value + text) < 2:
                 try:
@@ -576,6 +582,9 @@ class Isogeo2office(Tk):
         config.set('basics', 'excel_opt', str(self.opt_excel.get()))
         config.set('basics', 'word_opt', str(self.opt_word.get()))
         config.set('basics', 'word_tpl', self.tpl_input.get())
+        config.set('basics', 'word_out_prefix', str(self.out_word_prefix.get()))
+        config.set('basics', 'word_opt_id', str(self.word_opt_id.get()))
+        config.set('basics', 'word_opt_date', str(self.word_opt_date.get()))
         # writing
         with open(path.realpath(config_file), 'wb') as configfile:
             config.write(configfile)
@@ -768,25 +777,43 @@ class Isogeo2office(Tk):
             tpl = DocxTemplate(path.realpath(self.tpl_input.get()))
             to_docx.md2docx(tpl, md, url_oc)
 
-            # saving
-            dstamp = datetime.now()
-            
+            # name
             md_name = md.get("name", "NR")
             if '.' in md_name:
                 md_name = md_name.split(".")[1]
             else:
                 pass
+            md_name = "_{}".format(md_name)
+
+            # uid
+            if self.word_opt_id.get():
+                uid = "_{}".format(md.get("_id")[:self.word_opt_id.get()])
+            else:
+                uid = ""
+
+            # date
+            dstamp = datetime.now()
+            if self.word_opt_date.get() == 1:
+                dstamp = "_{}-{}-{}".format(dstamp.year,
+                                            dstamp.month,
+                                            dstamp.day)
+            elif self.word_opt_date.get() == 2:
+                dstamp = "_{}-{}-{}-{}{}{}".format(dstamp.year,
+                                                   dstamp.month,
+                                                   dstamp.day,
+                                                   dstamp.hour,
+                                                   dstamp.minute,
+                                                   dstamp.second,)
+            else:
+                dstamp = ""
+
+            # final output name
             out_docx_path = path.join(path.realpath(self.out_fold_path.get()),
-                                      "{0}_{8}_{7}_{1}{2}{3}{4}{5}{6}.docx"
-                                      .format("isogeo2docx",
-                                              dstamp.year,
-                                              dstamp.month,
-                                              dstamp.day,
-                                              dstamp.hour,
-                                              dstamp.minute,
-                                              dstamp.second,
-                                              md.get("_id")[:5],
-                                              md_name))
+                                      "{}{}{}{}.docx"
+                                      .format(self.out_word_prefix.get(),
+                                              uid,
+                                              md_name,
+                                              dstamp))
             tpl.save(out_docx_path)
             del tpl
 
