@@ -203,9 +203,6 @@ class Isogeo2office(Tk):
         # OpenCatalog check
         self.lb_input_oc = Label(fr_isogeo,
                                  textvariable=self.oc_msg)
-        ent_opencatalog = Entry(fr_isogeo,
-                                textvariable=self.url_input,
-                                width=100)
 
         if len(self.shares_info[2]) != 0:
             logger.info("Any OpenCatalog found among the shares")
@@ -274,7 +271,7 @@ class Isogeo2office(Tk):
         self.opt_xl_join = IntVar(fr_excel)
         self.input_xl_join_col = StringVar(fr_excel)
         self.input_xl = ""
-        li_input_xl_cols = []
+        # li_input_xl_cols = []
 
         self.output_xl.set(self.settings.get('basics').get('excel_out'))
 
@@ -328,7 +325,15 @@ class Isogeo2office(Tk):
 
         # ## WORD ##
         # variables
-        self.tpl_input = StringVar(self)
+        self.tpl_input = StringVar(fr_word)
+        self.out_word_prefix = StringVar(fr_word, "isogeo2docx_")
+        self.word_opt_id = IntVar(fr_word, 1)
+        self.word_opt_date = IntVar(fr_word, 1)
+
+        val_uid = (self.register(self.entry_validate_uid),
+                   '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
+        val_date = (self.register(self.entry_validate_date),
+                    '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
 
         # logo
         self.logo_word = PhotoImage(master=fr_word, file=r'img/logo_word2013.gif')
@@ -342,7 +347,15 @@ class Isogeo2office(Tk):
                                     values=li_tpls)
 
         # specific options
+        lb_out_word_prefix = Label(fr_word, text=_("File prefix: "))
+        lb_out_word_uid = Label(fr_word, text=_("Include UID (0 = no): "))
+        lb_out_word_date = Label(fr_word, text=_("Include timestamp: "))
 
+        ent_out_word_prefix = Entry(fr_word, textvariable=self.out_word_prefix)
+        ent_out_word_uid = Entry(fr_word, textvariable=self.word_opt_id,
+                                 width=2, validate="key", validatecommand=val_uid)
+        ent_out_word_date = Entry(fr_word, textvariable=self.word_opt_id,
+                                  width=2, validate="key", validatecommand=val_date)
 
         # griding widgets
         logo_word.grid(row=1, rowspan=3,
@@ -353,6 +366,12 @@ class Isogeo2office(Tk):
                                                  pady=2, sticky="NSE")
         lb_input_tpl.grid(row=1, column=2, padx=2, pady=2, sticky="W")
         cb_available_tpl.grid(row=1, column=3, padx=2, pady=2, sticky="WE")
+        lb_out_word_prefix.grid(row=2, column=2, padx=2, pady=2, sticky="W")
+        ent_out_word_prefix.grid(row=2, column=3, padx=2, pady=2, sticky="W")
+        lb_out_word_uid.grid(row=3, column=2, padx=2, pady=2, sticky="W")
+        ent_out_word_uid.grid(row=3, column=3, padx=2, pady=2, sticky="W")
+        lb_out_word_date.grid(row=4, column=2, padx=2, pady=2, sticky="W")
+        ent_out_word_date.grid(row=4, column=3, padx=2, pady=2, sticky="W")
 
         # --------------------------------------------------------------------
 
@@ -399,7 +418,6 @@ class Isogeo2office(Tk):
                              text=_("\U0001F680 Launch"),
                              command=lambda: self.process(),
                              state=status_launch)
-
 
         # griding widgets
         logo_process.grid(row=1, rowspan=5,
@@ -497,6 +515,41 @@ class Isogeo2office(Tk):
         # end of method
         return
 
+    def entry_validate_uid(self, action, index, value_if_allowed,
+                           prior_value, text, validation_type,
+                           trigger_type, widget_name):
+        """Ensure that the users enters a boolean value in the UID option field.
+
+        see: http://stackoverflow.com/a/8960839"""
+        if(action == '1'):
+            if text in '01' and len(prior_value + text) < 2:
+                try:
+                    float(value_if_allowed)
+                    return True
+                except ValueError:
+                    return False
+            else:
+                return False
+        else:
+            return True
+
+    def entry_validate_date(self, action, index, value_if_allowed,
+                            prior_value, text, validation_type,
+                            trigger_type, widget_name):
+        """Ensure that the users neters a valid value in the date option field.
+
+        see: http://stackoverflow.com/a/8960839"""
+        if(action == '1'):
+            if text in '012' and len(prior_value + text) < 2:
+                try:
+                    float(value_if_allowed)
+                    return True
+                except ValueError:
+                    return False
+            else:
+                return False
+        else:
+            return True
 
 # ----------------------------------------------------------------------------
 
