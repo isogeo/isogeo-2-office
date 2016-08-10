@@ -50,19 +50,19 @@ class IsogeoAppAuth(Tk):
         try:
             # lang.install(unicode=1)
             _ = lang.gettext
-            logging.info(u"Custom language set: {}"
-                         .format(_(u"English").decode("UTF8")))
+            logging.info("Custom language set: {}"
+                         .format(_("English").decode("UTF8")))
         except Exception, e:
             logging.error(e)
             _ = gettext.gettext
-            logging.info(u"Default language set: English")
+            logging.info("Default language set: English")
 
         # basics
-        self.title(_(u"{} - API authentication settings").format(app_name))
+        self.title(_("{} - API authentication settings").format(app_name))
         try:
             self.iconbitmap(path.dirname(__file__) + r'/../img/settings.ico')
         except:
-            logging.error(u"Icon file not reachable")
+            logging.error("Icon file not reachable")
             pass
         self.resizable(width=False, height=False)
         self.focus_force()
@@ -74,31 +74,31 @@ class IsogeoAppAuth(Tk):
         self.app_secret.set(prev_secret)
 
         self.msg_bar = StringVar(self)
-        self.msg_bar.set(_(u"Insert access transmitted by Isogeo."))
+        self.msg_bar.set(_("Insert access transmitted by Isogeo."))
 
         self.li_dest = []
         # form fields
         lb_input_id = Label(self,
-                            text=_(u"Client id:"))
+                            text=_("Client id:"))
         ent_input_id = Entry(self,
                              textvariable=self.app_id,
                              width=70)
 
         lb_input_secret = Label(self,
-                                text=_(u"Client secret:"))
+                                text=_("Client secret:"))
         ent_input_secret = Entry(self,
                                  textvariable=self.app_secret,
                                  width=70)
 
         # buttons
         btn_test = Button(self,
-                          text=_(u"\U0001F5F8 Check"),
+                          text=_("\U0001F5F8 Check"),
                           command=lambda: self.test_connection())
         mailto = _("mailto:Isogeo%20Projects%20"
                    "<projects+isogeo2office@isogeo.com>?"
                    "subject=[Isogeo2office]%20Access request")
         btn_contact = Button(self,
-                             text=_(u"\U0001F582 Request access"),
+                             text=_("\U0001F582 Request access"),
                              command=lambda: open_new_tab(mailto))
 
         # message
@@ -127,7 +127,7 @@ class IsogeoAppAuth(Tk):
             self.isogeo = Isogeo(client_id=self.app_id.get(),
                                  client_secret=self.app_secret.get())
             self.token = self.isogeo.connect()
-            self.msg_bar.set(_(u"Everything is fine."))
+            self.msg_bar.set(_("Everything is fine."))
             sleep(2)
             self.li_dest = [self.app_id.get(), self.app_secret.get()]
             logging.info("New access id/secret granted")

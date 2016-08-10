@@ -68,7 +68,6 @@ class Isogeo2docx(object):
         """Parse Isogeo metadatas and replace docx template."""
         # optional: print resource id (useful in debug mode)
         md_id = md.get("_id")
-        print(md_id)
 
         # TAGS #
         # extracting & parsing tags

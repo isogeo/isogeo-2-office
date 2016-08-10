@@ -18,17 +18,19 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 # Standard library
 from ConfigParser import SafeConfigParser
 from datetime import datetime
-import gettext
-import logging      # log files
+import gettext  # localization
+import logging
 from logging.handlers import RotatingFileHandler
 from os import listdir, path
 import platform  # about operating systems
 from sys import argv, exit
 from time import sleep
-from tkFileDialog import askopenfilename
-from Tkinter import Tk, StringVar, IntVar, Image, PhotoImage, VERTICAL, ACTIVE, DISABLED   # GUI
-from ttk import Label, Button, Entry, Checkbutton, Combobox  # advanced widgets
-from ttk import Labelframe, Progressbar, Separator, Style  # advanced widgets
+from tkFileDialog import askdirectory, askopenfilename
+from tkMessageBox import showinfo as info, showerror as avert
+from Tkinter import Tk, Image, PhotoImage
+from Tkinter import IntVar, StringVar, ACTIVE, DISABLED, VERTICAL
+from ttk import Label, Button, Entry, Checkbutton, Combobox
+from ttk import Labelframe, Progressbar, Separator, Style
 from webbrowser import open_new_tab
 
 # 3rd party library
@@ -40,8 +42,8 @@ import requests
 # Custom modules
 from modules.isogeo2xlsx import Isogeo2xlsx
 from modules.isogeo2docx import Isogeo2docx
-from modules import IsogeoAppAuth
-from modules import CheckNorris
+from modules.ui_app_settings import IsogeoAppAuth
+from modules.checknorris import CheckNorris
 
 # ############################################################################
 # ########## Global ################
@@ -103,10 +105,10 @@ class Isogeo2office(Tk):
         if self.client_lang == "FR":
             lang = gettext.translation('isogeo2office', localedir='i18n',
                                        languages=["fr_FR"])
-            lang.install(unicode=1)
+            lang.install(unicode=1, names="ngettext")
         else:
             lang = gettext
-            lang.install('isogeo2office', localedir='i18n', unicode=1)
+            lang.install('isogeo2office', localedir='i18n', unicode=1, names="ngettext")
             pass
         logger.info("Language applied: {}".format(_("English")))
 
@@ -153,24 +155,28 @@ class Isogeo2office(Tk):
         self.title("isogeo2office - {0}".format(_version))
         icon = Image("photo", file=r"img/favicon_isogeo.gif")
         self.call("wm", "iconphoto", self._w, icon)
-        # self.style = Style().theme_use("alt")
+        self.style = Style(self).theme_use("vista")
         self.resizable(width=False, height=False)
         self.focus_force()
         self.msg_bar = StringVar(self)
         self.msg_bar.set(_(u"Pick your options and clic the launch button"))
 
-        # Frames
+        # Frames and main widgets
         fr_isogeo = Labelframe(self, name="isogeo", text="Isogeo")
         fr_excel = Labelframe(self, name="excel", text="Excel")
         fr_word = Labelframe(self, name="word", text="Word")
         fr_process = Labelframe(self, name="process", text="Launch")
-        status_bar = Label(self, textvariable=self.msg_bar, anchor='w')
+        status_bar = Label(self, textvariable=self.msg_bar, anchor='w',
+                           foreground='DodgerBlue')
+        self.progbar = Progressbar(self,
+                                   orient="horizontal")
 
         fr_isogeo.grid(row=1, column=1, sticky="WE")
         fr_excel.grid(row=2, column=1, sticky="WE")
         fr_word.grid(row=3, column=1, sticky="WE")
         fr_process.grid(row=4, column=1, sticky="WE")
         status_bar.grid(row=5, column=1, sticky="WE")
+        self.progbar.grid(row=6, column=1, sticky="WE")
 
         # --------------------------------------------------------------------
 
@@ -221,7 +227,7 @@ class Isogeo2office(Tk):
 
         # settings
         btn_settings = Button(fr_isogeo,
-                              text=_(u"\U0001F510 Settings"),
+                              text=_("\U0001F510 Settings"),
                               command=lambda: self.ui_settings_prompt())
 
         # contact
@@ -229,13 +235,13 @@ class Isogeo2office(Tk):
                    "<projects+isogeo2office@isogeo.com>?"
                    "subject=[Isogeo2office]%20Question")
         btn_contact = Button(fr_isogeo,
-                             text=_(u"\U0001F582 Contact"),
+                             text=_("\U0001F582 Contact"),
                              command=lambda: open_new_tab(mailto))
 
         # source
         url_src = "https://bitbucket.org/isogeo/isogeo-2-office"
         btn_src = Button(fr_isogeo,
-                         text=_(u"\U0001F56C Report"),
+                         text=_("\U0001F56C Report"),
                          command=lambda: open_new_tab(url_src))
 
         # griding widgets
@@ -316,7 +322,7 @@ class Isogeo2office(Tk):
                                                   column=1, padx=2,
                                                   pady=2, sticky="NSE")
         lb_output_xl.grid(row=2, column=2, sticky="W")
-        ent_output_xl.grid(row=3, column=2, sticky="W")
+        ent_output_xl.grid(row=2, column=3, sticky="WE")
 
         # --------------------------------------------------------------------
 
@@ -345,17 +351,24 @@ class Isogeo2office(Tk):
         Separator(fr_word, orient=VERTICAL).grid(row=1, rowspan=3,
                                                  column=1, padx=2,
                                                  pady=2, sticky="NSE")
-        lb_input_tpl.grid(row=1, column=2)
-        cb_available_tpl.grid(row=2, column=2)
+        lb_input_tpl.grid(row=1, column=2, padx=2, pady=2, sticky="W")
+        cb_available_tpl.grid(row=1, column=3, padx=2, pady=2, sticky="WE")
 
         # --------------------------------------------------------------------
 
         # ## PROCESS ##
         # variables
-        self.opt_excel = IntVar(fr_process)
-        self.opt_word = IntVar(fr_process)
-        self.opt_excel.set(int(self.settings.get('basics').get('excel_opt')))
-        self.opt_word.set(int(self.settings.get('basics').get('word_opt')))
+        self.opt_excel = IntVar(fr_process,
+                                int(self.settings.get('basics')
+                                    .get('excel_opt'))
+                                )
+        self.opt_word = IntVar(fr_process,
+                               int(self.settings.get('basics')
+                                   .get('word_opt')))
+        self.out_fold_path = StringVar(fr_process,
+                                       path.relpath(self.settings.get('basics')
+                                                    .get('out_folder',
+                                                         'output'))[-50:])
 
         # logo
         self.logo_process = PhotoImage(master=fr_process,
@@ -372,15 +385,21 @@ class Isogeo2office(Tk):
                                   text=_(u'Export each metadata into a Word file'),
                                   variable=self.opt_word)
 
+        # output folder
+        lb_out_fold_title = Label(fr_process, text=_("Output folder: "))
+        lb_out_fold_var = Label(fr_process,
+                                textvariable=self.out_fold_path)
+
+        btn_out_fold_path_browse = Button(fr_process,
+                                          text=_("\U0001F3AF Browse"),
+                                          command=lambda: self.set_out_folder_path(self.out_fold_path.get()))
+
         # launcher
         self.btn_go = Button(fr_process,
-                             text=_(u"\U0001F680 Launch"),
+                             text=_("\U0001F680 Launch"),
                              command=lambda: self.process(),
                              state=status_launch)
 
-        # progression bar
-        self.progbar = Progressbar(fr_process,
-                                   orient="horizontal")
 
         # griding widgets
         logo_process.grid(row=1, rowspan=5,
@@ -389,14 +408,38 @@ class Isogeo2office(Tk):
         Separator(fr_process, orient=VERTICAL).grid(row=1, rowspan=5,
                                                     column=1, padx=2,
                                                     pady=2, sticky="NSE")
-        caz_go_word.grid(row=2, column=2, sticky="W")
-        caz_go_excel.grid(row=3, column=2, sticky="W")
-        self.btn_go.grid(row=4, column=2, columnspan=3, sticky="WE")
-        self.progbar.grid(row=5, column=2, columnspan=3, sticky="WE")
+        caz_go_word.grid(row=2, column=2, columnspan=3, padx=2, pady=2, sticky="W")
+        caz_go_excel.grid(row=3, column=2, columnspan=3, padx=2, pady=2, sticky="W")
+        lb_out_fold_title.grid(row=4, column=2,
+                               padx=2, pady=2, sticky="W")
+        lb_out_fold_var.grid(row=4, column=3,
+                             padx=2, pady=2, sticky="WE")
+        btn_out_fold_path_browse.grid(row=4, column=4,
+                                      padx=2, pady=2, sticky="WE")
+        self.btn_go.grid(row=5, column=2, columnspan=3,
+                         padx=2, pady=2, sticky="WE")
 
         logger.info("Main UI instanciated & displayed")
 
 # ----------------------------------------------------------------------------
+
+    def set_out_folder_path(self, out_folder_path="output"):
+        """Open a popup to select a folder and store it."""
+        self.btn_go.config(state=DISABLED)  # disable launch in the meanwhile
+        foldername = askdirectory(parent=self,
+                                  initialdir=path.realpath(out_folder_path),
+                                  mustexist=True,
+                                  title=_("Select output folder"))
+        # check if a folder has been choosen
+        if foldername:
+            self.out_fold_path.set(path.relpath(foldername))
+        else:
+            avert(title=_("No folder selected"),
+                  message=_("You must select an output folder."))
+
+        self.btn_go.config(state=ACTIVE)
+        # end of function
+        return foldername
 
     def get_input_xl(self):
         """Get the path of the input Excel file with a browse dialog."""
@@ -475,6 +518,7 @@ class Isogeo2office(Tk):
         # new values
         config.set('auth', 'app_id', self.app_id)
         config.set('auth', 'app_secret', self.app_secret)
+        config.set('basics', 'out_folder', path.realpath(self.out_fold_path.get()))
         config.set('basics', 'excel_out', self.output_xl.get())
         config.set('basics', 'excel_opt', str(self.opt_excel.get()))
         config.set('basics', 'word_opt', str(self.opt_word.get()))
@@ -490,7 +534,7 @@ class Isogeo2office(Tk):
 # ----------------------------------------------------------------------------
 
     def ui_settings_prompt(self):
-        """Get Isogeo settings from another form"""
+        """Get Isogeo settings from another form."""
         prompter = IsogeoAppAuth(prev_id=self.app_id,
                                  prev_secret=self.app_secret,
                                  lang=self.client_lang)
@@ -566,6 +610,7 @@ class Isogeo2office(Tk):
     def process(self):
         """Process export according to options set."""
         if not (self.opt_excel.get() + self.opt_word.get()):
+            self.msg_bar.set(_("Error: at least one export option required"))
             logger.error("Any export option selected.")
             return
         else:
@@ -575,6 +620,7 @@ class Isogeo2office(Tk):
         self.settings_save()
 
         # prepare Isogeo request
+        self.msg_bar.set(_("Fetching Isogeo data..."))
         includes = ["conditions",
                     "contacts",
                     "coordinate-system",
@@ -622,21 +668,22 @@ class Isogeo2office(Tk):
         # parsing metadata
         for md in self.search_results.get('results'):
             wb.store_metadatas(md)
-            # progression bar
+            # progression
+            self.msg_bar.set(_("Processing Excel: {}".format(md.get("title"))))
             self.progbar["value"] = self.progbar["value"] + 1
-            self.update()
 
         # tunning
         wb.tunning_worksheets()
 
         # saving the test file
         # dstamp = datetime.now()
-        out_xlsx_path = path.realpath(path.join(r"output",
+        out_xlsx_path = path.realpath(path.join(self.out_fold_path.get(),
                                                 self.output_xl.get() + ".xlsx"))
         wb.save(out_xlsx_path)
 
         logger.info("Excel - DONE {}"
                     .format(out_xlsx_path))
+        self.msg_bar.set(_("Export Excel done."))
         # end of method
         return
 
@@ -648,6 +695,7 @@ class Isogeo2office(Tk):
         # check infos required
         if self.tpl_input.get() == "":
             logger.error("Any template selected.")
+            self.msg_bar.set(_("Error: Word template not selected"))
             return
         else:
             pass
@@ -659,7 +707,6 @@ class Isogeo2office(Tk):
             # get OpenCatalog related to each metadata
             if len(self.shares) == 1:
                 url_oc = [share[3] for share in self.shares_info[0]][0]
-                print(url_oc)
                 pass
             else:
                 print("ups")
@@ -670,28 +717,32 @@ class Isogeo2office(Tk):
 
             # saving
             dstamp = datetime.now()
-            if not md.get('name'):
-                md_name = "NR"
-            elif '.' in md.get('name'):
-                md_name = md.get("name").split(".")[1]
+            
+            md_name = md.get("name", "NR")
+            if '.' in md_name:
+                md_name = md_name.split(".")[1]
             else:
-                md_name = md.get("name")
-            out_docx_path = path.realpath(self.output_xl.get())
-            tpl.save(r"output\{0}_{8}_{7}_{1}{2}{3}{4}{5}{6}.docx".format("TestDemoDev",
-                                                                          dstamp.year,
-                                                                          dstamp.month,
-                                                                          dstamp.day,
-                                                                          dstamp.hour,
-                                                                          dstamp.minute,
-                                                                          dstamp.second,
-                                                                          md.get("_id")[:5],
-                                                                          md_name))
+                pass
+            out_docx_path = path.join(path.realpath(self.out_fold_path.get()),
+                                      "{0}_{8}_{7}_{1}{2}{3}{4}{5}{6}.docx"
+                                      .format("isogeo2docx",
+                                              dstamp.year,
+                                              dstamp.month,
+                                              dstamp.day,
+                                              dstamp.hour,
+                                              dstamp.minute,
+                                              dstamp.second,
+                                              md.get("_id")[:5],
+                                              md_name))
+            tpl.save(out_docx_path)
             del tpl
 
             # progression bar
+            self.msg_bar.set(_("Processing Word: {}".format(md_name)))
             self.progbar["value"] = self.progbar["value"] + 1
             self.update()
 
+        self.msg_bar.set(_("Export Word done."))
         logger.info("Word - DONE: {}".format(out_docx_path))
         # end of method
         return
