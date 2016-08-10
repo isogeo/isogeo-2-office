@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: isogeo2office\n"
-"POT-Creation-Date: 2016-08-04 15:31+0200\n"
-"PO-Revision-Date: 2016-08-04 15:33+0200\n"
+"POT-Creation-Date: 2016-08-10 10:20+0200\n"
+"PO-Revision-Date: 2016-08-10 10:20+0200\n"
 "Last-Translator: Isogeo <projets@isogeo.fr>\n"
 "Language-Team: projets+isogeo2office@isogeo.fr\n"
 "Language: fr\n"
@@ -19,83 +19,142 @@ msgstr ""
 "X-Poedit-SearchPath-3: modules/isogeo2xlsx.py\n"
 "X-Poedit-SearchPath-4: modules/ui_app_settings.py\n"
 
-#: isogeo2office.py:107
+#: .\modules\ui_app_settings.py:54 isogeo2office.py:111
 msgid "English"
 msgstr "Français"
 
-#: isogeo2office.py:171
-msgid ""
-"{} metadata in {} shares,\n"
-"owned by {} different workgroups."
-msgstr ""
-"{} métadonnées via {} partages,\n"
-"appartenant à {} groupes de travail différents."
-
-#: isogeo2office.py:187
-msgid ""
-"{} shares don't have any OpenCatalog.\n"
-"Please add the OpenCatalog application following links below,\n"
-"then reboot isogeo2office."
-msgstr ""
-"{} partages n'ont pas d'OpenCatalog activé.\n"
-"Ajouter l'application OpenCatalog en cliquant ci-contre,\n"
-"puis redémarrez isogeo2office."
-
-#: isogeo2office.py:191
-msgid "Fix the shares"
-msgstr "Corriger les partages"
-
-#: isogeo2office.py:195
-msgid "Configuration OK."
-msgstr "Configuration correcte."
-
-#: isogeo2office.py:198
-msgid "Consult the shares"
-msgstr "Consulter les partages"
-
-#: isogeo2office.py:226
-msgid "Output filename: "
-msgstr "Nom du fichier de sortie :"
-
-#: isogeo2office.py:274
-msgid "Pick a template: "
-msgstr "Choisissez un modèle :"
-
-#: isogeo2office.py:301
-msgid "Export the whole shares into an Excel worksheet"
-msgstr "Exporter l'ensemble des partages dans un Excel"
-
-#: isogeo2office.py:305
-msgid "Export each metadata into a Word file"
-msgstr "Exporter chaque métadonnées dans un fichier Word"
-
-#: isogeo2office.py:310
-msgid "Launch"
-msgstr "Lancer l'export"
-
-#: modules\ui_app_settings.py:55
+#: .\modules\ui_app_settings.py:61
 msgid "{} - API authentication settings"
 msgstr "{} - Paramètres de connexion à l'API"
 
-#: modules\ui_app_settings.py:67
+#: .\modules\ui_app_settings.py:77
 msgid "Insert access transmitted by Isogeo."
 msgstr "Insérer les accès transmis par Isogeo."
 
-#: modules\ui_app_settings.py:72
+#: .\modules\ui_app_settings.py:82
 msgid "Client id:"
 msgstr "ID client : "
 
-#: modules\ui_app_settings.py:78
+#: .\modules\ui_app_settings.py:88
 msgid "Client secret:"
 msgstr "Secret client :"
 
-#: modules\ui_app_settings.py:85
-msgid "Check"
-msgstr "Vérifier"
+#: .\modules\ui_app_settings.py:95
+msgid "\\U0001F5F8 Check"
+msgstr ""
 
-#: modules\ui_app_settings.py:109
+#: .\modules\ui_app_settings.py:97
+msgid ""
+"mailto:Isogeo%20Projects%20<projects"
+"+isogeo2office@isogeo.com>?"
+"subject=[Isogeo2office]%20Access request"
+msgstr ""
+
+#: .\modules\ui_app_settings.py:101
+msgid "\\U0001F582 Request access"
+msgstr ""
+
+#: .\modules\ui_app_settings.py:130
 msgid "Everything is fine."
 msgstr "Tout est OK."
+
+#: isogeo2office.py:160
+msgid "Pick your options and clic the launch button"
+msgstr ""
+
+#: isogeo2office.py:188
+msgid ""
+"{} metadata in\n"
+"{} shares owned by\n"
+"{} workgroups."
+msgstr ""
+
+#: isogeo2office.py:206
+msgid ""
+"{} shares don't have any OpenCatalog.\n"
+"Please add the OpenCatalog application following links "
+"below,\n"
+"then reboot isogeo2office."
+msgstr ""
+"{} partages n'ont pas d'OpenCatalog activé.\n"
+"Ajouter l'application OpenCatalog en cliquant ci-"
+"contre,\n"
+"puis redémarrez isogeo2office."
+
+#: isogeo2office.py:210
+msgid "Fix the shares"
+msgstr "Corriger les partages"
+
+#: isogeo2office.py:215
+msgid "Configuration OK."
+msgstr "Configuration correcte."
+
+#: isogeo2office.py:218
+msgid "\\U0001F6E0 Admin shares"
+msgstr ""
+
+#: isogeo2office.py:224
+msgid "\\U0001F510 Settings"
+msgstr ""
+
+#: isogeo2office.py:228
+msgid ""
+"mailto:Isogeo%20Projects%20<projects"
+"+isogeo2office@isogeo.com>?"
+"subject=[Isogeo2office]%20Question"
+msgstr ""
+
+#: isogeo2office.py:232
+msgid "\\U0001F582 Contact"
+msgstr ""
+
+#: isogeo2office.py:238
+msgid "\\U0001F56C Report"
+msgstr ""
+
+#: isogeo2office.py:282
+msgid "Output filename: "
+msgstr "Nom du fichier de sortie :"
+
+#: isogeo2office.py:333
+msgid "Pick a template: "
+msgstr "Choisissez un modèle :"
+
+#: isogeo2office.py:368
+msgid "Export the whole shares into an Excel worksheet"
+msgstr "Exporter l'ensemble des partages dans un Excel"
+
+#: isogeo2office.py:372
+msgid "Export each metadata into a Word file"
+msgstr "Exporter chaque métadonnées dans un fichier Word"
+
+#: isogeo2office.py:377
+msgid "\\U0001F680 Launch"
+msgstr ""
+
+#: isogeo2office.py:405
+msgid "Pick the Excel to merge"
+msgstr ""
+
+#: isogeo2office.py:414
+msgid "Any file selected"
+msgstr ""
+
+#~ msgid ""
+#~ "{} metadata in {} shares,\n"
+#~ "owned by {} different workgroups."
+#~ msgstr ""
+#~ "{} métadonnées via {} partages,\n"
+#~ "appartenant à {} groupes de travail différents."
+
+#~ msgid "Consult the shares"
+#~ msgstr "Consulter les partages"
+
+#~ msgid "Launch"
+#~ msgstr "Lancer l'export"
+
+#~ msgid "Check"
+#~ msgstr "Vérifier"
 
 #~ msgid ""
 #~ "{} metadata shared in {} shares,\n"
@@ -113,9 +172,11 @@ msgstr "Tout est OK."
 
 #~ msgid ""
 #~ "{} shares don't have any OpenCatalog.\n"
-#~ "Please add the OpenCatalog application following links below,\n"
+#~ "Please add the OpenCatalog application following "
+#~ "links below,\n"
 #~ "then reboot issogeo2office."
 #~ msgstr ""
 #~ "{} partages n'ont pas d'OpenCatalog activé.\n"
-#~ "Ajouter l'application OpenCatalog en cliquant ci-contre,\n"
+#~ "Ajouter l'application OpenCatalog en cliquant ci-"
+#~ "contre,\n"
 #~ "puis redémarrez isogeo2office."
