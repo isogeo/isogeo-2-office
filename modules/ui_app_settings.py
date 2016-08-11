@@ -51,7 +51,7 @@ class IsogeoAppAuth(Tk):
             # lang.install(unicode=1)
             _ = lang.gettext
             logging.info("Custom language set: {}"
-                         .format(_("English").decode("UTF8")))
+                         .format(_("English").decode("Latin1")))
         except Exception, e:
             logging.error(e)
             _ = gettext.gettext
@@ -92,13 +92,13 @@ class IsogeoAppAuth(Tk):
 
         # buttons
         btn_test = Button(self,
-                          text="\U0001F5F8 " + _("Check"),
+                          text="\U0001F5F8 " + _("Check").decode("Latin1"),
                           command=lambda: self.test_connection())
         mailto = _("mailto:Isogeo%20Projects%20"
                    "<projects+isogeo2office@isogeo.com>?"
                    "subject=[Isogeo2office]%20Access request")
         btn_contact = Button(self,
-                             text="\U0001F582 " + _("Request access"),
+                             text="\U0001F582 " + _("Request access").decode("Latin1"),
                              command=lambda: open_new_tab(mailto))
 
         # message
