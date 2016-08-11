@@ -97,18 +97,19 @@ class Isogeo2office(Tk):
 
         # ------------ Settings ----------------------------------------------
         self.settings_load()
-        self.app_id = self.settings.get('auth').get('app_id')
-        self.app_secret = self.settings.get('auth').get('app_secret')
-        self.client_lang = self.settings.get('basics').get('def_codelang')
+        self.app_id = self.settings.get("auth").get("app_id")
+        self.app_secret = self.settings.get('auth').get("app_secret")
+        self.client_lang = self.settings.get('basics').get("def_codelang")
 
         # ------------ Localization ------------------------------------------
         if self.client_lang == "FR":
-            lang = gettext.translation('isogeo2office', localedir='i18n',
-                                       languages=["fr_FR"])
-            lang.install(unicode=1, names="ngettext")
+            lang = gettext.translation("isogeo2office", localedir="i18n",
+                                       languages=["fr_FR"], codeset="Latin1")
+            lang.install(unicode=1)
         else:
             lang = gettext
-            lang.install('isogeo2office', localedir='i18n', unicode=1, names="ngettext")
+            lang.install("isogeo2office", localedir="i18n",
+                         unicode=1)
             pass
         logger.info("Language applied: {}".format(_("English")))
 
@@ -122,7 +123,7 @@ class Isogeo2office(Tk):
             # if id/secret doesn't work, ask for a new one
             prompter = IsogeoAppAuth(prev_id=self.app_id,
                                      prev_secret=self.app_secret,
-                                     lang=self.client_lang)
+                                     lang=lang)
             prompter.mainloop()
             # check response
             if len(prompter.li_dest) < 2:
@@ -267,13 +268,13 @@ class Isogeo2office(Tk):
 
         # ## EXCEL ##
         # variables
-        self.output_xl = StringVar(self)
-        self.opt_xl_join = IntVar(fr_excel)
-        self.input_xl_join_col = StringVar(fr_excel)
-        self.input_xl = ""
+        self.output_xl = StringVar(fr_excel, self.settings.get("basics")
+                                                          .get("excel_out",
+                                                               "isogeo2xlsx"))
+        # self.opt_xl_join = IntVar(fr_excel)
+        # self.input_xl_join_col = StringVar(fr_excel)
+        # self.input_xl = ""
         # li_input_xl_cols = []
-
-        self.output_xl.set(self.settings.get('basics').get('excel_out'))
 
         # logo
         self.logo_excel = PhotoImage(master=fr_excel,
@@ -328,7 +329,7 @@ class Isogeo2office(Tk):
         self.tpl_input = StringVar(fr_word)
         self.out_word_prefix = StringVar(fr_word, self.settings.get("basics")
                                                       .get("word_out_prefix",
-                                                           "isogeo2docx_"))
+                                                           "isogeo2docx"))
         self.word_opt_id = IntVar(fr_word, self.settings.get("basics")
                                                .get("word_opt_id", 5))
         self.word_opt_date = IntVar(fr_word, self.settings.get("basics")
@@ -352,8 +353,10 @@ class Isogeo2office(Tk):
 
         # specific options
         lb_out_word_prefix = Label(fr_word, text=_("File prefix: "))
-        lb_out_word_uid = Label(fr_word, text=_("Include UID (0 = no): "))
-        lb_out_word_date = Label(fr_word, text=_("Include timestamp: "))
+        lb_out_word_uid = Label(fr_word, text=_("UID chars:\n"
+                                                "(0 - 8)"))
+        lb_out_word_date = Label(fr_word, text=_("Timestamp:\n"
+                                                 "(0=no, 1=date, 2=datetime)"))
 
         ent_out_word_prefix = Entry(fr_word, textvariable=self.out_word_prefix)
         ent_out_word_uid = Entry(fr_word, textvariable=self.word_opt_id,
@@ -369,13 +372,14 @@ class Isogeo2office(Tk):
                                                  column=1, padx=2,
                                                  pady=2, sticky="NSE")
         lb_input_tpl.grid(row=1, column=2, padx=2, pady=2, sticky="W")
-        cb_available_tpl.grid(row=1, column=3, padx=2, pady=2, sticky="WE")
+        cb_available_tpl.grid(row=1, column=3, columnspan=2, padx=2, pady=2, sticky="WE")
         lb_out_word_prefix.grid(row=2, column=2, padx=2, pady=2, sticky="W")
-        ent_out_word_prefix.grid(row=2, column=3, padx=2, pady=2, sticky="W")
+        ent_out_word_prefix.grid(row=2, column=3, columnspan=2, padx=2, pady=2, sticky="WE")
+
         lb_out_word_uid.grid(row=3, column=2, padx=2, pady=2, sticky="W")
-        ent_out_word_uid.grid(row=3, column=3, padx=2, pady=2, sticky="W")
-        lb_out_word_date.grid(row=4, column=2, padx=2, pady=2, sticky="W")
-        ent_out_word_date.grid(row=4, column=3, padx=2, pady=2, sticky="W")
+        ent_out_word_uid.grid(row=3, column=2, padx=3, pady=2, sticky="E")
+        lb_out_word_date.grid(row=3, column=3, padx=3, pady=2, sticky="W")
+        ent_out_word_date.grid(row=3, column=4, padx=2, pady=2, sticky="W")
 
         # --------------------------------------------------------------------
 
@@ -713,6 +717,8 @@ class Isogeo2office(Tk):
             pass
 
         # end of method
+        self.msg_bar.set(_("All tasks are done."))
+        logger.info("All tasks are done.")
         return
 
     def process_excelization(self):
