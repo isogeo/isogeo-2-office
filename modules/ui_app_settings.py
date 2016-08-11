@@ -92,13 +92,13 @@ class IsogeoAppAuth(Tk):
 
         # buttons
         btn_test = Button(self,
-                          text=_("\U0001F5F8 Check"),
+                          text="\U0001F5F8 " + _("Check"),
                           command=lambda: self.test_connection())
         mailto = _("mailto:Isogeo%20Projects%20"
                    "<projects+isogeo2office@isogeo.com>?"
                    "subject=[Isogeo2office]%20Access request")
         btn_contact = Button(self,
-                             text=_("\U0001F582 Request access"),
+                             text="\U0001F582 " + _("Request access"),
                              command=lambda: open_new_tab(mailto))
 
         # message

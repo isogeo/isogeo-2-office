@@ -1,127 +1,191 @@
-# Isogeo to Office localization.
-# Copyright (C) 2016 ORGANIZATION
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2016-08-10 10:17+Paris, Madrid (heure d’été)\n"
+"Project-Id-Version: Isogeo to Office\n"
+"POT-Creation-Date: 2016-08-11 08:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: Isogeo <projects@isogeo.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
-"Content-Transfer-Encoding: ENCODING\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.5\n"
+"X-Generator: Poedit 1.8.8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SearchPath-0: isogeo2office.py\n"
+"X-Poedit-SearchPath-1: modules/ui_app_settings.py\n"
 
-
-#: .\modules\ui_app_settings.py:54 isogeo2office.py:111
+#: ..\isogeo2office.py:113 ..\modules\ui_app_settings.py:54
 msgid "English"
 msgstr ""
 
-#: .\modules\ui_app_settings.py:61
-msgid "{} - API authentication settings"
-msgstr ""
-
-#: .\modules\ui_app_settings.py:77
-msgid "Insert access transmitted by Isogeo."
-msgstr ""
-
-#: .\modules\ui_app_settings.py:82
-msgid "Client id:"
-msgstr ""
-
-#: .\modules\ui_app_settings.py:88
-msgid "Client secret:"
-msgstr ""
-
-#: .\modules\ui_app_settings.py:95
-msgid "\\U0001F5F8 Check"
-msgstr ""
-
-#: .\modules\ui_app_settings.py:97
-msgid "mailto:Isogeo%20Projects%20<projects+isogeo2office@isogeo.com>?subject=[Isogeo2office]%20Access request"
-msgstr ""
-
-#: .\modules\ui_app_settings.py:101
-msgid "\\U0001F582 Request access"
-msgstr ""
-
-#: .\modules\ui_app_settings.py:130
-msgid "Everything is fine."
-msgstr ""
-
-#: isogeo2office.py:160
+#: ..\isogeo2office.py:162
 msgid "Pick your options and clic the launch button"
 msgstr ""
 
-#: isogeo2office.py:188
+#: ..\isogeo2office.py:194
 msgid ""
 "{} metadata in\n"
 "{} shares owned by\n"
 "{} workgroups."
 msgstr ""
 
-#: isogeo2office.py:206
+#: ..\isogeo2office.py:209
 msgid ""
 "{} shares don't have any OpenCatalog.\n"
 "Please add the OpenCatalog application following links below,\n"
 "then reboot isogeo2office."
 msgstr ""
 
-#: isogeo2office.py:210
+#: ..\isogeo2office.py:213
 msgid "Fix the shares"
 msgstr ""
 
-#: isogeo2office.py:215
+#: ..\isogeo2office.py:218
 msgid "Configuration OK."
 msgstr ""
 
-#: isogeo2office.py:218
-msgid "\\U0001F6E0 Admin shares"
+#: ..\isogeo2office.py:221
+msgid "Admin shares"
 msgstr ""
 
-#: isogeo2office.py:224
-msgid "\\U0001F510 Settings"
+#: ..\isogeo2office.py:227
+msgid "Settings"
 msgstr ""
 
-#: isogeo2office.py:228
+#: ..\isogeo2office.py:231
 msgid "mailto:Isogeo%20Projects%20<projects+isogeo2office@isogeo.com>?subject=[Isogeo2office]%20Question"
 msgstr ""
 
-#: isogeo2office.py:232
-msgid "\\U0001F582 Contact"
+#: ..\isogeo2office.py:235
+msgid "Contact"
 msgstr ""
 
-#: isogeo2office.py:238
-msgid "\\U0001F56C Report"
+#: ..\isogeo2office.py:241
+msgid "Report"
 msgstr ""
 
-#: isogeo2office.py:282
+#: ..\isogeo2office.py:285
 msgid "Output filename: "
 msgstr ""
 
-#: isogeo2office.py:333
+#: ..\isogeo2office.py:348
 msgid "Pick a template: "
 msgstr ""
 
-#: isogeo2office.py:368
+#: ..\isogeo2office.py:354
+msgid "File prefix: "
+msgstr ""
+
+#: ..\isogeo2office.py:355
+msgid "Include UID (0 = no): "
+msgstr ""
+
+#: ..\isogeo2office.py:356
+msgid "Include timestamp: "
+msgstr ""
+
+#: ..\isogeo2office.py:404
 msgid "Export the whole shares into an Excel worksheet"
 msgstr ""
 
-#: isogeo2office.py:372
+#: ..\isogeo2office.py:408
 msgid "Export each metadata into a Word file"
 msgstr ""
 
-#: isogeo2office.py:377
-msgid "\\U0001F680 Launch"
+#: ..\isogeo2office.py:412
+msgid "Output folder: "
 msgstr ""
 
-#: isogeo2office.py:405
+#: ..\isogeo2office.py:417
+msgid "Browse"
+msgstr ""
+
+#: ..\isogeo2office.py:422
+msgid "Launch"
+msgstr ""
+
+#: ..\isogeo2office.py:454
+msgid "Select output folder"
+msgstr ""
+
+#: ..\isogeo2office.py:459
+msgid "No folder selected"
+msgstr ""
+
+#: ..\isogeo2office.py:460
+msgid "You must select an output folder."
+msgstr ""
+
+#: ..\isogeo2office.py:470
 msgid "Pick the Excel to merge"
 msgstr ""
 
-#: isogeo2office.py:414
+#: ..\isogeo2office.py:479
 msgid "Any file selected"
 msgstr ""
 
+#: ..\isogeo2office.py:675
+msgid "Error: at least one export option required"
+msgstr ""
+
+#: ..\isogeo2office.py:685
+msgid "Fetching Isogeo data..."
+msgstr ""
+
+#: ..\isogeo2office.py:734
+msgid "Processing Excel: {}"
+msgstr ""
+
+#: ..\isogeo2office.py:748
+msgid "Export Excel done."
+msgstr ""
+
+#: ..\isogeo2office.py:760
+msgid "Error: Word template not selected"
+msgstr ""
+
+#: ..\isogeo2office.py:821
+msgid "Processing Word: {}"
+msgstr ""
+
+#: ..\isogeo2office.py:825
+msgid "Export Word done."
+msgstr ""
+
+#: ..\modules\ui_app_settings.py:61
+msgid "{} - API authentication settings"
+msgstr ""
+
+#: ..\modules\ui_app_settings.py:77
+msgid "Insert access transmitted by Isogeo."
+msgstr ""
+
+#: ..\modules\ui_app_settings.py:82
+msgid "Client id:"
+msgstr ""
+
+#: ..\modules\ui_app_settings.py:88
+msgid "Client secret:"
+msgstr ""
+
+#: ..\modules\ui_app_settings.py:95
+msgid "Check"
+msgstr ""
+
+#: ..\modules\ui_app_settings.py:97
+msgid "mailto:Isogeo%20Projects%20<projects+isogeo2office@isogeo.com>?subject=[Isogeo2office]%20Access request"
+msgstr ""
+
+#: ..\modules\ui_app_settings.py:101
+msgid "Request access"
+msgstr ""
+
+#: ..\modules\ui_app_settings.py:130
+msgid "Everything is fine."
+msgstr ""

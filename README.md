@@ -73,7 +73,7 @@ It uses `.pot`, `.po` and `.mo`files to manage translations with [Python gettext
 `.pot`file generated with:
 
 ```batch
- python C:\Python27\Tools\i18n\pygettext.py -d i18n\isogeo2office isogeo2office.py .\modules\ui_app_settings.py
+python C:\Python27\Tools\i18n\pygettext.py -d i18n\isogeo2office isogeo2office.py .\modules\ui_app_settings.py
 ```
 
 `.po`and `.mo` files edited and made with [POEdit](https://poedit.net/).

@@ -218,13 +218,13 @@ class Isogeo2office(Tk):
             self.oc_msg.set(_("Configuration OK."))
             li_oc = [share[3] for share in self.shares_info[0]]
             btn_open_shares = Button(fr_isogeo,
-                                     text=_("\U0001F6E0 Admin shares"),
+                                     text="\U0001F6E0 " + _("Admin shares"),
                                      command=lambda: self.open_urls(li_oc))
             status_launch = ACTIVE
 
         # settings
         btn_settings = Button(fr_isogeo,
-                              text=_("\U0001F510 Settings"),
+                              text="\U0001F510 " + _("Settings"),
                               command=lambda: self.ui_settings_prompt())
 
         # contact
@@ -232,13 +232,13 @@ class Isogeo2office(Tk):
                    "<projects+isogeo2office@isogeo.com>?"
                    "subject=[Isogeo2office]%20Question")
         btn_contact = Button(fr_isogeo,
-                             text=_("\U0001F582 Contact"),
+                             text="\U0001F582 " + _("Contact"),
                              command=lambda: open_new_tab(mailto))
 
         # source
         url_src = "https://bitbucket.org/isogeo/isogeo-2-office"
         btn_src = Button(fr_isogeo,
-                         text=_("\U0001F56C Report"),
+                         text="\U0001F56C " + _("Report"),
                          command=lambda: open_new_tab(url_src))
 
         # griding widgets
@@ -414,12 +414,12 @@ class Isogeo2office(Tk):
                                 textvariable=self.out_fold_path)
 
         btn_out_fold_path_browse = Button(fr_process,
-                                          text=_("\U0001F3AF Browse"),
+                                          text="\U0001F3AF" + _("Browse"),
                                           command=lambda: self.set_out_folder_path(self.out_fold_path.get()))
 
         # launcher
         self.btn_go = Button(fr_process,
-                             text=_("\U0001F680 Launch"),
+                             text="\U0001F680 " + _("Launch"),
                              command=lambda: self.process(),
                              state=status_launch)
 
@@ -731,7 +731,7 @@ class Isogeo2office(Tk):
         for md in self.search_results.get('results'):
             wb.store_metadatas(md)
             # progression
-            self.msg_bar.set(_("Processing Excel: {}".format(md.get("title"))))
+            self.msg_bar.set(_("Processing Excel: {}").format(md.get("title")))
             self.progbar["value"] = self.progbar["value"] + 1
 
         # tunning
@@ -818,7 +818,7 @@ class Isogeo2office(Tk):
             del tpl
 
             # progression bar
-            self.msg_bar.set(_("Processing Word: {}".format(md_name)))
+            self.msg_bar.set(_("Processing Word: {}").format(md_name))
             self.progbar["value"] = self.progbar["value"] + 1
             self.update()
 
