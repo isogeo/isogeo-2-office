@@ -84,7 +84,7 @@ To generate it:
 
 1. Open a prompt command and enter into the virtual environment ;
 2. Add development requirements: `pip install -r requirements_dev.txt` ;
-3. Run: `pyinstaller isogeo2office.spec`
+3. Run: `pyinstaller bundle_isogeo2office.spec`
 
 The one-folder executable is located in *dist* folder.
 
