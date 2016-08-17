@@ -8,7 +8,8 @@ from os import path
 # ------------ Initial settings ----------------------------------------------
 config = SafeConfigParser()
 config.read(path.realpath("settings_TPL.ini"))
-with open(path.realpath("build\settings.ini"), 'wb') as configfile:
+config.set("basics", "out_folder", "output")
+with open(path.realpath("build\\settings.ini"), "wb") as configfile:
     config.write(configfile)
 # ----------------------------------------------------------------------------
 
