@@ -56,11 +56,11 @@ _version = "1.5"
 # see: http://sametmax.com/ecrire-des-logs-en-python/
 logger = logging.getLogger()
 logging.captureWarnings(True)
-logger.setLevel(logging.DEBUG)  # all errors will be get
+logger.setLevel(logging.INFO)  # all errors will be get
 log_form = logging.Formatter("%(asctime)s || %(levelname)s "
                              "|| %(module)s || %(message)s")
 logfile = RotatingFileHandler("isogeo2office_log.log", "a", 5000000, 1)
-logfile.setLevel(logging.DEBUG)
+logfile.setLevel(logging.INFO)
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
 logger.info('\n\n\t============== Isogeo => Office =============')
@@ -75,7 +75,7 @@ class Isogeo2office(Tk):
 
     # attributes and global actions
     logging.info('OS: {0}'.format(platform.platform()))
-    logger.info('Version: {0}'.format(_version))
+    logging.info('Version: {0}'.format(_version))
 
     def __init__(self, ui_launcher=1):
         """Initiliazing isogeo2office with or without UI."""
