@@ -26,7 +26,7 @@ import platform  # about operating systems
 from sys import argv, exit
 from time import sleep
 from tkFileDialog import askdirectory, askopenfilename
-from tkMessageBox import showinfo as info, showerror as avert
+from tkMessageBox import showerror as avert
 from Tkinter import Tk, Image, PhotoImage
 from Tkinter import IntVar, StringVar, ACTIVE, DISABLED, VERTICAL
 from ttk import Label, Button, Entry, Checkbutton, Combobox
@@ -50,7 +50,7 @@ from modules.checknorris import CheckNorris
 # ##################################
 
 # VERSION
-_version = "1.5"
+_version = "1.5.2"
 
 # LOG FILE ##
 # see: http://sametmax.com/ecrire-des-logs-en-python/
@@ -59,11 +59,12 @@ logging.captureWarnings(True)
 logger.setLevel(logging.INFO)  # all errors will be get
 log_form = logging.Formatter("%(asctime)s || %(levelname)s "
                              "|| %(module)s || %(message)s")
-logfile = RotatingFileHandler("isogeo2office_log.log", "a", 5000000, 1)
+logfile = RotatingFileHandler("LOG_isogeo2office.log", "a", 5000000, 1)
 logfile.setLevel(logging.INFO)
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
-logger.info('\n\n\t============== Isogeo => Office =============')
+logger.info('=================================================')
+logger.info('================ Isogeo => Office ===============')
 
 
 # ############################################################################
@@ -160,23 +161,30 @@ class Isogeo2office(Tk):
         self.resizable(width=False, height=False)
         self.focus_force()
         self.msg_bar = StringVar(self)
-        self.msg_bar.set(_(u"Pick your options and clic the launch button"))
+        self.msg_bar.set(_(u"Pick your options and push the launch button"))
+
+        # styling
+        btn_style_err = Style(self)
+        btn_style_err.configure('Error.TButton', foreground='Red')
+
+        cbb_style_err = Style(self)
+        cbb_style_err.configure('TCombobox', foreground='Red')
 
         # Frames and main widgets
         fr_isogeo = Labelframe(self, name="isogeo", text="Isogeo")
         fr_excel = Labelframe(self, name="excel", text="Excel")
         fr_word = Labelframe(self, name="word", text="Word")
         fr_process = Labelframe(self, name="process", text="Launch")
-        status_bar = Label(self, textvariable=self.msg_bar, anchor='w',
-                           foreground='DodgerBlue')
+        self.status_bar = Label(self, textvariable=self.msg_bar, anchor='w',
+                                foreground='DodgerBlue')
         self.progbar = Progressbar(self,
                                    orient="horizontal")
 
-        fr_isogeo.grid(row=1, column=1, sticky="WE")
-        fr_excel.grid(row=2, column=1, sticky="WE")
-        fr_word.grid(row=3, column=1, sticky="WE")
-        fr_process.grid(row=4, column=1, sticky="WE")
-        status_bar.grid(row=5, column=1, sticky="WE")
+        fr_isogeo.grid(row=1, column=1, padx=2, pady=4, sticky="WE")
+        fr_excel.grid(row=2, column=1, padx=2, pady=4, sticky="WE")
+        fr_word.grid(row=3, column=1, padx=2, pady=4, sticky="WE")
+        fr_process.grid(row=4, column=1, padx=2, pady=4, sticky="WE")
+        self.status_bar.grid(row=5, column=1, padx=2, pady=2, sticky="WE")
         self.progbar.grid(row=6, column=1, sticky="WE")
 
         # --------------------------------------------------------------------
@@ -206,13 +214,31 @@ class Isogeo2office(Tk):
                                  textvariable=self.oc_msg)
 
         if len(self.shares_info[2]) != 0:
-            logger.info("Any OpenCatalog found among the shares")
+            logger.error("Any OpenCatalog found among the shares")
             self.oc_msg.set(_("{} shares don't have any OpenCatalog."
-                              "\nPlease add the OpenCatalog application following links below,"
+                              "\nAdd OpenCatalog to every share,"
                               "\nthen reboot isogeo2office.").format(len(self.shares_info[2])))
+            self.msg_bar.set(_("Error: some shares don't have OpenCatalog"
+                               "activated. Fix it first."))
+            self.status_bar.config(foreground='Red')
             btn_open_shares = Button(fr_isogeo,
                                      text=_("Fix the shares"),
                                      command=lambda: self.open_urls(self.shares_info[2]))
+            status_launch = DISABLED
+        elif len(self.shares) != len(self.shares_info[1]):
+            print(self.shares_info[2])
+            logger.error("More than one share by workgroup")
+            self.oc_msg.set(_("Too much shares by workgroup."
+                              "\nPlease red button to fix it"
+                              "\nthen reboot isogeo2office.")
+                            .format(len(self.shares) - len(self.shares_info[1])))
+            self.msg_bar.set(_("Error: more than one share by worgroup."
+                               " Click on Admin button to fix it."))
+            self.status_bar.config(foreground='Red')
+            btn_open_shares = Button(fr_isogeo,
+                                     text=_("Fix the shares"),
+                                     command=lambda: self.open_urls(self.shares_info[3]),
+                                     style="Error.TButton")
             status_launch = DISABLED
         else:
             logger.info("All shares have an OpenCatalog")
@@ -341,7 +367,8 @@ class Isogeo2office(Tk):
                     '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
 
         # logo
-        self.logo_word = PhotoImage(master=fr_word, file=r'img/logo_word2013.gif')
+        self.logo_word = PhotoImage(master=fr_word,
+                                    file=r'img/logo_word2013.gif')
         logo_word = Label(fr_word, borderwidth=2, image=self.logo_word)
 
         # pick a template
@@ -360,9 +387,11 @@ class Isogeo2office(Tk):
 
         ent_out_word_prefix = Entry(fr_word, textvariable=self.out_word_prefix)
         ent_out_word_uid = Entry(fr_word, textvariable=self.word_opt_id,
-                                 width=2, validate="key", validatecommand=val_uid)
+                                 width=2, validate="key",
+                                 validatecommand=val_uid)
         ent_out_word_date = Entry(fr_word, textvariable=self.word_opt_date,
-                                  width=2, validate="key", validatecommand=val_date)
+                                  width=2, validate="key",
+                                  validatecommand=val_date)
 
         # griding widgets
         logo_word.grid(row=1, rowspan=3,
@@ -372,9 +401,11 @@ class Isogeo2office(Tk):
                                                  column=1, padx=2,
                                                  pady=2, sticky="NSE")
         lb_input_tpl.grid(row=1, column=2, padx=2, pady=2, sticky="W")
-        cb_available_tpl.grid(row=1, column=3, columnspan=2, padx=2, pady=2, sticky="WE")
+        cb_available_tpl.grid(row=1, column=3, columnspan=2,
+                              padx=2, pady=2, sticky="WE")
         lb_out_word_prefix.grid(row=2, column=2, padx=2, pady=2, sticky="W")
-        ent_out_word_prefix.grid(row=2, column=3, columnspan=2, padx=2, pady=2, sticky="WE")
+        ent_out_word_prefix.grid(row=2, column=3, columnspan=2,
+                                 padx=2, pady=2, sticky="WE")
 
         lb_out_word_uid.grid(row=3, column=2, padx=2, pady=2, sticky="W")
         ent_out_word_uid.grid(row=3, column=2, padx=3, pady=2, sticky="E")
@@ -625,6 +656,7 @@ class Isogeo2office(Tk):
         li_oc = []
         li_owners = []
         li_without_oc = []
+        li_too_shares = []
         # parsing
         for share in self.shares:
             # Share caracteristics
@@ -634,7 +666,16 @@ class Isogeo2office(Tk):
             share_url = "https://app.isogeo.com/groups/{}/admin/shares/{}"\
                         .format(creator_id, share.get("_id"))
 
-            li_owners.append(creator_id)    # add to shares owners list
+            # check if there is only a share per workgroup
+            if creator_id in li_owners:
+                logger.error("This workgroup has more than 1 share to this application:"
+                             " https://app.isogeo.com/groups/{}".format(creator_id))
+                li_too_shares.append(share_url)
+            else:
+                # add to shares owners list
+                li_owners.append(creator_id)
+                pass
+
             # OpenCatalog URL construction
             share_details = self.isogeo.share(self.token, share_id=share.get("_id"))
             url_oc = "http://open.isogeo.com/s/{}/{}".format(share.get("_id"),
@@ -655,7 +696,7 @@ class Isogeo2office(Tk):
 
         logger.info("Isogeo - Shares informations retrieved.")
         # end of method
-        return li_oc, set(li_owners), li_without_oc
+        return li_oc, set(li_owners), li_without_oc, li_too_shares
 
     def get_url_base(self, url_input):
         """Get OpenCatalog base URL to add resource ID easily."""
@@ -709,11 +750,18 @@ class Isogeo2office(Tk):
         else:
             pass
 
-        if self.opt_word.get():
+        if self.opt_word.get() and path.isfile(self.tpl_input.get()):
+            self.status_bar.config(foreground='DodgerBlue')
             logger.info("WORD - START")
             self.progbar["value"] = 0
             self.process_wordification()
+        elif self.opt_word.get() and self.tpl_input.get() == "":
+            logger.error("Any template selected.")
+            self.msg_bar.set(_("Error: Word template not selected"))
+            self.status_bar.config(foreground='Red')
+            return
         else:
+            self.status_bar.config(foreground='DodgerBlue')
             pass
 
         # end of method
@@ -760,24 +808,30 @@ class Isogeo2office(Tk):
 
         Transformation is based on the template selected.
         """
-        # check infos required
-        if self.tpl_input.get() == "":
-            logger.error("Any template selected.")
-            self.msg_bar.set(_("Error: Word template not selected"))
-            return
-        else:
-            pass
-
         # transformer
         to_docx = Isogeo2docx()
 
         for md in self.search_results.get("results"):
             # get OpenCatalog related to each metadata
             if len(self.shares) == 1:
-                url_oc = [share[3] for share in self.shares_info[0]][0]
-                pass
+                url_oc = [share[4] for share in self.shares_info[0]][0]
+            elif len(self.shares) > 1:
+                for share in self.shares_info[0]:
+                    print("\nshare owner: ", share[1])
+                    print("md owner: ", md.get("_creator").get("_id"))
+                # print("\n", self.shares_info[0])
+                url_oc = [share[4] for share in self.shares_info[0]
+                          if share[1] == md.get("_creator").get("_id")][0]
+                print(url_oc)
+            elif len(self.shares) != len(self.shares_info[1]):
+                logger.error("More than one share by workgroup")
+                self.msg_bar.set(_("Error: more than one share by worgroup."
+                                   " Open APP or push the button to fix it."))
+                self.status_bar.config(foreground='Red')
+                return
             else:
-                print("ups")
+                self.status_bar.config(foreground='DodgerBlue')
+                pass
 
             # templating
             tpl = DocxTemplate(path.realpath(self.tpl_input.get()))
