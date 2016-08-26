@@ -23,11 +23,9 @@ requests
 
 # Excel
 openpyxl
-xlwt
 
 # templating OOXML
-http://www.lfd.uci.edu/~gohlke/pythonlibs/6kbpejrn/lxml-3.6.1-cp27-cp27m-win32.whl
-# .\lib\lxml-3.6.1-cp27-cp27m-win32.whl
+.\lib\lxml-3.6.4-cp27-cp27m-win32.whl
 docxtpl
 
 # Isogeo
