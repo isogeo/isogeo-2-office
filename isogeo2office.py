@@ -816,13 +816,13 @@ class Isogeo2office(Tk):
             if len(self.shares) == 1:
                 url_oc = [share[4] for share in self.shares_info[0]][0]
             elif len(self.shares) > 1:
-                for share in self.shares_info[0]:
-                    print("\nshare owner: ", share[1])
-                    print("md owner: ", md.get("_creator").get("_id"))
+                # for share in self.shares_info[0]:
+                #     print("\nshare owner: ", share[1])
+                #     print("md owner: ", md.get("_creator").get("_id"))
                 # print("\n", self.shares_info[0])
                 url_oc = [share[4] for share in self.shares_info[0]
                           if share[1] == md.get("_creator").get("_id")][0]
-                print(url_oc)
+                # print(url_oc)
             elif len(self.shares) != len(self.shares_info[1]):
                 logger.error("More than one share by workgroup")
                 self.msg_bar.set(_("Error: more than one share by worgroup."
