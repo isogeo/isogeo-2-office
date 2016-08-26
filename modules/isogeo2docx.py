@@ -121,7 +121,7 @@ class Isogeo2docx(object):
                 pass
 
         # formatting links to visualize on OpenCatalog and edit on APP
-        link_visu = url_base + "m/" + md_id
+        link_visu = url_base + "/m/" + md_id
         link_edit = "https://app.isogeo.com/groups/{}/resources/{}".format(owner_id, md_id)
 
         # CONTACTS #
