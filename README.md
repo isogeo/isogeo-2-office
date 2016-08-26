@@ -23,9 +23,9 @@ Desktop toolbox using Isogeo REST API to export metadatas into Microsoft Office 
 
 ## Usage
 
-* as Isogeo administrator, select metadatas catalogs that you want to export sharing them with [APP](https://app.isogeo.com/admin/shares) ;
-* create your own Word template respecting the syntax `{{ varOwner }}` ;
-
+1. as Isogeo administrator, select metadatas catalogs that you want to export sharing them with [APP](https://app.isogeo.com/admin/shares) (1 share to the same application b workgroup);
+2. create your own Word template respecting the syntax (`{{ varOwner }}`) from the default template ;
+3. launch the application and set your API settings
 
 ## Detailed deployment
 
