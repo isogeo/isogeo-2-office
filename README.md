@@ -3,6 +3,10 @@ isogeo2office
 
 Desktop toolbox using Isogeo REST API to export metadatas into Microsoft Office files.
 
+Funded by:
+
+![Agence des Espaces Verts d'Île de France](/img/logo_aev.jpg) ![Conseil Départemental du Loiret](/img/logo_cd45.jpg)
+
 ## Requirements
 
 * Windows Operating System (Unix should work too but has not been tested)
