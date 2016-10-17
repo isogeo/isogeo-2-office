@@ -27,8 +27,8 @@ from os import path
 import arrow
 from isogeo_pysdk import Isogeo
 from openpyxl import Workbook
-from openpyxl.cell import get_column_letter
-from openpyxl.styles import Style, Font, Alignment
+from openpyxl.utils import get_column_letter
+from openpyxl.styles import NamedStyle, Font, Alignment
 from openpyxl.worksheet.properties import WorksheetProperties
 
 # ##############################################################################
