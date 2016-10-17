@@ -418,11 +418,11 @@ class Isogeo2office(Tk):
         # variables
         self.opt_excel = IntVar(fr_process,
                                 int(self.settings.get('basics')
-                                    .get('excel_opt'))
+                                    .get('excel_opt', 0))
                                 )
         self.opt_word = IntVar(fr_process,
                                int(self.settings.get('basics')
-                                   .get('word_opt')))
+                                   .get('word_opt', 0)))
         self.out_fold_path = StringVar(fr_process,
                                        path.relpath(self.settings.get('basics')
                                                     .get('out_folder',
