@@ -188,17 +188,13 @@ class Isogeo2xlsx(Workbook):
         # super(Isogeo2xlsx, self).__init__(write_only=True)
 
         # styles
-        self.s_date = Style(number_format='dd/mm/yyyy')
-        self.s_error = Style(font=Font(color="FF0000"))
-        self.s_header = Style(alignment=Alignment(horizontal='center',
-                                                  vertical='center'
-                                                  ),
-                              font=Font(size=12,
-                                        bold=True,
-                                        )
-                              )
-        self.s_link = Style(font=Font(underline="single"))
-        self.s_wrap = Style(alignment=Alignment(wrap_text=True))
+        s_date = NamedStyle(name="date")
+        s_date.number_format = "dd/mm/yyyy"
+        s_wrap = NamedStyle(name="wrap")
+        s_wrap.alignment = Alignment(wrap_text=True)
+        self.add_named_style(s_date)
+        self.add_named_style(s_wrap)
+
         # deleting the default worksheet
         ws = self.active
         self.remove_sheet(ws)
@@ -216,7 +212,7 @@ class Isogeo2xlsx(Workbook):
             # styling
             for i in self.cols_v:
                 self.ws_v.cell(row=1,
-                               column=self.cols_v.index(i) + 1).style = self.s_header
+                               column=self.cols_v.index(i) + 1).style = "Headline 2"
             # initialize line counter
             self.idx_v = 1
             # log
@@ -231,7 +227,7 @@ class Isogeo2xlsx(Workbook):
             # styling
             for i in self.cols_r:
                 self.ws_r.cell(row=1,
-                               column=self.cols_r.index(i) + 1).style = self.s_header
+                               column=self.cols_r.index(i) + 1).style = "Headline 2"
             # initialize line counter
             self.idx_r = 1
             # log
@@ -246,7 +242,7 @@ class Isogeo2xlsx(Workbook):
             # styling
             for i in self.cols_s:
                 self.ws_s.cell(row=1,
-                               column=self.cols_s.index(i) + 1).style = self.s_header
+                               column=self.cols_s.index(i) + 1).style = "Headline 2"
             # initialize line counter
             self.idx_s = 1
             # log
@@ -261,7 +257,7 @@ class Isogeo2xlsx(Workbook):
             # styling
             for i in self.cols_rz:
                 self.ws_rz.cell(row=1,
-                                column=self.cols_rz.index(i) + 1).style = self.s_header
+                                column=self.cols_rz.index(i) + 1).style = "Headline 2"
             # initialize line counter
             self.idx_rz = 1
             # log
@@ -510,7 +506,7 @@ class Isogeo2xlsx(Workbook):
         link_edit = r'=HYPERLINK("{0}","{1}")'.format("https://app.isogeo.com/resources/" + md.get("_id"),
                                                       "Editer")
         ws["AL{}".format(idx)] = link_edit
-        ws["AL{}".format(idx)].style = self.s_link
+        ws["AL{}".format(idx)].style = "Hyperlink"
 
         # METADATA
         # id
@@ -534,21 +530,21 @@ class Isogeo2xlsx(Workbook):
         ws["AQ{}".format(idx)] = md.get("language")
 
         # STYLING
-        ws["C{}".format(idx)].style = self.s_wrap
-        ws["F{}".format(idx)].style = self.s_wrap
-        ws["G{}".format(idx)].style = self.s_wrap
-        ws["I{}".format(idx)].style = self.s_wrap
-        ws["J{}".format(idx)].style = self.s_wrap
-        ws["K{}".format(idx)].style = self.s_date
-        ws["L{}".format(idx)].style = self.s_date
-        ws["U{}".format(idx)].style = self.s_wrap
-        ws["AA{}".format(idx)].style = self.s_wrap
-        ws["AB{}".format(idx)].style = self.s_wrap
-        ws["AC{}".format(idx)].style = self.s_wrap
-        ws["AD{}".format(idx)].style = self.s_wrap
-        ws["AE{}".format(idx)].style = self.s_wrap
-        ws["AG{}".format(idx)].style = self.s_wrap
-        ws["AH{}".format(idx)].style = self.s_wrap
+        ws["C{}".format(idx)].style = "wrap"
+        ws["F{}".format(idx)].style = "wrap"
+        ws["G{}".format(idx)].style = "wrap"
+        ws["I{}".format(idx)].style = "wrap"
+        ws["J{}".format(idx)].style = "wrap"
+        ws["K{}".format(idx)].style = "date"
+        ws["L{}".format(idx)].style = "date"
+        ws["U{}".format(idx)].style = "wrap"
+        ws["AA{}".format(idx)].style = "wrap"
+        ws["AB{}".format(idx)].style = "wrap"
+        ws["AC{}".format(idx)].style = "wrap"
+        ws["AD{}".format(idx)].style = "wrap"
+        ws["AE{}".format(idx)].style = "wrap"
+        ws["AG{}".format(idx)].style = "wrap"
+        ws["AH{}".format(idx)].style = "wrap"
 
         # LOG
         logging.info("Vector metadata stored: {} ({})".format(md.get("name"),
@@ -746,7 +742,7 @@ class Isogeo2xlsx(Workbook):
         link_edit = r'=HYPERLINK("{0}","{1}")'.format("https://app.isogeo.com/resources/" + md.get("_id"),
                                                       "Editer")
         ws["AH{}".format(idx)] = link_edit
-        ws["AH{}".format(idx)].style = self.s_link
+        ws["AH{}".format(idx)].style = "Hyperlink"
 
         # METADATA
         # id
@@ -770,20 +766,20 @@ class Isogeo2xlsx(Workbook):
         ws["AM{}".format(idx)] = md.get("language")
 
         # STYLING
-        ws["C{}".format(idx)].style = self.s_wrap
-        ws["F{}".format(idx)].style = self.s_wrap
-        ws["G{}".format(idx)].style = self.s_wrap
-        ws["I{}".format(idx)].style = self.s_wrap
-        ws["J{}".format(idx)].style = self.s_wrap
-        ws["K{}".format(idx)].style = self.s_date
-        ws["L{}".format(idx)].style = self.s_date
-        ws["U{}".format(idx)].style = self.s_wrap
-        ws["X{}".format(idx)].style = self.s_wrap
-        ws["Y{}".format(idx)].style = self.s_wrap
-        ws["Z{}".format(idx)].style = self.s_wrap
-        ws["AA{}".format(idx)].style = self.s_wrap
-        ws["AC{}".format(idx)].style = self.s_wrap
-        ws["AD{}".format(idx)].style = self.s_wrap
+        ws["C{}".format(idx)].style = "wrap"
+        ws["F{}".format(idx)].style = "wrap"
+        ws["G{}".format(idx)].style = "wrap"
+        ws["I{}".format(idx)].style = "wrap"
+        ws["J{}".format(idx)].style = "wrap"
+        ws["K{}".format(idx)].style = "date"
+        ws["L{}".format(idx)].style = "date"
+        ws["U{}".format(idx)].style = "wrap"
+        ws["X{}".format(idx)].style = "wrap"
+        ws["Y{}".format(idx)].style = "wrap"
+        ws["Z{}".format(idx)].style = "wrap"
+        ws["AA{}".format(idx)].style = "wrap"
+        ws["AC{}".format(idx)].style = "wrap"
+        ws["AD{}".format(idx)].style = "wrap"
 
         # LOG
         logging.info("Raster metadata stored: {} ({})".format(md.get("name"),
@@ -936,7 +932,7 @@ class Isogeo2xlsx(Workbook):
         link_edit = r'=HYPERLINK("{0}","{1}")'.format("https://app.isogeo.com/resources/" + md.get("_id"),
                                                       "Editer")
         ws["W{}".format(idx)] = link_edit
-        ws["W{}".format(idx)].style = self.s_link
+        ws["W{}".format(idx)].style = "Hyperlink"
 
         # METADATA
         # id
@@ -960,14 +956,14 @@ class Isogeo2xlsx(Workbook):
         ws["AB{}".format(idx)] = md.get("language")
 
         # STYLING
-        ws["C{}".format(idx)].style = self.s_wrap
-        ws["F{}".format(idx)].style = self.s_wrap
-        ws["M{}".format(idx)].style = self.s_wrap
-        ws["N{}".format(idx)].style = self.s_wrap
-        ws["O{}".format(idx)].style = self.s_wrap
-        ws["P{}".format(idx)].style = self.s_wrap
-        ws["R{}".format(idx)].style = self.s_wrap
-        ws["S{}".format(idx)].style = self.s_wrap
+        ws["C{}".format(idx)].style = "wrap"
+        ws["F{}".format(idx)].style = "wrap"
+        ws["M{}".format(idx)].style = "wrap"
+        ws["N{}".format(idx)].style = "wrap"
+        ws["O{}".format(idx)].style = "wrap"
+        ws["P{}".format(idx)].style = "wrap"
+        ws["R{}".format(idx)].style = "wrap"
+        ws["S{}".format(idx)].style = "wrap"
 
         # LOG
         logging.info("Service metadata stored: {} ({})".format(md.get("name"),
@@ -1079,7 +1075,7 @@ class Isogeo2xlsx(Workbook):
         link_edit = r'=HYPERLINK("{0}","{1}")'.format("https://app.isogeo.com/resources/" + md.get("_id"),
                                                       "Editer")
         ws["T{}".format(idx)] = link_edit
-        ws["T{}".format(idx)].style = self.s_link
+        ws["T{}".format(idx)].style = "Hyperlink"
 
         # METADATA
         # id
@@ -1103,14 +1099,14 @@ class Isogeo2xlsx(Workbook):
         ws["Y{}".format(idx)] = md.get("language")
 
         # STYLING
-        ws["C{}".format(idx)].style = self.s_wrap
-        ws["F{}".format(idx)].style = self.s_wrap
-        ws["M{}".format(idx)].style = self.s_wrap
-        ws["N{}".format(idx)].style = self.s_wrap
-        ws["O{}".format(idx)].style = self.s_wrap
-        ws["P{}".format(idx)].style = self.s_wrap
-        ws["R{}".format(idx)].style = self.s_wrap
-        ws["S{}".format(idx)].style = self.s_wrap
+        ws["C{}".format(idx)].style = "wrap"
+        ws["F{}".format(idx)].style = "wrap"
+        ws["M{}".format(idx)].style = "wrap"
+        ws["N{}".format(idx)].style = "wrap"
+        ws["O{}".format(idx)].style = "wrap"
+        ws["P{}".format(idx)].style = "wrap"
+        ws["R{}".format(idx)].style = "wrap"
+        ws["S{}".format(idx)].style = "wrap"
 
         # LOG
         logging.info("Resource metadata stored: {} ({})".format(md.get("name"),
