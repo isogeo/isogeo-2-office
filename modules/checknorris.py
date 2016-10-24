@@ -143,9 +143,12 @@ class CheckNorris(object):
             return False, "ArcGIS isn't installed on this computer."
 
     def check_internet_connection(self, remote_server="www.google.com"):
-        """ Checks if an internet connection is operational
-        source: http://stackoverflow.com/a/20913928/2556577
+        """Checks if an internet connection is operational.
+        
+        sources: http://stackoverflow.com/a/20913928/2556577
+        http://stackoverflow.com/a/765436/2556577
         """
+        self.check_proxy()
         try:
             # see if we can resolve the host name -- tells us if there is
             # a DNS listening
