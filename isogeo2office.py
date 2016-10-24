@@ -50,7 +50,7 @@ from modules.checknorris import CheckNorris
 # ##################################
 
 # VERSION
-_version = "1.5.2"
+_version = "1.5.3"
 
 # LOG FILE ##
 # see: http://sametmax.com/ecrire-des-logs-en-python/
@@ -226,7 +226,6 @@ class Isogeo2office(Tk):
                                      command=lambda: self.open_urls(self.shares_info[2]))
             status_launch = DISABLED
         elif len(self.shares) != len(self.shares_info[1]):
-            print(self.shares_info[2])
             logger.error("More than one share by workgroup")
             self.oc_msg.set(_("Too much shares by workgroup."
                               "\nPlease red button to fix it"
@@ -424,9 +423,9 @@ class Isogeo2office(Tk):
                                int(self.settings.get('basics')
                                    .get('word_opt', 0)))
         self.out_fold_path = StringVar(fr_process,
-                                       path.relpath(self.settings.get('basics')
+                                       path.realpath(self.settings.get('basics')
                                                     .get('out_folder',
-                                                         'output'))[-50:])
+                                                         'output')))
 
         # logo
         self.logo_process = PhotoImage(master=fr_process,
@@ -445,11 +444,12 @@ class Isogeo2office(Tk):
 
         # output folder
         lb_out_fold_title = Label(fr_process, text=_("Output folder: "))
+        # print(path.split(self.out_fold_path.get())[1])
         lb_out_fold_var = Label(fr_process,
                                 textvariable=self.out_fold_path)
 
         btn_out_fold_path_browse = Button(fr_process,
-                                          text="\U0001F3AF" + _("Browse"),
+                                          text=u"\U0001F3AF" + _("Browse"),
                                           command=lambda: self.set_out_folder_path(self.out_fold_path.get()))
 
         # launcher
@@ -734,8 +734,11 @@ class Isogeo2office(Tk):
                     "events",
                     "feature-attributes",
                     "keywords",
+                    "layers",
                     "limitations",
                     "links",
+                    "operations",
+                    "serviceLayers",
                     "specifications"]
 
         self.search_results = self.isogeo.search(self.token,
