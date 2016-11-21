@@ -21,9 +21,10 @@ from datetime import datetime
 import gettext  # localization
 import logging
 from logging.handlers import RotatingFileHandler
-from os import listdir, path
+from os import listdir, path, walk
 import platform  # about operating systems
 from sys import argv, exit
+from tempfile import mkdtemp
 from time import sleep
 from tkFileDialog import askdirectory, askopenfilename
 from tkMessageBox import showerror as avert
@@ -32,6 +33,7 @@ from Tkinter import IntVar, StringVar, ACTIVE, DISABLED, VERTICAL
 from ttk import Label, Button, Entry, Checkbutton, Combobox
 from ttk import Labelframe, Progressbar, Separator, Style
 from webbrowser import open_new_tab
+from zipfile import ZipFile
 
 # 3rd party library
 from docxtpl import DocxTemplate
@@ -174,6 +176,7 @@ class Isogeo2office(Tk):
         fr_isogeo = Labelframe(self, name="isogeo", text="Isogeo")
         fr_excel = Labelframe(self, name="excel", text="Excel")
         fr_word = Labelframe(self, name="word", text="Word")
+        fr_xml = Labelframe(self, name="xml", text="XML")
         fr_process = Labelframe(self, name="process", text="Launch")
         self.status_bar = Label(self, textvariable=self.msg_bar, anchor='w',
                                 foreground='DodgerBlue')
@@ -183,9 +186,10 @@ class Isogeo2office(Tk):
         fr_isogeo.grid(row=1, column=1, padx=2, pady=4, sticky="WE")
         fr_excel.grid(row=2, column=1, padx=2, pady=4, sticky="WE")
         fr_word.grid(row=3, column=1, padx=2, pady=4, sticky="WE")
-        fr_process.grid(row=4, column=1, padx=2, pady=4, sticky="WE")
-        self.status_bar.grid(row=5, column=1, padx=2, pady=2, sticky="WE")
-        self.progbar.grid(row=6, column=1, sticky="WE")
+        fr_xml.grid(row=4, column=1, padx=2, pady=4, sticky="WE")
+        fr_process.grid(row=5, column=1, padx=2, pady=4, sticky="WE")
+        self.status_bar.grid(row=6, column=1, padx=2, pady=2, sticky="WE")
+        self.progbar.grid(row=7, column=1, sticky="WE")
 
         # --------------------------------------------------------------------
 
@@ -347,7 +351,7 @@ class Isogeo2office(Tk):
         lb_output_xl.grid(row=2, column=2, sticky="W")
         ent_output_xl.grid(row=2, column=3, sticky="WE")
 
-        # --------------------------------------------------------------------
+    # --------------------------------------------------------------------
 
         # ## WORD ##
         # variables
@@ -411,6 +415,61 @@ class Isogeo2office(Tk):
         lb_out_word_date.grid(row=3, column=3, padx=3, pady=2, sticky="W")
         ent_out_word_date.grid(row=3, column=4, padx=2, pady=2, sticky="W")
 
+    # --------------------------------------------------------------------
+
+        # ## XML ##
+        # variables
+        self.out_xml_prefix = StringVar(fr_xml, self.settings.get("basics")
+                                                    .get("xml_out_prefix",
+                                                           "isogeo2xml"))
+        self.xml_opt_id = IntVar(fr_xml, self.settings.get("basics")
+                                             .get("xml_opt_id", 5))
+        self.xml_opt_date = IntVar(fr_xml, self.settings.get("basics")
+                                               .get("xml_opt_date", 1))
+
+        self.xml_opt_zip = IntVar(fr_xml, self.settings.get("basics")
+                                              .get("xml_opt_zip", 1))
+
+        # logo
+        self.logo_xml = PhotoImage(master=fr_xml,
+                                   file=r'img/logo_inspireFun.gif')
+        logo_xml = Label(fr_xml, borderwidth=2, image=self.logo_xml)
+
+        # specific options
+        caz_zip_xml = Checkbutton(fr_xml,
+                                  text=_(u'Pack all XML into one ZIP'),
+                                  variable=self.xml_opt_zip)
+        lb_out_xml_prefix = Label(fr_xml, text=_("File prefix: "))
+        lb_out_xml_uid = Label(fr_xml, text=_("UID chars:\n"
+                                              "(0 - 8)"))
+        lb_out_xml_date = Label(fr_xml, text=_("Timestamp:\n"
+                                               "(0=no, 1=date, 2=datetime)"))
+
+        ent_out_xml_prefix = Entry(fr_xml, textvariable=self.out_xml_prefix)
+        ent_out_xml_uid = Entry(fr_xml, textvariable=self.xml_opt_id,
+                                width=2, validate="key",
+                                validatecommand=val_uid)
+        ent_out_xml_date = Entry(fr_xml, textvariable=self.xml_opt_date,
+                                 width=2, validate="key",
+                                 validatecommand=val_date)
+
+        # griding widgets
+        logo_xml.grid(row=1, rowspan=3,
+                      column=0, padx=2,
+                      pady=2, sticky="W")
+        Separator(fr_xml, orient=VERTICAL).grid(row=1, rowspan=3,
+                                                column=1, padx=2,
+                                                pady=2, sticky="NSE")
+        lb_out_xml_prefix.grid(row=1, column=2, padx=2, pady=2, sticky="W")
+        ent_out_xml_prefix.grid(row=1, column=3, columnspan=2,
+                                padx=2, pady=2, sticky="WE")
+
+        lb_out_xml_uid.grid(row=2, column=2, padx=2, pady=2, sticky="W")
+        ent_out_xml_uid.grid(row=2, column=2, padx=3, pady=2, sticky="E")
+        lb_out_xml_date.grid(row=2, column=3, padx=3, pady=2, sticky="W")
+        ent_out_xml_date.grid(row=2, column=4, padx=2, pady=2, sticky="W")
+        caz_zip_xml.grid(row=3, column=2, padx=2, pady=2, sticky="W")
+
         # --------------------------------------------------------------------
 
         # ## PROCESS ##
@@ -422,6 +481,9 @@ class Isogeo2office(Tk):
         self.opt_word = IntVar(fr_process,
                                int(self.settings.get('basics')
                                    .get('word_opt', 0)))
+        self.opt_xml = IntVar(fr_process,
+                               int(self.settings.get('basics')
+                                   .get('xml_opt', 0)))
         self.out_fold_path = StringVar(fr_process,
                                        path.realpath(self.settings.get('basics')
                                                     .get('out_folder',
@@ -441,6 +503,10 @@ class Isogeo2office(Tk):
         caz_go_word = Checkbutton(fr_process,
                                   text=_(u'Export each metadata into a Word file'),
                                   variable=self.opt_word)
+
+        caz_go_xml = Checkbutton(fr_process,
+                                 text=_(u'Export each metadata into a XML ISO-19139'),
+                                 variable=self.opt_xml)
 
         # output folder
         lb_out_fold_title = Label(fr_process, text=_("Output folder: "))
@@ -467,13 +533,14 @@ class Isogeo2office(Tk):
                                                     pady=2, sticky="NSE")
         caz_go_word.grid(row=2, column=2, columnspan=3, padx=2, pady=2, sticky="W")
         caz_go_excel.grid(row=3, column=2, columnspan=3, padx=2, pady=2, sticky="W")
-        lb_out_fold_title.grid(row=4, column=2,
+        caz_go_xml.grid(row=4, column=2, columnspan=3, padx=2, pady=2, sticky="W")
+        lb_out_fold_title.grid(row=5, column=2,
                                padx=2, pady=2, sticky="W")
-        lb_out_fold_var.grid(row=4, column=3,
+        lb_out_fold_var.grid(row=5, column=3,
                              padx=2, pady=2, sticky="WE")
-        btn_out_fold_path_browse.grid(row=4, column=4,
+        btn_out_fold_path_browse.grid(row=5, column=4,
                                       padx=2, pady=2, sticky="WE")
-        self.btn_go.grid(row=5, column=2, columnspan=3,
+        self.btn_go.grid(row=6, column=2, columnspan=3,
                          padx=2, pady=2, sticky="WE")
 
         logger.info("Main UI instanciated & displayed")
@@ -620,6 +687,10 @@ class Isogeo2office(Tk):
         config.set('basics', 'word_out_prefix', str(self.out_word_prefix.get()))
         config.set('basics', 'word_opt_id', str(self.word_opt_id.get()))
         config.set('basics', 'word_opt_date', str(self.word_opt_date.get()))
+        config.set('basics', 'xml_opt', str(self.opt_xml.get()))
+        config.set('basics', 'xml_out_prefix', str(self.out_xml_prefix.get()))
+        config.set('basics', 'xml_opt_id', str(self.xml_opt_id.get()))
+        config.set('basics', 'xml_opt_date', str(self.xml_opt_date.get()))
         # writing
         with open(path.realpath(config_file), 'wb') as configfile:
             config.write(configfile)
@@ -716,7 +787,7 @@ class Isogeo2office(Tk):
 
     def process(self):
         """Process export according to options set."""
-        if not (self.opt_excel.get() + self.opt_word.get()):
+        if not (self.opt_excel.get() + self.opt_word.get() + self.opt_xml.get()):
             self.msg_bar.set(_("Error: at least one export option required"))
             logger.error("Any export option selected.")
             return
@@ -765,6 +836,13 @@ class Isogeo2office(Tk):
             return
         else:
             self.status_bar.config(foreground='DodgerBlue')
+            pass
+
+        if self.opt_xml.get():
+            logger.info("XML - START")
+            self.progbar["value"] = 0
+            self.process_xmlisation()
+        else:
             pass
 
         # end of method
@@ -887,6 +965,88 @@ class Isogeo2office(Tk):
 
         self.msg_bar.set(_("Export Word done."))
         logger.info("Word - DONE: {}".format(out_docx_path))
+        # end of method
+        return
+
+    def process_xmlisation(self):
+        """Exports each metadata into XML ISO 19139"""
+        # ZIP or not ZIP
+        if not self.xml_opt_zip.get():
+            # directly into the output directory
+            out_dir = path.realpath(self.out_fold_path.get())
+        else:
+            # into a temporary directory
+            out_dir = mkdtemp(prefix="isogeo_", suffix="_xml")
+            logger.info("XML - Temporary directory created: {}".format(out_dir))
+
+        # parsing results
+        for md in self.search_results.get("results"):
+            # name
+            md_title = md.get("title", "NR")
+            if '.' in md_title:
+                md_title = md_title.split(".")[1]
+            else:
+                pass
+            md_title = "_{}".format(md_title)
+
+            # uid
+            if self.xml_opt_id.get():
+                uid = "_{}".format(md.get("_id")[:self.xml_opt_id.get()])
+            else:
+                uid = ""
+
+            # date
+            dstamp = datetime.now()
+            if self.xml_opt_date.get() == 1:
+                dstamp = "_{}-{}-{}".format(dstamp.year,
+                                            dstamp.month,
+                                            dstamp.day)
+            elif self.xml_opt_date.get() == 2:
+                dstamp = "_{}-{}-{}-{}{}{}".format(dstamp.year,
+                                                   dstamp.month,
+                                                   dstamp.day,
+                                                   dstamp.hour,
+                                                   dstamp.minute,
+                                                   dstamp.second,)
+            else:
+                dstamp = ""
+
+            # final output name
+            out_xml_path = path.join(out_dir,
+                                     "{}{}{}{}.xml"
+                                     .format(self.out_xml_prefix.get(),
+                                             uid,
+                                             md_title.split(" -")[0],
+                                             dstamp))
+
+            # export
+            xml_stream = self.isogeo.xml19139(self.token, md.get("_id"))
+            with open(out_xml_path, 'wb') as out_md:
+                for block in xml_stream.iter_content(1024):
+                    out_md.write(block)
+
+            # progression bar
+            self.msg_bar.set(_("Processing XML: {}").format(md_title))
+            self.progbar["value"] = self.progbar["value"] + 1
+            self.update()
+
+        # ZIP or not ZIP
+        if not self.xml_opt_zip.get():
+            pass
+        else:
+            out_zip_path = path.join(self.out_fold_path.get(),
+                                     "{}{}.zip"
+                                     .format(self.out_xml_prefix.get(),
+                                             dstamp))
+            final_zip = ZipFile(out_zip_path, "w")
+            for root, dirs, files in walk(out_dir):
+                for f in files:
+                    final_zip.write(path.join(root, f), f)
+            final_zip.close()
+            logger.info("XML - ZIP: {}".format(out_zip_path))
+
+        self.msg_bar.set(_("Export XML done."))
+        logger.info("XML - DONE: {}".format(out_xml_path))
         # end of method
         return
 
