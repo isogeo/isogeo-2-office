@@ -30,6 +30,9 @@ import arrow
 from docxtpl import DocxTemplate, etree
 from isogeo_pysdk import Isogeo
 
+# custom
+from isogeo_api_strings import dict_md_fields_fr
+
 # ##############################################################################
 # ########## Classes ###############
 # ##################################
@@ -38,7 +41,8 @@ from isogeo_pysdk import Isogeo
 class Isogeo2docx(object):
     """IsogeoToDocx class."""
 
-    def __init__(self, default_values=("NR", "1970-01-01T00:00:00+00:00")):
+    def __init__(self, lang="FR",
+                 default_values=("NR", "1970-01-01T00:00:00+00:00")):
         """Common variables for Word processing.
 
         default_values (optional) -- values used to replace missing values.
@@ -63,6 +67,14 @@ class Isogeo2docx(object):
 
         # set variables
         self.default_values = default_values
+
+        # LOCALE
+        if lang == "FR":
+            self.dates_fmt = "DD/MM/YYYY"
+            self.locale_fmt = "fr_FR"
+        else:
+            self.dates_fmt = "YYYY/MM/DD"
+            self.locale_fmt = "uk_UK"
 
     def md2docx(self, docx_template, md, url_base):
         """Parse Isogeo metadatas and replace docx template."""
@@ -157,6 +169,34 @@ class Isogeo2docx(object):
             fields = []
             pass
 
+        # EVENTS #
+        # formatting feature attributes
+        events = md.get("events", "")
+        # print(events)
+        for e in events:
+            # pop creation events (already in the export document)
+            if e.get("kind") == "creation":
+                events.remove(e)
+                continue
+            else:
+                pass
+            # prevent invalid character for XML formatting in description
+            e["description"] = self.clean_xml(e.get("description", ""))
+            # make data human readable
+            evt_date = arrow.get(e.get("date")[:19])
+            evt_date = "{0} ({1})".format(evt_date.format(self.dates_fmt,
+                                                         self.locale_fmt),
+                                          evt_date.humanize(locale=self.locale_fmt))
+            e["date"] = evt_date
+            # translate event kind
+            e["kind"] = dict_md_fields_fr.get("events")\
+                                         .get(e.get("kind"))
+
+
+
+
+        
+
         # IDENTIFICATION #
         # format version
         # if md.get("formatVersion"):
@@ -187,24 +227,24 @@ class Isogeo2docx(object):
 
         if md.get("created"):
             data_created = arrow.get(md.get("created")[:19])
-            data_created = "{0} ({1})".format(data_created.format("DD/MM/YYYY",
-                                                              "fr_FR"),
-                                              data_created.humanize(locale="fr_FR"))
+            data_created = "{0} ({1})".format(data_created.format(self.dates_fmt,
+                                                                  self.locale_fmt),
+                                              data_created.humanize(locale=self.locale_fmt))
             # data_created = arrow.get(md.get("created", self.missing_values(1))).format("dddd D MMMM YYYY")
         else:
             data_created = "NR"
         if md.get("modified"):
             data_updated = arrow.get(md.get("_created")[:19])
-            data_updated = "{0} ({1})".format(data_updated.format("DD/MM/YYYY",
-                                                              "fr_FR"),
-                                            data_updated.humanize(locale="fr_FR"))
+            data_updated = "{0} ({1})".format(data_updated.format(self.dates_fmt,
+                                                                  self.locale_fmt),
+                                            data_updated.humanize(locale=self.locale_fmt))
         else:
             data_updated = "NR"
         if md.get("published"):
             data_published = arrow.get(md.get("_created")[:19])
-            data_published = "{0} ({1})".format(data_published.format("DD/MM/YYYY",
-                                                              "fr_FR"),
-                                                data_published.humanize(locale="fr_FR"))
+            data_published = "{0} ({1})".format(data_published.format(self.dates_fmt,
+                                                              self.locale_fmt),
+                                                data_published.humanize(locale=self.locale_fmt))
         else:
             data_published = "NR"
 
@@ -233,13 +273,13 @@ class Isogeo2docx(object):
         # could be independant from dateutil: datetime.datetime.strptime("2008-08-12T12:20:30.656234Z", "%Y-%m-%dT%H:%M:%S.Z")
         if md.get("validFrom"):
             valid_start = arrow.get(md.get("validFrom"))
-            valid_start = "{0}".format(valid_start.format("DD/MM/YYYY", "fr_FR"))
+            valid_start = "{0}".format(valid_start.format(self.dates_fmt, self.locale_fmt))
         else:
             valid_start = "NR"
         # end validity date
         if md.get("validTo"):
             valid_end = arrow.get(md.get("validTo"))
-            valid_end = "{0}".format(valid_end.format("DD/MM/YYYY", "fr_FR"))
+            valid_end = "{0}".format(valid_end.format(self.dates_fmt, self.locale_fmt))
         else:
             valid_end = "NR"
         # validity comment
@@ -247,13 +287,13 @@ class Isogeo2docx(object):
 
         # METADATA #
         md_created = arrow.get(md.get("_created")[:19])
-        md_created = "{0} ({1})".format(md_created.format("DD/MM/YYYY",
-                                                          "fr_FR"),
-                                        md_created.humanize(locale="fr_FR"))
+        md_created = "{0} ({1})".format(md_created.format(self.dates_fmt,
+                                                          self.locale_fmt),
+                                        md_created.humanize(locale=self.locale_fmt))
         md_updated = arrow.get(md.get("_modified")[:19])
-        md_updated = "{0} ({1})".format(md_updated.format("DD/MM/YYYY",
-                                                          "fr_FR"),
-                                        md_updated.humanize(locale="fr_FR"))
+        md_updated = "{0} ({1})".format(md_updated.format(self.dates_fmt,
+                                                          self.locale_fmt),
+                                        md_updated.humanize(locale=self.locale_fmt))
 
         # FILLFULLING THE TEMPLATE #
         context = {
@@ -286,7 +326,9 @@ class Isogeo2docx(object):
                   'varSRS': srs,
                   'varPath': localplace,
                   'varFieldsCount': len(fields),
-                  'items': list(fields),
+                  'fields': list(fields),
+                  'varEventsCount': len(events),
+                  'events': list(events),
                   'varMdDtCrea': md_created.decode('latin1'),
                   'varMdDtUpda': md_updated.decode('latin1'),
                   'varMdDtExp': datetime.now().strftime("%a %d %B %Y (%Hh%M)").decode('latin1'),
@@ -406,7 +448,7 @@ if __name__ == '__main__':
     url_oc = "http://open.isogeo.com/s/c502e8f7c9da4c3aacdf3d905672d54c/Q4SvPfiIIslbdwkbWRFJLk7XWo4G0/"
     toDocx = Isogeo2docx()
 
-    for md in search_results.get("results"):
+    for md in search_results.get("results")[:11]:
         tpl = DocxTemplate(path.realpath(r"..\templates\template_Isogeo.docx"))
         toDocx.md2docx(tpl, md, url_oc)
         dstamp = datetime.now()
