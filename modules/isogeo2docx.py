@@ -31,7 +31,7 @@ from docxtpl import DocxTemplate, etree
 from isogeo_pysdk import Isogeo
 
 # custom
-from isogeo_api_strings import dict_md_fields_fr
+from isogeo_api_strings import IsogeoTranslator
 
 # ##############################################################################
 # ########## Classes ###############
@@ -75,6 +75,8 @@ class Isogeo2docx(object):
         else:
             self.dates_fmt = "YYYY/MM/DD"
             self.locale_fmt = "uk_UK"
+        # TRANSLATIONS
+        self.tr = IsogeoTranslator(lang).tr
 
     def md2docx(self, docx_template, md, url_base):
         """Parse Isogeo metadatas and replace docx template."""
@@ -137,21 +139,26 @@ class Isogeo2docx(object):
         link_edit = "https://app.isogeo.com/groups/{}/resources/{}".format(owner_id, md_id)
 
         # CONTACTS #
-        contacts = md.get("contacts")
+        contacts_in = md.get("contacts", [])
+        contacts_out = []
         # formatting contacts
-        if len(contacts):
-            contacts_cct = ["{5} {0} ({1})\n{2}\n{3}\n{4} ;\n\n".format(contact.get("contact").get("name"),
-                                                                        contact.get("contact").get("organization"),
-                                                                        contact.get("contact").get("email"),
-                                                                        contact.get("contact").get("phone"),
-                                                                        unicode(contact.get("contact").get("addressLine1"))
-                                                                        + u", " + unicode(contact.get("contact").get("zipCode"))
-                                                                        + u" " + unicode(contact.get("contact").get("city")),
-                                                                        contact.get("role"))
-                            for contact in contacts]
-                            # for contact in contacts if contact.get("role") == "pointOfContact"]
-        else:
-            contacts_cct = ""
+        for ct_in in contacts_in:
+            ct = {}
+            # translate contact role
+            ct["role"] = self.tr("roles", ct_in.get("role"))
+            # ensure other contacts fields
+            ct["name"] = ct_in.get("contact").get("name", "NR")
+            ct["organization"] = ct_in.get("contact").get("organization", "")
+            ct["email"] = ct_in.get("contact").get("email", "")
+            ct["phone"] = ct_in.get("contact").get("phone", "")
+            ct["fax"] = ct_in.get("contact").get("fax", "")
+            ct["addressLine1"] = ct_in.get("contact").get("addressLine1", "")
+            ct["addressLine2"] = ct_in.get("contact").get("addressLine2", "")
+            ct["zipCode"] = ct_in.get("contact").get("zipCode", "")
+            ct["city"] = ct_in.get("contact").get("city", "")
+            ct["countryCode"] = ct_in.get("contact").get("countryCode", "")
+            # store into the final list
+            contacts_out.append(ct)
 
         # ATTRIBUTES #
         # formatting feature attributes
@@ -162,7 +169,7 @@ class Isogeo2docx(object):
                 for i in f.keys():
                     t = f.get(i)
                     if type(t) in (str, unicode):
-                        f[i] = self.clean_xml(t)
+                        f[i] = self.remove_accents(self.clean_xml(t))
                     else:
                         pass
         else:
@@ -172,7 +179,6 @@ class Isogeo2docx(object):
         # EVENTS #
         # formatting feature attributes
         events = md.get("events", "")
-        # print(events)
         for e in events:
             # pop creation events (already in the export document)
             if e.get("kind") == "creation":
@@ -189,23 +195,14 @@ class Isogeo2docx(object):
                                           evt_date.humanize(locale=self.locale_fmt))
             e["date"] = evt_date
             # translate event kind
-            e["kind"] = dict_md_fields_fr.get("events")\
-                                         .get(e.get("kind"))
+            e["kind"] = self.tr("events", e.get("kind"))
 
+        # ---- IDENTIFICATION # ----------------------------------------------
+        # Resource type
+        resource_type = md.get("type", self.missing_values())
+        resource_type = self.tr("formatTypes", resource_type)
 
-
-
-        
-
-        # IDENTIFICATION #
-        # format version
-        # if md.get("formatVersion"):
-        #     format_version = u"{0} ({1} - {2})".format(format_lbl,
-        #                                                md.get("formatVersion", "NR"),
-        #                                                md.get("encoding", "NR"))
-        # else:
-        #     format_version = format_lbl
-
+        # Format
         format_version = u"{0} ({1} - {2})".format(format_lbl,
                                                    md.get("formatVersion",
                                                           self.missing_values()
@@ -217,14 +214,9 @@ class Isogeo2docx(object):
 
         # path to the resource
         localplace = md.get("path", self.missing_values()).replace("&", "&amp;")
-        # if md.get("path"):
-        #     localplace = md.get("path").replace("&", "&amp;")
-        # else:
-        #     localplace = 'NR'
 
-        # HISTORY #
+        # ---- HISTORY # -----------------------------------------------------
         # data events
-
         if md.get("created"):
             data_created = arrow.get(md.get("created")[:19])
             data_created = "{0} ({1})".format(data_created.format(self.dates_fmt,
@@ -248,26 +240,6 @@ class Isogeo2docx(object):
         else:
             data_published = "NR"
 
-        # CGUs AND lIMITATIONS #
-        cgus = md.get("conditions")
-        # formatting contacts
-        if cgus:
-            cgus_cct = ["{1} {0} ({2}) ;\n\n".format(cgu.get("description"),
-                                                     cgu.get("license").get("name"),
-                                                     cgu.get("license").get("link"))\
-                        for cgu in cgus if cgu.get('license')]
-        else:
-            cgus_cct = ""
-
-        limitations = md.get("limitations")
-        # formatting contacts
-        if limitations:
-            limits_cct = ["Type : {0} - Restriction : {1} ;\n\n".format(lim.get("type"),
-                                                                        lim.get("restriction"))\
-                         for lim in limitations]
-        else:
-            limits_cct = ""
-
         # validity
         # for date manipulation: https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior
         # could be independant from dateutil: datetime.datetime.strptime("2008-08-12T12:20:30.656234Z", "%Y-%m-%dT%H:%M:%S.Z")
@@ -285,7 +257,68 @@ class Isogeo2docx(object):
         # validity comment
         valid_com = md.get("validityComment", self.missing_values())
 
-        # METADATA #
+        # ---- SPECIFICATIONS # -----------------------------------------------
+        specs_in = md.get("specifications", [])
+        specs_out = []
+        for s_in in specs_in:
+            spec = {}
+            # translate specification conformity
+            if s_in.get("conformant"):
+                spec["conformity"] = self.tr("quality", "isConform")
+            else:
+                spec["conformity"] = self.tr("quality", "isNotConform")
+            # ensure other fields
+            spec["name"] = s_in.get("specification").get("name")
+            spec["link"] = s_in.get("specification").get("link")
+            # make data human readable
+            spec_date = arrow.get(s_in.get("specification").get("published")[:19])
+            spec_date = "{0}".format(spec_date.format(self.dates_fmt,
+                                                      self.locale_fmt))
+            spec["date"] = spec_date
+            # store into the final list
+            specs_out.append(spec)
+
+        # ---- CGUs # --------------------------------------------------------
+        cgus_in = md.get("conditions", [])
+        cgus_out = []
+        for c_in in cgus_in:
+            cgu = {}
+            # ensure other fields
+            cgu["description"] = self.clean_xml(c_in.get("description", ""))
+            if "license" in c_in.keys():
+                cgu["name"] = self.clean_xml(c_in.get("license").get("name", "NR"))
+                cgu["link"] = c_in.get("license").get("link", "")
+                cgu["content"] = self.clean_xml(c_in.get("license").get("content", ""))
+            else:
+                cgu["name"] = self.tr("conditions", "noLicense")
+
+            # store into the final list
+            cgus_out.append(cgu)
+
+        # ---- LIMITATIONS # -------------------------------------------------
+        lims_in = md.get("limitations", [])
+        lims_out = []
+        for l_in in lims_in:
+            limitation = {}
+            # ensure other fields
+            limitation["description"] = self.clean_xml(l_in.get("description", ""))
+            limitation["type"] = self.tr("limitations", l_in.get("type"))
+            # legal type
+            if l_in.get("type") == "legal":
+                limitation["restriction"] = self.tr("restrictions", l_in.get("restriction"))
+            else:
+                pass
+            # INSPIRE precision
+            if "directive" in l_in.keys():
+                limitation["inspire"] = self.clean_xml(l_in.get("directive").get("name"))
+                limitation["content"] = self.clean_xml(l_in.get("directive").get("description"))
+            else:
+                pass
+
+            # store into the final list
+            lims_out.append(limitation)
+
+        # ---- METADATA # ----------------------------------------------------
         md_created = arrow.get(md.get("_created")[:19])
         md_created = "{0} ({1})".format(md_created.format(self.dates_fmt,
                                                           self.locale_fmt),
@@ -313,16 +346,17 @@ class Isogeo2docx(object):
                   'varObjectsCount': md.get("features", self.missing_values()),
                   'varKeywords': " ; ".join(li_motscles),
                   'varKeywordsCount': len(li_motscles),
-                  'varType': md.get("type", self.missing_values()),
+                  'varType': resource_type,
                   'varOwner': owner,
                   'varScale': md.get("scale", self.missing_values()),
                   'varTopologyInfo': self.clean_xml(md.get("topologicalConsistency", self.missing_values())),
                   'varInspireTheme': " ; ".join(li_theminspire),
                   'varInspireConformity': inspire_valid,
-                  'varInspireLimitation': " ; \n".join(limits_cct),
-                  'varCGUs': self.clean_xml(" ; \n".join(cgus_cct)),
-                  'varContactsCount': len(contacts),
-                  'varContactsDetails': " ; \n".join(contacts_cct),
+                  'varLimitations': lims_out,
+                  'varCGUS': cgus_out,
+                  'varSpecifications': specs_out,
+                  'varContactsCount': len(contacts_in),
+                  'varContactsDetails': contacts_out,
                   'varSRS': srs,
                   'varPath': localplace,
                   'varFieldsCount': len(fields),
@@ -448,7 +482,7 @@ if __name__ == '__main__':
     url_oc = "http://open.isogeo.com/s/c502e8f7c9da4c3aacdf3d905672d54c/Q4SvPfiIIslbdwkbWRFJLk7XWo4G0/"
     toDocx = Isogeo2docx()
 
-    for md in search_results.get("results")[:11]:
+    for md in search_results.get("results"):
         tpl = DocxTemplate(path.realpath(r"..\templates\template_Isogeo.docx"))
         toDocx.md2docx(tpl, md, url_oc)
         dstamp = datetime.now()
