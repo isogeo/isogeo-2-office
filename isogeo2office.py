@@ -46,6 +46,7 @@ from modules.isogeo2xlsx import Isogeo2xlsx
 from modules.isogeo2docx import Isogeo2docx
 from modules.ui_app_settings import IsogeoAppAuth
 from modules.checknorris import CheckNorris
+from modules.utils import isogeo2office_utils
 
 # ############################################################################
 # ########## Global ################
@@ -82,8 +83,9 @@ class Isogeo2office(Tk):
 
     def __init__(self, ui_launcher=1):
         """Initiliazing isogeo2office with or without UI."""
-        # Invoke Check Norris
+        # Invoke Check Norris & utils
         checker = CheckNorris()
+        utils = isogeo2office_utils()
 
         # checking connection
         if not checker.check_internet_connection():
@@ -92,17 +94,11 @@ class Isogeo2office(Tk):
         else:
             pass
 
-        # UI or not to UI
-        if not ui_launcher:
-            self.no_ui_launcher()
-        else:
-            pass
-
-        # ------------ Settings ----------------------------------------------
-        self.settings_load()
+        # ------------ Settings ----------------------------------------------    
+        self.settings = utils.settings_load()
         self.app_id = self.settings.get("auth").get("app_id")
-        self.app_secret = self.settings.get('auth').get("app_secret")
-        self.client_lang = self.settings.get('basics').get("def_codelang")
+        self.app_secret = self.settings.get("auth").get("app_secret")
+        self.client_lang = self.settings.get("basics").get("def_codelang", "FR")
 
         # ------------ Localization ------------------------------------------
         if self.client_lang == "FR":
@@ -115,6 +111,12 @@ class Isogeo2office(Tk):
                          unicode=1)
             pass
         logger.info("Language applied: {}".format(_("English")))
+
+        # UI or not to UI
+        if not ui_launcher:
+            self.no_ui_launcher()
+        else:
+            pass
 
         # ------------ Isogeo authentication -------------------------------
         try:
@@ -191,6 +193,12 @@ class Isogeo2office(Tk):
         self.status_bar.grid(row=6, column=1, padx=2, pady=2, sticky="WE")
         self.progbar.grid(row=7, column=1, sticky="WE")
 
+        # fields validation
+        val_uid = (self.register(utils.entry_validate_uid),
+                   '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
+        val_date = (self.register(utils.entry_validate_date),
+                    '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
+
         # --------------------------------------------------------------------
 
         # ## GLOBAL ##
@@ -227,7 +235,7 @@ class Isogeo2office(Tk):
             self.status_bar.config(foreground='Red')
             btn_open_shares = Button(fr_isogeo,
                                      text=_("Fix the shares"),
-                                     command=lambda: self.open_urls(self.shares_info[2]))
+                                     command=lambda: utils.open_urls(self.shares_info[2]))
             status_launch = DISABLED
         elif len(self.shares) != len(self.shares_info[1]):
             logger.error("More than one share by workgroup")
@@ -240,7 +248,7 @@ class Isogeo2office(Tk):
             self.status_bar.config(foreground='Red')
             btn_open_shares = Button(fr_isogeo,
                                      text=_("Fix the shares"),
-                                     command=lambda: self.open_urls(self.shares_info[3]),
+                                     command=lambda: utils.open_urls(self.shares_info[3]),
                                      style="Error.TButton")
             status_launch = DISABLED
         else:
@@ -249,7 +257,7 @@ class Isogeo2office(Tk):
             li_oc = [share[3] for share in self.shares_info[0]]
             btn_open_shares = Button(fr_isogeo,
                                      text="\U0001F6E0 " + _("Admin shares"),
-                                     command=lambda: self.open_urls(li_oc))
+                                     command=lambda: utils.open_urls(li_oc))
             status_launch = ACTIVE
 
         # settings
@@ -363,11 +371,6 @@ class Isogeo2office(Tk):
                                                .get("word_opt_id", 5))
         self.word_opt_date = IntVar(fr_word, self.settings.get("basics")
                                                  .get("word_opt_date", 1))
-
-        val_uid = (self.register(self.entry_validate_uid),
-                   '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
-        val_date = (self.register(self.entry_validate_date),
-                    '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
 
         # logo
         self.logo_word = PhotoImage(master=fr_word,
@@ -484,8 +487,11 @@ class Isogeo2office(Tk):
         self.opt_xml = IntVar(fr_process,
                                int(self.settings.get('basics')
                                    .get('xml_opt', 0)))
+        # self.out_folder_path = self.settings.get("basics").get("out_folder",
+        #                                                        "output")
+
         self.out_fold_path = StringVar(fr_process,
-                                       path.realpath(self.settings.get('basics')
+                                       path.relpath(self.settings.get('basics')
                                                     .get('out_folder',
                                                          'output')))
 
@@ -602,75 +608,7 @@ class Isogeo2office(Tk):
         # end of function
         return
 
-    def open_urls(self, li_url):
-        """Open URLs in new tabs in the default brower.
-
-        It waits a few seconds between the first and the next URLs
-        to handle case when the webbrowser is not opened yet and let the
-        time to do.
-        """
-        x = 1
-        for url in li_url:
-            if x > 1:
-                sleep(3)
-            else:
-                pass
-            open_new_tab(url)
-            x += 1
-
-        # end of method
-        return
-
-    def entry_validate_uid(self, action, index, value_if_allowed,
-                           prior_value, text, validation_type,
-                           trigger_type, widget_name):
-        """Ensure that the users enters a boolean value in the UID option field.
-
-        see: http://stackoverflow.com/a/8960839
-        """
-        if(action == '1'):
-            if text in '012345678' and len(prior_value + text) < 2:
-                try:
-                    float(value_if_allowed)
-                    return True
-                except ValueError:
-                    return False
-            else:
-                return False
-        else:
-            return True
-
-    def entry_validate_date(self, action, index, value_if_allowed,
-                            prior_value, text, validation_type,
-                            trigger_type, widget_name):
-        """Ensure that the users neters a valid value in the date option field.
-
-        see: http://stackoverflow.com/a/8960839
-        """
-        if(action == '1'):
-            if text in '012' and len(prior_value + text) < 2:
-                try:
-                    float(value_if_allowed)
-                    return True
-                except ValueError:
-                    return False
-            else:
-                return False
-        else:
-            return True
-
 # ----------------------------------------------------------------------------
-
-    def settings_load(self, config_file=r"settings.ini"):
-        """Load settings from the ini file."""
-        config = SafeConfigParser()
-        config.read(r"settings.ini")
-        self.settings = {s: dict(config.items(s)) for s in config.sections()}
-
-        logger.info("Settings loaded from: {}".format(config_file))
-
-        # end of method
-        return
 
     def settings_save(self, config_file=r"settings.ini"):
         """Save settings into the ini file."""
@@ -819,8 +757,10 @@ class Isogeo2office(Tk):
         # export
         if self.opt_excel.get():
             logger.info("Excel - START")
+            out_xlsx_path = path.realpath(path.join(self.out_fold_path.get(),
+                                                    self.output_xl.get() + ".xlsx"))
             self.progbar["value"] = 0
-            self.process_excelization()
+            self.process_excelization(output_filepath=out_xlsx_path)
         else:
             pass
 
@@ -850,14 +790,8 @@ class Isogeo2office(Tk):
         logger.info("All tasks are done.")
         return
 
-    def process_excelization(self):
+    def process_excelization(self, output_filepath=r"output/TEST_isogeo2xlsx.xlsx", ui=1):
         """Export metadatas shared into an Excel worksheet."""
-        # check infos required
-        if self.output_xl.get() == "":
-            self.output_xl.set("isogeo2xlsx")
-        else:
-            pass
-
         # worksheet
         wb = Isogeo2xlsx()
         wb.set_worksheets()
@@ -865,26 +799,30 @@ class Isogeo2office(Tk):
         # parsing metadata
         for md in self.search_results.get('results'):
             wb.store_metadatas(md)
-            # progression
-            self.msg_bar.set(_("Processing Excel: {}").format(md.get("title")))
-            self.progbar["value"] = self.progbar["value"] + 1
+            if ui:
+                # progression
+                self.msg_bar.set(_("Processing Excel: {}").format(md.get("title")))
+                self.progbar["value"] = self.progbar["value"] + 1
+            else:
+                pass
 
         # tunning
         wb.tunning_worksheets()
 
         # saving the test file
         # dstamp = datetime.now()
-        out_xlsx_path = path.realpath(path.join(self.out_fold_path.get(),
-                                                self.output_xl.get() + ".xlsx"))
-        wb.save(out_xlsx_path)
+        wb.save(output_filepath)
 
         logger.info("Excel - DONE {}"
-                    .format(out_xlsx_path))
-        self.msg_bar.set(_("Export Excel done."))
+                    .format(output_filepath))
+        if ui:
+            self.msg_bar.set(_("Export Excel done."))
+        else:
+            pass
         # end of method
         return
 
-    def process_wordification(self):
+    def process_wordification(self, ui=1):
         """Export each metadata shared to a Word document.
 
         Transformation is based on the template selected.
@@ -1025,6 +963,9 @@ class Isogeo2office(Tk):
                 for block in xml_stream.iter_content(1024):
                     out_md.write(block)
 
+            logger.info("XML - Exported: {} ({})".format(md.get("name"),
+                                                         md.get("_id")))
+
             # progression bar
             self.msg_bar.set(_("Processing XML: {}").format(md_title))
             self.progbar["value"] = self.progbar["value"] + 1
@@ -1055,7 +996,61 @@ class Isogeo2office(Tk):
     def no_ui_launcher(self):
         """Execute scripts without UI and using settings.ini."""
         logger.info('Launched from command prompt')
-        self.settings_load()
+        # utils
+        checker = CheckNorris()
+        utils = isogeo2office_utils()
+        includes = ["conditions",
+                    "contacts",
+                    "coordinate-system",
+                    "events",
+                    "feature-attributes",
+                    "keywords",
+                    "layers",
+                    "limitations",
+                    "links",
+                    "operations",
+                    "serviceLayers",
+                    "specifications"]
+
+        try:
+            self.isogeo = Isogeo(client_id=self.app_id,
+                                 client_secret=self.app_secret,
+                                 lang=self.client_lang)
+            self.token = self.isogeo.connect()
+        except Exception as e:
+            print(e)
+            exit()
+
+        # get settings
+        self.settings = utils.settings_load()
+        self.search_results = self.isogeo.search(self.token,
+                                                 sub_resources=includes)
+
+        # Excel export
+        if self.settings.get('basics').get('excel_opt'):
+            logger.info("Excel - START")
+            out_xlsx_path = path.abspath(path.join(self.settings.get('basics')
+                                                                .get('out_folder'),
+                                                   self.settings.get('basics')
+                                                                .get('excel_out') + ".xlsx"))
+            self.process_excelization(out_xlsx_path, ui=0)
+
+        else:
+            pass
+
+        # # Word export
+        # if self.settings.get('basics').get('word_opt'):
+        #     logger.info("WORD - START")
+        #     self.process_wordification()
+        # else:
+        #     pass
+
+        # # XML export
+        # if self.settings.get('basics').get('xml_opt'):
+        #     logger.info("XML - START")
+        #     self.process_xmlisation()
+        # else:
+        #     pass
         exit()
         return
 
@@ -1076,3 +1071,4 @@ if __name__ == '__main__':
     else:
         print("launch without UI")
         app = Isogeo2office(ui_launcher=0)
+        print("Finished!")
