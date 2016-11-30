@@ -32,7 +32,7 @@ from isogeo_pysdk import Isogeo
 
 # custom
 try:
-    from . import isogeo_api_strings
+    from .isogeo_api_strings import IsogeoTranslator
 except:
     from isogeo_api_strings import IsogeoTranslator
 
