@@ -25,6 +25,7 @@ added_files = [('build\\settings.ini', '.'),
                ('img\\logo_isogeo.gif', 'img'),
                ('img\\logo_Word2013.gif', 'img'),
                ('img\\logo_Excel2013.gif', 'img'),
+               ('img\\logo_inspireFun.gif', 'img'),
                ('img\\logo_process.gif', 'img'),
                ('img\\settings.ico', 'img')
               ]
