@@ -44,6 +44,7 @@ import requests
 # Custom modules
 from modules.isogeo2xlsx import Isogeo2xlsx
 from modules.isogeo2docx import Isogeo2docx
+from modules.isogeo_api_strings import IsogeoTranslator
 from modules.ui_app_settings import IsogeoAppAuth
 from modules.checknorris import CheckNorris
 from modules.utils import isogeo2office_utils
@@ -897,7 +898,7 @@ class Isogeo2office(Tk):
             del tpl
 
             # progression bar
-            self.msg_bar.set(_("Processing Word: {}").format(md_name))
+            self.msg_bar.set(_("Processing Word: {}").format(md_name[1:]))
             self.progbar["value"] = self.progbar["value"] + 1
             self.update()
 
@@ -967,7 +968,7 @@ class Isogeo2office(Tk):
                                                          md.get("_id")))
 
             # progression bar
-            self.msg_bar.set(_("Processing XML: {}").format(md_title))
+            self.msg_bar.set(_("Processing XML: {}").format(md_title[1:]))
             self.progbar["value"] = self.progbar["value"] + 1
             self.update()
 
