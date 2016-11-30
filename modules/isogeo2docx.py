@@ -141,7 +141,7 @@ class Isogeo2docx(object):
         link_visu = url_base + "/m/" + md_id
         link_edit = "https://app.isogeo.com/groups/{}/resources/{}".format(owner_id, md_id)
 
-        # CONTACTS #
+        # ---- CONTACTS # ----------------------------------------------------
         contacts_in = md.get("contacts", [])
         contacts_out = []
         # formatting contacts
@@ -163,23 +163,22 @@ class Isogeo2docx(object):
             # store into the final list
             contacts_out.append(ct)
 
-        # ATTRIBUTES #
+        # ---- ATTRIBUTES # --------------------------------------------------
         # formatting feature attributes
-        if md.get("type") == "vectorDataset" and md.get("feature-attributes"):
-            fields = md.get("feature-attributes")
-            # prevent invalid character for XML formatting
-            for f in fields:
-                for i in f.keys():
-                    t = f.get(i)
-                    if type(t) in (str, unicode):
-                        f[i] = self.remove_accents(self.clean_xml(t))
-                    else:
-                        pass
-        else:
-            fields = []
-            pass
+        fields_in = md.get("feature-attributes", [])
+        fields_out = []
+        for f_in in fields_in:
+            field = {}
+            # ensure other fields
+            field["name"] = self.clean_xml(f_in.get("name", ""))
+            field["alias"] = self.clean_xml(f_in.get("alias", ""))
+            field["description"] = self.clean_xml(f_in.get("description", ""))
+            field["dataType"] = f_in.get("dataType", "")
+            field["language"] = f_in.get("language", "")
+            # store into the final list
+            fields_out.append(field)
 
-        # EVENTS #
+        # ---- EVENTS # ------------------------------------------------------
         # formatting feature attributes
         events = md.get("events", "")
         for e in events:
@@ -190,7 +189,8 @@ class Isogeo2docx(object):
             else:
                 pass
             # prevent invalid character for XML formatting in description
-            e["description"] = self.clean_xml(e.get("description", ""))
+            e["description"] = self.clean_xml(e.get("description", u" "),
+                                              mode="strict", substitute="")
             # make data human readable
             evt_date = arrow.get(e.get("date")[:19])
             evt_date = "{0} ({1})".format(evt_date.format(self.dates_fmt,
@@ -363,9 +363,9 @@ class Isogeo2docx(object):
                   'varSRS': srs,
                   'varPath': localplace,
                   'varFieldsCount': len(fields),
-                  'fields': list(fields),
+                  'varFields': fields_out,
                   'varEventsCount': len(events),
-                  'events': list(events),
+                  'varEvents': events,
                   'varMdDtCrea': md_created.decode('latin1'),
                   'varMdDtUpda': md_updated.decode('latin1'),
                   'varMdDtExp': datetime.now().strftime("%a %d %B %Y (%Hh%M)").decode('latin1'),
@@ -410,7 +410,7 @@ class Isogeo2docx(object):
         """
         return unicode(substitute).join(char for char in input_str if char.isalnum())
 
-    def clean_xml(self, invalid_xml):
+    def clean_xml(self, invalid_xml, mode="soft", substitute="_"):
         """Clean string of XML invalid characters.
 
         source: http://stackoverflow.com/a/13322581/2556577
@@ -437,8 +437,12 @@ class Isogeo2docx(object):
         pairs = izip_longest(*iters, fillvalue='')  # iterate 2 items at a time
 
         # get the clean version
-        return ''.join(escape(text) + tag for text, tag in pairs)
-
+        clean_version = ''.join(escape(text) + tag for text, tag in pairs)
+        if mode == "strict":
+            clean_version = re.sub(r"<.*?>", substitute, clean_version)
+        else:
+            pass
+        return clean_version
 
 # ###############################################################################
 # ###### Stand alone program ########
@@ -452,17 +456,17 @@ if __name__ == '__main__':
     from os import path
 
     # ------------ Settings from ini file ----------------
-    if not path.isfile(path.realpath(r"..\settings.ini")):
+    if not path.isfile(path.realpath(r"..\settings_dev.ini")):
         logging.error("To execute this script as standalone,"
                       " you need to store your Isogeo application settings"
                       " in a isogeo_params.ini file. You can use the template"
                       " to set your own.")
-        raise ValueError("isogeo_params.ini file missing.")
+        raise ValueError("settings.ini file missing.")
     else:
         pass
 
     config = SafeConfigParser()
-    config.read(r"..\settings.ini")
+    config.read(r"..\settings_dev.ini")
 
     settings = {s: dict(config.items(s)) for s in config.sections()}
     app_id = settings.get('auth').get('app_id')
