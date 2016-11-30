@@ -31,7 +31,10 @@ from docxtpl import DocxTemplate, etree
 from isogeo_pysdk import Isogeo
 
 # custom
-from isogeo_api_strings import IsogeoTranslator
+try:
+    from . import isogeo_api_strings
+except:
+    from isogeo_api_strings import IsogeoTranslator
 
 # ##############################################################################
 # ########## Classes ###############
