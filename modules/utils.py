@@ -18,8 +18,11 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 
 # Standard library
 from ConfigParser import SafeConfigParser
+from itertools import izip_longest
 import logging
+import re
 from webbrowser import open_new_tab
+from xml.sax.saxutils import escape  # '<' -> '&lt;'
 
 # ############################################################################
 # ########## Classes ###############
@@ -139,7 +142,50 @@ class isogeo2office_utils(object):
 
     # ------------------------------------------------------------------------
 
+    def remove_accents(self, input_str, substitute=u""):
+        """Clean string from special characters.
 
+        source: http://stackoverflow.com/a/5843560
+        """
+        return unicode(substitute).join(char for char in input_str if char.isalnum())
+
+    def clean_xml(self, invalid_xml):
+        """Clean string of XML invalid characters.
+
+        source: http://stackoverflow.com/a/13322581/2556577
+        """
+        # assumptions:
+        #   doc = *( start_tag / end_tag / text )
+        #   start_tag = '<' name *attr [ '/' ] '>'
+        #   end_tag = '<' '/' name '>'
+        ws = r'[ \t\r\n]*'  # allow ws between any token
+        name = '[a-zA-Z]+'  # note: expand if necessary but the stricter the better
+        attr = '{name} {ws} = {ws} "[^"]*"'  # note: fragile against missing '"'; no "'"
+        start_tag = '< {ws} {name} {ws} (?:{attr} {ws})* /? {ws} >'
+        end_tag = '{ws}'.join(['<', '/', '{name}', '>'])
+        tag = '{start_tag} | {end_tag}'
+
+        assert '{{' not in tag
+        while '{' in tag:   # unwrap definitions
+            tag = tag.format(**vars())
+
+        tag_regex = re.compile('(%s)' % tag, flags=re.VERBOSE)
+
+        # escape &, <, > in the text
+        iters = [iter(tag_regex.split(invalid_xml))] * 2
+        pairs = izip_longest(*iters, fillvalue='')  # iterate 2 items at a time
+
+        # get the clean version
+        return ''.join(escape(text) + tag for text, tag in pairs)
+
+    def clean_filename(self, filename, mode="soft", substitute=u"_"):
+        """Removes invalid characters from filename."""
+        if mode == "soft":
+            return re.sub(r'[\\/*?:"<>|]', substitute, filename)
+        elif mode == "strict":
+            return re.sub("[^\w\-_\. ]", substitute, filename)
+        else:
+            pass
 
 # ############################################################################
 # ##### Stand alone program ########

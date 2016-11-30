@@ -54,7 +54,7 @@ from modules.utils import isogeo2office_utils
 # ##################################
 
 # VERSION
-_version = "1.5.3"
+_version = "1.5.5"
 
 # LOG FILE ##
 # see: http://sametmax.com/ecrire-des-logs-en-python/
@@ -86,7 +86,7 @@ class Isogeo2office(Tk):
         """Initiliazing isogeo2office with or without UI."""
         # Invoke Check Norris & utils
         checker = CheckNorris()
-        utils = isogeo2office_utils()
+        self.utils = isogeo2office_utils()
 
         # checking connection
         if not checker.check_internet_connection():
@@ -96,7 +96,7 @@ class Isogeo2office(Tk):
             pass
 
         # ------------ Settings ----------------------------------------------    
-        self.settings = utils.settings_load()
+        self.settings = self.utils.settings_load()
         self.app_id = self.settings.get("auth").get("app_id")
         self.app_secret = self.settings.get("auth").get("app_secret")
         self.client_lang = self.settings.get("basics").get("def_codelang", "FR")
@@ -195,9 +195,9 @@ class Isogeo2office(Tk):
         self.progbar.grid(row=7, column=1, sticky="WE")
 
         # fields validation
-        val_uid = (self.register(utils.entry_validate_uid),
+        val_uid = (self.register(self.utils.entry_validate_uid),
                    '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
-        val_date = (self.register(utils.entry_validate_date),
+        val_date = (self.register(self.utils.entry_validate_date),
                     '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
 
         # --------------------------------------------------------------------
@@ -236,7 +236,7 @@ class Isogeo2office(Tk):
             self.status_bar.config(foreground='Red')
             btn_open_shares = Button(fr_isogeo,
                                      text=_("Fix the shares"),
-                                     command=lambda: utils.open_urls(self.shares_info[2]))
+                                     command=lambda: self.utils.open_urls(self.shares_info[2]))
             status_launch = DISABLED
         elif len(self.shares) != len(self.shares_info[1]):
             logger.error("More than one share by workgroup")
@@ -249,7 +249,7 @@ class Isogeo2office(Tk):
             self.status_bar.config(foreground='Red')
             btn_open_shares = Button(fr_isogeo,
                                      text=_("Fix the shares"),
-                                     command=lambda: utils.open_urls(self.shares_info[3]),
+                                     command=lambda: self.utils.open_urls(self.shares_info[3]),
                                      style="Error.TButton")
             status_launch = DISABLED
         else:
@@ -258,7 +258,7 @@ class Isogeo2office(Tk):
             li_oc = [share[3] for share in self.shares_info[0]]
             btn_open_shares = Button(fr_isogeo,
                                      text="\U0001F6E0 " + _("Admin shares"),
-                                     command=lambda: utils.open_urls(li_oc))
+                                     command=lambda: default.open_urls(li_oc))
             status_launch = ACTIVE
 
         # settings
@@ -471,8 +471,8 @@ class Isogeo2office(Tk):
         lb_out_xml_uid.grid(row=2, column=2, padx=2, pady=2, sticky="W")
         ent_out_xml_uid.grid(row=2, column=2, padx=3, pady=2, sticky="E")
         lb_out_xml_date.grid(row=2, column=3, padx=3, pady=2, sticky="W")
-        ent_out_xml_date.grid(row=2, column=4, padx=2, pady=2, sticky="W")
-        caz_zip_xml.grid(row=3, column=2, padx=2, pady=2, sticky="W")
+        ent_out_xml_date.grid(row=2, column=4, padx=2, pady=2, sticky="E")
+        caz_zip_xml.grid(row=3, column=2, columnspan=3, padx=2, pady=2, sticky="WE")
 
         # --------------------------------------------------------------------
 
@@ -490,11 +490,10 @@ class Isogeo2office(Tk):
                                    .get('xml_opt', 0)))
         # self.out_folder_path = self.settings.get("basics").get("out_folder",
         #                                                        "output")
-
         self.out_fold_path = StringVar(fr_process,
                                        path.relpath(self.settings.get('basics')
                                                     .get('out_folder',
-                                                         'output')))
+                                                         r'output')))
 
         # logo
         self.logo_process = PhotoImage(master=fr_process,
@@ -955,12 +954,12 @@ class Isogeo2office(Tk):
                                      "{}{}{}{}.xml"
                                      .format(self.out_xml_prefix.get(),
                                              uid,
-                                             md_title.split(" -")[0],
+                                             self.utils.clean_filename(md_title.split(" -")[0]),
                                              dstamp))
 
             # export
             xml_stream = self.isogeo.xml19139(self.token, md.get("_id"))
-            with open(out_xml_path, 'wb') as out_md:
+            with open(path.realpath(out_xml_path), 'wb') as out_md:
                 for block in xml_stream.iter_content(1024):
                     out_md.write(block)
 
@@ -968,7 +967,8 @@ class Isogeo2office(Tk):
                                                          md.get("_id")))
 
             # progression bar
-            self.msg_bar.set(_("Processing XML: {}").format(md_title[1:]))
+            self.msg_bar.set(_("Processing XML: {}")\
+                               .format(md_title[1:].split(" -")[0]))
             self.progbar["value"] = self.progbar["value"] + 1
             self.update()
 
@@ -999,7 +999,6 @@ class Isogeo2office(Tk):
         logger.info('Launched from command prompt')
         # utils
         checker = CheckNorris()
-        utils = isogeo2office_utils()
         includes = ["conditions",
                     "contacts",
                     "coordinate-system",
@@ -1023,7 +1022,7 @@ class Isogeo2office(Tk):
             exit()
 
         # get settings
-        self.settings = utils.settings_load()
+        self.settings = default.settings_load()
         self.search_results = self.isogeo.search(self.token,
                                                  sub_resources=includes)
 
