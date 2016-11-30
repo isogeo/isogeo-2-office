@@ -153,8 +153,7 @@ class Isogeo2office(Tk):
         self.shares_info = self.get_shares_info()
 
         # ------------ Variables ---------------------------------------------
-        li_tpls = [path.abspath(path.join(r'templates', tpl))
-                   for tpl in listdir(r'templates')
+        li_tpls = [tpl for tpl in listdir(r'templates')
                    if path.splitext(tpl)[1].lower() == ".docx"]
 
         # ------------ UI ----------------------------------------------------
@@ -384,7 +383,8 @@ class Isogeo2office(Tk):
         cb_available_tpl = Combobox(fr_word,
                                     textvariable=self.tpl_input,
                                     values=li_tpls)
-
+        cb_available_tpl.current(li_tpls.index(self.settings.get("basics")\
+                                .get("word_tpl", "template_isogeo.docx")))
         # specific options
         lb_out_word_prefix = Label(fr_word, text=_("File prefix: "))
         lb_out_word_uid = Label(fr_word, text=_("UID chars:\n"
@@ -614,6 +614,8 @@ class Isogeo2office(Tk):
         """Save settings into the ini file."""
         config = SafeConfigParser()
         config.read(path.realpath(config_file))
+        #
+
         # new values
         config.set('auth', 'app_id', self.app_id)
         config.set('auth', 'app_secret', self.app_secret)
@@ -754,7 +756,7 @@ class Isogeo2office(Tk):
                                                  sub_resources=includes)
         self.progbar["maximum"] = self.search_results.get("total")
         logger.info("Isogeo - metadatas retrieved.")
-        # export
+        # EXCEL
         if self.opt_excel.get():
             logger.info("Excel - START")
             out_xlsx_path = path.realpath(path.join(self.out_fold_path.get(),
@@ -764,7 +766,10 @@ class Isogeo2office(Tk):
         else:
             pass
 
-        if self.opt_word.get() and path.isfile(self.tpl_input.get()):
+        # WORD
+        template_path = path.realpath(path.join(r"templates",
+                                                self.tpl_input.get()))
+        if self.opt_word.get() and path.isfile(template_path):
             self.status_bar.config(foreground='DodgerBlue')
             logger.info("WORD - START")
             self.progbar["value"] = 0
@@ -853,7 +858,8 @@ class Isogeo2office(Tk):
                 pass
 
             # templating
-            tpl = DocxTemplate(path.realpath(self.tpl_input.get()))
+            tpl = DocxTemplate(path.realpath(path.join(r"templates",
+                                                       self.tpl_input.get())))
             to_docx.md2docx(tpl, md, url_oc)
 
             # name
