@@ -38,7 +38,7 @@ from zipfile import ZipFile
 # 3rd party library
 from docxtpl import DocxTemplate
 from isogeo_pysdk import Isogeo
-from openpyxl import load_workbook
+import openpyxl
 import requests
 
 # Custom modules
@@ -588,7 +588,7 @@ class Isogeo2office(Tk):
             return
 
         # get headers names
-        xlsx_in = load_workbook(filename=self.input_xl,
+        xlsx_in = openpyxl.load_workbook(filename=self.input_xl,
                                 read_only=True,
                                 guess_types=True,
                                 use_iterators=True)
