@@ -149,7 +149,7 @@ class isogeo2office_utils(object):
         """
         return unicode(substitute).join(char for char in input_str if char.isalnum())
 
-    def clean_xml(self, invalid_xml):
+    def clean_xml(self, invalid_xml, mode="soft", substitute=u"_"):
         """Clean string of XML invalid characters.
 
         source: http://stackoverflow.com/a/13322581/2556577
@@ -176,7 +176,12 @@ class isogeo2office_utils(object):
         pairs = izip_longest(*iters, fillvalue='')  # iterate 2 items at a time
 
         # get the clean version
-        return ''.join(escape(text) + tag for text, tag in pairs)
+        clean_version = ''.join(escape(text) + tag for text, tag in pairs)
+        if mode == "strict":
+            clean_version = re.sub(r"<.*?>", substitute, clean_version)
+        else:
+            pass
+        return clean_version
 
     def clean_filename(self, filename, mode="soft", substitute=u"_"):
         """Removes invalid characters from filename."""
