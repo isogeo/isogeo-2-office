@@ -88,13 +88,6 @@ class Isogeo2office(Tk):
         checker = CheckNorris()
         self.utils = isogeo2office_utils()
 
-        # checking connection
-        if not checker.check_internet_connection():
-            logger.error('Internet connection required: check your settings.')
-            exit()
-        else:
-            pass
-
         # ------------ Settings ----------------------------------------------    
         self.settings = self.utils.settings_load()
         self.app_id = self.settings.get("auth").get("app_id")
@@ -113,9 +106,19 @@ class Isogeo2office(Tk):
             pass
         logger.info("Language applied: {}".format(_("English")))
 
-        # UI or not to UI
+        # ------------ UI or not to UI ---------------------------------------
         if not ui_launcher:
             self.no_ui_launcher()
+        else:
+            pass
+
+        # ------------ Internet Connection -----------------------------------
+        if not checker.check_internet_connection():
+            logger.error('Internet connection required: check your settings.')
+            avert(_("Internet connection failed"),
+                  _("An Internet connection is required to use Isogeo API"
+                    "\n(https://v1.api.isogeo.com:443)."))
+            exit()
         else:
             pass
 
