@@ -386,8 +386,10 @@ class Isogeo2office(Tk):
         cb_available_tpl = Combobox(fr_word,
                                     textvariable=self.tpl_input,
                                     values=li_tpls)
-        cb_available_tpl.current(li_tpls.index(self.settings.get("basics")\
-                                .get("word_tpl", "template_isogeo.docx")))
+
+        prev_tpl = self.settings.get("basics").get("word_tpl")
+        cb_available_tpl.current(li_tpls.index(prev_tpl)\
+                                 if prev_tpl in li_tpls else 0)
         # specific options
         lb_out_word_prefix = Label(fr_word, text=_("File prefix: "))
         lb_out_word_uid = Label(fr_word, text=_("UID chars:\n"
