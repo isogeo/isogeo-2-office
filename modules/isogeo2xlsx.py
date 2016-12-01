@@ -201,9 +201,36 @@ class Isogeo2xlsx(Workbook):
 
     # ------------ Setting workbook ---------------------
 
-    def set_worksheets(self, vector=1, raster=1, service=1, resource=1):
-        """ Adds news sheets depending on present metadata types
+    def set_worksheets(self, auto=None, vector=1,
+                       raster=1, service=1, resource=1):
+        """Adds new sheets depending on present metadata types.
+
+        auto: typically auto=search_results.get('tags').keys()
         """
+        if type(auto) == list:
+            logging.info("Automatic sheets creation based on tags")
+            if "type:vector-dataset" in auto:
+                vector = 1
+            else:
+                vector = 0
+            if "type:raster-dataset" in auto:
+                raster = 1
+            else:
+                raster = 0
+                pass
+            if "type:resource" in auto:
+                resource = 1
+            else:
+                resource = 0
+                pass
+            if "type:service" in auto:
+                service = 1
+            else:
+                service = 0
+                pass
+        else:
+            pass
+
         # SHEETS & HEADERS
         if vector:
             self.ws_v = self.create_sheet(title="Vecteurs")
@@ -1189,7 +1216,7 @@ if __name__ == '__main__':
 
     # ------------ REAL START ----------------------------
     wb = Isogeo2xlsx()
-    wb.set_worksheets()
+    wb.set_worksheets(auto=search_results.get('tags').keys())
 
     # parsing metadata
     for md in search_results.get('results'):

@@ -802,9 +802,9 @@ class Isogeo2office(Tk):
 
     def process_excelization(self, output_filepath=r"output/TEST_isogeo2xlsx.xlsx", ui=1):
         """Export metadatas shared into an Excel worksheet."""
-        # worksheet
+        # workbook
         wb = Isogeo2xlsx()
-        wb.set_worksheets()
+        wb.set_worksheets(auto=self.search_results.get('tags').keys())
 
         # parsing metadata
         for md in self.search_results.get('results'):
