@@ -88,7 +88,7 @@ class Isogeo2office(Tk):
         checker = CheckNorris()
         self.utils = isogeo2office_utils()
 
-        # ------------ Settings ----------------------------------------------    
+        # ------------ Settings ----------------------------------------------
         self.settings = self.utils.settings_load()
         self.app_id = self.settings.get("auth").get("app_id")
         self.app_secret = self.settings.get("auth").get("app_secret")
@@ -175,7 +175,7 @@ class Isogeo2office(Tk):
         btn_style_err.configure('Error.TButton', foreground='Red')
 
         cbb_style_err = Style(self)
-        cbb_style_err.configure('TCombobox', foreground='Red')
+        # cbb_style_err.configure('TCombobox', foreground='Red')
 
         # Frames and main widgets
         fr_isogeo = Labelframe(self, name="isogeo", text="Isogeo")
@@ -430,7 +430,7 @@ class Isogeo2office(Tk):
         # variables
         self.out_xml_prefix = StringVar(fr_xml, self.settings.get("basics")
                                                     .get("xml_out_prefix",
-                                                           "isogeo2xml"))
+                                                         "isogeo2xml"))
         self.xml_opt_id = IntVar(fr_xml, self.settings.get("basics")
                                              .get("xml_opt_id", 5))
         self.xml_opt_date = IntVar(fr_xml, self.settings.get("basics")
@@ -474,9 +474,9 @@ class Isogeo2office(Tk):
                                 padx=2, pady=2, sticky="WE")
 
         lb_out_xml_uid.grid(row=2, column=2, padx=2, pady=2, sticky="W")
-        ent_out_xml_uid.grid(row=2, column=2, padx=3, pady=2, sticky="E")
-        lb_out_xml_date.grid(row=2, column=3, padx=3, pady=2, sticky="W")
-        ent_out_xml_date.grid(row=2, column=4, padx=2, pady=2, sticky="E")
+        ent_out_xml_uid.grid(row=2, column=3, padx=0, pady=2, sticky="E")
+        lb_out_xml_date.grid(row=2, column=4, padx=3, pady=2, sticky="W")
+        ent_out_xml_date.grid(row=2, column=5, padx=2, pady=2, sticky="E")
         caz_zip_xml.grid(row=3, column=2, columnspan=3, padx=2, pady=2, sticky="WE")
 
         # --------------------------------------------------------------------
