@@ -156,29 +156,29 @@ class Isogeo2xlsx(Workbook):
               ]
 
     cols_rz = ["Titre",  # A
-               "Résumé",  # C
-               "Emplacement",  # D
-               "Groupe de travail",  # E
-               "Mots-clés",  # F
-               "Création",  # G
-               "# mises à jour",  # H
-               "Dernière mise à jour",  # I
-               "Publication",  # J
-               "Format (version)",  # K
-               "Conditions",  # L
-               "Limitations",  # M
-               "# Contacts",  # N
-               "Points de contact",  # O
-               "Autres contacts",  # P
-               "Téléchargeable",  # Q
-               "Visualisable",  # R
-               "Autres",  # S
-               "Editer",  # T
-               "Consulter",  # U
-               "MD - ID",  # V
-               "MD - Création",  # W
-               "MD - Modification",  # X
-               "MD - Langue",  # Y
+               "Résumé",  # B
+               "Emplacement",  # C
+               "Groupe de travail",  # D
+               "Mots-clés",  # E
+               "Création",  # F
+               "# mises à jour",  # G
+               "Dernière mise à jour",  # H
+               "Publication",  # I
+               "Format (version)",  # J
+               "Conditions",  # K
+               "Limitations",  # L
+               "# Contacts",  # M
+               "Points de contact",  # N
+               "Autres contacts",  # O
+               "Téléchargeable",  # P
+               "Visualisable",  # Q
+               "Autres",  # R
+               "Editer",  # S
+               "Consulter",  # T
+               "MD - ID",  # U
+               "MD - Création",  # V
+               "MD - Modification",  # W
+               "MD - Langue",  # X
                ]
 
     def __init__(self):
@@ -1005,17 +1005,16 @@ class Isogeo2xlsx(Workbook):
         # variables
         tags = md.get("tags")
 
-        ws["A{}".format(idx)] = md.get('title')
-        ws["B{}".format(idx)] = md.get('name')
-        ws["C{}".format(idx)] = md.get('abstract')
-        ws["D{}".format(idx)] = md.get('path', "ND")
-        ws["E{}".format(idx)] = md.get('owner')
+        ws["A{}".format(idx)] = md.get("title", "NR")
+        ws["B{}".format(idx)] = md.get("abstract", "")
+        ws["C{}".format(idx)] = md.get("path", "")
+        ws["D{}".format(idx)] = md.get("owner")
 
         # KEYWORDS
         if "keywords" in md.keys():
             keywords = [k.get("text") for k in md.get("keywords")
                         if k.get("_tag").startswith("keyword:is")]
-            ws["F{}".format(idx)] = " ;\n".join(sorted(keywords))
+            ws["E{}".format(idx)] = " ;\n".join(sorted(keywords))
         else:
             logging.info("Service without any keyword")
 
@@ -1028,10 +1027,10 @@ class Isogeo2xlsx(Workbook):
                                               data_created.humanize(locale="fr_FR"))
         else:
             data_created = ""
-        ws["G{}".format(idx)] = data_created
+        ws["F{}".format(idx)] = data_created
 
         # events count
-        ws["H{}".format(idx)] = len(md.get('events', ""))
+        ws["G{}".format(idx)] = len(md.get("events", ""))
 
         # data last update
         if md.get("modified"):
@@ -1041,7 +1040,7 @@ class Isogeo2xlsx(Workbook):
                                               data_updated.humanize(locale="fr_FR"))
         else:
             data_updated = ""
-        ws["I{}".format(idx)] = data_updated
+        ws["H{}".format(idx)] = data_updated
 
         # TECHNICAL
         # format
@@ -1049,7 +1048,7 @@ class Isogeo2xlsx(Workbook):
             format_lbl = next(v for k, v in tags.items() if 'format:' in k)
         else:
             format_lbl = "NR"
-        ws["K{}".format(idx)] = u"{0} ({1} - {2})".format(format_lbl,
+        ws["J{}".format(idx)] = u"{0} ({1} - {2})".format(format_lbl,
                                                           md.get("formatVersion", "NR"),
                                                           md.get("encoding", "NR"))
 
@@ -1060,7 +1059,7 @@ class Isogeo2xlsx(Workbook):
             conds_cct = sorted(["{0}".format(c.setdefault("license",
                                                           {"name": "No license"}).get("name"))
                                for c in conds])
-            ws["L{}".format(idx)] = " ;\n".join(conds_cct)
+            ws["K{}".format(idx)] = " ;\n".join(conds_cct)
         else:
             logging.info("Vector dataset without conditions.")
             pass
@@ -1072,7 +1071,7 @@ class Isogeo2xlsx(Workbook):
                                                         "{}".format(l.get("restriction", "NR")),
                                                         "{}".format(l.get("directive", {"name": ""}).get("name")))
                                 for l in limits])
-            ws["M{}".format(idx)] = " ;\n".join(limits_cct)
+            ws["L{}".format(idx)] = " ;\n".join(limits_cct)
         else:
             logging.info("Service without limitation")
             pass
@@ -1086,44 +1085,44 @@ class Isogeo2xlsx(Workbook):
             contacts_other_cct = ["{0} ({1})".format(contact.get("contact").get("name"),
                                                      contact.get("contact").get("email"))\
                                   for contact in contacts if contact.get("role") != "pointOfContact"]
-            ws["N{}".format(idx)] = len(contacts)
-            ws["O{}".format(idx)] = " ;\n".join(contacts_pt_cct)
-            ws["P{}".format(idx)] = " ;\n".join(contacts_other_cct)
+            ws["M{}".format(idx)] = len(contacts)
+            ws["N{}".format(idx)] = " ;\n".join(contacts_pt_cct)
+            ws["O{}".format(idx)] = " ;\n".join(contacts_other_cct)
         else:
-            ws["N{}".format(idx)] = 0
+            ws["M{}".format(idx)] = 0
             logging.info("Service without any contact")
 
         # ACTIONS
-        ws["Q{}".format(idx)] = "action:download" in tags
-        ws["R{}".format(idx)] = "action:view" in tags
-        ws["S{}".format(idx)] = "action:other" in tags
+        ws["P{}".format(idx)] = "action:download" in tags
+        ws["Q{}".format(idx)] = "action:view" in tags
+        ws["R{}".format(idx)] = "action:other" in tags
 
         # LINKS
         link_edit = r'=HYPERLINK("{0}","{1}")'.format("https://app.isogeo.com/resources/" + md.get("_id"),
                                                       "Editer")
-        ws["T{}".format(idx)] = link_edit
-        ws["T{}".format(idx)].style = "Hyperlink"
+        ws["S{}".format(idx)] = link_edit
+        ws["S{}".format(idx)].style = "Hyperlink"
 
         # METADATA
         # id
-        ws["X{}".format(idx)] = md.get("_id")
+        ws["U{}".format(idx)] = md.get("_id")
 
         # creation
         md_created = arrow.get(md.get("_created")[:19])
         md_created = "{0} ({1})".format(md_created.format("DD/MM/YYYY",
                                                           "fr_FR"),
                                         md_created.humanize(locale="fr_FR"))
-        ws["W{}".format(idx)] = md_created
+        ws["V{}".format(idx)] = md_created
 
         # last update
         md_updated = arrow.get(md.get("_modified")[:19])
         md_updated = "{0} ({1})".format(md_updated.format("DD/MM/YYYY",
                                                           "fr_FR"),
                                         md_updated.humanize(locale="fr_FR"))
-        ws["X{}".format(idx)] = md_updated
+        ws["W{}".format(idx)] = md_updated
 
         # lang
-        ws["Y{}".format(idx)] = md.get("language")
+        ws["X{}".format(idx)] = md.get("language")
 
         # STYLING
         ws["C{}".format(idx)].style = "wrap"
