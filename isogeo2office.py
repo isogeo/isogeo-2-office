@@ -526,8 +526,12 @@ class Isogeo2office(Tk):
                                 textvariable=self.out_fold_path)
 
         btn_out_fold_path_browse = Button(fr_process,
-                                          text=u"\U0001F3AF" + _("Browse"),
+                                          text=u"\U0001F3AF " + _("Browse"),
                                           command=lambda: self.set_out_folder_path(self.out_fold_path.get()))
+
+        btn_out_fold_open = Button(fr_process,
+                                   text=u"\U0001F4C2 " + _("Open"),
+                                   command=lambda: self.utils.open_dir_file(self.out_fold_path.get()))
 
         # launcher
         self.btn_go = Button(fr_process,
@@ -542,16 +546,18 @@ class Isogeo2office(Tk):
         Separator(fr_process, orient=VERTICAL).grid(row=1, rowspan=5,
                                                     column=1, padx=2,
                                                     pady=2, sticky="NSE")
-        caz_go_word.grid(row=2, column=2, columnspan=3, padx=2, pady=2, sticky="W")
-        caz_go_excel.grid(row=3, column=2, columnspan=3, padx=2, pady=2, sticky="W")
-        caz_go_xml.grid(row=4, column=2, columnspan=3, padx=2, pady=2, sticky="W")
+        caz_go_word.grid(row=2, column=2, columnspan=4, padx=2, pady=2, sticky="W")
+        caz_go_excel.grid(row=3, column=2, columnspan=5, padx=2, pady=2, sticky="W")
+        caz_go_xml.grid(row=4, column=2, columnspan=5, padx=2, pady=2, sticky="W")
         lb_out_fold_title.grid(row=5, column=2,
                                padx=2, pady=2, sticky="W")
-        lb_out_fold_var.grid(row=5, column=3,
+        lb_out_fold_var.grid(row=5, column=3, columnspan=2,
                              padx=2, pady=2, sticky="WE")
-        btn_out_fold_path_browse.grid(row=5, column=4,
-                                      padx=2, pady=2, sticky="WE")
-        self.btn_go.grid(row=6, column=2, columnspan=3,
+        btn_out_fold_path_browse.grid(row=5, column=5,
+                                      padx=2, pady=2, sticky="E")
+        btn_out_fold_open.grid(row=5, column=6,
+                                      padx=2, pady=2, sticky="E")
+        self.btn_go.grid(row=6, column=2, columnspan=5,
                          padx=2, pady=2, sticky="WE")
 
         logger.info("Main UI instanciated & displayed")
