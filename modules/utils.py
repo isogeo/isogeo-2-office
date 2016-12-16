@@ -20,9 +20,19 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 from ConfigParser import SafeConfigParser
 from itertools import izip_longest
 import logging
+from os import access, path, R_OK
 import re
+import subprocess
+from sys import platform as opersys
 from webbrowser import open_new_tab
 from xml.sax.saxutils import escape  # '<' -> '&lt;'
+
+# Depending on operating system
+if opersys == 'win32':
+    u""" windows """
+    from os import startfile        # to open a folder/file
+else:
+    pass
 
 # ############################################################################
 # ########## Classes ###############
@@ -59,6 +69,37 @@ class isogeo2office_utils(object):
 
         # end of method
         return
+
+    def open_dir_file(self, target):
+        """Open a file or a directory in the explorer of the operating system."""
+        # check if the file or the directory exists
+        if not path.exists(target):
+            raise IOError('No such file: {0}'.format(target))
+
+        # check the read permission
+        if not access(target, R_OK):
+            raise IOError('Cannot access file: {0}'.format(target))
+
+        # open the directory or the file according to the os
+        if opersys == 'win32':  # Windows
+            proc = startfile(path.realpath(target))
+
+        elif opersys.startswith('linux'):  # Linux:
+            proc = subprocess.Popen(['xdg-open', target],
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE)
+
+        elif opersys == 'darwin':  # Mac:
+            proc = subprocess.Popen(['open', '--', target],
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE)
+
+        else:
+            raise NotImplementedError(
+                "Your `%s` isn't a supported operating system`." % opersys)
+
+        # end of function
+        return proc
 
     # UI --------------------------------------------------------------------
 
