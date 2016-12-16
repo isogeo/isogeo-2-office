@@ -54,7 +54,7 @@ from modules.utils import isogeo2office_utils
 # ##################################
 
 # VERSION
-_version = "1.5.5"
+_version = "1.5.7"
 
 # LOG FILE ##
 # see: http://sametmax.com/ecrire-des-logs-en-python/
