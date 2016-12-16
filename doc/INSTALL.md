@@ -9,10 +9,11 @@ Funded by:
 
 ## Requirements
 
-* Windows Operating System (Debian should works too but has not been tested)
+* Windows Operating System (Unix should work too but has not been tested)
 * Internet connection
 * rights to write on the output folder
 * Python 2.7.9+ installed and added to the environment path
+* Python SetupTools and Pip installed (see: [get setuptools and pip on Windows](http://docs.python-guide.org/en/latest/starting/install/win/#setuptools-pip))
 * [Microsoft Visual C++ Compiler for Python 2.7](https://www.microsoft.com/en-us/download/details.aspx?id=44266)
 * software able to read output files (*.docx, *.xlsx)
 * an Isogeo account (admin or 3rd party developer)
