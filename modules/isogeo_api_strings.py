@@ -102,7 +102,7 @@ class IsogeoTranslator(object):
 
     def __init__(self, lang="FR"):
         """Set text dictionary depending on language passed."""
-        if lang == "FR":
+        if lang.lower() == "fr":
             self.translations = dict_md_fields_fr
         else:
             self.translations = dict_md_fields_en
