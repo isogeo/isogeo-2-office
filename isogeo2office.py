@@ -260,7 +260,7 @@ class Isogeo2office(Tk):
             li_oc = [share[3] for share in self.shares_info[0]]
             btn_open_shares = Button(fr_isogeo,
                                      text="\U0001F6E0 " + _("Admin shares"),
-                                     command=lambda: default.open_urls(li_oc))
+                                     command=lambda: self.utils.open_urls(li_oc))
             status_launch = ACTIVE
 
         # settings
