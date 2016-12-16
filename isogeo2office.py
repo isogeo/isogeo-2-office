@@ -642,6 +642,12 @@ class Isogeo2office(Tk):
         config.set('basics', 'xml_out_prefix', str(self.out_xml_prefix.get()))
         config.set('basics', 'xml_opt_id', str(self.xml_opt_id.get()))
         config.set('basics', 'xml_opt_date', str(self.xml_opt_date.get()))
+        # default OpenCatalog URL
+        if len(self.shares) == 1:
+                url_oc = [share[4] for share in self.shares_info[0]][0]
+                config.set('basics', 'def_oc', url_oc)
+        else:
+            pass
         # writing
         with open(path.realpath(config_file), 'wb') as configfile:
             config.write(configfile)
@@ -809,7 +815,8 @@ class Isogeo2office(Tk):
     def process_excelization(self, output_filepath=r"output/TEST_isogeo2xlsx.xlsx", ui=1):
         """Export metadatas shared into an Excel worksheet."""
         # workbook
-        wb = Isogeo2xlsx()
+        url_oc = [share[4] for share in self.shares_info[0]][0]
+        wb = Isogeo2xlsx(lang=self.client_lang, url_base=url_oc)
         wb.set_worksheets(auto=self.search_results.get('tags').keys())
 
         # parsing metadata
