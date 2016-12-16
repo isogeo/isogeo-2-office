@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2016-11-21 23:20+Paris, Madrid\n"
+"POT-Creation-Date: 2016-12-16 19:50+Paris, Madrid\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: .\modules\ui_app_settings.py:54 isogeo2office.py:117
+#: .\modules\ui_app_settings.py:54 isogeo2office.py:107
 msgid "English"
 msgstr ""
 
@@ -51,180 +51,194 @@ msgstr ""
 msgid "Everything is fine."
 msgstr ""
 
-#: isogeo2office.py:166
+#: isogeo2office.py:118
+msgid "Internet connection failed"
+msgstr ""
+
+#: isogeo2office.py:119
+msgid ""
+"An Internet connection is required to use Isogeo API\n"
+"(https://v1.api.isogeo.com:443)."
+msgstr ""
+
+#: isogeo2office.py:171
 msgid "Pick your options and push the launch button"
 msgstr ""
 
-#: isogeo2office.py:207
+#: isogeo2office.py:218
 msgid ""
 "{} metadata in\n"
 "{} shares owned by\n"
 "{} workgroups."
 msgstr ""
 
-#: isogeo2office.py:222
+#: isogeo2office.py:233
 msgid ""
 "{} shares don't have any OpenCatalog.\n"
 "Add OpenCatalog to every share,\n"
 "then reboot isogeo2office."
 msgstr ""
 
-#: isogeo2office.py:225
+#: isogeo2office.py:236
 msgid "Error: some shares don't have OpenCatalogactivated. Fix it first."
 msgstr ""
 
-#: isogeo2office.py:229 isogeo2office.py:242
+#: isogeo2office.py:240 isogeo2office.py:253
 msgid "Fix the shares"
 msgstr ""
 
-#: isogeo2office.py:234
+#: isogeo2office.py:245
 msgid ""
 "Too much shares by workgroup.\n"
 "Please red button to fix it\n"
 "then reboot isogeo2office."
 msgstr ""
 
-#: isogeo2office.py:238
+#: isogeo2office.py:249
 msgid "Error: more than one share by worgroup. Click on Admin button to fix it."
 msgstr ""
 
-#: isogeo2office.py:248
+#: isogeo2office.py:259
 msgid "Configuration OK."
 msgstr ""
 
-#: isogeo2office.py:251
+#: isogeo2office.py:262
 msgid "Admin shares"
 msgstr ""
 
-#: isogeo2office.py:257
+#: isogeo2office.py:268
 msgid "Settings"
 msgstr ""
 
-#: isogeo2office.py:261
+#: isogeo2office.py:272
 msgid "mailto:Isogeo%20Projects%20<projects+isogeo2office@isogeo.com>?subject=[Isogeo2office]%20Question"
 msgstr ""
 
-#: isogeo2office.py:265
+#: isogeo2office.py:276
 msgid "Contact"
 msgstr ""
 
-#: isogeo2office.py:271
+#: isogeo2office.py:282
 msgid "Report"
 msgstr ""
 
-#: isogeo2office.py:315
+#: isogeo2office.py:326
 msgid "Output filename: "
 msgstr ""
 
-#: isogeo2office.py:379
+#: isogeo2office.py:385
 msgid "Pick a template: "
 msgstr ""
 
-#: isogeo2office.py:385 isogeo2office.py:442
+#: isogeo2office.py:394 isogeo2office.py:451
 msgid "File prefix: "
 msgstr ""
 
-#: isogeo2office.py:386 isogeo2office.py:443
+#: isogeo2office.py:395 isogeo2office.py:452
 msgid ""
 "UID chars:\n"
 "(0 - 8)"
 msgstr ""
 
-#: isogeo2office.py:388 isogeo2office.py:445
+#: isogeo2office.py:397 isogeo2office.py:454
 msgid ""
 "Timestamp:\n"
 "(0=no, 1=date, 2=datetime)"
 msgstr ""
 
-#: isogeo2office.py:440
+#: isogeo2office.py:449
 msgid "Pack all XML into one ZIP"
 msgstr ""
 
-#: isogeo2office.py:500
+#: isogeo2office.py:511
 msgid "Export the whole shares into an Excel worksheet"
 msgstr ""
 
-#: isogeo2office.py:504
+#: isogeo2office.py:515
 msgid "Export each metadata into a Word file"
 msgstr ""
 
-#: isogeo2office.py:508
+#: isogeo2office.py:519
 msgid "Export each metadata into a XML ISO-19139"
 msgstr ""
 
-#: isogeo2office.py:512
+#: isogeo2office.py:523
 msgid "Output folder: "
 msgstr ""
 
-#: isogeo2office.py:518
+#: isogeo2office.py:529
 msgid "Browse"
 msgstr ""
 
-#: isogeo2office.py:523
+#: isogeo2office.py:533
+msgid "Open"
+msgstr ""
+
+#: isogeo2office.py:538
 msgid "Launch"
 msgstr ""
 
-#: isogeo2office.py:556
+#: isogeo2office.py:573
 msgid "Select output folder"
 msgstr ""
 
-#: isogeo2office.py:561
+#: isogeo2office.py:578
 msgid "No folder selected"
 msgstr ""
 
-#: isogeo2office.py:562
+#: isogeo2office.py:579
 msgid "You must select an output folder."
 msgstr ""
 
-#: isogeo2office.py:572
+#: isogeo2office.py:589
 msgid "Pick the Excel to merge"
 msgstr ""
 
-#: isogeo2office.py:581
+#: isogeo2office.py:598
 msgid "Any file selected"
 msgstr ""
 
-#: isogeo2office.py:791
+#: isogeo2office.py:748
 msgid "Error: at least one export option required"
 msgstr ""
 
-#: isogeo2office.py:801
+#: isogeo2office.py:758
 msgid "Fetching Isogeo data..."
 msgstr ""
 
-#: isogeo2office.py:834
+#: isogeo2office.py:798
 msgid "Error: Word template not selected"
 msgstr ""
 
-#: isogeo2office.py:849
+#: isogeo2office.py:813
 msgid "All tasks are done."
 msgstr ""
 
-#: isogeo2office.py:869
+#: isogeo2office.py:829
 msgid "Processing Excel: {}"
 msgstr ""
 
-#: isogeo2office.py:883
+#: isogeo2office.py:844
 msgid "Export Excel done."
 msgstr ""
 
-#: isogeo2office.py:909
+#: isogeo2office.py:872
 msgid "Error: more than one share by worgroup. Open APP or push the button to fix it."
 msgstr ""
 
-#: isogeo2office.py:962
+#: isogeo2office.py:926
 msgid "Processing Word: {}"
 msgstr ""
 
-#: isogeo2office.py:966
+#: isogeo2office.py:930
 msgid "Export Word done."
 msgstr ""
 
-#: isogeo2office.py:1029
+#: isogeo2office.py:996
 msgid "Processing XML: {}"
 msgstr ""
 
-#: isogeo2office.py:1048
+#: isogeo2office.py:1016
 msgid "Export XML done."
 msgstr ""
 
