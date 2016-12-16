@@ -72,7 +72,7 @@ class Isogeo2docx(object):
         self.default_values = default_values
 
         # LOCALE
-        if lang == "FR":
+        if lang.lower() == "fr":
             self.dates_fmt = "DD/MM/YYYY"
             self.locale_fmt = "fr_FR"
         else:
