@@ -259,7 +259,7 @@ class Isogeo2office(Tk):
             self.oc_msg.set(_("Configuration OK."))
             li_oc = [share[3] for share in self.shares_info[0]]
             btn_open_shares = Button(fr_isogeo,
-                                     text="\U0001F6E0 " + _("Admin shares"),
+                                     text="\U00002692 " + _("Admin shares"),
                                      command=lambda: self.utils.open_urls(li_oc))
             status_launch = ACTIVE
 
@@ -273,13 +273,13 @@ class Isogeo2office(Tk):
                    "<projects+isogeo2office@isogeo.com>?"
                    "subject=[Isogeo2office]%20Question")
         btn_contact = Button(fr_isogeo,
-                             text="\U0001F582 " + _("Contact"),
+                             text="\U00002709 " + _("Contact"),
                              command=lambda: open_new_tab(mailto))
 
         # source
         url_src = "https://bitbucket.org/isogeo/isogeo-2-office"
         btn_src = Button(fr_isogeo,
-                         text="\U0001F56C " + _("Report"),
+                         text="\U000026A0 " + _("Report"),
                          command=lambda: open_new_tab(url_src))
 
         # griding widgets
