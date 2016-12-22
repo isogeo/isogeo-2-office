@@ -37,7 +37,7 @@ from zipfile import ZipFile
 
 # 3rd party library
 from docxtpl import DocxTemplate
-from isogeo_pysdk import Isogeo
+from isogeo_pysdk import Isogeo, __version__ as pysdk_version
 import openpyxl
 import requests
 
@@ -81,6 +81,7 @@ class Isogeo2office(Tk):
     # attributes and global actions
     logging.info('OS: {0}'.format(platform.platform()))
     logging.info('Version: {0}'.format(_version))
+    logging.info('Isogeo PySDK version: {0}'.format(pysdk_version))
 
     def __init__(self, ui_launcher=1):
         """Initiliazing isogeo2office with or without UI."""
