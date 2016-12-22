@@ -22,7 +22,7 @@ pyttk
 requests
 
 # Isogeo
-isogeo-pysdk
+isogeo-pysdk>=2.17.0.post452
 
 # Excel
 openpyxl

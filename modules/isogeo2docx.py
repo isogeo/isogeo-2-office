@@ -29,12 +29,7 @@ from xml.sax.saxutils import escape  # '<' -> '&lt;'
 import arrow
 from docxtpl import DocxTemplate, etree
 from isogeo_pysdk import Isogeo
-
-# custom
-try:
-    from .isogeo_api_strings import IsogeoTranslator
-except:
-    from isogeo_api_strings import IsogeoTranslator
+from isogeo_pysdk import IsogeoTranslator
 
 # ##############################################################################
 # ########## Classes ###############

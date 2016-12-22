@@ -29,16 +29,17 @@ from xml.sax.saxutils import escape  # '<' -> '&lt;'
 # 3rd party library
 import arrow
 from isogeo_pysdk import Isogeo
+from isogeo_pysdk import IsogeoTranslator
 from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import NamedStyle, Font, Alignment
 from openpyxl.worksheet.properties import WorksheetProperties
 
-# custom
-try:
-    from .isogeo_api_strings import IsogeoTranslator
-except:
-    from isogeo_api_strings import IsogeoTranslator
+# # custom
+# try:
+#     from .isogeo_api_strings import IsogeoTranslator
+# except:
+#     from isogeo_api_strings import IsogeoTranslator
 
 # ##############################################################################
 # ########## Classes ###############
