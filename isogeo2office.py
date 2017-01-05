@@ -68,12 +68,12 @@ logfile.setLevel(logging.INFO)
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
 logger.info('=================================================')
-logger.info('================ Isogeo => Office ===============')
-
+logger.info('================ Isogeo to office ===============')
 
 # ############################################################################
 # ########## Classes ###############
 # ##################################
+
 
 class Isogeo2office(Tk):
     """Main Class for Isogeo to Office."""
@@ -175,7 +175,7 @@ class Isogeo2office(Tk):
         btn_style_err = Style(self)
         btn_style_err.configure('Error.TButton', foreground='Red')
 
-        cbb_style_err = Style(self)
+        # cbb_style_err = Style(self)
         # cbb_style_err.configure('TCombobox', foreground='Red')
 
         # Frames and main widgets
@@ -492,8 +492,8 @@ class Isogeo2office(Tk):
                                int(self.settings.get('basics')
                                    .get('word_opt', 0)))
         self.opt_xml = IntVar(fr_process,
-                               int(self.settings.get('basics')
-                                   .get('xml_opt', 0)))
+                              int(self.settings.get('basics')
+                                  .get('xml_opt', 0)))
         # self.out_folder_path = self.settings.get("basics").get("out_folder",
         #                                                        "output")
         self.out_fold_path = StringVar(fr_process,
@@ -557,7 +557,7 @@ class Isogeo2office(Tk):
         btn_out_fold_path_browse.grid(row=5, column=5,
                                       padx=2, pady=2, sticky="E")
         btn_out_fold_open.grid(row=5, column=6,
-                                      padx=2, pady=2, sticky="E")
+                               padx=2, pady=2, sticky="E")
         self.btn_go.grid(row=6, column=2, columnspan=5,
                          padx=2, pady=2, sticky="WE")
 
@@ -601,9 +601,9 @@ class Isogeo2office(Tk):
 
         # get headers names
         xlsx_in = openpyxl.load_workbook(filename=self.input_xl,
-                                read_only=True,
-                                guess_types=True,
-                                use_iterators=True)
+                                         read_only=True,
+                                         guess_types=True,
+                                         use_iterators=True)
         ws1 = xlsx_in.worksheets[0]  # ws = première feuille
         cols_names = [ws1.cell(row=ws1.min_row, column=col).value
                       for col in range(1, ws1.max_column)]
@@ -626,23 +626,22 @@ class Isogeo2office(Tk):
         """Save settings into the ini file."""
         config = SafeConfigParser()
         config.read(path.realpath(config_file))
-        #
 
         # new values
         config.set('auth', 'app_id', self.app_id)
         config.set('auth', 'app_secret', self.app_secret)
         config.set('basics', 'out_folder', path.realpath(self.out_fold_path.get()))
-        config.set('basics', 'excel_out', self.output_xl.get())
         config.set('basics', 'excel_opt', str(self.opt_excel.get()))
         config.set('basics', 'word_opt', str(self.opt_word.get()))
         config.set('basics', 'word_tpl', self.tpl_input.get())
-        config.set('basics', 'word_out_prefix', str(self.out_word_prefix.get()))
         config.set('basics', 'word_opt_id', str(self.word_opt_id.get()))
         config.set('basics', 'word_opt_date', str(self.word_opt_date.get()))
         config.set('basics', 'xml_opt', str(self.opt_xml.get()))
-        config.set('basics', 'xml_out_prefix', str(self.out_xml_prefix.get()))
         config.set('basics', 'xml_opt_id', str(self.xml_opt_id.get()))
         config.set('basics', 'xml_opt_date', str(self.xml_opt_date.get()))
+        config.set('basics', 'excel_out', self.output_xl.get())  # in last to avoid encoding issues
+        config.set('basics', 'word_out_prefix', self.out_word_prefix.get())
+        config.set('basics', 'xml_out_prefix', self.out_xml_prefix.get())
         # default OpenCatalog URL
         if len(self.shares) == 1:
                 url_oc = [share[4] for share in self.shares_info[0]][0]
@@ -650,10 +649,16 @@ class Isogeo2office(Tk):
         else:
             pass
         # writing
-        with open(path.realpath(config_file), 'wb') as configfile:
-            config.write(configfile)
+        with open(path.realpath(config_file), mode="wb") as configfile:
+            try:
+                config.write(configfile)
+                logger.info("Settings saved into: {}".format(config_file))
+            except UnicodeEncodeError:
+                avert(_("Invalid character"),
+                      _("Special character spotted in output filenames.\n"
+                      "Settings couldn't be saved but exports will continue."))
+                logger.error("Encoding error in output filename.")
 
-        logger.info("Settings saved into: {}".format(config_file))
         # end of method
         return
 
