@@ -242,5 +242,5 @@ output/*
 
 # virtual environments
 venv/
-virtenv/
+virtenv*
 virtualenv/
