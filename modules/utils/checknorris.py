@@ -17,12 +17,16 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 # ###### Standard Libraries ########
 # ##################################
 
+# Python 2 and 3 compatibility
+from future.standard_library import install_aliases
+install_aliases()
+
 import logging
 from os import environ as env, path, listdir
 import socket
 import sys
-from urllib2 import getproxies
-from urllib2 import build_opener, install_opener, ProxyHandler, urlopen
+# from urllib2 import getproxies
+from urllib.request import build_opener, install_opener, ProxyHandler, urlopen, getproxies
 
 # #############################################################################
 # ########## Classes ###############
@@ -62,7 +66,7 @@ class CheckNorris(object):
             return 1
 
         # GDAL_DATA variable
-        if "GDAL_DATA" not in env.keys():
+        if "GDAL_DATA" not in list(env.keys()):
             try:
                 gdal.SetConfigOption(str('GDAL_DATA'),
                                      str(path.abspath(r'data/gdal')))

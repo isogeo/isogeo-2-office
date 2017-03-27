@@ -16,7 +16,7 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 # ##################################
 
 # Standard library
-from ConfigParser import SafeConfigParser
+from configparser import SafeConfigParser
 from datetime import datetime
 import gettext  # localization
 import logging
@@ -25,13 +25,12 @@ from os import listdir, path, walk
 import platform  # about operating systems
 from sys import argv, exit
 from tempfile import mkdtemp
-from time import sleep
-from tkFileDialog import askdirectory, askopenfilename
-from tkMessageBox import showerror as avert
-from Tkinter import Tk, Image, PhotoImage
-from Tkinter import IntVar, StringVar, ACTIVE, DISABLED, VERTICAL
-from ttk import Label, Button, Entry, Checkbutton, Combobox
-from ttk import Labelframe, Progressbar, Separator, Style
+from tkinter.filedialog import askdirectory, askopenfilename
+from tkinter.messagebox import showerror as avert
+from tkinter import Tk, Image, PhotoImage
+from tkinter import IntVar, StringVar, ACTIVE, DISABLED, VERTICAL
+from tkinter.ttk import Label, Button, Entry, Checkbutton, Combobox
+from tkinter.ttk import Labelframe, Progressbar, Separator, Style
 from webbrowser import open_new_tab
 from zipfile import ZipFile
 
@@ -42,12 +41,11 @@ import openpyxl
 import requests
 
 # Custom modules
-from modules.isogeo2xlsx import Isogeo2xlsx
-from modules.isogeo2docx import Isogeo2docx
-from modules.isogeo_api_strings import IsogeoTranslator
-from modules.ui_app_settings import IsogeoAppAuth
-from modules.checknorris import CheckNorris
-from modules.utils import isogeo2office_utils
+from modules import Isogeo2xlsx
+from modules import Isogeo2docx
+from modules import IsogeoAppAuth
+from modules import CheckNorris
+from modules import isogeo2office_utils
 
 # ############################################################################
 # ########## Global ################
@@ -99,13 +97,15 @@ class Isogeo2office(Tk):
         if self.client_lang == "FR":
             lang = gettext.translation("isogeo2office", localedir="i18n",
                                        languages=["fr_FR"], codeset="Latin1")
-            lang.install(unicode=1)
+            # lang.install(unicode=1)
+            lang.install()
         else:
             lang = gettext
             lang.install("isogeo2office", localedir="i18n",
                          unicode=1)
+            lang.install("isogeo2office", localedir="i18n")
             pass
-        logger.info("Language applied: {}".format(_("English")))
+        # logger.info(u"Language applied: {}".format(_(u"English")))
 
         # ------------ UI or not to UI ---------------------------------------
         if not ui_launcher:
@@ -260,13 +260,14 @@ class Isogeo2office(Tk):
             self.oc_msg.set(_("Configuration OK."))
             li_oc = [share[3] for share in self.shares_info[0]]
             btn_open_shares = Button(fr_isogeo,
-                                     text="\U00002692 " + _("Admin shares"),
+                                     text="\U00002692 {}".format(_("Admin shares")),
                                      command=lambda: self.utils.open_urls(li_oc))
             status_launch = ACTIVE
 
         # settings
+        txt_settings = _("Settings").decode("latin1")
         btn_settings = Button(fr_isogeo,
-                              text="\U0001F510 " + _("Settings"),
+                              text="\U0001F510 {}".format(txt_settings),
                               command=lambda: self.ui_settings_prompt())
 
         # contact
@@ -274,13 +275,13 @@ class Isogeo2office(Tk):
                    "<projects+isogeo2office@isogeo.com>?"
                    "subject=[Isogeo2office]%20Question")
         btn_contact = Button(fr_isogeo,
-                             text="\U00002709 " + _("Contact"),
+                             text="\U00002709 {}".format(_("Contact")),
                              command=lambda: open_new_tab(mailto))
 
         # source
         url_src = "https://bitbucket.org/isogeo/isogeo-2-office"
         btn_src = Button(fr_isogeo,
-                         text="\U000026A0 " + _("Report"),
+                         text="\U000026A0 {}".format(_("Report")),
                          command=lambda: open_new_tab(url_src))
 
         # griding widgets
@@ -830,7 +831,8 @@ class Isogeo2office(Tk):
             wb.store_metadatas(md)
             if ui:
                 # progression
-                self.msg_bar.set(_("Processing Excel: {}").format(md.get("title")))
+                md_title = md.get("title").encode("utf8")
+                self.msg_bar.set(_("Processing Excel: {}").format(md_title))
                 self.progbar["value"] = self.progbar["value"] + 1
             else:
                 pass

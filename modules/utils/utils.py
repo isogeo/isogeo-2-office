@@ -16,20 +16,25 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 # ########## Libraries #############
 # ##################################
 
+# Python 2 and 3 compatibility
+from future.standard_library import install_aliases
+install_aliases()
+
 # Standard library
-from ConfigParser import SafeConfigParser
-from itertools import izip_longest
+from configparser import SafeConfigParser
+from itertools import zip_longest
 import logging
 from os import access, path, R_OK
 import re
 import subprocess
 from sys import platform as opersys
+from time import sleep
 from webbrowser import open_new_tab
 from xml.sax.saxutils import escape  # '<' -> '&lt;'
 
 # Depending on operating system
 if opersys == 'win32':
-    u""" windows """
+    """ windows """
     from os import startfile        # to open a folder/file
 else:
     pass
@@ -183,14 +188,14 @@ class isogeo2office_utils(object):
 
     # ------------------------------------------------------------------------
 
-    def remove_accents(self, input_str, substitute=u""):
+    def remove_accents(self, input_str, substitute=""):
         """Clean string from special characters.
 
         source: http://stackoverflow.com/a/5843560
         """
-        return unicode(substitute).join(char for char in input_str if char.isalnum())
+        return str(substitute).join(char for char in input_str if char.isalnum())
 
-    def clean_xml(self, invalid_xml, mode="soft", substitute=u"_"):
+    def clean_xml(self, invalid_xml, mode="soft", substitute="_"):
         """Clean string of XML invalid characters.
 
         source: http://stackoverflow.com/a/13322581/2556577
@@ -214,7 +219,7 @@ class isogeo2office_utils(object):
 
         # escape &, <, > in the text
         iters = [iter(tag_regex.split(invalid_xml))] * 2
-        pairs = izip_longest(*iters, fillvalue='')  # iterate 2 items at a time
+        pairs = zip_longest(*iters, fillvalue='')  # iterate 2 items at a time
 
         # get the clean version
         clean_version = ''.join(escape(text) + tag for text, tag in pairs)
@@ -224,7 +229,7 @@ class isogeo2office_utils(object):
             pass
         return clean_version
 
-    def clean_filename(self, filename, mode="soft", substitute=u"_"):
+    def clean_filename(self, filename, mode="soft", substitute="_"):
         """Removes invalid characters from filename."""
         if mode == "soft":
             return re.sub(r'[\\/*?:"<>|]', substitute, filename)

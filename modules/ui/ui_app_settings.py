@@ -21,8 +21,8 @@ import gettext
 import logging      # log files
 from os import path
 from time import sleep
-from Tkinter import Tk, StringVar, HORIZONTAL
-from ttk import Label, Button, Entry, Separator
+from tkinter import Tk, StringVar, HORIZONTAL
+from tkinter.ttk import Label, Button, Entry, Separator
 from webbrowser import open_new_tab
 
 # 3rd party library
@@ -52,7 +52,7 @@ class IsogeoAppAuth(Tk):
             _ = lang.gettext
             logging.info("Custom language set: {}"
                          .format(_("English").decode("Latin1")))
-        except Exception, e:
+        except Exception as e:
             logging.error(e)
             _ = gettext.gettext
             logging.info("Default language set: English")
@@ -92,13 +92,13 @@ class IsogeoAppAuth(Tk):
 
         # buttons
         btn_test = Button(self,
-                          text="\U0001F5F8 " + _("Check").decode("Latin1"),
+                          text="\U00002713 {}".format(_("Check")),
                           command=lambda: self.test_connection())
         mailto = _("mailto:Isogeo%20Projects%20"
                    "<projects+isogeo2office@isogeo.com>?"
                    "subject=[Isogeo2office]%20Access request")
         btn_contact = Button(self,
-                             text="\U0001F582 " + _("Request access").decode("Latin1"),
+                             text="\U00002709 {}".format(_("Request access")),
                              command=lambda: open_new_tab(mailto))
 
         # message
@@ -132,7 +132,7 @@ class IsogeoAppAuth(Tk):
             self.li_dest = [self.app_id.get(), self.app_secret.get()]
             logging.info("New access id/secret granted")
             self.destroy()
-        except Exception, e:
+        except Exception as e:
             logging.error(e)
             self.msg_bar.set(e[1])
 
