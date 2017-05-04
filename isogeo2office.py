@@ -265,9 +265,9 @@ class Isogeo2office(Tk):
             status_launch = ACTIVE
 
         # settings
-        txt_settings = _("Settings").decode("latin1")
+        # for unicode symbols: https://www.w3schools.com/charsets/ref_utf_symbols.asp
         btn_settings = Button(fr_isogeo,
-                              text="\U0001F510 {}".format(txt_settings),
+                              text="\U000026BF {}".format(_("Settings")),
                               command=lambda: self.ui_settings_prompt())
 
         # contact
@@ -523,21 +523,19 @@ class Isogeo2office(Tk):
 
         # output folder
         lb_out_fold_title = Label(fr_process, text=_("Output folder: "))
-        # print(path.split(self.out_fold_path.get())[1])
         lb_out_fold_var = Label(fr_process,
                                 textvariable=self.out_fold_path)
-
         btn_out_fold_path_browse = Button(fr_process,
-                                          text=u"\U0001F3AF " + _("Browse"),
+                                          text="{} {}".format("\U000026D7 ", _("Browse")),
                                           command=lambda: self.set_out_folder_path(self.out_fold_path.get()))
 
         btn_out_fold_open = Button(fr_process,
-                                   text=u"\U0001F4C2 " + _("Open"),
+                                   text=u"\U000021F6 " + _("Open"),
                                    command=lambda: self.utils.open_dir_file(self.out_fold_path.get()))
 
         # launcher
         self.btn_go = Button(fr_process,
-                             text="\U0001F680 " + _("Launch"),
+                             text="\U00002708 " + _("Launch"),
                              command=lambda: self.process(),
                              state=status_launch)
 
