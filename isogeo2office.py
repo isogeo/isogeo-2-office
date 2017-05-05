@@ -16,6 +16,7 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 # ##################################
 
 # Standard library
+from collections import OrderedDict
 from configparser import SafeConfigParser
 from datetime import datetime
 import gettext  # localization
@@ -91,7 +92,7 @@ class Isogeo2office(Tk):
         self.settings = self.utils.settings_load()
         self.app_id = self.settings.get("auth").get("app_id")
         self.app_secret = self.settings.get("auth").get("app_secret")
-        self.client_lang = self.settings.get("basics").get("def_codelang", "FR")
+        self.client_lang = self.settings.get("global").get("def_codelang", "FR")
 
         # ------------ Localization ------------------------------------------
         if self.client_lang == "FR":
@@ -310,7 +311,7 @@ class Isogeo2office(Tk):
 
         # ## EXCEL ##
         # variables
-        self.output_xl = StringVar(fr_excel, self.settings.get("basics")
+        self.output_xl = StringVar(fr_excel, self.settings.get("excel")
                                                           .get("excel_out",
                                                                "isogeo2xlsx"))
         # self.opt_xl_join = IntVar(fr_excel)
@@ -369,12 +370,12 @@ class Isogeo2office(Tk):
         # ## WORD ##
         # variables
         self.tpl_input = StringVar(fr_word)
-        self.out_word_prefix = StringVar(fr_word, self.settings.get("basics")
+        self.out_word_prefix = StringVar(fr_word, self.settings.get("word")
                                                       .get("word_out_prefix",
                                                            "isogeo2docx"))
-        self.word_opt_id = IntVar(fr_word, self.settings.get("basics")
+        self.word_opt_id = IntVar(fr_word, self.settings.get("word")
                                                .get("word_opt_id", 5))
-        self.word_opt_date = IntVar(fr_word, self.settings.get("basics")
+        self.word_opt_date = IntVar(fr_word, self.settings.get("word")
                                                  .get("word_opt_date", 1))
 
         # logo
@@ -389,7 +390,7 @@ class Isogeo2office(Tk):
                                     textvariable=self.tpl_input,
                                     values=li_tpls)
 
-        prev_tpl = self.settings.get("basics").get("word_tpl")
+        prev_tpl = self.settings.get("word").get("word_tpl")
         cb_available_tpl.current(li_tpls.index(prev_tpl)\
                                  if prev_tpl in li_tpls else 0)
         # specific options
@@ -430,15 +431,15 @@ class Isogeo2office(Tk):
 
         # ## XML ##
         # variables
-        self.out_xml_prefix = StringVar(fr_xml, self.settings.get("basics")
+        self.out_xml_prefix = StringVar(fr_xml, self.settings.get("xml")
                                                     .get("xml_out_prefix",
                                                          "isogeo2xml"))
-        self.xml_opt_id = IntVar(fr_xml, self.settings.get("basics")
+        self.xml_opt_id = IntVar(fr_xml, self.settings.get("xml")
                                              .get("xml_opt_id", 5))
-        self.xml_opt_date = IntVar(fr_xml, self.settings.get("basics")
+        self.xml_opt_date = IntVar(fr_xml, self.settings.get("xml")
                                                .get("xml_opt_date", 1))
 
-        self.xml_opt_zip = IntVar(fr_xml, self.settings.get("basics")
+        self.xml_opt_zip = IntVar(fr_xml, self.settings.get("xml")
                                               .get("xml_opt_zip", 1))
 
         # logo
@@ -486,19 +487,19 @@ class Isogeo2office(Tk):
         # ## PROCESS ##
         # variables
         self.opt_excel = IntVar(fr_process,
-                                int(self.settings.get('basics')
+                                int(self.settings.get('excel')
                                     .get('excel_opt', 0))
                                 )
         self.opt_word = IntVar(fr_process,
-                               int(self.settings.get('basics')
+                               int(self.settings.get('word')
                                    .get('word_opt', 0)))
         self.opt_xml = IntVar(fr_process,
-                              int(self.settings.get('basics')
+                              int(self.settings.get('xml')
                                   .get('xml_opt', 0)))
         # self.out_folder_path = self.settings.get("basics").get("out_folder",
         #                                                        "output")
         self.out_fold_path = StringVar(fr_process,
-                                       path.relpath(self.settings.get('basics')
+                                       path.relpath(self.settings.get('global')
                                                     .get('out_folder',
                                                          r'output')))
 
@@ -621,48 +622,6 @@ class Isogeo2office(Tk):
 
 # ----------------------------------------------------------------------------
 
-    def settings_save(self, config_file=r"settings.ini"):
-        """Save settings into the ini file."""
-        config = SafeConfigParser()
-        config.read(path.realpath(config_file))
-
-        # new values
-        config.set('auth', 'app_id', self.app_id)
-        config.set('auth', 'app_secret', self.app_secret)
-        config.set('basics', 'out_folder', path.realpath(self.out_fold_path.get()))
-        config.set('basics', 'excel_opt', str(self.opt_excel.get()))
-        config.set('basics', 'word_opt', str(self.opt_word.get()))
-        config.set('basics', 'word_tpl', self.tpl_input.get())
-        config.set('basics', 'word_opt_id', str(self.word_opt_id.get()))
-        config.set('basics', 'word_opt_date', str(self.word_opt_date.get()))
-        config.set('basics', 'xml_opt', str(self.opt_xml.get()))
-        config.set('basics', 'xml_opt_id', str(self.xml_opt_id.get()))
-        config.set('basics', 'xml_opt_date', str(self.xml_opt_date.get()))
-        config.set('basics', 'excel_out', self.output_xl.get())  # in last to avoid encoding issues
-        config.set('basics', 'word_out_prefix', self.out_word_prefix.get())
-        config.set('basics', 'xml_out_prefix', self.out_xml_prefix.get())
-        # default OpenCatalog URL
-        if len(self.shares) == 1:
-                url_oc = [share[4] for share in self.shares_info[0]][0]
-                config.set('basics', 'def_oc', url_oc)
-        else:
-            pass
-        # writing
-        with open(path.realpath(config_file), mode="wb") as configfile:
-            try:
-                config.write(configfile)
-                logger.info("Settings saved into: {}".format(config_file))
-            except UnicodeEncodeError:
-                avert(_("Invalid character"),
-                      _("Special character spotted in output filenames.\n"
-                      "Settings couldn't be saved but exports will continue."))
-                logger.error("Encoding error in output filename.")
-
-        # end of method
-        return
-
-# ----------------------------------------------------------------------------
-
     def ui_settings_prompt(self):
         """Get Isogeo settings from another form."""
         prompter = IsogeoAppAuth(prev_id=self.app_id,
@@ -757,7 +716,8 @@ class Isogeo2office(Tk):
             pass
 
         # savings in ini file
-        self.settings_save()
+        self.utils.settings_save(parent_ui=self,
+                                 config_file=path.realpath(r"settings.ini"))
 
         # prepare Isogeo request
         self.msg_bar.set(_("Fetching Isogeo data..."))
@@ -1057,11 +1017,11 @@ class Isogeo2office(Tk):
                                                  sub_resources=includes)
 
         # Excel export
-        if self.settings.get('basics').get('excel_opt'):
+        if self.settings.get('excel').get('excel_opt'):
             logger.info("Excel - START")
-            out_xlsx_path = path.abspath(path.join(self.settings.get('basics')
+            out_xlsx_path = path.abspath(path.join(self.settings.get('global')
                                                                 .get('out_folder'),
-                                                   self.settings.get('basics')
+                                                   self.settings.get('excel')
                                                                 .get('excel_out') + ".xlsx"))
             self.process_excelization(out_xlsx_path, ui=0)
 

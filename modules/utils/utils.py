@@ -21,6 +21,7 @@ from future.standard_library import install_aliases
 install_aliases()
 
 # Standard library
+from collections import OrderedDict
 from configparser import SafeConfigParser
 from itertools import zip_longest
 import logging
@@ -38,6 +39,13 @@ if opersys == 'win32':
     from os import startfile        # to open a folder/file
 else:
     pass
+
+# ##############################################################################
+# ############ Globals ############
+# #################################
+
+# LOG
+logger = logging.getLogger("isogeo2office")
 
 # ############################################################################
 # ########## Classes ###############
@@ -159,30 +167,54 @@ class isogeo2office_utils(object):
         # end of method
         return settings_dict
 
-    def settings_save(self, config_file=r"../settings.ini"):
+    def settings_save(self, parent_ui, config_file=r"../settings.ini"):
         """Save settings into the ini file."""
-        config = SafeConfigParser()
+        config = SafeConfigParser(dict_type=OrderedDict)
         config.read(path.realpath(config_file))
-        # new values
-        config.set('auth', 'app_id', self.app_id)
-        config.set('auth', 'app_secret', self.app_secret)
-        config.set('basics', 'out_folder', path.realpath(self.out_fold_path.get()))
-        config.set('basics', 'excel_out', self.output_xl.get())
-        config.set('basics', 'excel_opt', str(self.opt_excel.get()))
-        config.set('basics', 'word_opt', str(self.opt_word.get()))
-        config.set('basics', 'word_tpl', self.tpl_input.get())
-        config.set('basics', 'word_out_prefix', str(self.out_word_prefix.get()))
-        config.set('basics', 'word_opt_id', str(self.word_opt_id.get()))
-        config.set('basics', 'word_opt_date', str(self.word_opt_date.get()))
-        config.set('basics', 'xml_opt', str(self.opt_xml.get()))
-        config.set('basics', 'xml_out_prefix', str(self.out_xml_prefix.get()))
-        config.set('basics', 'xml_opt_id', str(self.xml_opt_id.get()))
-        config.set('basics', 'xml_opt_date', str(self.xml_opt_date.get()))
-        # writing
-        with open(path.realpath(config_file), 'wb') as configfile:
-            config.write(configfile)
+        # default OpenCatalog URL
+        if len(parent_ui.shares) == 1:
+            url_oc = [share[4] for share in parent_ui.shares_info[0]][0]
+        else:
+            url_oc = ""
+            pass
+        # new values to save
+        config["auth"] = {"app_id": parent_ui.app_id,
+                          "app_secret": parent_ui.app_secret
+                          }
 
-        logging.info("Settings saved into: {}".format(config_file))
+        config["global"] = {"out_folder": path.realpath(parent_ui.out_fold_path.get()),
+                            "def_oc": url_oc,
+                            "def_codelang": parent_ui.client_lang
+                            }
+
+        config["excel"] = {"excel_opt": parent_ui.opt_excel.get(),
+                           "excel_out": parent_ui.output_xl.get()
+                           }
+
+        config["word"] = {"word_opt": parent_ui.opt_word.get(),
+                          "word_tpl": parent_ui.tpl_input.get(),
+                          "word_opt_id": parent_ui.word_opt_id.get(),
+                          "word_opt_date": parent_ui.word_opt_date.get(),
+                          "word_out_prefix": parent_ui.out_word_prefix.get()
+                          }
+
+        config["xml"] = {"xml_opt": parent_ui.opt_xml.get(),
+                         "xml_opt_id": parent_ui.xml_opt_id.get(),
+                         "xml_opt_date": parent_ui.xml_opt_date.get(),
+                         "xml_out_prefix": parent_ui.out_xml_prefix.get()
+                         }
+
+        # writing
+        with open(path.realpath(config_file), mode="w") as configfile:
+            try:
+                config.write(configfile)
+                logger.info("Settings saved into: {}".format(config_file))
+            except UnicodeEncodeError as e:
+                avert(_("Invalid character"),
+                      _("Special character spotted in output filenames.\n"
+                      "Settings couldn't be saved but exports will continue."))
+                logger.error("SETTINGS - Encoding error: {}".format(e))
+
         # end of method
         return
 
