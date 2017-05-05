@@ -32,7 +32,7 @@ from os import path
 # #################################
 
 # LOG
-logger = logging.getLogger("DicoGIS")
+logger = logging.getLogger("isogeo2office")
 
 # ##############################################################################
 # ########## Classes ###############
@@ -40,6 +40,7 @@ logger = logging.getLogger("DicoGIS")
 
 
 class FrameExcel(Labelframe):
+    """Construct Excel UI."""
 
     def __init__(self, parent, txt=dict(), main_path="../../", ):
         """Instanciating the output workbook."""
@@ -96,8 +97,8 @@ class FrameExcel(Labelframe):
                         column=0, padx=2,
                         pady=2, sticky="W")
         Separator(self, orient=VERTICAL).grid(row=1, rowspan=3,
-                                                  column=1, padx=2,
-                                                  pady=2, sticky="NSE")
+                                              column=1, padx=2,
+                                              pady=2, sticky="NSE")
         lb_output_xl.grid(row=2, column=2, sticky="W")
         ent_output_xl.grid(row=2, column=3, sticky="WE")
 

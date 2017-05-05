@@ -57,7 +57,7 @@ _version = "1.5.7"
 
 # LOG FILE ##
 # see: http://sametmax.com/ecrire-des-logs-en-python/
-logger = logging.getLogger()
+logger = logging.getLogger("isogeo2office")
 logging.captureWarnings(True)
 logger.setLevel(logging.INFO)  # all errors will be get
 log_form = logging.Formatter("%(asctime)s || %(levelname)s "
@@ -98,15 +98,13 @@ class Isogeo2office(Tk):
         if self.client_lang == "FR":
             lang = gettext.translation("isogeo2office", localedir="i18n",
                                        languages=["fr_FR"], codeset="Latin1")
-            # lang.install(unicode=1)
             lang.install()
         else:
             lang = gettext
-            lang.install("isogeo2office", localedir="i18n",
-                         unicode=1)
+            lang.install("isogeo2office", localedir="i18n")
             lang.install("isogeo2office", localedir="i18n")
             pass
-        # logger.info(u"Language applied: {}".format(_(u"English")))
+        logger.info(u"Language applied: {}".format(_(u"English")))
 
         # ------------ UI or not to UI ---------------------------------------
         if not ui_launcher:

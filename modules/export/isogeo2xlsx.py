@@ -1393,7 +1393,7 @@ class Isogeo2xlsx(Workbook):
 
         # escape &, <, > in the text
         iters = [iter(tag_regex.split(invalid_xml))] * 2
-        pairs = izip_longest(*iters, fillvalue='')  # iterate 2 items at a time
+        pairs = zip_longest(*iters, fillvalue='')  # iterate 2 items at a time
 
         # get the clean version
         clean_version = ''.join(escape(text) + tag for text, tag in pairs)
@@ -1411,7 +1411,7 @@ if __name__ == '__main__':
     """ Standalone execution and tests
     """
     # ------------ Specific imports ---------------------
-    from ConfigParser import SafeConfigParser   # to manage options.ini
+    from configparser import SafeConfigParser   # to manage options.ini
 
     # ------------ Settings from ini file ----------------
     if not path.isfile(path.realpath(r"..\settings.ini")):
