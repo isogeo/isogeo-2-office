@@ -44,8 +44,7 @@ else:
 # ############ Globals ############
 # #################################
 
-# LOG
-logger = logging.getLogger("isogeo2office")
+logger = logging.getLogger("isogeo2office")  # LOG
 
 # ############################################################################
 # ########## Classes ###############
@@ -162,7 +161,7 @@ class isogeo2office_utils(object):
         config.read(r"settings.ini")
         settings_dict = {s: dict(config.items(s)) for s in config.sections()}
 
-        logging.info("Settings loaded from: {}".format(config_file))
+        logger.info("Settings loaded from: {}".format(config_file))
 
         # end of method
         return settings_dict

@@ -31,8 +31,7 @@ from os import path
 # ############ Globals ############
 # #################################
 
-# LOG
-logger = logging.getLogger("isogeo2office")
+logger = logging.getLogger("isogeo2office")  # LOG
 
 # ##############################################################################
 # ########## Classes ###############

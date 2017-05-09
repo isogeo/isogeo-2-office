@@ -57,19 +57,19 @@ class IsogeoAppAuth(Tk):
         try:
             # lang.install(unicode=1)
             _ = lang.gettext
-            logging.info("Custom language set: {}"
-                         .format(_("English").decode("Latin1")))
+            logger.info("Custom language set: {}"
+                        .format(_("English").decode("Latin1")))
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
             _ = gettext.gettext
-            logging.info("Default language set: English")
+            logger.info("Default language set: English")
 
         # basics
         self.title(_("{} - API authentication settings").format(app_name))
         try:
             self.iconbitmap(path.dirname(__file__) + r'/../img/settings.ico')
         except:
-            logging.error("Icon file not reachable")
+            logger.error("Icon file not reachable")
             pass
         self.resizable(width=False, height=False)
         self.focus_force()
@@ -126,7 +126,7 @@ class IsogeoAppAuth(Tk):
         btn_contact.grid(row=3, column=3, rowspan=2, sticky="NSE")
         lb_msg.grid(row=4, column=1, columnspan=2, sticky="WE")
 
-        logging.info("API form launched")
+        logger.info("API form launched")
 
     def test_connection(self):
         """Check parameters entered."""
@@ -137,10 +137,10 @@ class IsogeoAppAuth(Tk):
             self.msg_bar.set(_("Everything is fine."))
             sleep(2)
             self.li_dest = [self.app_id.get(), self.app_secret.get()]
-            logging.info("New access id/secret granted")
+            logger.info("New access id/secret granted")
             self.destroy()
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
             self.msg_bar.set(e[1])
 
         # end of method

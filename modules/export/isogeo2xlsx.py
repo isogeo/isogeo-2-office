@@ -45,6 +45,14 @@ from openpyxl.worksheet.properties import WorksheetProperties
 # except:
 #     from isogeo_api_strings import IsogeoTranslator
 
+
+# ##############################################################################
+# ############ Globals ############
+# #################################
+
+# LOG
+logger = logging.getLogger("isogeo2office")
+
 # ##############################################################################
 # ########## Classes ###############
 # ##################################
@@ -236,7 +244,7 @@ class Isogeo2xlsx(Workbook):
         auto: typically auto=search_results.get('tags').keys()
         """
         if type(auto) == list:
-            logging.info("Automatic sheets creation based on tags")
+            logger.info("Automatic sheets creation based on tags")
             if "type:vector-dataset" in auto:
                 vector = 1
             else:
@@ -271,7 +279,7 @@ class Isogeo2xlsx(Workbook):
             # initialize line counter
             self.idx_v = 1
             # log
-            logging.info("Vectors sheet added")
+            logger.info("Vectors sheet added")
         else:
             pass
 
@@ -286,7 +294,7 @@ class Isogeo2xlsx(Workbook):
             # initialize line counter
             self.idx_r = 1
             # log
-            logging.info("Rasters sheet added")
+            logger.info("Rasters sheet added")
         else:
             pass
 
@@ -301,7 +309,7 @@ class Isogeo2xlsx(Workbook):
             # initialize line counter
             self.idx_s = 1
             # log
-            logging.info("Services sheet added")
+            logger.info("Services sheet added")
         else:
             pass
 
@@ -316,7 +324,7 @@ class Isogeo2xlsx(Workbook):
             # initialize line counter
             self.idx_rz = 1
             # log
-            logging.info("Resources sheet added")
+            logger.info("Resources sheet added")
         else:
             pass
 
@@ -367,10 +375,10 @@ class Isogeo2xlsx(Workbook):
             link_path = r'=HYPERLINK("{0}","{1}")'.format(path.dirname(src_path),
                                                           src_path)
             ws["D{}".format(idx)] = link_path
-            logging.info("Path reachable")
+            logger.info("Path reachable")
         else:
             ws["D{}".format(idx)] = src_path
-            logging.info("Path not recognized nor reachable")
+            logger.info("Path not recognized nor reachable")
             pass
 
         # owner
@@ -387,12 +395,12 @@ class Isogeo2xlsx(Workbook):
                 elif k.get("_tag").startswith("keyword:in"):
                     inspire.append(k.get("text"))
                 else:
-                    logging.info("Unknown keyword type: " + k.get("_tag"))
+                    logger.info("Unknown keyword type: " + k.get("_tag"))
                     continue
             ws["F{}".format(idx)] = " ;\n".join(sorted(keywords))
             ws["G{}".format(idx)] = " ;\n".join(sorted(inspire))
         else:
-            logging.info("Vector dataset without any keyword or INSPIRE theme")
+            logger.info("Vector dataset without any keyword or INSPIRE theme")
 
         # conformity
         ws["H{}".format(idx)] = "conformity:inspire" in tags
@@ -467,7 +475,7 @@ class Isogeo2xlsx(Workbook):
             else:
                 bbox = "Unknown envelope type (no point nor polygon): " + bbox.get("type")
         else:
-            logging.info("Vector dataset without envelope.")
+            logger.info("Vector dataset without envelope.")
             pass
         ws["U{}".format(idx)] = bbox
 
@@ -494,7 +502,7 @@ class Isogeo2xlsx(Workbook):
                                 for field in fields])
             ws["AA{}".format(idx)] = " ;\n".join(fields_cct)
         else:
-            logging.info("Vector dataset without any feature attribute")
+            logger.info("Vector dataset without any feature attribute")
             pass
 
         # ---- SPECIFICATIONS # -----------------------------------------------
@@ -589,7 +597,7 @@ class Isogeo2xlsx(Workbook):
             ws["AH{}".format(idx)] = " ;\n".join(contacts_other_cct)
         else:
             ws["AF{}".format(idx)] = 0
-            logging.info("Vector dataset without any contact")
+            logger.info("Vector dataset without any contact")
 
         # ACTIONS
         ws["AI{}".format(idx)] = "action:download" in tags
@@ -647,7 +655,7 @@ class Isogeo2xlsx(Workbook):
         ws["AH{}".format(idx)].style = "wrap"
 
         # LOG
-        logging.info("Vector metadata stored: {} ({})".format(md.get("name"),
+        logger.info("Vector metadata stored: {} ({})".format(md.get("name"),
                                                               md.get("_id")))
 
         # end of method
@@ -669,10 +677,10 @@ class Isogeo2xlsx(Workbook):
             link_path = r'=HYPERLINK("{0}","{1}")'.format(path.dirname(src_path),
                                                           src_path)
             ws["D{}".format(idx)] = link_path
-            logging.info("Path reachable")
+            logger.info("Path reachable")
         else:
             ws["D{}".format(idx)] = src_path
-            logging.info("Path not recognized nor reachable")
+            logger.info("Path not recognized nor reachable")
             pass
 
         # owner
@@ -688,12 +696,12 @@ class Isogeo2xlsx(Workbook):
                 elif k.get("_tag").startswith("keyword:in"):
                     inspire.append(k.get("text"))
                 else:
-                    logging.info("Unknown keyword type: " + k.get("_tag"))
+                    logger.info("Unknown keyword type: " + k.get("_tag"))
                     continue
             ws["F{}".format(idx)] = " ;\n".join(sorted(keywords))
             ws["G{}".format(idx)] = " ;\n".join(sorted(inspire))
         else:
-            logging.info("Vector dataset without any keyword or INSPIRE theme")
+            logger.info("Vector dataset without any keyword or INSPIRE theme")
 
         # conformity
         ws["H{}".format(idx)] = "conformity:inspire" in tags
@@ -770,7 +778,7 @@ class Isogeo2xlsx(Workbook):
             else:
                 bbox = "Unknown envelope type (no point nor polygon): " + bbox.get("type")
         else:
-            logging.info("Vector dataset without envelope.")
+            logger.info("Vector dataset without envelope.")
             pass
         ws["U{}".format(idx)] = bbox
 
@@ -871,7 +879,7 @@ class Isogeo2xlsx(Workbook):
             ws["AD{}".format(idx)] = " ;\n".join(contacts_other_cct)
         else:
             ws["AB{}".format(idx)] = 0
-            logging.info("Vector dataset without any contact")
+            logger.info("Vector dataset without any contact")
 
         # ACTIONS
         ws["AE{}".format(idx)] = "action:download" in tags
@@ -927,7 +935,7 @@ class Isogeo2xlsx(Workbook):
         ws["AD{}".format(idx)].style = "wrap"
 
         # LOG
-        logging.info("Raster metadata stored: {} ({})".format(md.get("name"),
+        logger.info("Raster metadata stored: {} ({})".format(md.get("name"),
                                                               md.get("_id")))
 
         # end of method
@@ -950,7 +958,7 @@ class Isogeo2xlsx(Workbook):
                                                           src_path)
             ws["D{}".format(idx)] = link_path
         else:
-            logging.info("GetCapabilities missing")
+            logger.info("GetCapabilities missing")
             pass
 
         # owner
@@ -962,7 +970,7 @@ class Isogeo2xlsx(Workbook):
                        if k.get("_tag").startswith("keyword:is")]
             ws["F{}".format(idx)] = " ;\n".join(sorted(keywords))
         else:
-            logging.info("Service without any keyword")
+            logger.info("Service without any keyword")
 
         # conformity
         ws["G{}".format(idx)] = "conformity:inspire" in tags
@@ -1013,7 +1021,7 @@ class Isogeo2xlsx(Workbook):
             else:
                 bbox = "Unknown envelope type (no point nor polygon): " + bbox.get("type")
         else:
-            logging.info("Vector dataset without envelope.")
+            logger.info("Vector dataset without envelope.")
             pass
         ws["M{}".format(idx)] = bbox
 
@@ -1106,7 +1114,7 @@ class Isogeo2xlsx(Workbook):
             ws["S{}".format(idx)] = " ;\n".join(contacts_other_cct)
         else:
             ws["Q{}".format(idx)] = 0
-            logging.info("Service without any contact")
+            logger.info("Service without any contact")
 
         # ACTIONS
         ws["T{}".format(idx)] = "action:download" in tags
@@ -1157,7 +1165,7 @@ class Isogeo2xlsx(Workbook):
         ws["S{}".format(idx)].style = "wrap"
 
         # LOG
-        logging.info("Service metadata stored: {} ({})".format(md.get("name"),
+        logger.info("Service metadata stored: {} ({})".format(md.get("name"),
                                                                md.get("_id")))
 
         # end of method
@@ -1180,7 +1188,7 @@ class Isogeo2xlsx(Workbook):
                         if k.get("_tag").startswith("keyword:is")]
             ws["E{}".format(idx)] = " ;\n".join(sorted(keywords))
         else:
-            logging.info("Service without any keyword")
+            logger.info("Service without any keyword")
 
         # EVENTS
         # data creation date
@@ -1280,7 +1288,7 @@ class Isogeo2xlsx(Workbook):
             ws["O{}".format(idx)] = " ;\n".join(contacts_other_cct)
         else:
             ws["M{}".format(idx)] = 0
-            logging.info("Service without any contact")
+            logger.info("Service without any contact")
 
         # ACTIONS
         ws["P{}".format(idx)] = "action:download" in tags
@@ -1331,7 +1339,7 @@ class Isogeo2xlsx(Workbook):
         ws["S{}".format(idx)].style = "wrap"
 
         # LOG
-        logging.info("Resource metadata stored: {} ({})".format(md.get("name"),
+        logger.info("Resource metadata stored: {} ({})".format(md.get("name"),
                                                                 md.get("_id")))
 
         # end of method
@@ -1415,7 +1423,7 @@ if __name__ == '__main__':
 
     # ------------ Settings from ini file ----------------
     if not path.isfile(path.realpath(r"..\settings.ini")):
-        logging.error("To execute this script as standalone, you need to store your Isogeo application settings in a isogeo_params.ini file. You can use the template to set your own.")
+        logger.error("To execute this script as standalone, you need to store your Isogeo application settings in a isogeo_params.ini file. You can use the template to set your own.")
         raise ValueError("isogeo_params.ini file missing.")
     else:
         pass

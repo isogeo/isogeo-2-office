@@ -36,6 +36,12 @@ from isogeo_pysdk import Isogeo
 from isogeo_pysdk import IsogeoTranslator
 
 # ##############################################################################
+# ############ Globals ############
+# #################################
+
+logger = logging.getLogger("isogeo2office")  # LOG
+
+# ##############################################################################
 # ########## Classes ###############
 # ##################################
 
@@ -337,11 +343,11 @@ class Isogeo2docx(object):
                   'varNameTech': md.get("name", self.missing_values()),
                   'varCollectContext': self.clean_xml(md.get("collectionContext", self.missing_values())),
                   'varCollectMethod': self.clean_xml(md.get("collectionMethod", self.missing_values())),
-                  'varDataDtCrea': data_created.decode('latin1'),
-                  'varDataDtUpda': data_updated.decode('latin1'),
-                  'varDataDtPubl': data_published.decode('latin1'),
-                  'varValidityStart': valid_start.decode('latin1'),
-                  'varValidityEnd': valid_end.decode('latin1'),
+                  'varDataDtCrea': data_created,
+                  'varDataDtUpda': data_updated,
+                  'varDataDtPubl': data_published,
+                  'varValidityStart': valid_start,
+                  'varValidityEnd': valid_end,
                   'validityComment': self.clean_xml(valid_com),
                   'varFormat': format_version,
                   'varGeometry': md.get("geometry", self.missing_values()),
@@ -365,9 +371,9 @@ class Isogeo2docx(object):
                   'varFields': fields_out,
                   'varEventsCount': len(events),
                   'varEvents': events,
-                  'varMdDtCrea': md_created.decode('latin1'),
-                  'varMdDtUpda': md_updated.decode('latin1'),
-                  'varMdDtExp': datetime.now().strftime("%a %d %B %Y (%Hh%M)").decode('latin1'),
+                  'varMdDtCrea': md_created,
+                  'varMdDtUpda': md_updated,
+                  'varMdDtExp': datetime.now().strftime("%a %d %B %Y (%Hh%M)"),
                   'varViewOC': link_visu,
                   'varEditAPP': link_edit,
                   }
@@ -375,16 +381,16 @@ class Isogeo2docx(object):
         # fillfull file
         try:
             docx_template.render(context)
-            logging.info("Vector metadata stored: {} ({})".format(md.get("name"),
+            logger.info("Vector metadata stored: {} ({})".format(md.get("name"),
                                                                   md.get("_id")))
         except etree.XMLSyntaxError as e:
-            logging.error("Invalid character in XML: {}. "
+            logger.error("Invalid character in XML: {}. "
                           "Any special character (<, <, &...)? Check: {}".format(e, link_edit))
         except (UnicodeEncodeError, UnicodeDecodeError) as e:
-            logging.error("Encoding error: {}. "
+            logger.error("Encoding error: {}. "
                           "Any special character (<, <, &...)? Check: {}".format(e, link_edit))
         except Exception as e:
-            logging.error("Unexpected error: {}. Check: {}".format(e, link_edit))
+            logger.error("Unexpected error: {}. Check: {}".format(e, link_edit))
 
         # end of function
         return
@@ -433,7 +439,7 @@ class Isogeo2docx(object):
 
         # escape &, <, > in the text
         iters = [iter(tag_regex.split(invalid_xml))] * 2
-        pairs = izip_longest(*iters, fillvalue='')  # iterate 2 items at a time
+        pairs = zip_longest(*iters, fillvalue='')  # iterate 2 items at a time
 
         # get the clean version
         clean_version = ''.join(escape(text) + tag for text, tag in pairs)
@@ -456,7 +462,7 @@ if __name__ == '__main__':
 
     # ------------ Settings from ini file ----------------
     if not path.isfile(path.realpath(r"..\settings_dev.ini")):
-        logging.error("To execute this script as standalone,"
+        logger.error("To execute this script as standalone,"
                       " you need to store your Isogeo application settings"
                       " in a isogeo_params.ini file. You can use the template"
                       " to set your own.")

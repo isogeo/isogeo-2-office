@@ -845,7 +845,7 @@ class Isogeo2office(Tk):
             to_docx.md2docx(tpl, md, url_oc)
 
             # name
-            md_name = md.get("name", "NR")
+            md_name = md.get("name", md.get("title", "NR"))
             if '.' in md_name:
                 md_name = md_name.split(".")[1]
             else:
@@ -885,7 +885,9 @@ class Isogeo2office(Tk):
             del tpl
 
             # progression bar
-            self.msg_bar.set(_("Processing Word: {}").format(md_name[1:]))
+            # self.msg_bar.set(_("Processing Word: {}").format(md_name[1:]))
+            self.msg_bar.set(_("Processing Word: {}")\
+                               .format(md_name[1:].split(" -")[0]))
             self.progbar["value"] = self.progbar["value"] + 1
             self.update()
 
@@ -938,11 +940,12 @@ class Isogeo2office(Tk):
                 dstamp = ""
 
             # final output name
+            clean_title = self.utils.clean_filename(md_title.split(" -")[0])
             out_xml_path = path.join(out_dir,
                                      "{}{}{}{}.xml"
                                      .format(self.out_xml_prefix.get(),
                                              uid,
-                                             self.utils.clean_filename(md_title.split(" -")[0]),
+                                             clean_title,
                                              dstamp))
 
             # export
@@ -951,7 +954,7 @@ class Isogeo2office(Tk):
                 for block in xml_stream.iter_content(1024):
                     out_md.write(block)
 
-            logger.info("XML - Exported: {} ({})".format(md.get("name"),
+            logger.info("XML - Exported: {} ({})".format(md.get("name", clean_title),
                                                          md.get("_id")))
 
             # progression bar
