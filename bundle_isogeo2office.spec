@@ -2,14 +2,14 @@
 
 block_cipher = None
 
-from ConfigParser import SafeConfigParser
+from configparser import SafeConfigParser
 from os import path
 
 # ------------ Initial settings ----------------------------------------------
 config = SafeConfigParser()
 config.read(path.realpath("settings_TPL.ini"))
-config.set("basics", "out_folder", "output")
-with open(path.realpath("build\\settings.ini"), "wb") as configfile:
+#config.set("global", "excel", "word", "xml", "proxy")
+with open(path.realpath("build\\settings.ini"), "w") as configfile:
     config.write(configfile)
 # ----------------------------------------------------------------------------
 
