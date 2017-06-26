@@ -78,9 +78,9 @@ class Isogeo2office(Tk):
     """Main Class for Isogeo to Office."""
 
     # attributes and global actions
-    logging.info('OS: {0}'.format(platform.platform()))
-    logging.info('Version: {0}'.format(_version))
-    logging.info('Isogeo PySDK version: {0}'.format(pysdk_version))
+    logger.info('OS: {0}'.format(platform.platform()))
+    logger.info('Version: {0}'.format(_version))
+    logger.info('Isogeo PySDK version: {0}'.format(pysdk_version))
 
     def __init__(self, ui_launcher=1):
         """Initiliazing isogeo2office with or without UI."""
