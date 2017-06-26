@@ -58,7 +58,7 @@ class IsogeoAppAuth(Tk):
             # lang.install(unicode=1)
             _ = lang.gettext
             logger.info("Custom language set: {}"
-                        .format(_("English").decode("Latin1")))
+                        .format(_("English")))
         except Exception as e:
             logger.error(e)
             _ = gettext.gettext
@@ -154,6 +154,7 @@ if __name__ == '__main__':
     """ standalone execution
     """
     app = IsogeoAppAuth(prev_id="Here comes the client ID",
-                        prev_secret="Here comes the client secret")
+                        prev_secret="Here comes the client secret",
+                        lang = "fr_FR")
     app.mainloop()
     print("New oAuth2 parameters: ", app.li_dest)
