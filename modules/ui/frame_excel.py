@@ -21,8 +21,9 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 # ##################################
 
 # Standard library
-from Tkinter import PhotoImage, StringVar, Tk, VERTICAL
-from tkinter.ttk import Entry, Label, Labelframe, Separator
+import gettext  # localization
+from tkinter import IntVar, PhotoImage, StringVar, Tk, VERTICAL
+from tkinter.ttk import Entry, Label, Labelframe, Separator, Checkbutton
 
 import logging
 from os import path
@@ -41,55 +42,53 @@ logger = logging.getLogger("isogeo2office")  # LOG
 class FrameExcel(Labelframe):
     """Construct Excel UI."""
 
-    def __init__(self, parent, txt=dict(), main_path="../../", ):
+    def __init__(self, parent, txt=dict(), main_path="../../", lang=None):
         """Instanciating the output workbook."""
+        # localization
+        try:
+            # lang.install(unicode=1)
+            _ = lang.gettext
+            logger.info("Custom language set: {}"
+                        .format(_("English")))
+        except Exception as e:
+            logger.error(e)
+            _ = gettext.gettext
+            logger.info("Default language set: English")
+        # UI
         self.parent = parent
-        Labelframe.__init__(self)
+        Labelframe.__init__(self, text="Excel")
 
         # variables
-        self.output_xl = StringVar(self)
-        # self.opt_xl_join = IntVar(self)
-        # self.input_xl_join_col = StringVar(self)
-        # self.input_xl = ""
-        # li_input_xl_cols = []
+        self.output_name = StringVar(self)
+        self.opt_attributes = IntVar(self)
+        self.opt_fillfull = IntVar(self)
+        self.opt_inspire = IntVar(self)
 
         # logo
         ico_path = path.normpath(path.join(path.abspath(main_path),
                                  "img/logo_excel2013.gif"))
         self.logo_excel = PhotoImage(master=self,
                                      file=ico_path)
-        logo_excel = Label(self, borderwidth=2, image=self.logo_excel)\
+        logo_excel = Label(self, borderwidth=2, image=self.logo_excel)
 
         # output file
-        lb_output_xl = Label(self,
-                             text=_("Output filename: "))
-        ent_output_xl = Entry(self,
-                              textvariable=self.output_xl)
+        lb_output_name = Label(self,
+                               text=_("Output filename: "))
+        ent_output_name = Entry(self,
+                                textvariable=self.output_name)
 
-        # TO COMPLETE LATER
-        # caz_xl_join = Checkbutton(fr_excel,
-        #                   text=u'Joindre avec un autre fichier Excel',
-        #                   variable=self.opt_xl_join,
-        #                   command=lambda: self.ui_switch_xljoiner())
-        # caz_xl_join.pack()
-
-        # self.fr_input_xl_join.pack()
-
-        # # matching with another Excel file
-        # self.fr_input_xl_join = Labelframe(fr_excel,
-        #                                    name='excel_joiner',
-        #                                    text="Jointure à partir d'un autre tableur Excel")
-
-        # bt_browse_input_xl = Button(self.fr_input_xl_join,
-        #                             text="Choisir un fichier en entrée",
-        #                             command=lambda: self.get_input_xl()).pack()
-        # lb_input_xl = Label(self.fr_input_xl_join,
-        #                     text=self.input_xl).pack()
-
-        # cb_input_xl_cols = Combobox(self.fr_input_xl_join,
-        #                             textvariable=self.input_xl_join_col,
-        #                             values=li_input_xl_cols,
-        #                             width=100)
+        # options
+        lb_special_tabs = Label(self,
+                                text=_("Goals tabs"))
+        caz_attributes = Checkbutton(self,
+                                     text=_(u'Feature attributes'),
+                                     variable=self.opt_attributes)
+        caz_fillfull = Checkbutton(self,
+                                   text=_(u'Cataloging'),
+                                   variable=self.opt_fillfull)
+        caz_inspire = Checkbutton(self,
+                                  text=_(u'INSPIRE'),
+                                  variable=self.opt_inspire)
 
         # griding widgets
         logo_excel.grid(row=1, rowspan=3,
@@ -98,8 +97,12 @@ class FrameExcel(Labelframe):
         Separator(self, orient=VERTICAL).grid(row=1, rowspan=3,
                                               column=1, padx=2,
                                               pady=2, sticky="NSE")
-        lb_output_xl.grid(row=2, column=2, sticky="W")
-        ent_output_xl.grid(row=2, column=3, sticky="WE")
+        lb_output_name.grid(row=2, column=2, sticky="W")
+        ent_output_name.grid(row=2, column=3, sticky="WE")
+        lb_special_tabs.grid(row=3, column=2, sticky="W")
+        caz_attributes.grid(row=4, column=2, columnspan=1, padx=2, pady=2, sticky="WE")
+        caz_fillfull.grid(row=4, column=3, columnspan=1, padx=2, pady=2, sticky="WE")
+        caz_inspire.grid(row=4, column=4, columnspan=1, padx=2, pady=2, sticky="WE")
 
 # #############################################################################
 # ##### Stand alone program ########
@@ -107,9 +110,8 @@ class FrameExcel(Labelframe):
 
 if __name__ == '__main__':
     """To test"""
-    import gettext
     root = Tk()
     frame = FrameExcel(root)
-    frame.output_xl.set("isogeo2xlsx")
+    frame.output_name.set("isogeo2xlsx")
     frame.pack()
     root.mainloop()

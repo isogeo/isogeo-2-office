@@ -16,8 +16,6 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 # ##################################
 
 # Standard library
-from collections import OrderedDict
-from configparser import SafeConfigParser
 from datetime import datetime
 import gettext  # localization
 import logging
@@ -47,6 +45,10 @@ from modules import Isogeo2docx
 from modules import IsogeoAppAuth
 from modules import CheckNorris
 from modules import isogeo2office_utils
+
+# UI submodules
+from modules import FrameExcel
+from modules import FrameWord
 
 # ############################################################################
 # ########## Global ################
@@ -156,8 +158,6 @@ class Isogeo2office(Tk):
         self.shares_info = self.get_shares_info()
 
         # ------------ Variables ---------------------------------------------
-        li_tpls = [tpl for tpl in listdir(r'templates')
-                   if path.splitext(tpl)[1].lower() == ".docx"]
 
         # ------------ UI ----------------------------------------------------
         Tk.__init__(self)
@@ -179,8 +179,11 @@ class Isogeo2office(Tk):
 
         # Frames and main widgets
         fr_isogeo = Labelframe(self, name="isogeo", text="Isogeo")
-        fr_excel = Labelframe(self, name="excel", text="Excel")
-        fr_word = Labelframe(self, name="word", text="Word")
+        self.fr_excel = FrameExcel(self, main_path="",
+                                   lang=lang)
+        self.fr_word = FrameWord(self, main_path="",
+                                 lang=lang,
+                                 i2o_utils=self.utils)
         fr_xml = Labelframe(self, name="xml", text="XML")
         fr_process = Labelframe(self, name="process", text="Launch")
         self.status_bar = Label(self, textvariable=self.msg_bar, anchor='w',
@@ -189,8 +192,8 @@ class Isogeo2office(Tk):
                                    orient="horizontal")
 
         fr_isogeo.grid(row=1, column=1, padx=2, pady=4, sticky="WE")
-        fr_excel.grid(row=2, column=1, padx=2, pady=4, sticky="WE")
-        fr_word.grid(row=3, column=1, padx=2, pady=4, sticky="WE")
+        self.fr_excel.grid(row=2, column=1, padx=2, pady=4, sticky="WE")
+        self.fr_word.grid(row=3, column=1, padx=2, pady=4, sticky="WE")
         fr_xml.grid(row=4, column=1, padx=2, pady=4, sticky="WE")
         fr_process.grid(row=5, column=1, padx=2, pady=4, sticky="WE")
         self.status_bar.grid(row=6, column=1, padx=2, pady=2, sticky="WE")
@@ -309,121 +312,21 @@ class Isogeo2office(Tk):
 
         # ## EXCEL ##
         # variables
-        self.output_xl = StringVar(fr_excel, self.settings.get("excel")
-                                                          .get("excel_out",
-                                                               "isogeo2xlsx"))
-        # self.opt_xl_join = IntVar(fr_excel)
-        # self.input_xl_join_col = StringVar(fr_excel)
-        # self.input_xl = ""
-        # li_input_xl_cols = []
+        self.fr_excel.output_name.set(self.settings.get("excel")
+                                                   .get("excel_out",
+                                                        "isogeo2xlsx"))
 
-        # logo
-        self.logo_excel = PhotoImage(master=fr_excel,
-                                     file=r'img/logo_excel2013.gif')
-        logo_excel = Label(fr_excel, borderwidth=2, image=self.logo_excel)\
-
-        # output file
-        lb_output_xl = Label(fr_excel,
-                             text=_("Output filename: "))
-        ent_output_xl = Entry(fr_excel,
-                              textvariable=self.output_xl)
-
-        # TO COMPLETE LATER
-        # caz_xl_join = Checkbutton(fr_excel,
-        #                   text=u'Joindre avec un autre fichier Excel',
-        #                   variable=self.opt_xl_join,
-        #                   command=lambda: self.ui_switch_xljoiner())
-        # caz_xl_join.pack()
-
-        # self.fr_input_xl_join.pack()
-
-        # # matching with another Excel file
-        # self.fr_input_xl_join = Labelframe(fr_excel,
-        #                                    name='excel_joiner',
-        #                                    text="Jointure à partir d'un autre tableur Excel")
-
-        # bt_browse_input_xl = Button(self.fr_input_xl_join,
-        #                             text="Choisir un fichier en entrée",
-        #                             command=lambda: self.get_input_xl()).pack()
-        # lb_input_xl = Label(self.fr_input_xl_join,
-        #                     text=self.input_xl).pack()
-
-        # cb_input_xl_cols = Combobox(self.fr_input_xl_join,
-        #                             textvariable=self.input_xl_join_col,
-        #                             values=li_input_xl_cols,
-        #                             width=100)
-
-        # griding widgets
-        logo_excel.grid(row=1, rowspan=3,
-                        column=0, padx=2,
-                        pady=2, sticky="W")
-        Separator(fr_excel, orient=VERTICAL).grid(row=1, rowspan=3,
-                                                  column=1, padx=2,
-                                                  pady=2, sticky="NSE")
-        lb_output_xl.grid(row=2, column=2, sticky="W")
-        ent_output_xl.grid(row=2, column=3, sticky="WE")
-
-    # --------------------------------------------------------------------
+        # --------------------------------------------------------------------
 
         # ## WORD ##
         # variables
-        self.tpl_input = StringVar(fr_word)
-        self.out_word_prefix = StringVar(fr_word, self.settings.get("word")
+        self.fr_word.out_word_prefix.set(self.settings.get("word")
                                                       .get("word_out_prefix",
                                                            "isogeo2docx"))
-        self.word_opt_id = IntVar(fr_word, self.settings.get("word")
-                                               .get("word_opt_id", 5))
-        self.word_opt_date = IntVar(fr_word, self.settings.get("word")
-                                                 .get("word_opt_date", 1))
-
-        # logo
-        self.logo_word = PhotoImage(master=fr_word,
-                                    file=r'img/logo_word2013.gif')
-        logo_word = Label(fr_word, borderwidth=2, image=self.logo_word)
-
-        # pick a template
-        lb_input_tpl = Label(fr_word,
-                             text=_("Pick a template: "))
-        cb_available_tpl = Combobox(fr_word,
-                                    textvariable=self.tpl_input,
-                                    values=li_tpls)
-
-        prev_tpl = self.settings.get("word").get("word_tpl")
-        cb_available_tpl.current(li_tpls.index(prev_tpl)\
-                                 if prev_tpl in li_tpls else 0)
-        # specific options
-        lb_out_word_prefix = Label(fr_word, text=_("File prefix: "))
-        lb_out_word_uid = Label(fr_word, text=_("UID chars:\n"
-                                                "(0 - 8)"))
-        lb_out_word_date = Label(fr_word, text=_("Timestamp:\n"
-                                                 "(0=no, 1=date, 2=datetime)"))
-
-        ent_out_word_prefix = Entry(fr_word, textvariable=self.out_word_prefix)
-        ent_out_word_uid = Entry(fr_word, textvariable=self.word_opt_id,
-                                 width=2, validate="key",
-                                 validatecommand=val_uid)
-        ent_out_word_date = Entry(fr_word, textvariable=self.word_opt_date,
-                                  width=2, validate="key",
-                                  validatecommand=val_date)
-
-        # griding widgets
-        logo_word.grid(row=1, rowspan=3,
-                       column=0, padx=2,
-                       pady=2, sticky="W")
-        Separator(fr_word, orient=VERTICAL).grid(row=1, rowspan=3,
-                                                 column=1, padx=2,
-                                                 pady=2, sticky="NSE")
-        lb_input_tpl.grid(row=1, column=2, padx=2, pady=2, sticky="W")
-        cb_available_tpl.grid(row=1, column=3, columnspan=2,
-                              padx=2, pady=2, sticky="WE")
-        lb_out_word_prefix.grid(row=2, column=2, padx=2, pady=2, sticky="W")
-        ent_out_word_prefix.grid(row=2, column=3, columnspan=2,
-                                 padx=2, pady=2, sticky="WE")
-
-        lb_out_word_uid.grid(row=3, column=2, padx=2, pady=2, sticky="W")
-        ent_out_word_uid.grid(row=3, column=2, padx=3, pady=2, sticky="E")
-        lb_out_word_date.grid(row=3, column=3, padx=3, pady=2, sticky="W")
-        ent_out_word_date.grid(row=3, column=4, padx=2, pady=2, sticky="W")
+        self.fr_word.word_opt_id.set(self.settings.get("word")
+                                                  .get("word_opt_id", 5))
+        self.fr_word.word_opt_date.set(self.settings.get("word")
+                                                    .get("word_opt_date", 1))
 
     # --------------------------------------------------------------------
 
@@ -740,7 +643,7 @@ class Isogeo2office(Tk):
         if self.opt_excel.get():
             logger.info("Excel - START")
             out_xlsx_path = path.realpath(path.join(self.out_fold_path.get(),
-                                                    self.output_xl.get() + ".xlsx"))
+                                                    self.fr_excel.output_xl.get() + ".xlsx"))
             self.progbar["value"] = 0
             self.process_excelization(output_filepath=out_xlsx_path)
         else:
@@ -748,13 +651,13 @@ class Isogeo2office(Tk):
 
         # WORD
         template_path = path.realpath(path.join(r"templates",
-                                                self.tpl_input.get()))
+                                                self.fr_word.tpl_input.get()))
         if self.opt_word.get() and path.isfile(template_path):
             self.status_bar.config(foreground='DodgerBlue')
             logger.info("WORD - START")
             self.progbar["value"] = 0
             self.process_wordification()
-        elif self.opt_word.get() and self.tpl_input.get() == "":
+        elif self.opt_word.get() and self.fr_word.tpl_input.get() == "":
             logger.error("Any template selected.")
             self.msg_bar.set(_("Error: Word template not selected"))
             self.status_bar.config(foreground='Red')
@@ -841,7 +744,7 @@ class Isogeo2office(Tk):
 
             # templating
             tpl = DocxTemplate(path.realpath(path.join(r"templates",
-                                                       self.tpl_input.get())))
+                                                       self.fr_word.tpl_input.get())))
             to_docx.md2docx(tpl, md, url_oc)
 
             # name
@@ -853,18 +756,18 @@ class Isogeo2office(Tk):
             md_name = "_{}".format(md_name)
 
             # uid
-            if self.word_opt_id.get():
-                uid = "_{}".format(md.get("_id")[:self.word_opt_id.get()])
+            if self.fr_word.word_opt_id.get():
+                uid = "_{}".format(md.get("_id")[:self.fr_word.word_opt_id.get()])
             else:
                 uid = ""
 
             # date
             dstamp = datetime.now()
-            if self.word_opt_date.get() == 1:
+            if self.fr_word.word_opt_date.get() == 1:
                 dstamp = "_{}-{}-{}".format(dstamp.year,
                                             dstamp.month,
                                             dstamp.day)
-            elif self.word_opt_date.get() == 2:
+            elif self.fr_word.word_opt_date.get() == 2:
                 dstamp = "_{}-{}-{}-{}{}{}".format(dstamp.year,
                                                    dstamp.month,
                                                    dstamp.day,
@@ -877,7 +780,7 @@ class Isogeo2office(Tk):
             # final output name
             out_docx_path = path.join(path.realpath(self.out_fold_path.get()),
                                       "{}{}{}{}.docx"
-                                      .format(self.out_word_prefix.get(),
+                                      .format(self.fr_word.out_word_prefix.get(),
                                               uid,
                                               md_name,
                                               dstamp))

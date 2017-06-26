@@ -187,14 +187,14 @@ class isogeo2office_utils(object):
                             }
 
         config["excel"] = {"excel_opt": parent_ui.opt_excel.get(),
-                           "excel_out": parent_ui.output_xl.get()
+                           "excel_out": parent_ui.fr_excel.output_name.get()
                            }
 
         config["word"] = {"word_opt": parent_ui.opt_word.get(),
-                          "word_tpl": parent_ui.tpl_input.get(),
-                          "word_opt_id": parent_ui.word_opt_id.get(),
-                          "word_opt_date": parent_ui.word_opt_date.get(),
-                          "word_out_prefix": parent_ui.out_word_prefix.get()
+                          "word_tpl": parent_ui.fr_word.tpl_input.get(),
+                          "word_opt_id": parent_ui.fr_word.word_opt_id.get(),
+                          "word_opt_date": parent_ui.fr_word.word_opt_date.get(),
+                          "word_out_prefix": parent_ui.fr_word.out_word_prefix.get()
                           }
 
         config["xml"] = {"xml_opt": parent_ui.opt_xml.get(),
