@@ -42,7 +42,7 @@ logger = logging.getLogger("isogeo2office")  # LOG
 class FrameWord(Labelframe):
     """Construct Excel UI."""
 
-    def __init__(self, parent, main_path="../../", lang=None, i2o_utils=None):
+    def __init__(self, parent, main_path="../../", lang=None, validators=None):
         """Instanciating the output workbook."""
         # localization
         try:
@@ -63,22 +63,12 @@ class FrameWord(Labelframe):
         li_tpls = [tpl for tpl in listdir(path.join(path.abspath(main_path), r'templates'))
                    if path.splitext(tpl)[1].lower() == ".docx"]
         self.tpl_input = StringVar(self)
-        self.out_word_prefix = StringVar(self, "isogeo2docx")
-        self.word_opt_id = IntVar(self, 5)
-        self.word_opt_date = IntVar(self, 1)
+        self.out_prefix = StringVar(self, "isogeo2docx")
+        self.opt_id = IntVar(self, 5)
+        self.opt_date = IntVar(self, 1)
         # fields validation
-        val_uid = (self.register(i2o_utils.entry_validate_uid),
-                   '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
-        val_date = (self.register(i2o_utils.entry_validate_date),
-                    '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
-
-        # self.out_word_prefix = StringVar(self, self.settings.get("word")
-        #                                               .get("word_out_prefix",
-        #                                                    "isogeo2docx"))
-        # self.word_opt_id = IntVar(self, self.settings.get("word")
-        #                                        .get("word_opt_id", 5))
-        # self.word_opt_date = IntVar(self, self.settings.get("word")
-        #                                          .get("word_opt_date", 1))
+        val_uid = validators.get("val_uid")
+        val_date = validators.get("val_date")
 
         # logo
         ico_path = path.normpath(path.join(path.abspath(main_path),
@@ -105,11 +95,11 @@ class FrameWord(Labelframe):
         lb_out_word_date = Label(self, text=_("Timestamp:\n"
                                               "(0=no, 1=date, 2=datetime)"))
 
-        ent_out_word_prefix = Entry(self, textvariable=self.out_word_prefix)
-        ent_out_word_uid = Entry(self, textvariable=self.word_opt_id,
+        ent_out_word_prefix = Entry(self, textvariable=self.out_prefix)
+        ent_out_word_uid = Entry(self, textvariable=self.opt_id,
                                  width=2, validate="key",
                                  validatecommand=val_uid)
-        ent_out_word_date = Entry(self, textvariable=self.word_opt_date,
+        ent_out_word_date = Entry(self, textvariable=self.opt_date,
                                   width=2, validate="key",
                                   validatecommand=val_date)
 
@@ -139,6 +129,6 @@ class FrameWord(Labelframe):
 if __name__ == '__main__':
     """To test"""
     root = Tk()
-    frame = FrameWord(root)
+    frame = FrameWord(root, validators=dict())
     frame.pack()
     root.mainloop()

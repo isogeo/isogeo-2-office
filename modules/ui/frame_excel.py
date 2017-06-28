@@ -22,7 +22,7 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 
 # Standard library
 import gettext  # localization
-from tkinter import IntVar, PhotoImage, StringVar, Tk, VERTICAL
+from tkinter import IntVar, PhotoImage, StringVar, Tk, HORIZONTAL, VERTICAL
 from tkinter.ttk import Entry, Label, Labelframe, Separator, Checkbutton
 
 import logging
@@ -79,7 +79,8 @@ class FrameExcel(Labelframe):
 
         # options
         lb_special_tabs = Label(self,
-                                text=_("Goals tabs"))
+                                text=_("Goals tabs"),
+                                font="Helvetica 9 bold")
         caz_attributes = Checkbutton(self,
                                      text=_(u'Feature attributes'),
                                      variable=self.opt_attributes)
@@ -91,18 +92,22 @@ class FrameExcel(Labelframe):
                                   variable=self.opt_inspire)
 
         # griding widgets
-        logo_excel.grid(row=1, rowspan=3,
+        logo_excel.grid(row=1, rowspan=4,
                         column=0, padx=2,
                         pady=2, sticky="W")
-        Separator(self, orient=VERTICAL).grid(row=1, rowspan=3,
+        Separator(self, orient=VERTICAL).grid(row=1, rowspan=4,
                                               column=1, padx=2,
                                               pady=2, sticky="NSE")
         lb_output_name.grid(row=2, column=2, sticky="W")
-        ent_output_name.grid(row=2, column=3, sticky="WE")
-        lb_special_tabs.grid(row=3, column=2, sticky="W")
-        caz_attributes.grid(row=4, column=2, columnspan=1, padx=2, pady=2, sticky="WE")
-        caz_fillfull.grid(row=4, column=3, columnspan=1, padx=2, pady=2, sticky="WE")
-        caz_inspire.grid(row=4, column=4, columnspan=1, padx=2, pady=2, sticky="WE")
+        ent_output_name.grid(row=2, column=3, columnspan=3, sticky="WE")
+        Separator(self, orient=HORIZONTAL).grid(row=3, column=2,
+                                                padx=2, sticky="WE")
+        lb_special_tabs.grid(row=3, column=3, columnspan=1)
+        Separator(self, orient=HORIZONTAL).grid(row=3, column=4,
+                                                padx=2, sticky="WE")
+        caz_attributes.grid(row=4, column=2, padx=2, pady=1, sticky="W")
+        caz_fillfull.grid(row=4, column=3, padx=2, pady=2)
+        caz_inspire.grid(row=4, column=4, padx=2, pady=2, sticky="E")
 
 # #############################################################################
 # ##### Stand alone program ########

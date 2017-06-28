@@ -187,20 +187,23 @@ class isogeo2office_utils(object):
                             }
 
         config["excel"] = {"excel_opt": parent_ui.opt_excel.get(),
-                           "excel_out": parent_ui.fr_excel.output_name.get()
+                           "output_name": parent_ui.fr_excel.output_name.get(),
+                           "opt_attributes": parent_ui.fr_excel.opt_attributes.get(),
+                           "opt_fillfull": parent_ui.fr_excel.opt_fillfull.get(),
+                           "opt_inspire": parent_ui.fr_excel.opt_inspire.get(),
                            }
 
         config["word"] = {"word_opt": parent_ui.opt_word.get(),
-                          "word_tpl": parent_ui.fr_word.tpl_input.get(),
-                          "word_opt_id": parent_ui.fr_word.word_opt_id.get(),
-                          "word_opt_date": parent_ui.fr_word.word_opt_date.get(),
-                          "word_out_prefix": parent_ui.fr_word.out_word_prefix.get()
+                          "out_prefix": parent_ui.fr_word.out_prefix.get(),
+                          "tpl": parent_ui.fr_word.tpl_input.get(),
+                          "opt_id": parent_ui.fr_word.opt_id.get(),
+                          "opt_date": parent_ui.fr_word.opt_date.get(),
                           }
 
         config["xml"] = {"xml_opt": parent_ui.opt_xml.get(),
-                         "xml_opt_id": parent_ui.xml_opt_id.get(),
-                         "xml_opt_date": parent_ui.xml_opt_date.get(),
-                         "xml_out_prefix": parent_ui.out_xml_prefix.get()
+                         "opt_id": parent_ui.fr_xml.opt_id.get(),
+                         "opt_date": parent_ui.fr_xml.opt_date.get(),
+                         "out_prefix": parent_ui.fr_xml.out_prefix.get(),
                          }
 
         # writing

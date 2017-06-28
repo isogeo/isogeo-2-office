@@ -56,6 +56,7 @@ class IsogeoAppAuth(Tk):
         # localization
         try:
             # lang.install(unicode=1)
+            lang.install()
             _ = lang.gettext
             logger.info("Custom language set: {}"
                         .format(_("English")))
@@ -67,10 +68,9 @@ class IsogeoAppAuth(Tk):
         # basics
         self.title(_("{} - API authentication settings").format(app_name))
         try:
-            self.iconbitmap(path.dirname(__file__) + r'/../img/settings.ico')
-        except:
+            self.iconbitmap(path.dirname(__file__) + r'/../../img/settings.ico')
+        except Exception as e:
             logger.error("Icon file not reachable")
-            pass
         self.resizable(width=False, height=False)
         self.focus_force()
 
@@ -83,7 +83,7 @@ class IsogeoAppAuth(Tk):
         self.msg_bar = StringVar(self)
         self.msg_bar.set(_("Insert access transmitted by Isogeo."))
 
-        self.li_dest = []
+        self.li_dest = [prev_id, prev_secret]
         # form fields
         lb_input_id = Label(self,
                             text=_("Client id:"))

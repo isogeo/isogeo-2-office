@@ -20,7 +20,7 @@ from datetime import datetime
 import gettext  # localization
 import logging
 from logging.handlers import RotatingFileHandler
-from os import listdir, path, walk
+from os import path, walk
 import platform  # about operating systems
 from sys import argv, exit
 from tempfile import mkdtemp
@@ -28,7 +28,7 @@ from tkinter.filedialog import askdirectory, askopenfilename
 from tkinter.messagebox import showerror as avert
 from tkinter import Tk, Image, PhotoImage
 from tkinter import IntVar, StringVar, ACTIVE, DISABLED, VERTICAL
-from tkinter.ttk import Label, Button, Entry, Checkbutton, Combobox
+from tkinter.ttk import Label, Button, Checkbutton
 from tkinter.ttk import Labelframe, Progressbar, Separator, Style
 from webbrowser import open_new_tab
 from zipfile import ZipFile
@@ -49,6 +49,8 @@ from modules import isogeo2office_utils
 # UI submodules
 from modules import FrameExcel
 from modules import FrameWord
+from modules import FrameXml
+from modules import ToolTip
 
 # ############################################################################
 # ########## Global ################
@@ -58,17 +60,16 @@ from modules import FrameWord
 _version = "1.5.7"
 
 # LOG FILE ##
-# see: http://sametmax.com/ecrire-des-logs-en-python/
 logger = logging.getLogger("isogeo2office")
 logging.captureWarnings(True)
-logger.setLevel(logging.INFO)  # all errors will be get
+logger.setLevel(logging.DEBUG)  # all errors will be get
 log_form = logging.Formatter("%(asctime)s || %(levelname)s "
-                             "|| %(module)s || %(message)s")
+                             "|| %(module)s || %(lineno)s || %(message)s")
 logfile = RotatingFileHandler("LOG_isogeo2office.log", "a", 5000000, 1)
-logfile.setLevel(logging.INFO)
+logfile.setLevel(logging.DEBUG)
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
-logger.info('=================================================')
+logger.info('\n')
 logger.info('================ Isogeo to office ===============')
 
 # ############################################################################
@@ -104,8 +105,6 @@ class Isogeo2office(Tk):
         else:
             lang = gettext
             lang.install("isogeo2office", localedir="i18n")
-            lang.install("isogeo2office", localedir="i18n")
-            pass
         logger.info(u"Language applied: {}".format(_(u"English")))
 
         # ------------ UI or not to UI ---------------------------------------
@@ -150,6 +149,10 @@ class Isogeo2office(Tk):
                                  lang=self.client_lang)
             self.token = self.isogeo.connect()
 
+        # debug logs
+        logger.debug("API: " + self.isogeo.get_isogeo_version(component="api"))
+        logger.debug("APP: " + self.isogeo.get_isogeo_version(component="app"))
+        logger.debug("DB: " + self.isogeo.get_isogeo_version(component="db"))
         # ------------ Isogeo search & shares --------------------------------
         self.search_results = self.isogeo.search(self.token,
                                                  page_size=0,
@@ -177,14 +180,24 @@ class Isogeo2office(Tk):
         # cbb_style_err = Style(self)
         # cbb_style_err.configure('TCombobox', foreground='Red')
 
+        # fields validation
+        fields_validators = {
+            "val_uid": (self.register(self.utils.entry_validate_uid),
+                        '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W'),
+            "val_date": (self.register(self.utils.entry_validate_date),
+                         '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
+        }
+
         # Frames and main widgets
         fr_isogeo = Labelframe(self, name="isogeo", text="Isogeo")
         self.fr_excel = FrameExcel(self, main_path="",
                                    lang=lang)
         self.fr_word = FrameWord(self, main_path="",
                                  lang=lang,
-                                 i2o_utils=self.utils)
-        fr_xml = Labelframe(self, name="xml", text="XML")
+                                 validators=fields_validators)
+        self.fr_xml = FrameXml(self, main_path="",
+                               lang=lang,
+                               validators=fields_validators)
         fr_process = Labelframe(self, name="process", text="Launch")
         self.status_bar = Label(self, textvariable=self.msg_bar, anchor='w',
                                 foreground='DodgerBlue')
@@ -194,16 +207,10 @@ class Isogeo2office(Tk):
         fr_isogeo.grid(row=1, column=1, padx=2, pady=4, sticky="WE")
         self.fr_excel.grid(row=2, column=1, padx=2, pady=4, sticky="WE")
         self.fr_word.grid(row=3, column=1, padx=2, pady=4, sticky="WE")
-        fr_xml.grid(row=4, column=1, padx=2, pady=4, sticky="WE")
+        self.fr_xml.grid(row=4, column=1, padx=2, pady=4, sticky="WE")
         fr_process.grid(row=5, column=1, padx=2, pady=4, sticky="WE")
         self.status_bar.grid(row=6, column=1, padx=2, pady=2, sticky="WE")
         self.progbar.grid(row=7, column=1, sticky="WE")
-
-        # fields validation
-        val_uid = (self.register(self.utils.entry_validate_uid),
-                   '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
-        val_date = (self.register(self.utils.entry_validate_date),
-                    '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
 
         # --------------------------------------------------------------------
 
@@ -270,7 +277,7 @@ class Isogeo2office(Tk):
         # for unicode symbols: https://www.w3schools.com/charsets/ref_utf_symbols.asp
         btn_settings = Button(fr_isogeo,
                               text="\U000026BF {}".format(_("Settings")),
-                              command=lambda: self.ui_settings_prompt())
+                              command=lambda: self.ui_settings_prompt(lang))
 
         # contact
         mailto = _("mailto:Isogeo%20Projects%20"
@@ -281,7 +288,7 @@ class Isogeo2office(Tk):
                              command=lambda: open_new_tab(mailto))
 
         # source
-        url_src = "https://bitbucket.org/isogeo/isogeo-2-office"
+        url_src = "https://bitbucket.org/isogeo/isogeo-2-office/issues"
         btn_src = Button(fr_isogeo,
                          text="\U000026A0 {}".format(_("Report")),
                          command=lambda: open_new_tab(url_src))
@@ -313,75 +320,41 @@ class Isogeo2office(Tk):
         # ## EXCEL ##
         # variables
         self.fr_excel.output_name.set(self.settings.get("excel")
-                                                   .get("excel_out",
+                                                   .get("output_name",
                                                         "isogeo2xlsx"))
+        self.fr_excel.opt_attributes.set(self.settings.get("excel")
+                                                      .get("opt_attributes", 0))
+        self.fr_excel.opt_fillfull.set(self.settings.get("excel")
+                                                    .get("opt_fillfull", 0))
+        self.fr_excel.opt_inspire.set(self.settings.get("excel")
+                                                   .get("opt_inspire", 0))
 
         # --------------------------------------------------------------------
 
         # ## WORD ##
         # variables
-        self.fr_word.out_word_prefix.set(self.settings.get("word")
-                                                      .get("word_out_prefix",
-                                                           "isogeo2docx"))
-        self.fr_word.word_opt_id.set(self.settings.get("word")
-                                                  .get("word_opt_id", 5))
-        self.fr_word.word_opt_date.set(self.settings.get("word")
-                                                    .get("word_opt_date", 1))
+        self.fr_word.out_prefix.set(self.settings.get("word")
+                                                 .get("out_prefix",
+                                                      "isogeo2docx"))
+        self.fr_word.opt_id.set(self.settings.get("word")
+                                             .get("opt_id", 5))
+        self.fr_word.opt_date.set(self.settings.get("word")
+                                               .get("opt_date", 1))
 
-    # --------------------------------------------------------------------
+        # --------------------------------------------------------------------
 
         # ## XML ##
         # variables
-        self.out_xml_prefix = StringVar(fr_xml, self.settings.get("xml")
-                                                    .get("xml_out_prefix",
-                                                         "isogeo2xml"))
-        self.xml_opt_id = IntVar(fr_xml, self.settings.get("xml")
-                                             .get("xml_opt_id", 5))
-        self.xml_opt_date = IntVar(fr_xml, self.settings.get("xml")
-                                               .get("xml_opt_date", 1))
+        self.fr_xml.out_prefix.set(self.settings.get("xml")
+                                                .get("out_prefix",
+                                                     "isogeo2xml"))
+        self.fr_xml.opt_id.set(self.settings.get("xml")
+                                            .get("opt_id", 5))
+        self.fr_xml.opt_date.set(self.settings.get("xml")
+                                              .get("opt_date", 1))
 
-        self.xml_opt_zip = IntVar(fr_xml, self.settings.get("xml")
-                                              .get("xml_opt_zip", 1))
-
-        # logo
-        self.logo_xml = PhotoImage(master=fr_xml,
-                                   file=r'img/logo_inspireFun.gif')
-        logo_xml = Label(fr_xml, borderwidth=2, image=self.logo_xml)
-
-        # specific options
-        caz_zip_xml = Checkbutton(fr_xml,
-                                  text=_(u'Pack all XML into one ZIP'),
-                                  variable=self.xml_opt_zip)
-        lb_out_xml_prefix = Label(fr_xml, text=_("File prefix: "))
-        lb_out_xml_uid = Label(fr_xml, text=_("UID chars:\n"
-                                              "(0 - 8)"))
-        lb_out_xml_date = Label(fr_xml, text=_("Timestamp:\n"
-                                               "(0=no, 1=date, 2=datetime)"))
-
-        ent_out_xml_prefix = Entry(fr_xml, textvariable=self.out_xml_prefix)
-        ent_out_xml_uid = Entry(fr_xml, textvariable=self.xml_opt_id,
-                                width=2, validate="key",
-                                validatecommand=val_uid)
-        ent_out_xml_date = Entry(fr_xml, textvariable=self.xml_opt_date,
-                                 width=2, validate="key",
-                                 validatecommand=val_date)
-
-        # griding widgets
-        logo_xml.grid(row=1, rowspan=3,
-                      column=0, padx=2,
-                      pady=2, sticky="W")
-        Separator(fr_xml, orient=VERTICAL).grid(row=1, rowspan=3,
-                                                column=1, padx=2,
-                                                pady=2, sticky="NSE")
-        lb_out_xml_prefix.grid(row=1, column=2, padx=2, pady=2, sticky="W")
-        ent_out_xml_prefix.grid(row=1, column=3, columnspan=2,
-                                padx=2, pady=2, sticky="WE")
-
-        lb_out_xml_uid.grid(row=2, column=2, padx=2, pady=2, sticky="W")
-        ent_out_xml_uid.grid(row=2, column=3, padx=0, pady=2, sticky="E")
-        lb_out_xml_date.grid(row=2, column=4, padx=3, pady=2, sticky="W")
-        ent_out_xml_date.grid(row=2, column=5, padx=2, pady=2, sticky="E")
-        caz_zip_xml.grid(row=3, column=2, columnspan=3, padx=2, pady=2, sticky="WE")
+        self.fr_xml.opt_zip.set(self.settings.get("xml")
+                                             .get("opt_zip", 1))
 
         # --------------------------------------------------------------------
 
@@ -523,20 +496,26 @@ class Isogeo2office(Tk):
 
 # ----------------------------------------------------------------------------
 
-    def ui_settings_prompt(self):
+    def ui_settings_prompt(self, lang):
         """Get Isogeo settings from another form."""
         prompter = IsogeoAppAuth(prev_id=self.app_id,
                                  prev_secret=self.app_secret,
-                                 lang=self.client_lang)
+                                 lang=lang)
         prompter.mainloop()
         # check response
         if len(prompter.li_dest) < 2:
             logger.error(u"API authentication form returned nothing.")
             exit()
             return 0
+        elif len(prompter.li_dest) == 2 \
+             and self.app_id == prompter.li_dest[0]\
+             and self.app_secret == prompter.li_dest[1]:
+             logger.info(u"Auth Id and Secret have not changed.")
+             return 0
         else:
             pass
 
+        # set new auth settings
         self.app_id = prompter.li_dest[0]
         self.app_secret = prompter.li_dest[1]
 
@@ -643,7 +622,7 @@ class Isogeo2office(Tk):
         if self.opt_excel.get():
             logger.info("Excel - START")
             out_xlsx_path = path.realpath(path.join(self.out_fold_path.get(),
-                                                    self.fr_excel.output_xl.get() + ".xlsx"))
+                                                    self.fr_excel.output_name.get() + ".xlsx"))
             self.progbar["value"] = 0
             self.process_excelization(output_filepath=out_xlsx_path)
         else:
@@ -756,18 +735,18 @@ class Isogeo2office(Tk):
             md_name = "_{}".format(md_name)
 
             # uid
-            if self.fr_word.word_opt_id.get():
-                uid = "_{}".format(md.get("_id")[:self.fr_word.word_opt_id.get()])
+            if self.fr_word.opt_id.get():
+                uid = "_{}".format(md.get("_id")[:self.fr_word.opt_id.get()])
             else:
                 uid = ""
 
             # date
             dstamp = datetime.now()
-            if self.fr_word.word_opt_date.get() == 1:
+            if self.fr_word.opt_date.get() == 1:
                 dstamp = "_{}-{}-{}".format(dstamp.year,
                                             dstamp.month,
                                             dstamp.day)
-            elif self.fr_word.word_opt_date.get() == 2:
+            elif self.fr_word.opt_date.get() == 2:
                 dstamp = "_{}-{}-{}-{}{}{}".format(dstamp.year,
                                                    dstamp.month,
                                                    dstamp.day,
@@ -780,7 +759,7 @@ class Isogeo2office(Tk):
             # final output name
             out_docx_path = path.join(path.realpath(self.out_fold_path.get()),
                                       "{}{}{}{}.docx"
-                                      .format(self.fr_word.out_word_prefix.get(),
+                                      .format(self.fr_word.out_prefix.get(),
                                               uid,
                                               md_name,
                                               dstamp))
@@ -789,8 +768,8 @@ class Isogeo2office(Tk):
 
             # progression bar
             # self.msg_bar.set(_("Processing Word: {}").format(md_name[1:]))
-            self.msg_bar.set(_("Processing Word: {}")\
-                               .format(md_name[1:].split(" -")[0]))
+            self.msg_bar.set(_("Processing Word: {}")
+                             .format(md_name[1:].split(" -")[0]))
             self.progbar["value"] = self.progbar["value"] + 1
             self.update()
 
@@ -802,7 +781,7 @@ class Isogeo2office(Tk):
     def process_xmlisation(self):
         """Exports each metadata into XML ISO 19139"""
         # ZIP or not ZIP
-        if not self.xml_opt_zip.get():
+        if not self.fr_xml.opt_zip.get():
             # directly into the output directory
             out_dir = path.realpath(self.out_fold_path.get())
         else:
@@ -821,18 +800,18 @@ class Isogeo2office(Tk):
             md_title = "_{}".format(md_title)
 
             # uid
-            if self.xml_opt_id.get():
-                uid = "_{}".format(md.get("_id")[:self.xml_opt_id.get()])
+            if self.fr_xml.opt_id.get():
+                uid = "_{}".format(md.get("_id")[:self.fr_xml.opt_id.get()])
             else:
                 uid = ""
 
             # date
             dstamp = datetime.now()
-            if self.xml_opt_date.get() == 1:
+            if self.fr_xml.opt_date.get() == 1:
                 dstamp = "_{}-{}-{}".format(dstamp.year,
                                             dstamp.month,
                                             dstamp.day)
-            elif self.xml_opt_date.get() == 2:
+            elif self.fr_xml.opt_date.get() == 2:
                 dstamp = "_{}-{}-{}-{}{}{}".format(dstamp.year,
                                                    dstamp.month,
                                                    dstamp.day,
@@ -846,7 +825,7 @@ class Isogeo2office(Tk):
             clean_title = self.utils.clean_filename(md_title.split(" -")[0])
             out_xml_path = path.join(out_dir,
                                      "{}{}{}{}.xml"
-                                     .format(self.out_xml_prefix.get(),
+                                     .format(self.fr_xml.out_prefix.get(),
                                              uid,
                                              clean_title,
                                              dstamp))
@@ -861,18 +840,18 @@ class Isogeo2office(Tk):
                                                          md.get("_id")))
 
             # progression bar
-            self.msg_bar.set(_("Processing XML: {}")\
-                               .format(md_title[1:].split(" -")[0]))
+            self.msg_bar.set(_("Processing XML: {}")
+                             .format(md_title[1:].split(" -")[0]))
             self.progbar["value"] = self.progbar["value"] + 1
             self.update()
 
         # ZIP or not ZIP
-        if not self.xml_opt_zip.get():
+        if not self.fr_xml.opt_zip.get():
             pass
         else:
             out_zip_path = path.join(self.out_fold_path.get(),
                                      "{}{}.zip"
-                                     .format(self.out_xml_prefix.get(),
+                                     .format(self.fr_xml.out_prefix.get(),
                                              dstamp))
             final_zip = ZipFile(out_zip_path, "w")
             for root, dirs, files in walk(out_dir):
