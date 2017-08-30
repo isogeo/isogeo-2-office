@@ -223,6 +223,7 @@ class Isogeo2office(Tk):
         self.logo_isogeo = PhotoImage(master=fr_isogeo,
                                       file=r'img/logo_isogeo.gif')
         logo_isogeo = Label(fr_isogeo, borderwidth=2, image=self.logo_isogeo)
+        ToolTip(logo_isogeo, message="Logo Isogeo")
 
         # metrics
         self.app_metrics.set(_("{} metadata in\n"
