@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: isogeo2office\n"
-"POT-Creation-Date: 2016-12-16 19:50+0100\n"
-"PO-Revision-Date: 2016-12-16 19:51+0100\n"
+"POT-Creation-Date: 2017-08-30 11:20+0200\n"
+"PO-Revision-Date: 2017-08-30 11:23+0200\n"
 "Last-Translator: Isogeo <projets@isogeo.fr>\n"
 "Language-Team: projets+isogeo2office@isogeo.fr <projets+isogeo2office@isogeo."
 "fr>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.0.3\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -20,31 +20,113 @@ msgstr ""
 "X-Poedit-SearchPath-3: modules/isogeo2xlsx.py\n"
 "X-Poedit-SearchPath-4: modules/ui_app_settings.py\n"
 
-#: .\modules\ui_app_settings.py:54 isogeo2office.py:107
+#: .\modules\export\isogeo_stats.py:56 .\modules\ui\frame_excel.py:52
+#: .\modules\ui\frame_word.py:52 .\modules\ui\frame_xml.py:52
+#: .\modules\ui\ui_app_settings.py:62 isogeo2office.py:110
 msgid "English"
 msgstr "Français"
 
-#: .\modules\ui_app_settings.py:61
+#: .\modules\export\isogeo_stats.py:78
+msgid "Count"
+msgstr "Nombre"
+
+#: .\modules\export\isogeo_stats.py:78
+msgid "Type"
+msgstr "Type"
+
+#: .\modules\export\isogeo_stats.py:79
+msgid "Vector"
+msgstr "Vecteur"
+
+#: .\modules\export\isogeo_stats.py:80
+msgid "Raster"
+msgstr "Raster"
+
+#: .\modules\export\isogeo_stats.py:81
+msgid "Service"
+msgstr "Service"
+
+#: .\modules\export\isogeo_stats.py:82
+msgid "Resource"
+msgstr "Ressource"
+
+#: .\modules\export\isogeo_stats.py:95
+msgid "Metadata by types"
+msgstr "Métadonnées par types"
+
+#: .\modules\ui\frame_excel.py:77
+msgid "Output filename: "
+msgstr "Nom du fichier de sortie :"
+
+#: .\modules\ui\frame_excel.py:83
+msgid "Goals tabs"
+msgstr "Objectifs"
+
+#: .\modules\ui\frame_excel.py:86
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#: .\modules\ui\frame_excel.py:89
+msgid "Feature attributes"
+msgstr "Analyse des attributs"
+
+#: .\modules\ui\frame_excel.py:92
+msgid "Cataloging"
+msgstr "Catalogage"
+
+#: .\modules\ui\frame_excel.py:95
+msgid "INSPIRE"
+msgstr "INSPIRE"
+
+#: .\modules\ui\frame_word.py:82
+msgid "Pick a template: "
+msgstr "Choisir un modèle :"
+
+#: .\modules\ui\frame_word.py:92 .\modules\ui\frame_xml.py:82
+msgid "File prefix: "
+msgstr "Préfixe : "
+
+#: .\modules\ui\frame_word.py:93 .\modules\ui\frame_xml.py:83
+msgid ""
+"UID chars:\n"
+"(0 - 8)"
+msgstr ""
+"Longueur UID:\n"
+"(0 - 8)"
+
+#: .\modules\ui\frame_word.py:95 .\modules\ui\frame_xml.py:85
+msgid ""
+"Timestamp:\n"
+"(0=no, 1=date, 2=datetime)"
+msgstr ""
+"Date et heure :\n"
+"(0=non, 1=date, 2=datetime)"
+
+#: .\modules\ui\frame_xml.py:80
+msgid "Pack all XML into one ZIP"
+msgstr "Compresser dans un seul fichier ZIP"
+
+#: .\modules\ui\ui_app_settings.py:69
 msgid "{} - API authentication settings"
 msgstr "{} - Paramètres de connexion à l'API"
 
-#: .\modules\ui_app_settings.py:77
+#: .\modules\ui\ui_app_settings.py:84
 msgid "Insert access transmitted by Isogeo."
 msgstr "Insérer les accès transmis par Isogeo."
 
-#: .\modules\ui_app_settings.py:82
+#: .\modules\ui\ui_app_settings.py:89
 msgid "Client id:"
 msgstr "ID client : "
 
-#: .\modules\ui_app_settings.py:88
+#: .\modules\ui\ui_app_settings.py:95
 msgid "Client secret:"
 msgstr "Secret client :"
 
-#: .\modules\ui_app_settings.py:95
+#: .\modules\ui\ui_app_settings.py:102
 msgid "Check"
 msgstr "Vérifier"
 
-#: .\modules\ui_app_settings.py:97
+#: .\modules\ui\ui_app_settings.py:104
 msgid ""
 "mailto:Isogeo%20Projects%20<projects+isogeo2office@isogeo.com>?"
 "subject=[Isogeo2office]%20Access request"
@@ -52,19 +134,19 @@ msgstr ""
 "mailto:Isogeo%20<projets+isogeo2office@isogeo.fr>?"
 "subject=[Isogeo2office]%20Demande%20d'accès"
 
-#: .\modules\ui_app_settings.py:101
+#: .\modules\ui\ui_app_settings.py:108
 msgid "Request access"
 msgstr "Demande d'accès"
 
-#: .\modules\ui_app_settings.py:130
+#: .\modules\ui\ui_app_settings.py:137
 msgid "Everything is fine."
 msgstr "Tout est OK."
 
-#: isogeo2office.py:118
+#: isogeo2office.py:121
 msgid "Internet connection failed"
 msgstr "La connexion Internet a échoué"
 
-#: isogeo2office.py:119
+#: isogeo2office.py:122
 msgid ""
 "An Internet connection is required to use Isogeo API\n"
 "(https://v1.api.isogeo.com:443)."
@@ -72,11 +154,11 @@ msgstr ""
 "Une connexion Internet est requise pour utiliser l'API Isogeo\n"
 "(https://v1.api.isogeo.com:443)."
 
-#: isogeo2office.py:171
+#: isogeo2office.py:176
 msgid "Pick your options and push the launch button"
 msgstr "Choisir vos options et cliquer sur Lancer"
 
-#: isogeo2office.py:218
+#: isogeo2office.py:231
 msgid ""
 "{} metadata in\n"
 "{} shares owned by\n"
@@ -86,7 +168,7 @@ msgstr ""
 "{} partages de\n"
 "{} groupes de travail."
 
-#: isogeo2office.py:233
+#: isogeo2office.py:246
 msgid ""
 "{} shares don't have any OpenCatalog.\n"
 "Add OpenCatalog to every share,\n"
@@ -96,17 +178,17 @@ msgstr ""
 "Ajouter OpenCatalog à chaque partage,\n"
 "puis relancer isogeo2office."
 
-#: isogeo2office.py:236
+#: isogeo2office.py:249
 msgid "Error: some shares don't have OpenCatalogactivated. Fix it first."
 msgstr ""
 "Erreur : certains partages n'ont pas OpenCatalog activé. Corriger puis "
 "relancer"
 
-#: isogeo2office.py:240 isogeo2office.py:253
+#: isogeo2office.py:253 isogeo2office.py:266
 msgid "Fix the shares"
 msgstr "Corriger les partages"
 
-#: isogeo2office.py:245
+#: isogeo2office.py:258
 msgid ""
 "Too much shares by workgroup.\n"
 "Please red button to fix it\n"
@@ -116,26 +198,26 @@ msgstr ""
 "Corriger puis\n"
 "redémarrer isogeo2office."
 
-#: isogeo2office.py:249
+#: isogeo2office.py:262
 msgid ""
 "Error: more than one share by worgroup. Click on Admin button to fix it."
 msgstr ""
 "Erreur : plus d'un partage par groupe de travail. Ouvrir APP via le bouton "
 "rouge pour corriger."
 
-#: isogeo2office.py:259
+#: isogeo2office.py:272
 msgid "Configuration OK."
 msgstr "Configuration correcte."
 
-#: isogeo2office.py:262
+#: isogeo2office.py:275
 msgid "Admin shares"
 msgstr "Administrer"
 
-#: isogeo2office.py:268
+#: isogeo2office.py:282
 msgid "Settings"
 msgstr "Accès"
 
-#: isogeo2office.py:272
+#: isogeo2office.py:286
 msgid ""
 "mailto:Isogeo%20Projects%20<projects+isogeo2office@isogeo.com>?"
 "subject=[Isogeo2office]%20Question"
@@ -143,119 +225,87 @@ msgstr ""
 "mailto:Isogeo%20<projets+isogeo2office@isogeo.fr>?"
 "subject=[Isogeo2office]%20Question"
 
-#: isogeo2office.py:276
+#: isogeo2office.py:290
 msgid "Contact"
 msgstr "Contacter"
 
-#: isogeo2office.py:282
+#: isogeo2office.py:296
 msgid "Report"
 msgstr "Signaler"
 
-#: isogeo2office.py:326
-msgid "Output filename: "
-msgstr "Nom du fichier de sortie :"
-
-#: isogeo2office.py:385
-msgid "Pick a template: "
-msgstr "Choisir un modèle :"
-
-#: isogeo2office.py:394 isogeo2office.py:451
-msgid "File prefix: "
-msgstr "Préfixe : "
-
-#: isogeo2office.py:395 isogeo2office.py:452
-msgid ""
-"UID chars:\n"
-"(0 - 8)"
-msgstr ""
-"Longueur UID:\n"
-"(0 - 8)"
-
-#: isogeo2office.py:397 isogeo2office.py:454
-msgid ""
-"Timestamp:\n"
-"(0=no, 1=date, 2=datetime)"
-msgstr ""
-"Date et heure :\n"
-"(0=non, 1=date, 2=datetime)"
-
-#: isogeo2office.py:449
-msgid "Pack all XML into one ZIP"
-msgstr "Compresser dans un seul fichier ZIP"
-
-#: isogeo2office.py:511
+#: isogeo2office.py:393
 msgid "Export the whole shares into an Excel worksheet"
 msgstr "Exporter l'ensemble des partages dans un Excel"
 
-#: isogeo2office.py:515
+#: isogeo2office.py:397
 msgid "Export each metadata into a Word file"
 msgstr "Exporter chaque métadonnée dans un fichier Word"
 
-#: isogeo2office.py:519
+#: isogeo2office.py:401
 msgid "Export each metadata into a XML ISO-19139"
 msgstr "Exporter chaque métadonnée au format XML 19139"
 
-#: isogeo2office.py:523
+#: isogeo2office.py:405
 msgid "Output folder: "
 msgstr "Destination : "
 
-#: isogeo2office.py:529
+#: isogeo2office.py:409
 msgid "Browse"
 msgstr "Parcourir"
 
-#: isogeo2office.py:533
+#: isogeo2office.py:413
 msgid "Open"
 msgstr "Ouvrir"
 
-#: isogeo2office.py:538
+#: isogeo2office.py:418
 msgid "Launch"
 msgstr "Lancer l'export"
 
-#: isogeo2office.py:573
+#: isogeo2office.py:453
 msgid "Select output folder"
 msgstr "Sélectionner le dossier de destination des exports"
 
-#: isogeo2office.py:578
+#: isogeo2office.py:458
 msgid "No folder selected"
 msgstr "Aucun dossier sélectionné."
 
-#: isogeo2office.py:579
+#: isogeo2office.py:459
 msgid "You must select an output folder."
 msgstr "Vous devez sélectionner un dossier de destination."
 
-#: isogeo2office.py:589
+#: isogeo2office.py:469
 msgid "Pick the Excel to merge"
 msgstr "Choisir le fichier Excel à fusionner"
 
-#: isogeo2office.py:598
+#: isogeo2office.py:478
 msgid "Any file selected"
 msgstr "Aucun fichier sélectionné"
 
-#: isogeo2office.py:748
+#: isogeo2office.py:583
 msgid "Error: at least one export option required"
 msgstr "Erreur : aucune option d'export sélectionnée"
 
-#: isogeo2office.py:758
+#: isogeo2office.py:594
 msgid "Fetching Isogeo data..."
 msgstr "Récupération depuis Isogeo..."
 
-#: isogeo2office.py:798
+#: isogeo2office.py:632
 msgid "Error: Word template not selected"
 msgstr "Erreur: aucun modèle Word sélectionné"
 
-#: isogeo2office.py:813
+#: isogeo2office.py:647
 msgid "All tasks are done."
 msgstr "Tous les exports sont achevés."
 
-#: isogeo2office.py:829
+#: isogeo2office.py:668
 msgid "Processing Excel: {}"
 msgstr "Export en Excel en cours : {}"
 
-#: isogeo2office.py:844
+#: isogeo2office.py:697
 msgid "Export Excel done."
 msgstr "Export du classeur Excel terminé."
 
-#: isogeo2office.py:872
+#: isogeo2office.py:725
 msgid ""
 "Error: more than one share by worgroup. Open APP or push the button to fix "
 "it."
@@ -263,19 +313,19 @@ msgstr ""
 "Erreur: plus d'un partage par groupe de travail. Ouvrez APP via le bouton "
 "rouge pour corriger."
 
-#: isogeo2office.py:926
+#: isogeo2office.py:780
 msgid "Processing Word: {}"
 msgstr "Export en Word en cours : {}"
 
-#: isogeo2office.py:930
+#: isogeo2office.py:785
 msgid "Export Word done."
 msgstr "Export des fiches en Word terminé."
 
-#: isogeo2office.py:996
+#: isogeo2office.py:852
 msgid "Processing XML: {}"
 msgstr "Export XML en cours : {}"
 
-#: isogeo2office.py:1016
+#: isogeo2office.py:872
 msgid "Export XML done."
 msgstr "Export XML terminé."
 
