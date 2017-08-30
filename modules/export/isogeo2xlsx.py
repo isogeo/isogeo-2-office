@@ -39,12 +39,11 @@ from openpyxl.utils import get_column_letter
 from openpyxl.styles import NamedStyle, Font, Alignment
 from openpyxl.worksheet.properties import WorksheetProperties
 
-# # custom
-# try:
-#     from .isogeo_api_strings import IsogeoTranslator
-# except:
-#     from isogeo_api_strings import IsogeoTranslator
-
+# custom submodules
+try:
+    from . import isogeo_stats
+except (ValueError, SystemError):
+    import isogeo_stats
 
 # ##############################################################################
 # ############ Globals ############
@@ -209,6 +208,7 @@ class Isogeo2xlsx(Workbook):
         super(Isogeo2xlsx, self).__init__()
         # super(Isogeo2xlsx, self).__init__(write_only=True)
 
+        self.stats = isogeo_stats.IsogeoStats()
         # OpenCatalog url
         self.url_base = url_base
 
@@ -238,7 +238,8 @@ class Isogeo2xlsx(Workbook):
     # ------------ Setting workbook ---------------------
 
     def set_worksheets(self, auto=None, vector=1,
-                       raster=1, service=1, resource=1):
+                       raster=1, service=1, resource=1,
+                       dashboard=0, attributes=0, fillfull=0, inspire=0):
         """Adds new sheets depending on present metadata types.
 
         auto: typically auto=search_results.get('tags').keys()
@@ -268,6 +269,48 @@ class Isogeo2xlsx(Workbook):
             pass
 
         # SHEETS & HEADERS
+        if dashboard:
+            self.ws_d = self.create_sheet(title=_("Dashboard"))
+            # headers
+            # self.ws_f.append([i for i in self.cols_v])
+            # styling
+            # for i in self.cols_v:
+            #     self.ws_v.cell(row=1,
+            #                    column=self.cols_v.index(i) + 1).style = "Headline 2"
+            # initialize line counter
+            self.idx_d = 1
+            # log
+            logger.info("Dashboard sheet added")
+        else:
+            pass
+        if fillfull:
+            self.ws_f = self.create_sheet(title="Progression catalogage")
+            # headers
+            # self.ws_f.append([i for i in self.cols_v])
+            # styling
+            # for i in self.cols_v:
+            #     self.ws_v.cell(row=1,
+            #                    column=self.cols_v.index(i) + 1).style = "Headline 2"
+            # initialize line counter
+            self.idx_f = 1
+            # log
+            logger.info("Fillfull sheet added")
+        else:
+            pass
+        if inspire:
+            self.ws_i = self.create_sheet(title="Directive INSPIRE")
+            # headers
+            # self.ws_f.append([i for i in self.cols_v])
+            # styling
+            # for i in self.cols_v:
+            #     self.ws_v.cell(row=1,
+            #                    column=self.cols_v.index(i) + 1).style = "Headline 2"
+            # initialize line counter
+            self.idx_i = 1
+            # log
+            logger.info("INSPIRE sheet added")
+        else:
+            pass
         if vector:
             self.ws_v = self.create_sheet(title="Vecteurs")
             # headers
@@ -276,10 +319,17 @@ class Isogeo2xlsx(Workbook):
             for i in self.cols_v:
                 self.ws_v.cell(row=1,
                                column=self.cols_v.index(i) + 1).style = "Headline 2"
-            # initialize line counter
+            # initialize line counte
             self.idx_v = 1
             # log
             logger.info("Vectors sheet added")
+            # feature attributes analisis
+            if attributes:
+                self.ws_fa = self.create_sheet(title="Attributs")
+                self.idx_fa = 1
+                logger.info("Festure attributes sheet added")
+            else:
+                pass
         else:
             pass
 
@@ -338,18 +388,22 @@ class Isogeo2xlsx(Workbook):
         """
         if metadata.get("type") == "vectorDataset":
             self.idx_v += 1
+            self.stats.md_types_repartition["vector"] += 1
             self.store_md_vector(metadata, self.ws_v, self.idx_v)
             return
         elif metadata.get("type") == "rasterDataset":
             self.idx_r += 1
+            self.stats.md_types_repartition["raster"] += 1
             self.store_md_raster(metadata, self.ws_r, self.idx_r)
             return
         elif metadata.get("type") == "service":
             self.idx_s += 1
+            self.stats.md_types_repartition["service"] += 1
             self.store_md_service(metadata, self.ws_s, self.idx_s)
             return
         elif metadata.get("type") == "resource":
             self.idx_rz += 1
+            self.stats.md_types_repartition["resource"] += 1
             self.store_md_resource(metadata, self.ws_rz, self.idx_rz)
             return
         else:
@@ -400,6 +454,7 @@ class Isogeo2xlsx(Workbook):
             ws["F{}".format(idx)] = " ;\n".join(sorted(keywords))
             ws["G{}".format(idx)] = " ;\n".join(sorted(inspire))
         else:
+            self.stats.md_empty_fields[md.get("_id")].append("keywords")
             logger.info("Vector dataset without any keyword or INSPIRE theme")
 
         # conformity
@@ -597,6 +652,7 @@ class Isogeo2xlsx(Workbook):
             ws["AH{}".format(idx)] = " ;\n".join(contacts_other_cct)
         else:
             ws["AF{}".format(idx)] = 0
+            self.stats.md_empty_fields[md.get("_id")].append("contact")
             logger.info("Vector dataset without any contact")
 
         # ACTIONS
@@ -701,6 +757,7 @@ class Isogeo2xlsx(Workbook):
             ws["F{}".format(idx)] = " ;\n".join(sorted(keywords))
             ws["G{}".format(idx)] = " ;\n".join(sorted(inspire))
         else:
+            self.stats.md_empty_fields[md.get("_id")].append("keyword")
             logger.info("Vector dataset without any keyword or INSPIRE theme")
 
         # conformity
@@ -879,6 +936,7 @@ class Isogeo2xlsx(Workbook):
             ws["AD{}".format(idx)] = " ;\n".join(contacts_other_cct)
         else:
             ws["AB{}".format(idx)] = 0
+            self.stats.md_empty_fields[md.get("_id")].append("contact")
             logger.info("Vector dataset without any contact")
 
         # ACTIONS
@@ -970,6 +1028,7 @@ class Isogeo2xlsx(Workbook):
                        if k.get("_tag").startswith("keyword:is")]
             ws["F{}".format(idx)] = " ;\n".join(sorted(keywords))
         else:
+            self.stats.md_empty_fields[md.get("_id")].append("keyword")
             logger.info("Service without any keyword")
 
         # conformity
@@ -1114,6 +1173,7 @@ class Isogeo2xlsx(Workbook):
             ws["S{}".format(idx)] = " ;\n".join(contacts_other_cct)
         else:
             ws["Q{}".format(idx)] = 0
+            self.stats.md_empty_fields[md.get("_id")].append("contact")
             logger.info("Service without any contact")
 
         # ACTIONS
@@ -1188,6 +1248,7 @@ class Isogeo2xlsx(Workbook):
                         if k.get("_tag").startswith("keyword:is")]
             ws["E{}".format(idx)] = " ;\n".join(sorted(keywords))
         else:
+            self.stats.md_empty_fields[md.get("_id")].append("keyword")
             logger.info("Service without any keyword")
 
         # EVENTS
@@ -1288,6 +1349,7 @@ class Isogeo2xlsx(Workbook):
             ws["O{}".format(idx)] = " ;\n".join(contacts_other_cct)
         else:
             ws["M{}".format(idx)] = 0
+            self.stats.md_empty_fields[md.get("_id")].append("contact")
             logger.info("Service without any contact")
 
         # ACTIONS

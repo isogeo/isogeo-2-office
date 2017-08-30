@@ -42,7 +42,7 @@ logger = logging.getLogger("isogeo2office")  # LOG
 class FrameExcel(Labelframe):
     """Construct Excel UI."""
 
-    def __init__(self, parent, txt=dict(), main_path="../../", lang=None):
+    def __init__(self, parent, main_path="../../", lang=None):
         """Instanciating the output workbook."""
         # localization
         try:
@@ -61,6 +61,7 @@ class FrameExcel(Labelframe):
         # variables
         self.output_name = StringVar(self)
         self.opt_attributes = IntVar(self)
+        self.opt_dashboard = IntVar(self)
         self.opt_fillfull = IntVar(self)
         self.opt_inspire = IntVar(self)
 
@@ -81,6 +82,9 @@ class FrameExcel(Labelframe):
         lb_special_tabs = Label(self,
                                 text=_("Goals tabs"),
                                 font="Helvetica 9 bold")
+        caz_dashboard = Checkbutton(self,
+                                    text=_(u'Dashboard'),
+                                    variable=self.opt_dashboard)
         caz_attributes = Checkbutton(self,
                                      text=_(u'Feature attributes'),
                                      variable=self.opt_attributes)
@@ -104,10 +108,12 @@ class FrameExcel(Labelframe):
                                                 padx=2, sticky="WE")
         lb_special_tabs.grid(row=3, column=3, columnspan=1)
         Separator(self, orient=HORIZONTAL).grid(row=3, column=4,
-                                                padx=2, sticky="WE")
-        caz_attributes.grid(row=4, column=2, padx=2, pady=1, sticky="W")
-        caz_fillfull.grid(row=4, column=3, padx=2, pady=2)
-        caz_inspire.grid(row=4, column=4, padx=2, pady=2, sticky="E")
+                                                padx=2, sticky="WE",
+                                                columnspan=2)
+        caz_dashboard.grid(row=4, column=2, padx=2, pady=1, sticky="W")
+        caz_attributes.grid(row=4, column=3, padx=2, pady=1, sticky="E")
+        caz_fillfull.grid(row=4, column=4, padx=2, pady=2)
+        caz_inspire.grid(row=4, column=5, padx=2, pady=2, sticky="E")
 
 # #############################################################################
 # ##### Stand alone program ########

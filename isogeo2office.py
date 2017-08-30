@@ -43,6 +43,7 @@ import requests
 from modules import Isogeo2xlsx
 from modules import Isogeo2docx
 from modules import IsogeoAppAuth
+from modules import IsogeoStats
 from modules import CheckNorris
 from modules import isogeo2office_utils
 
@@ -62,7 +63,7 @@ _version = "1.5.7"
 # LOG FILE ##
 logger = logging.getLogger("isogeo2office")
 logging.captureWarnings(True)
-logger.setLevel(logging.DEBUG)  # all errors will be get
+logger.setLevel(logging.DEBUG)
 log_form = logging.Formatter("%(asctime)s || %(levelname)s "
                              "|| %(module)s || %(lineno)s || %(message)s")
 logfile = RotatingFileHandler("LOG_isogeo2office.log", "a", 5000000, 1)
@@ -90,6 +91,7 @@ class Isogeo2office(Tk):
         # Invoke Check Norris & utils
         checker = CheckNorris()
         self.utils = isogeo2office_utils()
+        self.stats = IsogeoStats()
 
         # ------------ Settings ----------------------------------------------
         self.settings = self.utils.settings_load()
@@ -323,6 +325,8 @@ class Isogeo2office(Tk):
         self.fr_excel.output_name.set(self.settings.get("excel")
                                                    .get("output_name",
                                                         "isogeo2xlsx"))
+        self.fr_excel.opt_dashboard.set(self.settings.get("excel")
+                                                      .get("opt_dashboard", 1))
         self.fr_excel.opt_attributes.set(self.settings.get("excel")
                                                       .get("opt_attributes", 0))
         self.fr_excel.opt_fillfull.set(self.settings.get("excel")
@@ -583,7 +587,7 @@ class Isogeo2office(Tk):
             pass
 
         # savings in ini file
-        self.utils.settings_save(parent_ui=self,
+        self.utils.settings_save(parent=self,
                                  config_file=path.realpath(r"settings.ini"))
 
         # prepare Isogeo request
@@ -649,7 +653,11 @@ class Isogeo2office(Tk):
         # workbook
         url_oc = [share[4] for share in self.shares_info[0]][0]
         wb = Isogeo2xlsx(lang=self.client_lang, url_base=url_oc)
-        wb.set_worksheets(auto=self.search_results.get('tags').keys())
+        wb.set_worksheets(auto=self.search_results.get('tags').keys(),
+                          dashboard=self.fr_excel.opt_dashboard.get(),
+                          attributes=self.fr_excel.opt_attributes.get(),
+                          fillfull=self.fr_excel.opt_fillfull.get(),
+                          inspire=self.fr_excel.opt_inspire.get())
 
         # parsing metadata
         for md in self.search_results.get('results'):
@@ -664,6 +672,23 @@ class Isogeo2office(Tk):
 
         # tunning
         wb.tunning_worksheets()
+
+        # special sheets
+        if self.fr_excel.opt_fillfull.get():
+            wb.ws_f["A1"] = self.stats.fillfull()
+            print(self.stats.md_empty_fields)
+        else:
+            pass
+        if self.fr_excel.opt_dashboard.get():
+            # metadata types - pie chart
+            pie = self.stats.type_pie(wb.ws_d,
+                                      self.search_results.get('total'))
+            wb.ws_d.add_chart(pie, "A1")
+            # tags - bar charts
+            bar = self.stats.keywords_bar(wb.ws_d, self.search_results.get("results"))
+            wb.ws_d.add_chart(bar, "A10")
+        else:
+            pass
 
         # saving the test file
         # dstamp = datetime.now()
