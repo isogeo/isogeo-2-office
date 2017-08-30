@@ -23,6 +23,7 @@ install_aliases()
 # Standard library
 from collections import OrderedDict
 from configparser import SafeConfigParser
+from tkinter.messagebox import showerror as avert
 from itertools import zip_longest
 import logging
 from os import access, path, R_OK
@@ -55,12 +56,10 @@ class isogeo2office_utils(object):
     """isogeo2office utils methods class."""
 
     def __init__(self):
-        """instanciating method
-        """
+        """Instanciating method."""
         super(isogeo2office_utils, self).__init__()
 
         # ------------ VARIABLES ---------------------
-
 
     # MISCELLANOUS -----------------------------------------------------------
 
@@ -182,44 +181,46 @@ class isogeo2office_utils(object):
         # end of method
         return settings_dict
 
-    def settings_save(self, parent_ui, config_file=r"../settings.ini"):
+    def settings_save(self, parent, config_file=r"../settings.ini"):
         """Save settings into the ini file."""
         config = SafeConfigParser(dict_type=OrderedDict)
         config.read(path.realpath(config_file))
         # default OpenCatalog URL
-        if len(parent_ui.shares) == 1:
-            url_oc = [share[4] for share in parent_ui.shares_info[0]][0]
+        if len(parent.shares) == 1:
+            url_oc = [share[4] for share in parent.shares_info[0]][0]
         else:
             url_oc = ""
             pass
         # new values to save
-        config["auth"] = {"app_id": parent_ui.app_id,
-                          "app_secret": parent_ui.app_secret
+        config["auth"] = {"app_id": parent.app_id,
+                          "app_secret": parent.app_secret
                           }
 
-        config["global"] = {"out_folder": path.realpath(parent_ui.out_fold_path.get()),
+        config["global"] = {"out_folder": path.realpath(parent.out_fold_path.get()),
                             "def_oc": url_oc,
-                            "def_codelang": parent_ui.client_lang
+                            "def_codelang": parent.client_lang
                             }
 
-        config["excel"] = {"excel_opt": parent_ui.opt_excel.get(),
-                           "output_name": parent_ui.fr_excel.output_name.get(),
-                           "opt_attributes": parent_ui.fr_excel.opt_attributes.get(),
-                           "opt_fillfull": parent_ui.fr_excel.opt_fillfull.get(),
-                           "opt_inspire": parent_ui.fr_excel.opt_inspire.get(),
+        config["excel"] = {"excel_opt": parent.opt_excel.get(),
+                           "output_name": parent.fr_excel.output_name.get(),
+                           "opt_dashboard": parent.fr_excel.opt_dashboard.get(),
+                           "opt_attributes": parent.fr_excel.opt_attributes.get(),
+                           "opt_fillfull": parent.fr_excel.opt_fillfull.get(),
+                           "opt_inspire": parent.fr_excel.opt_inspire.get(),
                            }
 
-        config["word"] = {"word_opt": parent_ui.opt_word.get(),
-                          "out_prefix": parent_ui.fr_word.out_prefix.get(),
-                          "tpl": parent_ui.fr_word.tpl_input.get(),
-                          "opt_id": parent_ui.fr_word.opt_id.get(),
-                          "opt_date": parent_ui.fr_word.opt_date.get(),
+        config["word"] = {"word_opt": parent.opt_word.get(),
+                          "out_prefix": parent.fr_word.out_prefix.get(),
+                          "tpl": parent.fr_word.tpl_input.get(),
+                          "opt_id": parent.fr_word.opt_id.get(),
+                          "opt_date": parent.fr_word.opt_date.get(),
                           }
 
-        config["xml"] = {"xml_opt": parent_ui.opt_xml.get(),
-                         "opt_id": parent_ui.fr_xml.opt_id.get(),
-                         "opt_date": parent_ui.fr_xml.opt_date.get(),
-                         "out_prefix": parent_ui.fr_xml.out_prefix.get(),
+        config["xml"] = {"xml_opt": parent.opt_xml.get(),
+                         "out_prefix": parent.fr_xml.out_prefix.get(),
+                         "opt_id": parent.fr_xml.opt_id.get(),
+                         "opt_date": parent.fr_xml.opt_date.get(),
+                         "opt_zip": parent.fr_xml.opt_zip.get(),
                          }
 
         # writing
@@ -280,7 +281,7 @@ class isogeo2office_utils(object):
         return clean_version
 
     def clean_filename(self, filename, mode="soft", substitute="_"):
-        """Removes invalid characters from filename."""
+        """Remove invalid characters from filename."""
         if mode == "soft":
             return re.sub(r'[\\/*?:"<>|]', substitute, filename)
         elif mode == "strict":
@@ -295,5 +296,3 @@ class isogeo2office_utils(object):
 if __name__ == '__main__':
     """Standalone execution and tests"""
     utils = isogeo2office_utils()
-
-    # assert
