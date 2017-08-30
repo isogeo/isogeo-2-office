@@ -550,8 +550,8 @@ class Isogeo2office(Tk):
 
             # OpenCatalog URL construction
             share_details = self.isogeo.share(self.token, share_id=share.get("_id"))
-            url_oc = "http://open.isogeo.com/s/{}/{}".format(share.get("_id"),
-                                                             share_details.get("urlToken"))
+            url_oc = "https://open.isogeo.com/s/{}/{}".format(share.get("_id"),
+                                                              share_details.get("urlToken"))
 
             # Testing URL
             request = requests.get(url_oc)
@@ -569,20 +569,6 @@ class Isogeo2office(Tk):
         logger.info("Isogeo - Shares informations retrieved.")
         # end of method
         return li_oc, set(li_owners), li_without_oc, li_too_shares
-
-    def get_url_base(self, url_input):
-        """Get OpenCatalog base URL to add resource ID easily."""
-        # get the OpenCatalog URL given
-        if not url_input[-1] == '/':
-            url_input = url_input + '/'
-        else:
-            pass
-
-        # get the clean url
-        url_output = url_input[0:url_input.index(url_input.rsplit('/')[6])]
-
-        # end of method
-        return url_output
 
 # ----------------------------------------------------------------------------
 

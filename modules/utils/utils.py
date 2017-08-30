@@ -113,6 +113,22 @@ class isogeo2office_utils(object):
         # end of function
         return proc
 
+    # ISOGEO -----------------------------------------------------------------
+
+    def get_url_base(self, url_input):
+        """Get OpenCatalog base URL to add resource ID easily."""
+        # get the OpenCatalog URL given
+        if not url_input[-1] == '/':
+            url_input = url_input + '/'
+        else:
+            pass
+
+        # get the clean url
+        url_output = url_input[0:url_input.index(url_input.rsplit('/')[6])]
+
+        # end of method
+        return url_output
+
     # UI --------------------------------------------------------------------
 
     def entry_validate_uid(self, action, index, value_if_allowed,
