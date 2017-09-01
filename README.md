@@ -9,8 +9,8 @@ Funded by:
 
 **Usage**:
 
-	* [French : documentation utilisateur](https://www.gitbook.com/book/isogeo/app-isogeo2office/details) ;
-	* [English: user documentation](https://www.gitbook.com/book/isogeo/app-isogeo2office/details).
+* [French : documentation utilisateur](https://www.gitbook.com/book/isogeo/app-isogeo2office/details) ;
+* [English: user documentation](https://www.gitbook.com/book/isogeo/app-isogeo2office/details).
 
 ## Requirements
 
