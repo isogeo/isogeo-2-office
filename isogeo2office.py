@@ -377,10 +377,14 @@ class Isogeo2office(Tk):
                                   .get('xml_opt', 0)))
         # self.out_folder_path = self.settings.get("basics").get("out_folder",
         #                                                        "output")
-        self.out_fold_path = StringVar(fr_process,
-                                       path.relpath(self.settings.get('global')
-                                                    .get('out_folder',
-                                                         r'output')))
+        try:
+            self.out_fold_path = StringVar(fr_process,
+                                           path.relpath(self.settings.get('global')
+                                                        .get("out_folder")))
+        except ValueError as e:
+            logger.debug(e)
+            self.out_fold_path = StringVar(fr_process,
+                                           path.relpath("output"))
 
         # logo
         self.logo_process = PhotoImage(master=fr_process,
