@@ -5,12 +5,17 @@ Desktop toolbox using Isogeo REST API to export metadatas into Microsoft Office 
 
 Funded by:
 
-![Agence des Espaces Verts d'ÃŽle de France](/img/logo_aev.jpg) ![Conseil DÃ©partemental du Loiret](/img/logo_cd45.jpg)
+![Agence des Espaces Verts d'Île de France](/img/logo_aev.jpg) ![Conseil Départemental du Loiret](/img/logo_cd45.jpg)
+
+**Usage**:
+
+	* [French : documentation utilisateur](https://www.gitbook.com/book/isogeo/app-isogeo2office/details) ;
+	* [English: user documentation](https://www.gitbook.com/book/isogeo/app-isogeo2office/details).
 
 ## Requirements
 
 * Windows Operating System (Debian should works too but has not been tested)
-* Internet connection
+* Internet connection (ensure to be able to connect to *.isogeo.com)
 * rights to write on the output folder
 * Python 2.7.9+ installed and added to the environment path
 * [Microsoft Visual C++ Compiler for Python 2.7](https://www.microsoft.com/en-us/download/details.aspx?id=44266)
@@ -23,12 +28,6 @@ Funded by:
 2. Open a command prompt in the folder and launch `pip install -r requirements.txt`. If you are on a shared machine with various tools related to Python, it's higly recomended to use a virtual environment. See: Python Virtualenvs on Windows and a [Powershell wrapper](https://bitbucket.org/guillermooo/virtualenvwrapper-powershell/) ;
 3. Edit the *settings.ini* file and custom it with your informations. At less, you have to set *app_id* and *app_secret* with your own values. If you are behind a proxy, you should set the parameters too. ;
 4. Launch **isogeo2office.py**
-
-## Usage
-
-1. as Isogeo administrator, select metadatas catalogs that you want to export sharing them with [APP](https://app.isogeo.com/admin/shares) (1 share to the same application b workgroup);
-2. create your own Word template respecting the syntax (`{{ varOwner }}`) from the default template ;
-3. launch the application and set your API settings
 
 ## Detailed deployment
 
