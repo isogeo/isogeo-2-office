@@ -86,7 +86,7 @@ class Isogeo2office(Tk):
     logger.info('Version: {0}'.format(_version))
     logger.info('Isogeo PySDK version: {0}'.format(pysdk_version))
 
-    def __init__(self, ui_launcher=1):
+    def __init__(self, ui_launcher=1, settings_file=r"settings.ini"):
         """Initiliazing isogeo2office with or without UI."""
         # Invoke Check Norris & utils
         checker = CheckNorris()
@@ -94,7 +94,7 @@ class Isogeo2office(Tk):
         self.stats = IsogeoStats()
 
         # ------------ Settings ----------------------------------------------
-        self.settings = self.utils.settings_load()
+        self.settings = self.utils.settings_load(path.abspath(settings_file))
         self.app_id = self.settings.get("auth").get("app_id")
         self.app_secret = self.settings.get("auth").get("app_secret")
         self.client_lang = self.settings.get("global").get("def_codelang", "FR")
@@ -951,7 +951,8 @@ if __name__ == '__main__':
     """standalone execution
     """
     if len(argv) < 2:
-        app = Isogeo2office(ui_launcher=1)
+        app = Isogeo2office(ui_launcher=1,
+                            settings_file=path.abspath(r"settings_cd_57.ini"))
         app.mainloop()
     elif argv[1] == str(1):
         print("launch UI")
