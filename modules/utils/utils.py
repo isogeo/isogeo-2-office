@@ -173,7 +173,7 @@ class isogeo2office_utils(object):
     def settings_load(self, config_file=r"../settings.ini"):
         """Load settings from the ini file."""
         config = SafeConfigParser()
-        config.read(r"settings.ini")
+        config.read(config_file)
         settings_dict = {s: dict(config.items(s)) for s in config.sections()}
 
         logger.info("Settings loaded from: {}".format(config_file))
