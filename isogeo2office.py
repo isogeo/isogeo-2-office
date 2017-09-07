@@ -668,7 +668,7 @@ class Isogeo2office(Tk):
             wb.store_metadatas(md)
             if ui:
                 # progression
-                md_title = md.get("title").encode("utf8")
+                md_title = md.get("title", "No title").encode("utf8")
                 self.msg_bar.set(_("Processing Excel: {}").format(md_title))
                 self.progbar["value"] = self.progbar["value"] + 1
             else:
