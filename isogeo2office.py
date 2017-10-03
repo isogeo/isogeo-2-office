@@ -227,9 +227,10 @@ class Isogeo2office(Tk):
         ToolTip(logo_isogeo, message="Logo Isogeo")
 
         # metrics
-        self.app_metrics.set(_("{} metadata in {} share(s)"
+        self.app_metrics.set(_("{}\n{} metadata in {} share(s)"
                                " owned by {} workgroup(s).")
-                             .format(self.search_results.get('total'),
+                             .format(self.shares_info[-1].get("name"),
+                                     self.search_results.get('total'),
                                      len(self.shares),
                                      len(self.shares_info[1])))
         lb_app_metrics = Label(fr_isogeo,
@@ -537,10 +538,17 @@ class Isogeo2office(Tk):
             # consolidate list of OpenCatalog available
             li_oc.append((share_name, creator_id, creator_name,
                           share_url, url_oc))
-
+        # get app properties
+        first_share = share.get("applications")[0]
+        app = {"creation_date": first_share.get("_created"),
+               "last_update": first_share.get("_modified"),
+               "name": first_share.get("name"),
+               "type": first_share.get("type"),
+               "url": first_share.get("url")
+               }
         logger.info("Isogeo - Shares informations retrieved.")
         # end of method
-        return li_oc, set(li_owners), li_without_oc, li_too_shares
+        return li_oc, set(li_owners), li_without_oc, li_too_shares, app
 
 # ----------------------------------------------------------------------------
 
