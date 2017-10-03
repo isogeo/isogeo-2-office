@@ -19,12 +19,15 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 # ##################################
 
 # Python 2 and 3 compatibility
-from future.standard_library import install_aliases
-install_aliases()
+# from future.standard_library import install_aliases
+# install_aliases()
 
 # Standard library
 from datetime import datetime
-from itertools import zip_longest
+try:
+    from itertools import zip_longest
+except ImportError:
+    from itertools import izip_longest as zip_longest
 import logging
 from os import path
 import re

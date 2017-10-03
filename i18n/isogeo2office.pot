@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2017-08-30 11:20+0200\n"
+"POT-Creation-Date: 2017-10-03 18:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,85 +15,110 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: .\modules\export\isogeo_stats.py:56 .\modules\ui\frame_excel.py:52
-#: .\modules\ui\frame_word.py:52 .\modules\ui\frame_xml.py:52
-#: .\modules\ui\ui_app_settings.py:62 isogeo2office.py:110
+#: .\modules\export\isogeo_stats.py:58 .\modules\ui\frame_excel.py:51
+#: .\modules\ui\frame_general.py:49 .\modules\ui\frame_word.py:51
+#: .\modules\ui\frame_xml.py:51 .\modules\ui\ui_app_settings.py:62
+#: isogeo2office.py:110
 msgid "English"
 msgstr ""
 
-#: .\modules\export\isogeo_stats.py:78
+#: .\modules\export\isogeo_stats.py:81
 msgid "Count"
 msgstr ""
 
-#: .\modules\export\isogeo_stats.py:78
+#: .\modules\export\isogeo_stats.py:81
 msgid "Type"
 msgstr ""
 
-#: .\modules\export\isogeo_stats.py:79
+#: .\modules\export\isogeo_stats.py:82
 msgid "Vector"
 msgstr ""
 
-#: .\modules\export\isogeo_stats.py:80
+#: .\modules\export\isogeo_stats.py:83
 msgid "Raster"
 msgstr ""
 
-#: .\modules\export\isogeo_stats.py:81
+#: .\modules\export\isogeo_stats.py:84
 msgid "Service"
 msgstr ""
 
-#: .\modules\export\isogeo_stats.py:82
+#: .\modules\export\isogeo_stats.py:85
 msgid "Resource"
 msgstr ""
 
-#: .\modules\export\isogeo_stats.py:95
+#: .\modules\export\isogeo_stats.py:98
 msgid "Metadata by types"
 msgstr ""
 
-#: .\modules\ui\frame_excel.py:77
+#: .\modules\ui\frame_excel.py:76
 msgid "Output filename: "
 msgstr ""
 
-#: .\modules\ui\frame_excel.py:83
+#: .\modules\ui\frame_excel.py:82
 msgid "Goals tabs"
 msgstr ""
 
-#: .\modules\ui\frame_excel.py:86
+#: .\modules\ui\frame_excel.py:85
 msgid "Dashboard"
 msgstr ""
 
-#: .\modules\ui\frame_excel.py:89
+#: .\modules\ui\frame_excel.py:88
 msgid "Feature attributes"
 msgstr ""
 
-#: .\modules\ui\frame_excel.py:92
+#: .\modules\ui\frame_excel.py:91
 msgid "Cataloging"
 msgstr ""
 
-#: .\modules\ui\frame_excel.py:95
+#: .\modules\ui\frame_excel.py:94
 msgid "INSPIRE"
 msgstr ""
 
-#: .\modules\ui\frame_word.py:82
+#: .\modules\ui\frame_general.py:65
+msgid "Help"
+msgstr ""
+
+#: .\modules\ui\frame_general.py:68
+msgid "mailto:Isogeo%20Projects%20<projects+isogeo2office@isogeo.com>?subject=[Isogeo2office]%20Question"
+msgstr ""
+
+#: .\modules\ui\frame_general.py:72
+msgid "Contact"
+msgstr ""
+
+#: .\modules\ui\frame_general.py:76
+msgid "Settings"
+msgstr ""
+
+#: .\modules\ui\frame_general.py:80
+msgid "Admin shares"
+msgstr ""
+
+#: .\modules\ui\frame_general.py:85
+msgid "Report"
+msgstr ""
+
+#: .\modules\ui\frame_word.py:81
 msgid "Pick a template: "
 msgstr ""
 
-#: .\modules\ui\frame_word.py:92 .\modules\ui\frame_xml.py:82
+#: .\modules\ui\frame_word.py:91 .\modules\ui\frame_xml.py:81
 msgid "File prefix: "
 msgstr ""
 
-#: .\modules\ui\frame_word.py:93 .\modules\ui\frame_xml.py:83
+#: .\modules\ui\frame_word.py:92 .\modules\ui\frame_xml.py:82
 msgid ""
 "UID chars:\n"
 "(0 - 8)"
 msgstr ""
 
-#: .\modules\ui\frame_word.py:95 .\modules\ui\frame_xml.py:85
+#: .\modules\ui\frame_word.py:94 .\modules\ui\frame_xml.py:84
 msgid ""
 "Timestamp:\n"
 "(0=no, 1=date, 2=datetime)"
 msgstr ""
 
-#: .\modules\ui\frame_xml.py:80
+#: .\modules\ui\frame_xml.py:79
 msgid "Pack all XML into one ZIP"
 msgstr ""
 
@@ -143,152 +168,129 @@ msgstr ""
 msgid "Pick your options and push the launch button"
 msgstr ""
 
-#: isogeo2office.py:231
-msgid ""
-"{} metadata in\n"
-"{} shares owned by\n"
-"{} workgroups."
+#: isogeo2office.py:230
+msgid "{} metadata in {} share(s) owned by {} workgroup(s)."
 msgstr ""
 
-#: isogeo2office.py:246
+#: isogeo2office.py:244
 msgid ""
 "{} shares don't have any OpenCatalog.\n"
 "Add OpenCatalog to every share,\n"
 "then reboot isogeo2office."
 msgstr ""
 
-#: isogeo2office.py:249
+#: isogeo2office.py:247
 msgid "Error: some shares don't have OpenCatalogactivated. Fix it first."
 msgstr ""
 
-#: isogeo2office.py:253 isogeo2office.py:266
-msgid "Fix the shares"
-msgstr ""
-
-#: isogeo2office.py:258
+#: isogeo2office.py:254
 msgid ""
 "Too much shares by workgroup.\n"
 "Please red button to fix it\n"
 "then reboot isogeo2office."
 msgstr ""
 
-#: isogeo2office.py:262
+#: isogeo2office.py:258
 msgid "Error: more than one share by worgroup. Click on Admin button to fix it."
 msgstr ""
 
-#: isogeo2office.py:272
+#: isogeo2office.py:261
+msgid "Fix the shares"
+msgstr ""
+
+#: isogeo2office.py:267
 msgid "Configuration OK."
 msgstr ""
 
-#: isogeo2office.py:275
-msgid "Admin shares"
-msgstr ""
-
-#: isogeo2office.py:282
-msgid "Settings"
-msgstr ""
-
-#: isogeo2office.py:286
-msgid "mailto:Isogeo%20Projects%20<projects+isogeo2office@isogeo.com>?subject=[Isogeo2office]%20Question"
-msgstr ""
-
-#: isogeo2office.py:290
-msgid "Contact"
-msgstr ""
-
-#: isogeo2office.py:296
-msgid "Report"
-msgstr ""
-
-#: isogeo2office.py:393
+#: isogeo2office.py:360
 msgid "Export the whole shares into an Excel worksheet"
 msgstr ""
 
-#: isogeo2office.py:397
+#: isogeo2office.py:364
 msgid "Export each metadata into a Word file"
 msgstr ""
 
-#: isogeo2office.py:401
+#: isogeo2office.py:368
 msgid "Export each metadata into a XML ISO-19139"
 msgstr ""
 
-#: isogeo2office.py:405
+#: isogeo2office.py:372
 msgid "Output folder: "
 msgstr ""
 
-#: isogeo2office.py:409
+#: isogeo2office.py:376
 msgid "Browse"
 msgstr ""
 
-#: isogeo2office.py:413
+#: isogeo2office.py:380
 msgid "Open"
 msgstr ""
 
-#: isogeo2office.py:418
+#: isogeo2office.py:385
 msgid "Launch"
 msgstr ""
 
-#: isogeo2office.py:453
+#: isogeo2office.py:420
 msgid "Select output folder"
 msgstr ""
 
-#: isogeo2office.py:458
+#: isogeo2office.py:425
 msgid "No folder selected"
 msgstr ""
 
-#: isogeo2office.py:459
+#: isogeo2office.py:426
 msgid "You must select an output folder."
 msgstr ""
 
-#: isogeo2office.py:469
+#: isogeo2office.py:436
 msgid "Pick the Excel to merge"
 msgstr ""
 
-#: isogeo2office.py:478
+#: isogeo2office.py:445
 msgid "Any file selected"
 msgstr ""
 
-#: isogeo2office.py:583
+#: isogeo2office.py:550
 msgid "Error: at least one export option required"
 msgstr ""
 
-#: isogeo2office.py:594
+#: isogeo2office.py:561
 msgid "Fetching Isogeo data..."
 msgstr ""
 
-#: isogeo2office.py:632
+#: isogeo2office.py:599
 msgid "Error: Word template not selected"
 msgstr ""
 
-#: isogeo2office.py:647
+#: isogeo2office.py:614
 msgid "All tasks are done."
 msgstr ""
 
-#: isogeo2office.py:668
+#: isogeo2office.py:635
 msgid "Processing Excel: {}"
 msgstr ""
 
-#: isogeo2office.py:697
+#: isogeo2office.py:667
 msgid "Export Excel done."
 msgstr ""
 
-#: isogeo2office.py:725
+#: isogeo2office.py:695
 msgid "Error: more than one share by worgroup. Open APP or push the button to fix it."
 msgstr ""
 
-#: isogeo2office.py:780
+#: isogeo2office.py:750
 msgid "Processing Word: {}"
 msgstr ""
 
-#: isogeo2office.py:785
+#: isogeo2office.py:755
 msgid "Export Word done."
 msgstr ""
 
-#: isogeo2office.py:852
+#: isogeo2office.py:822
 msgid "Processing XML: {}"
 msgstr ""
 
-#: isogeo2office.py:872
+#: isogeo2office.py:842
 msgid "Export XML done."
 msgstr ""
 

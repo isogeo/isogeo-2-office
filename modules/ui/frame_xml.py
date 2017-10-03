@@ -2,15 +2,14 @@
 #!/usr/bin/env python
 from __future__ import (absolute_import, print_function, unicode_literals)
 # -----------------------------------------------------------------------------
-# Name:         DicoGIS
-# Purpose:      Automatize the creation of a dictionnary of geographic data
-#               contained in a folders structures.
-#               It produces an Excel output file (.xlsx)
+# Name:         Frame IsogeoToOffice - XML export
+# Purpose:      Frame which is part of IsogeoToOffice UI.
+#               It contains UI widgets to export into XML.
 #
 # Author:       Julien Moura (@geojulien)
 #
 # Python:       2.7.x
-# Created:      14/02/2013
+# Created:      14/02/2015
 # Updated:      19/03/2017
 #
 # Licence:      GPL 3
@@ -40,7 +39,7 @@ logger = logging.getLogger("isogeo2office")  # LOG
 
 
 class FrameXml(Labelframe):
-    """Construct Excel UI."""
+    """Construct IsogeoToOffice UI XML frame."""
 
     def __init__(self, parent, main_path="../../", lang=None, validators=None):
         """Instanciating the output workbook."""

@@ -30,7 +30,6 @@ from tkinter import Tk, Image, PhotoImage
 from tkinter import IntVar, StringVar, ACTIVE, DISABLED, VERTICAL
 from tkinter.ttk import Label, Button, Checkbutton
 from tkinter.ttk import Labelframe, Progressbar, Separator, Style
-from webbrowser import open_new_tab
 from zipfile import ZipFile
 
 # 3rd party library
@@ -49,6 +48,7 @@ from modules import isogeo2office_utils
 
 # UI submodules
 from modules import FrameExcel
+from modules import FrameGlobal
 from modules import FrameWord
 from modules import FrameXml
 from modules import ToolTip
@@ -191,14 +191,12 @@ class Isogeo2office(Tk):
         }
 
         # Frames and main widgets
+        fr_actions = FrameGlobal(self, main_path="", lang=lang)
         fr_isogeo = Labelframe(self, name="isogeo", text="Isogeo")
-        self.fr_excel = FrameExcel(self, main_path="",
-                                   lang=lang)
-        self.fr_word = FrameWord(self, main_path="",
-                                 lang=lang,
+        self.fr_excel = FrameExcel(self, main_path="", lang=lang)
+        self.fr_word = FrameWord(self, main_path="", lang=lang,
                                  validators=fields_validators)
-        self.fr_xml = FrameXml(self, main_path="",
-                               lang=lang,
+        self.fr_xml = FrameXml(self, main_path="", lang=lang,
                                validators=fields_validators)
         fr_process = Labelframe(self, name="process", text="Launch")
         self.status_bar = Label(self, textvariable=self.msg_bar, anchor='w',
@@ -206,7 +204,8 @@ class Isogeo2office(Tk):
         self.progbar = Progressbar(self,
                                    orient="horizontal")
 
-        fr_isogeo.grid(row=1, column=1, padx=2, pady=4, sticky="WE")
+        fr_actions.grid(row=0, column=1, columnspan=2, padx=2, pady=4, sticky="WE")
+        fr_isogeo.grid(row=1, column=1, columnspan=5, padx=2, pady=4, sticky="WE")
         self.fr_excel.grid(row=2, column=1, padx=2, pady=4, sticky="WE")
         self.fr_word.grid(row=3, column=1, padx=2, pady=4, sticky="WE")
         self.fr_xml.grid(row=4, column=1, padx=2, pady=4, sticky="WE")
@@ -228,9 +227,8 @@ class Isogeo2office(Tk):
         ToolTip(logo_isogeo, message="Logo Isogeo")
 
         # metrics
-        self.app_metrics.set(_("{} metadata in\n"
-                               "{} shares owned by\n"
-                               "{} workgroups.")
+        self.app_metrics.set(_("{} metadata in {} share(s)"
+                               " owned by {} workgroup(s).")
                              .format(self.search_results.get('total'),
                                      len(self.shares),
                                      len(self.shares_info[1])))
@@ -249,9 +247,7 @@ class Isogeo2office(Tk):
             self.msg_bar.set(_("Error: some shares don't have OpenCatalog"
                                "activated. Fix it first."))
             self.status_bar.config(foreground='Red')
-            btn_open_shares = Button(fr_isogeo,
-                                     text=_("Fix the shares"),
-                                     command=lambda: self.utils.open_urls(self.shares_info[2]))
+            fr_actions.btn_open_shares.configure(command=lambda: self.utils.open_urls(self.shares_info[2]))
             status_launch = DISABLED
         elif len(self.shares) != len(self.shares_info[1]):
             logger.error("More than one share by workgroup")
@@ -262,40 +258,19 @@ class Isogeo2office(Tk):
             self.msg_bar.set(_("Error: more than one share by worgroup."
                                " Click on Admin button to fix it."))
             self.status_bar.config(foreground='Red')
-            btn_open_shares = Button(fr_isogeo,
-                                     text=_("Fix the shares"),
-                                     command=lambda: self.utils.open_urls(self.shares_info[3]),
-                                     style="Error.TButton")
+            fr_actions.btn_open_shares.configure(text=_("Fix the shares"),
+                                                 command=lambda: self.utils.open_urls(self.shares_info[3]),
+                                                 style="Error.TButton")
             status_launch = DISABLED
         else:
             logger.info("All shares have an OpenCatalog")
             self.oc_msg.set(_("Configuration OK."))
             li_oc = [share[3] for share in self.shares_info[0]]
-            btn_open_shares = Button(fr_isogeo,
-                                     text="\U00002692 {}".format(_("Admin shares")),
-                                     command=lambda: self.utils.open_urls(li_oc))
+            fr_actions.btn_open_shares.configure(command=lambda: self.utils.open_urls(li_oc))
             status_launch = ACTIVE
 
         # settings
         # for unicode symbols: https://www.w3schools.com/charsets/ref_utf_symbols.asp
-        btn_settings = Button(fr_isogeo,
-                              text="\U000026BF {}".format(_("Settings")),
-                              command=lambda: self.ui_settings_prompt(lang))
-
-        # contact
-        mailto = _("mailto:Isogeo%20Projects%20"
-                   "<projects+isogeo2office@isogeo.com>?"
-                   "subject=[Isogeo2office]%20Question")
-        btn_contact = Button(fr_isogeo,
-                             text="\U00002709 {}".format(_("Contact")),
-                             command=lambda: open_new_tab(mailto))
-
-        # source
-        url_src = "https://bitbucket.org/isogeo/isogeo-2-office/issues"
-        btn_src = Button(fr_isogeo,
-                         text="\U000026A0 {}".format(_("Report")),
-                         command=lambda: open_new_tab(url_src))
-
         # griding widgets
         logo_isogeo.grid(row=1, rowspan=3,
                          column=0, padx=2,
@@ -305,18 +280,6 @@ class Isogeo2office(Tk):
                                                    pady=2, sticky="NSE")
         lb_app_metrics.grid(row=1, column=2, rowspan=3, sticky="NWE")
         self.lb_input_oc.grid(row=2, column=2, sticky="WE")
-        btn_open_shares.grid(row=1, rowspan=1,
-                             column=3, padx=2, pady=2,
-                             sticky="NWE")
-        btn_settings.grid(row=2, rowspan=1,
-                          column=3, padx=2, pady=2,
-                          sticky="NWE")
-        btn_contact.grid(row=1, rowspan=1,
-                         column=4, padx=2, pady=2,
-                         sticky="NWE")
-        btn_src.grid(row=2, rowspan=1,
-                     column=4, padx=2, pady=2,
-                     sticky="NWE")
 
         # --------------------------------------------------------------------
 
@@ -326,7 +289,7 @@ class Isogeo2office(Tk):
                                                    .get("output_name",
                                                         "isogeo2xlsx"))
         self.fr_excel.opt_dashboard.set(self.settings.get("excel")
-                                                      .get("opt_dashboard", 1))
+                                                     .get("opt_dashboard", 1))
         self.fr_excel.opt_attributes.set(self.settings.get("excel")
                                                       .get("opt_attributes", 0))
         self.fr_excel.opt_fillfull.set(self.settings.get("excel")
