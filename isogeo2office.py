@@ -28,7 +28,7 @@ from tkinter.filedialog import askdirectory, askopenfilename
 from tkinter.messagebox import showerror as avert
 from tkinter import Tk, Image, PhotoImage
 from tkinter import IntVar, StringVar, ACTIVE, DISABLED, VERTICAL
-from tkinter.ttk import Label, Button, Checkbutton
+from tkinter.ttk import Label, Button, Checkbutton, Combobox
 from tkinter.ttk import Labelframe, Progressbar, Separator, Style
 from zipfile import ZipFile
 
@@ -39,11 +39,12 @@ import openpyxl
 import requests
 
 # Custom modules
+from modules import CheckNorris
+# from modules import DbManager
 from modules import Isogeo2xlsx
 from modules import Isogeo2docx
 from modules import IsogeoAppAuth
 from modules import IsogeoStats
-from modules import CheckNorris
 from modules import isogeo2office_utils
 
 # UI submodules
@@ -58,7 +59,7 @@ from modules import ToolTip
 # ##################################
 
 # VERSION
-_version = "1.5.7"
+_version = "1.6.0"
 
 # LOG FILE ##
 logger = logging.getLogger("isogeo2office")
@@ -270,8 +271,11 @@ class Isogeo2office(Tk):
             fr_actions.btn_open_shares.configure(command=lambda: self.utils.open_urls(li_oc))
             status_launch = ACTIVE
 
-        # settings
-        # for unicode symbols: https://www.w3schools.com/charsets/ref_utf_symbols.asp
+        # filters
+        cb_fltr_shares = Combobox(fr_isogeo,
+                                  textvariable="Partages : ",
+                                  values=["Partage 1", "Partage 2"])
+
         # griding widgets
         logo_isogeo.grid(row=1, rowspan=3,
                          column=0, padx=2,
@@ -281,6 +285,7 @@ class Isogeo2office(Tk):
                                                    pady=2, sticky="NSE")
         lb_app_metrics.grid(row=1, column=2, rowspan=3, sticky="NWE")
         self.lb_input_oc.grid(row=2, column=2, sticky="WE")
+        cb_fltr_shares.grid(row=3, column=2, sticky="WE")
 
         # --------------------------------------------------------------------
 
@@ -711,7 +716,7 @@ class Isogeo2office(Tk):
             # templating
             tpl = DocxTemplate(path.realpath(path.join(r"templates",
                                                        self.fr_word.tpl_input.get())))
-            to_docx.md2docx(tpl, md, url_oc)
+            to_docx.md2docx(tpl, md, url_oc, "http://www.isogeo.com/images/logo.png")
 
             # name
             md_name = md.get("name", md.get("title", "NR"))
@@ -923,7 +928,7 @@ if __name__ == '__main__':
     """
     if len(argv) < 2:
         app = Isogeo2office(ui_launcher=1,
-                            settings_file=path.abspath(r"settings_cd_57.ini"))
+                            settings_file=path.abspath(r"settings.ini"))
         app.mainloop()
     elif argv[1] == str(1):
         print("launch UI")
