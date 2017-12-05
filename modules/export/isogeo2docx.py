@@ -18,10 +18,6 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 # ########## Libraries #############
 # ##################################
 
-# Python 2 and 3 compatibility
-from future.standard_library import install_aliases
-install_aliases()
-
 # Standard library
 from datetime import datetime
 from itertools import zip_longest
@@ -144,6 +140,8 @@ class Isogeo2docx(object):
 
         # formatting links to visualize on OpenCatalog and edit on APP
         link_visu = url_base + "/m/" + md_id
+        link_edit = "https://app.isogeo.com/groups/{}/resources/{}".format(owner_id, md_id)
+
         link_edit = "https://app.isogeo.com/groups/{}/resources/{}".format(owner_id, md_id)
 
         # ---- CONTACTS # ----------------------------------------------------
