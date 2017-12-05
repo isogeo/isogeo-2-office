@@ -199,7 +199,7 @@ class Isogeo2docx(object):
             # make data human readable
             evt_date = arrow.get(e.get("date")[:19])
             evt_date = "{0} ({1})".format(evt_date.format(self.dates_fmt,
-                                                         self.locale_fmt),
+                                                          self.locale_fmt),
                                           evt_date.humanize(locale=self.locale_fmt))
             e["date"] = evt_date
             # translate event kind
@@ -234,16 +234,16 @@ class Isogeo2docx(object):
         else:
             data_created = "NR"
         if md.get("modified"):
-            data_updated = arrow.get(md.get("_created")[:19])
+            data_updated = arrow.get(md.get("modified")[:19])
             data_updated = "{0} ({1})".format(data_updated.format(self.dates_fmt,
                                                                   self.locale_fmt),
-                                            data_updated.humanize(locale=self.locale_fmt))
+                                              data_updated.humanize(locale=self.locale_fmt))
         else:
             data_updated = "NR"
         if md.get("published"):
-            data_published = arrow.get(md.get("_created")[:19])
+            data_published = arrow.get(md.get("published")[:19])
             data_published = "{0} ({1})".format(data_published.format(self.dates_fmt,
-                                                              self.locale_fmt),
+                                                                      self.locale_fmt),
                                                 data_published.humanize(locale=self.locale_fmt))
         else:
             data_published = "NR"
@@ -463,9 +463,9 @@ if __name__ == '__main__':
     # ------------ Settings from ini file ----------------
     if not path.isfile(path.realpath(r"..\settings_dev.ini")):
         logger.error("To execute this script as standalone,"
-                      " you need to store your Isogeo application settings"
-                      " in a isogeo_params.ini file. You can use the template"
-                      " to set your own.")
+                     " you need to store your Isogeo application settings"
+                     " in a isogeo_params.ini file. You can use the template"
+                     " to set your own.")
         raise ValueError("settings.ini file missing.")
     else:
         pass

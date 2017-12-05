@@ -500,7 +500,7 @@ class Isogeo2xlsx(Workbook):
 
         # data last update
         if md.get("modified"):
-            data_updated = arrow.get(md.get("created"))
+            data_updated = arrow.get(md.get("modified"))
             data_updated = "{0}".format(data_updated.format("DD/MM/YYYY",
                                                                   "fr_FR"))
         else:
@@ -804,7 +804,7 @@ class Isogeo2xlsx(Workbook):
 
         # data last update
         if md.get("modified"):
-            data_updated = arrow.get(md.get("created"))
+            data_updated = arrow.get(md.get("modified"))
             data_updated = "{0} ({1})".format(data_updated.format("DD/MM/YYYY",
                                                                   "fr_FR"),
                                               data_updated.humanize(locale="fr_FR"))
