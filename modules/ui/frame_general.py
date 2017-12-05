@@ -59,6 +59,7 @@ class FrameGlobal(Frame):
         Frame.__init__(self)
 
         # WIDGETS
+        # for unicode symbols: https://www.w3schools.com/charsets/ref_utf_symbols.asp
         # help
         url_help = "https://isogeo.gitbooks.io/app-isogeo2office/content/"
         self.btn_help = Button(self,
