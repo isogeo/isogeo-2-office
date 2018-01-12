@@ -16,7 +16,8 @@ pyinstaller
 
 # art of code 
 pylint
-pep8
+pycodestyle
+
 
 # formers
 # py2exe

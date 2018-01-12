@@ -11,6 +11,10 @@
 #
 #
 
+# basic
+setuptools
+wheel
+
 # dates
 arrow
 pytz
