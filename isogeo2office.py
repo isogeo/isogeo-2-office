@@ -8,7 +8,7 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 #
 # Python:       2.7.x
 # Created:      18/12/2015
-# Updated:      22/01/2016
+# Updated:      22/03/2018
 # ---------------------------------------------------------------------------
 
 # ############################################################################
@@ -153,9 +153,9 @@ class Isogeo2office(Tk):
             self.token = self.isogeo.connect()
 
         # debug logs
-        logger.debug("API: " + self.isogeo.get_isogeo_version(component="api"))
-        logger.debug("APP: " + self.isogeo.get_isogeo_version(component="app"))
-        logger.debug("DB: " + self.isogeo.get_isogeo_version(component="db"))
+        logger.debug("API: " + self.utils.get_isogeo_version(component="api"))
+        logger.debug("APP: " + self.utils.get_isogeo_version(component="app"))
+        logger.debug("DB: " + self.utils.get_isogeo_version(component="db"))
         # ------------ Isogeo search & shares --------------------------------
         self.search_results = self.isogeo.search(self.token,
                                                  page_size=0,

@@ -41,6 +41,9 @@ if opersys == 'win32':
 else:
     pass
 
+# 3rd party
+from isogeo_pysdk import IsogeoUtils
+
 # ##############################################################################
 # ############ Globals ############
 # #################################
@@ -52,7 +55,7 @@ logger = logging.getLogger("isogeo2office")  # LOG
 # ##################################
 
 
-class isogeo2office_utils(object):
+class isogeo2office_utils(IsogeoUtils):
     """isogeo2office utils methods class."""
 
     def __init__(self):
@@ -133,9 +136,10 @@ class isogeo2office_utils(object):
     def entry_validate_uid(self, action, index, value_if_allowed,
                            prior_value, text, validation_type,
                            trigger_type, widget_name):
-        """Ensure that the users enters a boolean value in the UID option field.
+        """
+            Ensure that the users enters a boolean value in the UID option field.
 
-        see: http://stackoverflow.com/a/8960839
+            see: http://stackoverflow.com/a/8960839
         """
         if(action == '1'):
             if text in '012345678' and len(prior_value + text) < 2:
@@ -152,9 +156,10 @@ class isogeo2office_utils(object):
     def entry_validate_date(self, action, index, value_if_allowed,
                             prior_value, text, validation_type,
                             trigger_type, widget_name):
-        """Ensure that the users neters a valid value in the date option field.
+        """
+            Ensure that the users neters a valid value in the date option field.
 
-        see: http://stackoverflow.com/a/8960839
+            see: http://stackoverflow.com/a/8960839
         """
         if(action == '1'):
             if text in '012' and len(prior_value + text) < 2:
@@ -289,10 +294,11 @@ class isogeo2office_utils(object):
         else:
             pass
 
+
 # ############################################################################
 # ##### Stand alone program ########
 # ##################################
-
 if __name__ == '__main__':
     """Standalone execution and tests"""
     utils = isogeo2office_utils()
+    print(dir(utils))
