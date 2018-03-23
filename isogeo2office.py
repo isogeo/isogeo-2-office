@@ -34,12 +34,10 @@ from zipfile import ZipFile
 
 # 3rd party library
 from docxtpl import DocxTemplate
-from isogeo_pysdk import Isogeo, __version__ as pysdk_version
+from isogeo_pysdk import Isogeo, IsogeoChecker, __version__ as pysdk_version
 import openpyxl
 import requests
 
-# Custom modules
-from modules import CheckNorris
 # from modules import DbManager
 from modules import Isogeo2xlsx
 from modules import Isogeo2docx
@@ -90,7 +88,7 @@ class Isogeo2office(Tk):
     def __init__(self, ui_launcher=1, settings_file=r"settings.ini"):
         """Initiliazing isogeo2office with or without UI."""
         # Invoke Check Norris & utils
-        checker = CheckNorris()
+        checker = IsogeoChecker()
         self.utils = isogeo2office_utils()
         self.stats = IsogeoStats()
 
@@ -117,7 +115,7 @@ class Isogeo2office(Tk):
             pass
 
         # ------------ Internet Connection -----------------------------------
-        if not checker.check_internet_connection():
+        if not checker.check_internet_connection("google.com"):
             logger.error('Internet connection required: check your settings.')
             avert(_("Internet connection failed"),
                   _("An Internet connection is required to use Isogeo API"

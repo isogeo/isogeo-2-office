@@ -1,5 +1,7 @@
-isogeo2office
-======
+![](https://travis-ci.org/isogeo/isogeo-2-office.svg?branch=master)
+
+Isogeo to Office
+================
 
 Desktop toolbox using Isogeo REST API to export metadatas into Microsoft Office files and standardized XML (ISO 19139).
 
