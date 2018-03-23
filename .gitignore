@@ -226,7 +226,8 @@ pip-log.txt
 #############
 
 # configuration file
-settings.ini
+*.ini
+!settings_TPL.ini
 
 # templates
 templates/*
@@ -239,8 +240,10 @@ input/*
 # output folder
 output/*
 !output/README.md
+*.xlsx
 
 # virtual environments
+env*
 venv*
 virtenv*
 virtualenv/
