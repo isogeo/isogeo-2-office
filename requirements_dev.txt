@@ -17,8 +17,3 @@ pyinstaller
 # art of code 
 pylint
 pycodestyle
-
-
-# formers
-# py2exe
-# xlwt
