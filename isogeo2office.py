@@ -132,8 +132,9 @@ class Isogeo2office(Tk):
                                  client_secret=self.app_secret,
                                  lang=self.client_lang)
             self.token = self.isogeo.connect()
-        except:
+        except Exception as e:
             # if id/secret doesn't work, ask for a new one
+            logger.debug(e)
             prompter = IsogeoAppAuth(prev_id=self.app_id,
                                      prev_secret=self.app_secret,
                                      lang=lang)
@@ -486,10 +487,10 @@ class Isogeo2office(Tk):
             exit()
             return 0
         elif len(prompter.li_dest) == 2 \
-             and self.app_id == prompter.li_dest[0]\
-             and self.app_secret == prompter.li_dest[1]:
-             logger.info(u"Auth Id and Secret have not changed.")
-             return 0
+            and self.app_id == prompter.li_dest[0] and \
+                self.app_secret == prompter.li_dest[1]:
+            logger.info(u"Auth Id and Secret have not changed.")
+            return 0
         else:
             pass
 
@@ -919,10 +920,10 @@ class Isogeo2office(Tk):
         exit()
         return
 
+
 # ###############################################################################
 # ###### Stand alone program ########
 # ###################################
-
 if __name__ == '__main__':
     """standalone execution
     """
