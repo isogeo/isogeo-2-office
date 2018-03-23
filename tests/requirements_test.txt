@@ -11,5 +11,6 @@
 #
 #
 
-# executable generation
-pyinstaller
+# art of code 
+pylint
+pycodestyle

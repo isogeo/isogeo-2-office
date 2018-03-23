@@ -18,10 +18,6 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 # ########## Libraries #############
 # ##################################
 
-# Python 2 and 3 compatibility
-from future.standard_library import install_aliases
-install_aliases()
-
 # Standard library
 from datetime import datetime
 from itertools import zip_longest
@@ -31,7 +27,8 @@ from xml.sax.saxutils import escape  # '<' -> '&lt;'
 
 # 3rd party library
 import arrow
-from docxtpl import DocxTemplate, etree
+from docxtpl import DocxTemplate, etree, InlineImage
+from docx.shared import Mm, Inches, Pt
 from isogeo_pysdk import Isogeo
 from isogeo_pysdk import IsogeoTranslator
 
@@ -55,10 +52,10 @@ class Isogeo2docx(object):
 
         default_values (optional) -- values used to replace missing values.
         Must be a tuple with 2 values structure:
-            (
-            str_for_missing_strings_and_integers,
-            str_for_missing_dates
-            )
+        (
+        str_for_missing_strings_and_integers,
+        str_for_missing_dates
+        )
         """
         super(Isogeo2docx, self).__init__()
 
@@ -86,7 +83,7 @@ class Isogeo2docx(object):
         # TRANSLATIONS
         self.tr = IsogeoTranslator(lang).tr
 
-    def md2docx(self, docx_template, md, url_base):
+    def md2docx(self, docx_template, md, url_base, thumb_path=""):
         """Parse Isogeo metadatas and replace docx template."""
         # optional: print resource id (useful in debug mode)
         md_id = md.get("_id")
@@ -144,6 +141,8 @@ class Isogeo2docx(object):
 
         # formatting links to visualize on OpenCatalog and edit on APP
         link_visu = url_base + "/m/" + md_id
+        link_edit = "https://app.isogeo.com/groups/{}/resources/{}".format(owner_id, md_id)
+
         link_edit = "https://app.isogeo.com/groups/{}/resources/{}".format(owner_id, md_id)
 
         # ---- CONTACTS # ----------------------------------------------------
@@ -338,6 +337,7 @@ class Isogeo2docx(object):
 
         # FILLFULLING THE TEMPLATE #
         context = {
+                  'varThumbnail': InlineImage(docx_template, thumb_path, width=Mm(20)),
                   'varTitle': self.clean_xml(md.get("title", self.missing_values())),
                   'varAbstract': self.clean_xml(md.get("abstract", self.missing_values())),
                   'varNameTech': md.get("name", self.missing_values()),

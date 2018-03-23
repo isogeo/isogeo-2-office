@@ -8,7 +8,7 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 #
 # Python:       2.7.x
 # Created:      18/12/2015
-# Updated:      22/01/2016
+# Updated:      22/03/2018
 # ---------------------------------------------------------------------------
 
 # ############################################################################
@@ -28,7 +28,7 @@ from tkinter.filedialog import askdirectory, askopenfilename
 from tkinter.messagebox import showerror as avert
 from tkinter import Tk, Image, PhotoImage
 from tkinter import IntVar, StringVar, ACTIVE, DISABLED, VERTICAL
-from tkinter.ttk import Label, Button, Checkbutton
+from tkinter.ttk import Label, Button, Checkbutton, Combobox
 from tkinter.ttk import Labelframe, Progressbar, Separator, Style
 from zipfile import ZipFile
 
@@ -39,11 +39,12 @@ import openpyxl
 import requests
 
 # Custom modules
+from modules import CheckNorris
+# from modules import DbManager
 from modules import Isogeo2xlsx
 from modules import Isogeo2docx
 from modules import IsogeoAppAuth
 from modules import IsogeoStats
-from modules import CheckNorris
 from modules import isogeo2office_utils
 
 # UI submodules
@@ -58,7 +59,7 @@ from modules import ToolTip
 # ##################################
 
 # VERSION
-_version = "1.5.7"
+_version = "1.6.0"
 
 # LOG FILE ##
 logger = logging.getLogger("isogeo2office")
@@ -131,8 +132,9 @@ class Isogeo2office(Tk):
                                  client_secret=self.app_secret,
                                  lang=self.client_lang)
             self.token = self.isogeo.connect()
-        except:
+        except Exception as e:
             # if id/secret doesn't work, ask for a new one
+            logger.debug(e)
             prompter = IsogeoAppAuth(prev_id=self.app_id,
                                      prev_secret=self.app_secret,
                                      lang=lang)
@@ -152,9 +154,9 @@ class Isogeo2office(Tk):
             self.token = self.isogeo.connect()
 
         # debug logs
-        logger.debug("API: " + self.isogeo.get_isogeo_version(component="api"))
-        logger.debug("APP: " + self.isogeo.get_isogeo_version(component="app"))
-        logger.debug("DB: " + self.isogeo.get_isogeo_version(component="db"))
+        logger.debug("API: " + self.utils.get_isogeo_version(component="api"))
+        logger.debug("APP: " + self.utils.get_isogeo_version(component="app"))
+        logger.debug("DB: " + self.utils.get_isogeo_version(component="db"))
         # ------------ Isogeo search & shares --------------------------------
         self.search_results = self.isogeo.search(self.token,
                                                  page_size=0,
@@ -270,8 +272,11 @@ class Isogeo2office(Tk):
             fr_actions.btn_open_shares.configure(command=lambda: self.utils.open_urls(li_oc))
             status_launch = ACTIVE
 
-        # settings
-        # for unicode symbols: https://www.w3schools.com/charsets/ref_utf_symbols.asp
+        # filters
+        cb_fltr_shares = Combobox(fr_isogeo,
+                                  textvariable="Partages : ",
+                                  values=["Partage 1", "Partage 2"])
+
         # griding widgets
         logo_isogeo.grid(row=1, rowspan=3,
                          column=0, padx=2,
@@ -281,6 +286,7 @@ class Isogeo2office(Tk):
                                                    pady=2, sticky="NSE")
         lb_app_metrics.grid(row=1, column=2, rowspan=3, sticky="NWE")
         self.lb_input_oc.grid(row=2, column=2, sticky="WE")
+        cb_fltr_shares.grid(row=3, column=2, sticky="WE")
 
         # --------------------------------------------------------------------
 
@@ -481,10 +487,10 @@ class Isogeo2office(Tk):
             exit()
             return 0
         elif len(prompter.li_dest) == 2 \
-             and self.app_id == prompter.li_dest[0]\
-             and self.app_secret == prompter.li_dest[1]:
-             logger.info(u"Auth Id and Secret have not changed.")
-             return 0
+            and self.app_id == prompter.li_dest[0] and \
+                self.app_secret == prompter.li_dest[1]:
+            logger.info(u"Auth Id and Secret have not changed.")
+            return 0
         else:
             pass
 
@@ -711,7 +717,7 @@ class Isogeo2office(Tk):
             # templating
             tpl = DocxTemplate(path.realpath(path.join(r"templates",
                                                        self.fr_word.tpl_input.get())))
-            to_docx.md2docx(tpl, md, url_oc)
+            to_docx.md2docx(tpl, md, url_oc, "http://www.isogeo.com/images/logo.png")
 
             # name
             md_name = md.get("name", md.get("title", "NR"))
@@ -914,16 +920,16 @@ class Isogeo2office(Tk):
         exit()
         return
 
+
 # ###############################################################################
 # ###### Stand alone program ########
 # ###################################
-
 if __name__ == '__main__':
     """standalone execution
     """
     if len(argv) < 2:
         app = Isogeo2office(ui_launcher=1,
-                            settings_file=path.abspath(r"settings_cd_57.ini"))
+                            settings_file=path.abspath(r"settings.ini"))
         app.mainloop()
     elif argv[1] == str(1):
         print("launch UI")

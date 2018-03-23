@@ -241,6 +241,6 @@ output/*
 !output/README.md
 
 # virtual environments
-venv/
+venv*
 virtenv*
 virtualenv/

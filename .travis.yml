@@ -1,0 +1,19 @@
+language: python
+
+python:
+  - "3.5"
+  - "3.6"
+
+cache: pip
+
+# dependencies
+install:
+  - "pip install --upgrade -r requirements.txt"
+  - "pip install --upgrade -r tests/requirements_test.txt"
+
+# run tests
+script:
+  - python -m unittest discover
+  - pycodestyle isogeo2office.py --ignore="E265,E501" --statistics --show-source
+  # - pycodestyle isogeo_pysdk/checker.py --ignore="E265,E501" --statistics --show-source
+  # - pycodestyle isogeo_pysdk/utils.py --ignore="E265,E501" --statistics --show-source
