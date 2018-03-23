@@ -5,12 +5,13 @@ block_cipher = None
 from configparser import SafeConfigParser
 from os import path
 
-# ------------ Initial settings ----------------------------------------------
+# ------------ Initial settings file -----------------------------------------
 config = SafeConfigParser()
 config.read(path.realpath("settings_TPL.ini"))
 #config.set("global", "excel", "word", "xml", "proxy")
 with open(path.realpath("build\\settings.ini"), "w") as configfile:
     config.write(configfile)
+
 # ----------------------------------------------------------------------------
 
 added_files = [('build\\settings.ini', '.'),
@@ -53,7 +54,7 @@ exe = EXE(pyz,
           name='isogeo2office',
           debug=False,
           strip=False,
-          upx=False,
+          upx=True,
           console=False,
           icon='img\\favicon.ico',
           windowed=True,
@@ -64,7 +65,7 @@ coll = COLLECT(exe,
                a.zipfiles,
                a.datas,
                strip=False,
-               upx=False,
+               upx=True,
                name='isogeo2office',
                icon='img\\logo_isogeo.gif'
                )
