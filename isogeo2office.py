@@ -531,7 +531,7 @@ class Isogeo2office(Tk):
                                                               share_details.get("urlToken"))
 
             # Testing URL
-            request = requests.get(url_oc)
+            request = requests.head(url_oc)
             if request.status_code != 200:
                 logger.info("No OpenCatalog set for this share: " + share_url)
                 li_without_oc.append(share_url)

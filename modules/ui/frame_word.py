@@ -73,7 +73,7 @@ class FrameWord(Labelframe):
         ico_path = path.normpath(path.join(path.abspath(main_path),
                                  "img/logo_word2013.gif"))
         self.logo_word = PhotoImage(master=self,
-                                    ile=ico_path)
+                                    file=ico_path)
         logo_word = Label(self, borderwidth=2, image=self.logo_word)
 
         # pick a template
