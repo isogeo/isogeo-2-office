@@ -1,6 +1,5 @@
 # -*- coding: UTF-8 -*-
-#!/usr/bin/env python
-from __future__ import (absolute_import, print_function, unicode_literals)
+
 # ------------------------------------------------------------------------------
 # Name:         Isogeo to Microsoft Excel 2010
 # Purpose:      Get metadatas from an Isogeo share and store it into
@@ -17,10 +16,6 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 # ##############################################################################
 # ########## Libraries #############
 # ##################################
-
-# Python 2 and 3 compatibility
-# from future.standard_library import install_aliases
-# install_aliases()
 
 # Standard library
 from datetime import datetime
@@ -39,8 +34,7 @@ from isogeo_pysdk import Isogeo
 from isogeo_pysdk import IsogeoTranslator
 from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
-from openpyxl.styles import NamedStyle, Font, Alignment
-from openpyxl.worksheet.properties import WorksheetProperties
+from openpyxl.styles import NamedStyle, Alignment
 
 # custom submodules
 try:
@@ -61,7 +55,8 @@ logger = logging.getLogger("isogeo2office")
 
 
 class Isogeo2xlsx(Workbook):
-    """ Used to store Isogeo API results into an Excel worksheet (.xlsx)
+    """
+        Used to store Isogeo API results into an Excel worksheet (.xlsx)
     """
     cols_v = ["Titre",  # A
               "Nom",  # B
@@ -410,7 +405,8 @@ class Isogeo2xlsx(Workbook):
             self.store_md_resource(metadata, self.ws_rz, self.idx_rz)
             return
         else:
-            print("Type of metadata is not recognized/handled: " + metadata.get("type"))
+            logger.error("Type of metadata is not recognized/handled: "
+                         + metadata.get("type"))
             pass
         # end of method
         return
@@ -490,7 +486,7 @@ class Isogeo2xlsx(Workbook):
         if md.get("created"):
             data_created = arrow.get(md.get("created"))
             data_created = "{0}".format(data_created.format("DD/MM/YYYY",
-                                                                  "fr_FR"))
+                                                            "fr_FR"))
         else:
             data_created = ""
         ws["O{}".format(idx)] = data_created
@@ -502,7 +498,7 @@ class Isogeo2xlsx(Workbook):
         if md.get("modified"):
             data_updated = arrow.get(md.get("modified"))
             data_updated = "{0}".format(data_updated.format("DD/MM/YYYY",
-                                                                  "fr_FR"))
+                                                            "fr_FR"))
         else:
             data_updated = ""
         ws["Q{}".format(idx)] = data_updated
@@ -513,9 +509,10 @@ class Isogeo2xlsx(Workbook):
             format_lbl = next(v for k, v in tags.items() if 'format:' in k)
         else:
             format_lbl = ""
-        ws["S{}".format(idx)] = u"{0} ({1} - {2})".format(format_lbl,
-                                                          md.get("formatVersion", "NR"),
-                                                          md.get("encoding", "NR"))
+        ws["S{}".format(idx)] = "{0} ({1} - {2})"\
+                                .format(format_lbl,
+                                        md.get("formatVersion", "NR"),
+                                        md.get("encoding", "NR"))
 
         # SRS
         srs = md.setdefault("coordinate-system", {"name": "NR", "code": "NR"})
@@ -577,15 +574,17 @@ class Isogeo2xlsx(Workbook):
             spec["name"] = s_in.get("specification").get("name")
             spec["link"] = s_in.get("specification").get("link")
             # make data human readable
-            spec_date = arrow.get(s_in.get("specification").get("published")[:19])
+            spec_date = arrow.get(s_in.get("specification")
+                                      .get("published")[:19])
             spec_date = "{0}".format(spec_date.format(self.dates_fmt,
                                                       self.locale_fmt))
             spec["date"] = spec_date
             # store into the final list
-            specs_out.append("{} {} {} - {}".format(spec.get("name"),
-                                                      spec.get("date"),
-                                                      spec.get("link"),
-                                                      spec.get("conformity")))
+            specs_out.append("{} {} {} - {}"
+                             .format(spec.get("name"),
+                                     spec.get("date"),
+                                     spec.get("link"),
+                                     spec.get("conformity")))
         ws["AB{}".format(idx)] = " ;\n".join(specs_out)
 
         # topology
@@ -606,10 +605,11 @@ class Isogeo2xlsx(Workbook):
                 cgu["name"] = self.tr("conditions", "noLicense")
 
             # store into the final list
-            cgus_out.append("{} {}. {} {}".format(cgu.get("name"),
-                                                         cgu.get("description", ""),
-                                                         cgu.get("content", ""),
-                                                         cgu.get("link", "")))
+            cgus_out.append("{} {}. {} {}"
+                            .format(cgu.get("name"),
+                                    cgu.get("description", ""),
+                                    cgu.get("content", ""),
+                                    cgu.get("link", "")))
         ws["AD{}".format(idx)] = " ;\n".join(cgus_out)
 
         # ---- LIMITATIONS # -------------------------------------------------
@@ -622,7 +622,8 @@ class Isogeo2xlsx(Workbook):
             limitation["type"] = self.tr("limitations", l_in.get("type"))
             # legal type
             if l_in.get("type") == "legal":
-                limitation["restriction"] = self.tr("restrictions", l_in.get("restriction"))
+                limitation["restriction"] = self.tr("restrictions",
+                                                    l_in.get("restriction"))
             else:
                 pass
             # INSPIRE precision
@@ -633,23 +634,30 @@ class Isogeo2xlsx(Workbook):
                 pass
 
             # store into the final list
-            lims_out.append("{} {}. {} {} {}".format(limitation.get("type"),
-                                                    limitation.get("description", ""),
-                                                    limitation.get("restriction", ""),
-                                                    limitation.get("content", ""),
-                                                    limitation.get("inspire", "")))
+            lims_out.append("{} {}. {} {} {}"
+                            .format(limitation.get("type"),
+                                    limitation.get("description", ""),
+                                    limitation.get("restriction", ""),
+                                    limitation.get("content", ""),
+                                    limitation.get("inspire", "")))
 
         ws["AE{}".format(idx)] = " ;\n".join(lims_out)
 
         # CONTACTS
         contacts = md.get("contacts")
         if len(contacts):
-            contacts_pt_cct = ["{0} ({1})".format(contact.get("contact").get("name"),
-                                                  contact.get("contact").get("email"))\
-                               for contact in contacts if contact.get("role") == "pointOfContact"]
-            contacts_other_cct = ["{0} ({1})".format(contact.get("contact").get("name"),
-                                                     contact.get("contact").get("email"))\
-                                  for contact in contacts if contact.get("role") != "pointOfContact"]
+            contacts_pt_cct = ["{0} ({1})".format(contact.get("contact")
+                                                         .get("name"),
+                                                  contact.get("contact")
+                                                         .get("email"))
+                               for contact in contacts
+                               if contact.get("role") == "pointOfContact"]
+            contacts_other_cct = ["{0} ({1})".format(contact.get("contact")
+                                                            .get("name"),
+                                                     contact.get("contact")
+                                                            .get("email"))\
+                                  for contact in contacts
+                                  if contact.get("role") != "pointOfContact"]
             ws["AF{}".format(idx)] = len(contacts)
             ws["AG{}".format(idx)] = " ;\n".join(contacts_pt_cct)
             ws["AH{}".format(idx)] = " ;\n".join(contacts_other_cct)
@@ -664,8 +672,9 @@ class Isogeo2xlsx(Workbook):
         ws["AK{}".format(idx)] = "action:other" in tags
 
         # LINKS
-        link_edit = r'=HYPERLINK("{0}","{1}")'.format("https://app.isogeo.com/resources/" + md.get("_id"),
-                                                      "Editer")
+        link_edit = r'=HYPERLINK("{0}","{1}")'\
+                    .format("https://app.isogeo.com/resources/" + md.get("_id"),
+                            "Editer")
         ws["AL{}".format(idx)] = link_edit
         ws["AL{}".format(idx)].style = "Hyperlink"
 
@@ -714,8 +723,9 @@ class Isogeo2xlsx(Workbook):
         ws["AH{}".format(idx)].style = "wrap"
 
         # LOG
-        logger.info("Vector metadata stored: {} ({})".format(md.get("name"),
-                                                              md.get("_id")))
+        logger.info("Vector metadata stored: {} ({})"
+                    .format(md.get("name"),
+                            md.get("_id")))
 
         # end of method
         return

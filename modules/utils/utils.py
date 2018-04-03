@@ -1,6 +1,5 @@
 # -*- coding: UTF-8 -*-
-#!/usr/bin/env python
-from __future__ import (absolute_import, print_function, unicode_literals)
+
 # ----------------------------------------------------------------------------
 # Name:         isogeo2office useful methods
 # Purpose:      externalize util methods from isogeo2office
@@ -16,10 +15,6 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 # ########## Libraries #############
 # ##################################
 
-# Python 2 and 3 compatibility
-from future.standard_library import install_aliases
-install_aliases()
-
 # Standard library
 from collections import OrderedDict
 from configparser import SafeConfigParser
@@ -34,15 +29,15 @@ from time import sleep
 from webbrowser import open_new_tab
 from xml.sax.saxutils import escape  # '<' -> '&lt;'
 
+# 3rd party
+from isogeo_pysdk import IsogeoUtils
+
 # Depending on operating system
 if opersys == 'win32':
     """ windows """
     from os import startfile        # to open a folder/file
 else:
     pass
-
-# 3rd party
-from isogeo_pysdk import IsogeoUtils
 
 # ##############################################################################
 # ############ Globals ############

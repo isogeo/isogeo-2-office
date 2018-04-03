@@ -80,9 +80,9 @@ class FrameXml(Labelframe):
                                   variable=self.opt_zip)
         lb_out_xml_prefix = Label(self, text=_("File prefix: "))
         lb_out_xml_uid = Label(self, text=_("UID chars:\n"
-                                              "(0 - 8)"))
+                                            "(0 - 8)"))
         lb_out_xml_date = Label(self, text=_("Timestamp:\n"
-                                               "(0=no, 1=date, 2=datetime)"))
+                                             "(0=no, 1=date, 2=datetime)"))
 
         ent_out_xml_prefix = Entry(self, textvariable=self.out_prefix)
         ent_out_xml_uid = Entry(self, textvariable=self.opt_id,
@@ -109,10 +109,10 @@ class FrameXml(Labelframe):
         ent_out_xml_date.grid(row=2, column=5, padx=2, pady=2, sticky="E")
         caz_zip_xml.grid(row=3, column=2, columnspan=3, padx=2, pady=2, sticky="WE")
 
+
 # #############################################################################
 # ##### Stand alone program ########
 # ##################################
-
 if __name__ == '__main__':
     """To test"""
     root = Tk()

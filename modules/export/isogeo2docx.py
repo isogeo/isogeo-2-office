@@ -1,6 +1,5 @@
 # -*- coding: UTF-8 -*-
-#!/usr/bin/env python
-from __future__ import (absolute_import, print_function, unicode_literals)
+
 # ------------------------------------------------------------------------------
 # Name:         Isogeo to Microsoft Word 2010
 # Purpose:      Get metadatas from an Isogeo share and store it into
@@ -28,7 +27,7 @@ from xml.sax.saxutils import escape  # '<' -> '&lt;'
 # 3rd party library
 import arrow
 from docxtpl import DocxTemplate, etree, InlineImage
-from docx.shared import Mm, Inches, Pt
+from docx.shared import Mm
 from isogeo_pysdk import Isogeo
 from isogeo_pysdk import IsogeoTranslator
 
@@ -336,61 +335,72 @@ class Isogeo2docx(object):
                                         md_updated.humanize(locale=self.locale_fmt))
 
         # FILLFULLING THE TEMPLATE #
-        context = {
-                  'varThumbnail': InlineImage(docx_template, thumb_path, width=Mm(20)),
-                  'varTitle': self.clean_xml(md.get("title", self.missing_values())),
-                  'varAbstract': self.clean_xml(md.get("abstract", self.missing_values())),
-                  'varNameTech': md.get("name", self.missing_values()),
-                  'varCollectContext': self.clean_xml(md.get("collectionContext", self.missing_values())),
-                  'varCollectMethod': self.clean_xml(md.get("collectionMethod", self.missing_values())),
-                  'varDataDtCrea': data_created,
-                  'varDataDtUpda': data_updated,
-                  'varDataDtPubl': data_published,
-                  'varValidityStart': valid_start,
-                  'varValidityEnd': valid_end,
-                  'validityComment': self.clean_xml(valid_com),
-                  'varFormat': format_version,
-                  'varGeometry': md.get("geometry", self.missing_values()),
-                  'varObjectsCount': md.get("features", self.missing_values()),
-                  'varKeywords': " ; ".join(li_motscles),
-                  'varKeywordsCount': len(li_motscles),
-                  'varType': resource_type,
-                  'varOwner': owner,
-                  'varScale': md.get("scale", self.missing_values()),
-                  'varTopologyInfo': self.clean_xml(md.get("topologicalConsistency", self.missing_values())),
-                  'varInspireTheme': " ; ".join(li_theminspire),
-                  'varInspireConformity': inspire_valid,
-                  'varLimitations': lims_out,
-                  'varCGUS': cgus_out,
-                  'varSpecifications': specs_out,
-                  'varContactsCount': len(contacts_in),
-                  'varContactsDetails': contacts_out,
-                  'varSRS': srs,
-                  'varPath': localplace,
-                  'varFieldsCount': len(fields),
-                  'varFields': fields_out,
-                  'varEventsCount': len(events),
-                  'varEvents': events,
-                  'varMdDtCrea': md_created,
-                  'varMdDtUpda': md_updated,
-                  'varMdDtExp': datetime.now().strftime("%a %d %B %Y (%Hh%M)"),
-                  'varViewOC': link_visu,
-                  'varEditAPP': link_edit,
-                  }
+        context = {'varThumbnail': InlineImage(docx_template,
+                                               thumb_path,
+                                               width=Mm(20)),
+                   'varTitle': self.clean_xml(md.get("title",
+                                              self.missing_values())),
+                   'varAbstract': self.clean_xml(md.get("abstract",
+                                                 self.missing_values())),
+                   'varNameTech': md.get("name", self.missing_values()),
+                   'varCollectContext': self.clean_xml(md.get("collectionContext",
+                                                       self.missing_values())),
+                   'varCollectMethod': self.clean_xml(md.get("collectionMethod",
+                                                      self.missing_values())),
+                   'varDataDtCrea': data_created,
+                   'varDataDtUpda': data_updated,
+                   'varDataDtPubl': data_published,
+                   'varValidityStart': valid_start,
+                   'varValidityEnd': valid_end,
+                   'validityComment': self.clean_xml(valid_com),
+                   'varFormat': format_version,
+                   'varGeometry': md.get("geometry", self.missing_values()),
+                   'varObjectsCount': md.get("features", self.missing_values()),
+                   'varKeywords': " ; ".join(li_motscles),
+                   'varKeywordsCount': len(li_motscles),
+                   'varType': resource_type,
+                   'varOwner': owner,
+                   'varScale': md.get("scale", self.missing_values()),
+                   'varTopologyInfo': self.clean_xml(md.get("topologicalConsistency",
+                                                     self.missing_values())),
+                   'varInspireTheme': " ; ".join(li_theminspire),
+                   'varInspireConformity': inspire_valid,
+                   'varLimitations': lims_out,
+                   'varCGUS': cgus_out,
+                   'varSpecifications': specs_out,
+                   'varContactsCount': len(contacts_in),
+                   'varContactsDetails': contacts_out,
+                   'varSRS': srs,
+                   'varPath': localplace,
+                   'varFieldsCount': len(fields),
+                   'varFields': fields_out,
+                   'varEventsCount': len(events),
+                   'varEvents': events,
+                   'varMdDtCrea': md_created,
+                   'varMdDtUpda': md_updated,
+                   'varMdDtExp': datetime.now()
+                                         .strftime("%a %d %B %Y (%Hh%M)"),
+                   'varViewOC': link_visu,
+                   'varEditAPP': link_edit,
+                   }
 
         # fillfull file
         try:
             docx_template.render(context)
-            logger.info("Vector metadata stored: {} ({})".format(md.get("name"),
-                                                                  md.get("_id")))
+            logger.info("Vector metadata stored: {} ({})"
+                        .format(md.get("name"),
+                                md.get("_id")))
         except etree.XMLSyntaxError as e:
             logger.error("Invalid character in XML: {}. "
-                          "Any special character (<, <, &...)? Check: {}".format(e, link_edit))
+                         "Any special character (<, <, &...)? Check: {}"
+                         .format(e, link_edit))
         except (UnicodeEncodeError, UnicodeDecodeError) as e:
             logger.error("Encoding error: {}. "
-                          "Any special character (<, <, &...)? Check: {}".format(e, link_edit))
+                         "Any special character (<, <, &...)? Check: {}"
+                         .format(e, link_edit))
         except Exception as e:
-            logger.error("Unexpected error: {}. Check: {}".format(e, link_edit))
+            logger.error("Unexpected error: {}. Check: {}"
+                         .format(e, link_edit))
 
         # end of function
         return
@@ -449,12 +459,13 @@ class Isogeo2docx(object):
             pass
         return clean_version
 
+
 # ###############################################################################
 # ###### Stand alone program ########
 # ###################################
-
 if __name__ == '__main__':
-    """ Standalone execution and tests
+    """
+        Standalone execution and tests
     """
     # ------------ Specific imports ---------------------
     from ConfigParser import SafeConfigParser   # to manage options.ini
@@ -491,7 +502,7 @@ if __name__ == '__main__':
                                    sub_resources=isogeo.sub_resources_available)
 
     # ------------ REAL START ----------------------------
-    url_oc = "http://open.isogeo.com/s/c502e8f7c9da4c3aacdf3d905672d54c/Q4SvPfiIIslbdwkbWRFJLk7XWo4G0/"
+    url_oc = "https://open.isogeo.com/s/c502e8f7c9da4c3aacdf3d905672d54c/Q4SvPfiIIslbdwkbWRFJLk7XWo4G0/"
     toDocx = Isogeo2docx()
 
     for md in search_results.get("results"):

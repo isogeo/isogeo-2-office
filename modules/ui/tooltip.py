@@ -34,11 +34,11 @@ class ToolTip(Toplevel):
         self.overrideredirect(1)    # window without borders
         self.transient()
         # label creation
-        l = Label(self, text=message, bg="white", justify="left")
+        lbl = Label(self, text=message, bg="white", justify="left")
         # update & place
-        l.update_idletasks()
-        l.pack()
-        l.update_idletasks()
+        lbl.update_idletasks()
+        lbl.pack()
+        lbl.update_idletasks()
         # check if an image has been given
         if image == "":
             pass
@@ -47,8 +47,8 @@ class ToolTip(Toplevel):
             thumb = Label(self, image=self.photo)
             thumb.pack()
         # get the default width & height
-        self.tipwidth = l.winfo_width()
-        self.tipheight = l.winfo_height()
+        self.tipwidth = lbl.winfo_width()
+        self.tipheight = lbl.winfo_height()
         # events handling
         self.parent.bind('<Enter>', self.delay)
         self.parent.bind('<Button-1>', self.undisplay)

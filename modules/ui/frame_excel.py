@@ -114,10 +114,10 @@ class FrameExcel(Labelframe):
         caz_fillfull.grid(row=4, column=4, padx=2, pady=2)
         caz_inspire.grid(row=4, column=5, padx=2, pady=2, sticky="E")
 
+
 # #############################################################################
 # ##### Stand alone program ########
 # ##################################
-
 if __name__ == '__main__':
     """To test"""
     root = Tk()

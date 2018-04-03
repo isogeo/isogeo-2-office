@@ -146,15 +146,15 @@ class IsogeoAppAuth(Tk):
         # end of method
         return
 
+
 # ###############################################################################
 # ###### Stand alone program ########
 # ###################################
-
 if __name__ == '__main__':
     """ standalone execution
     """
     app = IsogeoAppAuth(prev_id="Here comes the client ID",
                         prev_secret="Here comes the client secret",
-                        lang = "fr_FR")
+                        lang="fr_FR")
     app.mainloop()
     print("New oAuth2 parameters: ", app.li_dest)

@@ -73,7 +73,7 @@ class FrameWord(Labelframe):
         ico_path = path.normpath(path.join(path.abspath(main_path),
                                  "img/logo_word2013.gif"))
         self.logo_word = PhotoImage(master=self,
-                                     file=ico_path)
+                                    ile=ico_path)
         logo_word = Label(self, borderwidth=2, image=self.logo_word)
 
         # pick a template
@@ -85,7 +85,7 @@ class FrameWord(Labelframe):
 
         prev_tpl = ""
         # prev_tpl = self.settings.get("word").get("word_tpl")
-        cb_available_tpl.current(li_tpls.index(prev_tpl)\
+        cb_available_tpl.current(li_tpls.index(prev_tpl)
                                  if prev_tpl in li_tpls else 0)
         # specific options
         lb_out_word_prefix = Label(self, text=_("File prefix: "))
@@ -121,10 +121,10 @@ class FrameWord(Labelframe):
         lb_out_word_date.grid(row=3, column=3, padx=3, pady=2, sticky="W")
         ent_out_word_date.grid(row=3, column=4, padx=2, pady=2, sticky="W")
 
+
 # #############################################################################
 # ##### Stand alone program ########
 # ##################################
-
 if __name__ == '__main__':
     """To test"""
     root = Tk()

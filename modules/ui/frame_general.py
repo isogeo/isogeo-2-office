@@ -103,10 +103,10 @@ class FrameGlobal(Frame):
                           column=4, padx=2, pady=2,
                           sticky="NWE")
 
+
 # #############################################################################
 # ##### Stand alone program ########
 # ##################################
-
 if __name__ == '__main__':
     """To test"""
     root = Tk()
