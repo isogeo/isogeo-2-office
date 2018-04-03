@@ -13,7 +13,26 @@ install:
 
 # run tests
 script:
-  - python -m unittest discover
+  # unit tests
+  #- python -m unittest discover
+  - coverage run -m unittest discover -s tests/
+  # main
   - pycodestyle isogeo2office.py --ignore="E265,E501" --statistics --show-source
-  # - pycodestyle isogeo_pysdk/checker.py --ignore="E265,E501" --statistics --show-source
-  # - pycodestyle isogeo_pysdk/utils.py --ignore="E265,E501" --statistics --show-source
+  # export modules
+  - pycodestyle modules/export/isogeo2docx.py --ignore="E265,E501" --statistics --show-source
+  - pycodestyle modules/export/isogeo2xlsx.py --ignore="E265,E501" --statistics --show-source
+  - pycodestyle modules/export/isogeo_stats.py --ignore="E265,E501" --statistics --show-source
+  # UI
+  - pycodestyle modules/ui/tooltip.py --ignore="E265,E501" --statistics --show-source
+  - pycodestyle modules/ui/frame_excel.py --ignore="E265,E501" --statistics --show-source
+  - pycodestyle modules/ui/frame_general.py --ignore="E265,E501" --statistics --show-source
+  - pycodestyle modules/ui/frame_word.py --ignore="E265,E501" --statistics --show-source
+  - pycodestyle modules/ui/frame_xml.py --ignore="E265,E501" --statistics --show-source
+  - pycodestyle modules/ui/ui_app_settings.py --ignore="E265,E501" --statistics --show-source
+  # utils
+  - pycodestyle modules/utils/utils.py --ignore="E265,E501" --statistics --show-source
+
+# coverage reporting
+after_success:
+- codecov
+
