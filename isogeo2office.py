@@ -636,7 +636,8 @@ class Isogeo2office(Tk):
                           dashboard=self.fr_excel.opt_dashboard.get(),
                           attributes=self.fr_excel.opt_attributes.get(),
                           fillfull=self.fr_excel.opt_fillfull.get(),
-                          inspire=self.fr_excel.opt_inspire.get())
+                          inspire=self.fr_excel.opt_inspire.get()
+                          )
 
         # parsing metadata
         for md in self.search_results.get('results'):
@@ -653,9 +654,13 @@ class Isogeo2office(Tk):
         wb.tunning_worksheets()
 
         # special sheets
+        if self.fr_excel.opt_attributes.get():
+            wb.analisis_attributes()
+        else:
+            pass
         if self.fr_excel.opt_fillfull.get():
             wb.ws_f["A1"] = self.stats.fillfull()
-            print(self.stats.md_empty_fields)
+            # print(self.stats.md_empty_fields)
         else:
             pass
         if self.fr_excel.opt_dashboard.get():

@@ -18,6 +18,8 @@
 # ##################################
 
 # Standard library
+from collections.abc import KeysView
+from collections import Counter
 from datetime import datetime
 try:
     from itertools import zip_longest
@@ -200,8 +202,15 @@ class Isogeo2xlsx(Workbook):
                "MD - Langue",  # X
                ]
 
+    cols_fa = ["Nom",  # A
+               "Occurrences",  # B
+               ]
+
     def __init__(self, lang="FR", url_base=""):
-        """ Instanciating the output workbook
+        """Instanciating the output workbook.
+
+        :param str lang: selected language for output
+        :param str url_base: base url to format edit and view links
         """
         super(Isogeo2xlsx, self).__init__()
         # super(Isogeo2xlsx, self).__init__(write_only=True)
@@ -235,14 +244,23 @@ class Isogeo2xlsx(Workbook):
 
     # ------------ Setting workbook ---------------------
 
-    def set_worksheets(self, auto=None, vector=1,
-                       raster=1, service=1, resource=1,
-                       dashboard=0, attributes=0, fillfull=0, inspire=0):
+    def set_worksheets(self, auto: list=None, vector: bool=1,
+                       raster: bool=1, service: bool=1, resource: bool=1,
+                       dashboard: bool=0, attributes: bool=0,
+                       fillfull: bool=0, inspire: bool=0):
         """Adds new sheets depending on present metadata types.
 
-        auto: typically auto=search_results.get('tags').keys()
+        :param list auto: typically auto=search_results.get('tags').keys()
+        :param bool vector: add vector sheet
+        :param bool raster: add raster sheet
+        :param bool service: add service sheet
+        :param bool resource: add resource sheet
+        :param bool dashboard: add dashboard sheet
+        :param bool attributes: add attributes sheet - only if vector is True too
+        :param bool fillfull: add fillfull sheet
+        :param bool inspire: add inspire sheet
         """
-        if type(auto) == list:
+        if isinstance(auto, KeysView):
             logger.info("Automatic sheets creation based on tags")
             if "type:vector-dataset" in auto:
                 vector = 1
@@ -264,7 +282,9 @@ class Isogeo2xlsx(Workbook):
                 service = 0
                 pass
         else:
-            pass
+            raise TypeError("'auto' must be a KeysView (dict.keys()),"
+                            " from Isogeo search request, not {}"
+                            .format(type(auto)))
 
         # SHEETS & HEADERS
         if dashboard:
@@ -325,7 +345,14 @@ class Isogeo2xlsx(Workbook):
             if attributes:
                 self.ws_fa = self.create_sheet(title="Attributs")
                 self.idx_fa = 1
-                logger.info("Festure attributes sheet added")
+                self.fa_all = []
+                # headers
+                self.ws_fa.append([i for i in self.cols_fa])
+                # styling
+                for i in self.cols_fa:
+                    self.ws_fa.cell(row=1,
+                                    column=self.cols_fa.index(i) + 1).style = "Headline 2"
+                logger.info("Feature attributes sheet added")
             else:
                 pass
         else:
@@ -382,8 +409,14 @@ class Isogeo2xlsx(Workbook):
     # ------------ Writing metadata ---------------------
 
     def store_metadatas(self, metadata):
-        """ TO DOCUMENT
+        """Write metadata into the worksheet.
+
+        :param dict metadata: metadata to write
         """
+        # check input
+        if not isinstance(metadata, dict):
+            raise TypeError()
+        # store depending on metadata type
         if metadata.get("type") == "vectorDataset":
             self.idx_v += 1
             self.stats.md_types_repartition["vector"] += 1
@@ -556,6 +589,11 @@ class Isogeo2xlsx(Workbook):
                                                     "description" in field.keys())
                                 for field in fields])
             ws["AA{}".format(idx)] = " ;\n".join(fields_cct)
+            # if attributes analisis is activated, append fields dict
+            if self.ws_fa:
+                self.fa_all.append(fields)
+            else:
+                pass
         else:
             logger.info("Vector dataset without any feature attribute")
             pass
@@ -1420,11 +1458,42 @@ class Isogeo2xlsx(Workbook):
         # end of method
         return
 
-    # ------------ Writing metadata ---------------------
+    # ------------ Analisis --------------------------------------------------
+    def analisis_attributes(self):
+        """Perform feature attributes analisis and write results into the
+        dedicated worksheet."""
+        # lcoal arrays
+        fa_names = []
+        fa_types = []
+        fa_alias = []
+        fa_descr = []
+
+        # parsing
+        for dico_fa in self.fa_all:
+            for fa in dico_fa:
+                fa_names.append(fa.get("name"))
+                # fa_alias.append(fa.get("alias", "NR"))
+                # fa_types.append(fa.get("dataType"))
+                # fa_descr.append(fa.get("description", "NR"))
+                del fa
+
+        # stats
+        frq_names = Counter(fa_names)
+        frq_alias = Counter(fa_alias)
+        frq_types = Counter(fa_types)
+        frq_descr = Counter(fa_descr)
+
+        # write
+        ws = self.ws_fa
+        for fa in frq_names:
+            self.idx_fa += 1
+            ws["A{}".format(self.idx_fa)] = fa
+            ws["B{}".format(self.idx_fa)] = frq_names.get(fa)
+
+    # ------------ Customize worksheet ---------------------------------------
 
     def tunning_worksheets(self):
-        """ CLEAN UP & TUNNING
-        """
+        """Automate"""
         for sheet in self.worksheets:
             # Freezing panes
             c_freezed = sheet['B2']
@@ -1486,10 +1555,10 @@ class Isogeo2xlsx(Workbook):
             pass
         return clean_version
 
+
 # #############################################################################
 # ##### Stand alone program ########
 # ##################################
-
 if __name__ == '__main__':
     """ Standalone execution and tests
     """
