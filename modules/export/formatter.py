@@ -57,7 +57,16 @@ class IsogeoFormatter(object):
             str_for_missing_dates
             )
         """
+        # locale
         self.lang = lang
+        if lang.lower() == "fr":
+            self.dates_fmt = "DD/MM/YYYY"
+            self.locale_fmt = "fr_FR"
+        else:
+            self.dates_fmt = "YYYY/MM/DD"
+            self.locale_fmt = "uk_UK"
+
+        # store params and imports as attributes
         self.output_type = output_type
         self.defs = default_values
         self.tr = IsogeoTranslator(lang).tr
@@ -122,6 +131,38 @@ class IsogeoFormatter(object):
                                                      limitation.get("inspire", "")))
         # return formatted result
         return lims_out
+
+    def specifications(self, md_specifications: dict):
+        """Render input metadata specifications as a new list.
+
+        :param dict md_specifications: input dictionary extracted from an Isogeo metadata
+        """
+        specs_out = []
+        for s_in in md_specifications:
+            spec = {}
+            # translate specification conformity
+            if s_in.get("conformant"):
+                spec["conformity"] = self.tr("quality", "isConform")
+            else:
+                spec["conformity"] = self.tr("quality", "isNotConform")
+            # ensure other fields
+            spec["name"] = s_in.get("specification").get("name")
+            spec["link"] = s_in.get("specification").get("link")
+            # make data human readable
+            spec_date = arrow.get(s_in.get("specification")
+                                      .get("published")[:19])
+            spec_date = "{0}".format(spec_date.format(self.dates_fmt,
+                                                      self.locale_fmt))
+            spec["date"] = spec_date
+            # store into the final list
+            specs_out.append("{} {} {} - {}"
+                             .format(spec.get("name"),
+                                     spec.get("date"),
+                                     spec.get("link"),
+                                     spec.get("conformity")))
+
+        # return formatted result
+        return specs_out
 
     # ------------ Prevent encoding errors ------------------------------------
     def remove_accents(self, input_str, substitute=u""):

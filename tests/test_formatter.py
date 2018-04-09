@@ -68,8 +68,10 @@ class TestSearch(unittest.TestCase):
         # get conditions reformatted
         cgus_in = md_cgu.get("results")[0].get("conditions", [])
         cgus_out = self.fmt.conditions(cgus_in)
+        cgus_no = self.fmt.conditions([])
         # test
         self.assertIsInstance(cgus_out, list)
+        self.assertIsInstance(cgus_no, list)
 
     def test_limitations(self):
         """Limitations formatter."""
@@ -85,8 +87,29 @@ class TestSearch(unittest.TestCase):
         # get limitations reformatted
         lims_in = md_lims.get("limitations", [])
         lims_out = self.fmt.limitations(lims_in)
+        lims_no = self.fmt.limitations([])
         # test
         self.assertIsInstance(lims_out, list)
+        self.assertIsInstance(lims_no, list)
+
+    def test_specifications(self):
+        """Limitations formatter."""
+        search = self.isogeo.search(self.bearer,
+                                    whole_share=1,
+                                    include=["specifications", ])
+        # filtered search
+        for md in search.get("results"):
+            if md.get("specifications"):
+                md_specs = md
+                break
+
+        # get limitations reformatted
+        specs_in = md_specs.get("specifications", [])
+        specs_out = self.fmt.specifications(specs_in)
+        specs_no = self.fmt.specifications([])
+        # test
+        self.assertIsInstance(specs_out, list)
+        self.assertIsInstance(specs_no, list)
 
 
 # ##############################################################################

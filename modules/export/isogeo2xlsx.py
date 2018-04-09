@@ -600,30 +600,7 @@ class Isogeo2xlsx(Workbook):
 
         # ---- SPECIFICATIONS # -----------------------------------------------
         specs_in = md.get("specifications", [])
-        specs_out = []
-        for s_in in specs_in:
-            spec = {}
-            # translate specification conformity
-            if s_in.get("conformant"):
-                spec["conformity"] = self.tr("quality", "isConform")
-            else:
-                spec["conformity"] = self.tr("quality", "isNotConform")
-            # ensure other fields
-            spec["name"] = s_in.get("specification").get("name")
-            spec["link"] = s_in.get("specification").get("link")
-            # make data human readable
-            spec_date = arrow.get(s_in.get("specification")
-                                      .get("published")[:19])
-            spec_date = "{0}".format(spec_date.format(self.dates_fmt,
-                                                      self.locale_fmt))
-            spec["date"] = spec_date
-            # store into the final list
-            specs_out.append("{} {} {} - {}"
-                             .format(spec.get("name"),
-                                     spec.get("date"),
-                                     spec.get("link"),
-                                     spec.get("conformity")))
-        ws["AB{}".format(idx)] = " ;\n".join(specs_out)
+        ws["AB{}".format(idx)] = " ;\n".join(self.fmt.specifications(specs_in))
 
         # topology
         ws["AC{}".format(idx)] = md.get("topologicalConsistency", "")
@@ -853,28 +830,8 @@ class Isogeo2xlsx(Workbook):
 
         # ---- SPECIFICATIONS # -----------------------------------------------
         specs_in = md.get("specifications", [])
-        specs_out = []
-        for s_in in specs_in:
-            spec = {}
-            # translate specification conformity
-            if s_in.get("conformant"):
-                spec["conformity"] = self.tr("quality", "isConform")
-            else:
-                spec["conformity"] = self.tr("quality", "isNotConform")
-            # ensure other fields
-            spec["name"] = s_in.get("specification").get("name")
-            spec["link"] = s_in.get("specification").get("link")
-            # make data human readable
-            spec_date = arrow.get(s_in.get("specification").get("published")[:19])
-            spec_date = "{0}".format(spec_date.format(self.dates_fmt,
-                                                      self.locale_fmt))
-            spec["date"] = spec_date
-            # store into the final list
-            specs_out.append("{} {} {} - {}".format(spec.get("name"),
-                                                    spec.get("date"),
-                                                    spec.get("link"),
-                                                    spec.get("conformity")))
-        ws["X{}".format(idx)] = " ;\n".join(specs_out)
+        ws["X{}".format(idx)] = " ;\n".join(self.fmt.specifications(specs_in))
+
         # topology
         ws["Y{}".format(idx)] = md.get("topologicalConsistency", "")
 
@@ -1056,28 +1013,7 @@ class Isogeo2xlsx(Workbook):
 
         # ---- SPECIFICATIONS # -----------------------------------------------
         specs_in = md.get("specifications", [])
-        specs_out = []
-        for s_in in specs_in:
-            spec = {}
-            # translate specification conformity
-            if s_in.get("conformant"):
-                spec["conformity"] = self.tr("quality", "isConform")
-            else:
-                spec["conformity"] = self.tr("quality", "isNotConform")
-            # ensure other fields
-            spec["name"] = s_in.get("specification").get("name")
-            spec["link"] = s_in.get("specification").get("link")
-            # make data human readable
-            spec_date = arrow.get(s_in.get("specification").get("published")[:19])
-            spec_date = "{0}".format(spec_date.format(self.dates_fmt,
-                                                      self.locale_fmt))
-            spec["date"] = spec_date
-            # store into the final list
-            specs_out.append("{} {} {} - {}".format(spec.get("name"),
-                                                    spec.get("date"),
-                                                    spec.get("link"),
-                                                    spec.get("conformity")))
-        ws["N{}".format(idx)] = " ;\n".join(specs_out)
+        ws["N{}".format(idx)] = " ;\n".join(self.fmt.specifications(specs_in))
 
         # ---- CGUs # --------------------------------------------------------
         cgus_in = md.get("conditions", [])
