@@ -31,11 +31,14 @@ from docx.shared import Mm
 from isogeo_pysdk import Isogeo
 from isogeo_pysdk import IsogeoTranslator
 
+# custom submodules
+from .formatter import IsogeoFormatter
+
 # ##############################################################################
 # ############ Globals ############
 # #################################
 
-logger = logging.getLogger("isogeo2office")  # LOG
+logger = logging.getLogger("isogeo2office")
 
 # ##############################################################################
 # ########## Classes ###############
@@ -79,8 +82,12 @@ class Isogeo2docx(object):
         else:
             self.dates_fmt = "YYYY/MM/DD"
             self.locale_fmt = "uk_UK"
+
         # TRANSLATIONS
         self.tr = IsogeoTranslator(lang).tr
+
+        # FORMATTER
+        self.fmt = IsogeoFormatter(output_type="Excel")
 
     def md2docx(self, docx_template, md, url_base, thumb_path=""):
         """Parse Isogeo metadatas and replace docx template."""
@@ -366,7 +373,7 @@ class Isogeo2docx(object):
                    'varInspireTheme': " ; ".join(li_theminspire),
                    'varInspireConformity': inspire_valid,
                    'varLimitations': lims_out,
-                   'varCGUS': cgus_out,
+                   'varCGUS': self.fmt.conditions(cgus_in),
                    'varSpecifications': specs_out,
                    'varContactsCount': len(contacts_in),
                    'varContactsDetails': contacts_out,

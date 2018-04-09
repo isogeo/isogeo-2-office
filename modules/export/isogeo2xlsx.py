@@ -39,16 +39,13 @@ from openpyxl.utils import get_column_letter
 from openpyxl.styles import NamedStyle, Alignment
 
 # custom submodules
-try:
-    from . import isogeo_stats
-except (ValueError, SystemError):
-    import isogeo_stats
+from .isogeo_stats import IsogeoStats
+from .formatter import IsogeoFormatter
 
 # ##############################################################################
 # ############ Globals ############
 # #################################
 
-# LOG
 logger = logging.getLogger("isogeo2office")
 
 # ##############################################################################
@@ -206,7 +203,7 @@ class Isogeo2xlsx(Workbook):
                "Occurrences",  # B
                ]
 
-    def __init__(self, lang="FR", url_base=""):
+    def __init__(self, lang: str ="FR", url_base: str =""):
         """Instanciating the output workbook.
 
         :param str lang: selected language for output
@@ -215,7 +212,7 @@ class Isogeo2xlsx(Workbook):
         super(Isogeo2xlsx, self).__init__()
         # super(Isogeo2xlsx, self).__init__(write_only=True)
 
-        self.stats = isogeo_stats.IsogeoStats()
+        self.stats = IsogeoStats()
         # OpenCatalog url
         self.url_base = url_base
 
@@ -239,8 +236,12 @@ class Isogeo2xlsx(Workbook):
             s_date.number_format = "yyyy/mm/dd"
             self.dates_fmt = "YYYY/MM/DD"
             self.locale_fmt = "uk_UK"
+
         # TRANSLATIONS
         self.tr = IsogeoTranslator(lang).tr
+
+        # FORMATTER
+        self.fmt = IsogeoFormatter(output_type="Excel")
 
     # ------------ Setting workbook ---------------------
 
@@ -408,7 +409,7 @@ class Isogeo2xlsx(Workbook):
 
     # ------------ Writing metadata ---------------------
 
-    def store_metadatas(self, metadata):
+    def store_metadatas(self, metadata: dict):
         """Write metadata into the worksheet.
 
         :param dict metadata: metadata to write
@@ -443,7 +444,7 @@ class Isogeo2xlsx(Workbook):
         # end of method
         return
 
-    def store_md_vector(self, md, ws, idx):
+    def store_md_vector(self, md: dict, ws, idx: int):
         """ TO DOCUMENT
         """
         # variables
@@ -629,56 +630,11 @@ class Isogeo2xlsx(Workbook):
 
         # ---- CGUs # --------------------------------------------------------
         cgus_in = md.get("conditions", [])
-        cgus_out = []
-        for c_in in cgus_in:
-            cgu = {}
-            # ensure other fields
-            cgu["description"] = self.clean_xml(c_in.get("description", ""))
-            if "license" in c_in.keys():
-                cgu["name"] = self.clean_xml(c_in.get("license").get("name", "NR"))
-                cgu["link"] = c_in.get("license").get("link", "")
-                cgu["content"] = self.clean_xml(c_in.get("license").get("content", ""))
-            else:
-                cgu["name"] = self.tr("conditions", "noLicense")
-
-            # store into the final list
-            cgus_out.append("{} {}. {} {}"
-                            .format(cgu.get("name"),
-                                    cgu.get("description", ""),
-                                    cgu.get("content", ""),
-                                    cgu.get("link", "")))
-        ws["AD{}".format(idx)] = " ;\n".join(cgus_out)
+        ws["AD{}".format(idx)] = " ;\n".join(self.fmt.conditions(cgus_in))
 
         # ---- LIMITATIONS # -------------------------------------------------
         lims_in = md.get("limitations", [])
-        lims_out = []
-        for l_in in lims_in:
-            limitation = {}
-            # ensure other fields
-            limitation["description"] = self.clean_xml(l_in.get("description", ""))
-            limitation["type"] = self.tr("limitations", l_in.get("type"))
-            # legal type
-            if l_in.get("type") == "legal":
-                limitation["restriction"] = self.tr("restrictions",
-                                                    l_in.get("restriction"))
-            else:
-                pass
-            # INSPIRE precision
-            if "directive" in l_in.keys():
-                limitation["inspire"] = self.clean_xml(l_in.get("directive").get("name"))
-                limitation["content"] = self.clean_xml(l_in.get("directive").get("description"))
-            else:
-                pass
-
-            # store into the final list
-            lims_out.append("{} {}. {} {} {}"
-                            .format(limitation.get("type"),
-                                    limitation.get("description", ""),
-                                    limitation.get("restriction", ""),
-                                    limitation.get("content", ""),
-                                    limitation.get("inspire", "")))
-
-        ws["AE{}".format(idx)] = " ;\n".join(lims_out)
+        ws["AE{}".format(idx)] = " ;\n".join(self.fmt.limitations(lims_in))
 
         # CONTACTS
         contacts = md.get("contacts")
@@ -924,56 +880,11 @@ class Isogeo2xlsx(Workbook):
 
         # ---- CGUs # --------------------------------------------------------
         cgus_in = md.get("conditions", [])
-        cgus_out = []
-        for c_in in cgus_in:
-            cgu = {}
-            # ensure other fields
-            cgu["description"] = self.clean_xml(c_in.get("description", ""))
-            if "license" in c_in.keys():
-                cgu["name"] = self.clean_xml(c_in.get("license").get("name", "NR"))
-                cgu["link"] = c_in.get("license").get("link", "")
-                cgu["content"] = self.clean_xml(c_in.get("license").get("content", ""))
-            else:
-                cgu["name"] = self.tr("conditions", "noLicense")
-
-            # store into the final list
-            cgus_out.append("{} {}. {} {}".format(cgu.get("name"),
-                                                  cgu.get("description", ""),
-                                                  cgu.get("content", ""),
-                                                  cgu.get("link", "")))
-        ws["Z{}".format(idx)] = " ;\n".join(cgus_out)
+        ws["Z{}".format(idx)] = " ;\n".join(self.fmt.conditions(cgus_in))
 
         # ---- LIMITATIONS # -------------------------------------------------
         lims_in = md.get("limitations", [])
-        lims_out = []
-        for l_in in lims_in:
-            limitation = {}
-            # ensure other fields
-            limitation["description"] = self.clean_xml(l_in.get("description", ""))
-            limitation["type"] = self.tr("limitations", l_in.get("type"))
-            # legal type
-            if l_in.get("type") == "legal":
-                limitation["restriction"] = self.tr("restrictions",
-                                                    l_in.get("restriction"))
-            else:
-                pass
-            # INSPIRE precision
-            if "directive" in l_in.keys():
-                limitation["inspire"] = self.clean_xml(l_in.get("directive")
-                                                           .get("name"))
-                limitation["content"] = self.clean_xml(l_in.get("directive")
-                                                           .get("description"))
-            else:
-                pass
-
-            # store into the final list
-            lims_out.append("{} {}. {} {} {}".format(limitation.get("type"),
-                                                     limitation.get("description", ""),
-                                                     limitation.get("restriction", ""),
-                                                     limitation.get("content", ""),
-                                                     limitation.get("inspire", "")))
-
-        ws["AA{}".format(idx)] = " ;\n".join(lims_out)
+        ws["AA{}".format(idx)] = " ;\n".join(self.fmt.limitations(lims_in))
 
         # CONTACTS
         contacts = md.get("contacts")
@@ -1170,54 +1081,11 @@ class Isogeo2xlsx(Workbook):
 
         # ---- CGUs # --------------------------------------------------------
         cgus_in = md.get("conditions", [])
-        cgus_out = []
-        for c_in in cgus_in:
-            cgu = {}
-            # ensure other fields
-            cgu["description"] = self.clean_xml(c_in.get("description", ""))
-            if "license" in c_in.keys():
-                cgu["name"] = self.clean_xml(c_in.get("license").get("name", "NR"))
-                cgu["link"] = c_in.get("license").get("link", "")
-                cgu["content"] = self.clean_xml(c_in.get("license").get("content", ""))
-            else:
-                cgu["name"] = self.tr("conditions", "noLicense")
-
-            # store into the final list
-            cgus_out.append("{} {}. {} {}".format(cgu.get("name"),
-                                                  cgu.get("description", ""),
-                                                  cgu.get("content", ""),
-                                                  cgu.get("link", "")))
-        ws["O{}".format(idx)] = " ;\n".join(cgus_out)
+        ws["O{}".format(idx)] = " ;\n".join(self.fmt.conditions(cgus_in))
 
         # ---- LIMITATIONS # -------------------------------------------------
         lims_in = md.get("limitations", [])
-        lims_out = []
-        for l_in in lims_in:
-            limitation = {}
-            # ensure other fields
-            limitation["description"] = self.clean_xml(l_in.get("description", ""))
-            limitation["type"] = self.tr("limitations", l_in.get("type"))
-            # legal type
-            if l_in.get("type") == "legal":
-                limitation["restriction"] = self.tr("restrictions",
-                                                    l_in.get("restriction"))
-            else:
-                pass
-            # INSPIRE precision
-            if "directive" in l_in.keys():
-                limitation["inspire"] = self.clean_xml(l_in.get("directive").get("name"))
-                limitation["content"] = self.clean_xml(l_in.get("directive").get("description"))
-            else:
-                pass
-
-            # store into the final list
-            lims_out.append("{} {}. {} {} {}".format(limitation.get("type"),
-                                                     limitation.get("description", ""),
-                                                     limitation.get("restriction", ""),
-                                                     limitation.get("content", ""),
-                                                     limitation.get("inspire", "")))
-
-        ws["P{}".format(idx)] = " ;\n".join(lims_out)
+        ws["P{}".format(idx)] = " ;\n".join(self.fmt.limitations(lims_in))
 
         # CONTACTS
         contacts = md.get("contacts")
@@ -1354,58 +1222,11 @@ class Isogeo2xlsx(Workbook):
 
         # ---- CGUs # --------------------------------------------------------
         cgus_in = md.get("conditions", [])
-        cgus_out = []
-        for c_in in cgus_in:
-            cgu = {}
-            # ensure other fields
-            cgu["description"] = self.clean_xml(c_in.get("description", ""))
-            if "license" in c_in.keys():
-                cgu["name"] = self.clean_xml(c_in.get("license")
-                                                 .get("name", "NR"))
-                cgu["link"] = c_in.get("license").get("link", "")
-                cgu["content"] = self.clean_xml(c_in.get("license")
-                                                    .get("content", ""))
-            else:
-                cgu["name"] = self.tr("conditions", "noLicense")
-
-            # store into the final list
-            cgus_out.append("{} {}. {} {}".format(cgu.get("name"),
-                                                  cgu.get("description", ""),
-                                                  cgu.get("content", ""),
-                                                  cgu.get("link", "")))
-        ws["K{}".format(idx)] = " ;\n".join(cgus_out)
+        ws["K{}".format(idx)] = " ;\n".join(self.fmt.conditions(cgus_in))
 
         # ---- LIMITATIONS # -------------------------------------------------
         lims_in = md.get("limitations", [])
-        lims_out = []
-        for l_in in lims_in:
-            limitation = {}
-            # ensure other fields
-            limitation["description"] = self.clean_xml(l_in.get("description", ""))
-            limitation["type"] = self.tr("limitations", l_in.get("type"))
-            # legal type
-            if l_in.get("type") == "legal":
-                limitation["restriction"] = self.tr("restrictions",
-                                                    l_in.get("restriction"))
-            else:
-                pass
-            # INSPIRE precision
-            if "directive" in l_in.keys():
-                limitation["inspire"] = self.clean_xml(l_in.get("directive")
-                                                           .get("name"))
-                limitation["content"] = self.clean_xml(l_in.get("directive")
-                                                           .get("description"))
-            else:
-                pass
-
-            # store into the final list
-            lims_out.append("{} {}. {} {} {}".format(limitation.get("type"),
-                                                     limitation.get("description", ""),
-                                                     limitation.get("restriction", ""),
-                                                     limitation.get("content", ""),
-                                                     limitation.get("inspire", "")))
-
-        ws["L{}".format(idx)] = " ;\n".join(lims_out)
+        ws["L{}".format(idx)] = " ;\n".join(self.fmt.limitations(lims_in))
 
         # CONTACTS
         contacts = md.get("contacts")

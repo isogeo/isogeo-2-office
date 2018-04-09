@@ -21,6 +21,7 @@ script:
   - pycodestyle modules/export/isogeo2docx.py --ignore="E265,E501" --statistics --show-source
   - pycodestyle modules/export/isogeo2xlsx.py --ignore="E265,E501" --statistics --show-source
   - pycodestyle modules/export/isogeo_stats.py --ignore="E265,E501" --statistics --show-source
+  - pycodestyle modules/export/formatter.py --ignore="E265,E501" --statistics --show-source
   # UI
   - pycodestyle modules/ui/tooltip.py --ignore="E265,E501" --statistics --show-source
   - pycodestyle modules/ui/frame_excel.py --ignore="E265,E501" --statistics --show-source
