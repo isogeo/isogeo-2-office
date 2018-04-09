@@ -438,9 +438,8 @@ class Isogeo2xlsx(Workbook):
             self.store_md_resource(metadata, self.ws_rz, self.idx_rz)
             return
         else:
-            logger.error("Type of metadata is not recognized/handled: "
-                         + metadata.get("type"))
-            pass
+            logger.error("Type of metadata is not recognized/handled: {}"
+                         .format(metadata.get("type")))
         # end of method
         return
 
@@ -693,7 +692,7 @@ class Isogeo2xlsx(Workbook):
             contacts_other_cct = ["{0} ({1})".format(contact.get("contact")
                                                             .get("name"),
                                                      contact.get("contact")
-                                                            .get("email"))\
+                                                            .get("email"))
                                   for contact in contacts
                                   if contact.get("role") != "pointOfContact"]
             ws["AF{}".format(idx)] = len(contacts)
@@ -867,8 +866,8 @@ class Isogeo2xlsx(Workbook):
         else:
             format_lbl = "NR"
         ws["S{}".format(idx)] = u"{0} ({1} - {2})".format(format_lbl,
-                                                                        md.get("formatVersion", "NR"),
-                                                                        md.get("encoding", "NR"))
+                                                          md.get("formatVersion", "NR"),
+                                                          md.get("encoding", "NR"))
 
         # SRS
         srs = md.setdefault("coordinate-system", {"name": "NR", "code": "NR"})
@@ -916,9 +915,9 @@ class Isogeo2xlsx(Workbook):
             spec["date"] = spec_date
             # store into the final list
             specs_out.append("{} {} {} - {}".format(spec.get("name"),
-                                                      spec.get("date"),
-                                                      spec.get("link"),
-                                                      spec.get("conformity")))
+                                                    spec.get("date"),
+                                                    spec.get("link"),
+                                                    spec.get("conformity")))
         ws["X{}".format(idx)] = " ;\n".join(specs_out)
         # topology
         ws["Y{}".format(idx)] = md.get("topologicalConsistency", "")
@@ -939,9 +938,9 @@ class Isogeo2xlsx(Workbook):
 
             # store into the final list
             cgus_out.append("{} {}. {} {}".format(cgu.get("name"),
-                                                         cgu.get("description", ""),
-                                                         cgu.get("content", ""),
-                                                         cgu.get("link", "")))
+                                                  cgu.get("description", ""),
+                                                  cgu.get("content", ""),
+                                                  cgu.get("link", "")))
         ws["Z{}".format(idx)] = " ;\n".join(cgus_out)
 
         # ---- LIMITATIONS # -------------------------------------------------
@@ -954,34 +953,43 @@ class Isogeo2xlsx(Workbook):
             limitation["type"] = self.tr("limitations", l_in.get("type"))
             # legal type
             if l_in.get("type") == "legal":
-                limitation["restriction"] = self.tr("restrictions", l_in.get("restriction"))
+                limitation["restriction"] = self.tr("restrictions",
+                                                    l_in.get("restriction"))
             else:
                 pass
             # INSPIRE precision
             if "directive" in l_in.keys():
-                limitation["inspire"] = self.clean_xml(l_in.get("directive").get("name"))
-                limitation["content"] = self.clean_xml(l_in.get("directive").get("description"))
+                limitation["inspire"] = self.clean_xml(l_in.get("directive")
+                                                           .get("name"))
+                limitation["content"] = self.clean_xml(l_in.get("directive")
+                                                           .get("description"))
             else:
                 pass
 
             # store into the final list
             lims_out.append("{} {}. {} {} {}".format(limitation.get("type"),
-                                                    limitation.get("description", ""),
-                                                    limitation.get("restriction", ""),
-                                                    limitation.get("content", ""),
-                                                    limitation.get("inspire", "")))
+                                                     limitation.get("description", ""),
+                                                     limitation.get("restriction", ""),
+                                                     limitation.get("content", ""),
+                                                     limitation.get("inspire", "")))
 
         ws["AA{}".format(idx)] = " ;\n".join(lims_out)
 
         # CONTACTS
         contacts = md.get("contacts")
         if len(contacts):
-            contacts_pt_cct = ["{0} ({1})".format(contact.get("contact").get("name"),
-                                                  contact.get("contact").get("email"))\
-                               for contact in contacts if contact.get("role") == "pointOfContact"]
-            contacts_other_cct = ["{0} ({1})".format(contact.get("contact").get("name"),
-                                                     contact.get("contact").get("email"))\
-                                  for contact in contacts if contact.get("role") != "pointOfContact"]
+            contacts_pt_cct = ["{0} ({1})".format(contact.get("contact")
+                                                         .get("name"),
+                                                  contact.get("contact")
+                                                         .get("email"))
+                               for contact in contacts
+                               if contact.get("role") == "pointOfContact"]
+            contacts_other_cct = ["{0} ({1})".format(contact.get("contact")
+                                                            .get("name"),
+                                                     contact.get("contact")
+                                                            .get("email"))
+                                  for contact in contacts
+                                  if contact.get("role") != "pointOfContact"]
             ws["AB{}".format(idx)] = len(contacts)
             ws["AC{}".format(idx)] = " ;\n".join(contacts_pt_cct)
             ws["AD{}".format(idx)] = " ;\n".join(contacts_other_cct)
@@ -1045,7 +1053,7 @@ class Isogeo2xlsx(Workbook):
 
         # LOG
         logger.info("Raster metadata stored: {} ({})".format(md.get("name"),
-                                                              md.get("_id")))
+                                                             md.get("_id")))
 
         # end of method
         return
@@ -1076,7 +1084,7 @@ class Isogeo2xlsx(Workbook):
         # KEYWORDS
         if "keywords" in md.keys():
             keywords = [k.get("text") for k in md.get("keywords")
-                       if k.get("_tag").startswith("keyword:is")]
+                        if k.get("_tag").startswith("keyword:is")]
             ws["F{}".format(idx)] = " ;\n".join(sorted(keywords))
         else:
             self.stats.md_empty_fields[md.get("_id")].append("keyword")
@@ -1116,7 +1124,7 @@ class Isogeo2xlsx(Workbook):
         else:
             format_lbl = "NR"
         ws["L{}".format(idx)] = u"{0} ({1})".format(format_lbl,
-                                                                  md.get("formatVersion", "NR"))
+                                                    md.get("formatVersion", "NR"))
 
         # bounding box
         bbox = md.get("envelope", None)
@@ -1155,9 +1163,9 @@ class Isogeo2xlsx(Workbook):
             spec["date"] = spec_date
             # store into the final list
             specs_out.append("{} {} {} - {}".format(spec.get("name"),
-                                                      spec.get("date"),
-                                                      spec.get("link"),
-                                                      spec.get("conformity")))
+                                                    spec.get("date"),
+                                                    spec.get("link"),
+                                                    spec.get("conformity")))
         ws["N{}".format(idx)] = " ;\n".join(specs_out)
 
         # ---- CGUs # --------------------------------------------------------
@@ -1176,9 +1184,9 @@ class Isogeo2xlsx(Workbook):
 
             # store into the final list
             cgus_out.append("{} {}. {} {}".format(cgu.get("name"),
-                                                         cgu.get("description", ""),
-                                                         cgu.get("content", ""),
-                                                         cgu.get("link", "")))
+                                                  cgu.get("description", ""),
+                                                  cgu.get("content", ""),
+                                                  cgu.get("link", "")))
         ws["O{}".format(idx)] = " ;\n".join(cgus_out)
 
         # ---- LIMITATIONS # -------------------------------------------------
@@ -1191,7 +1199,8 @@ class Isogeo2xlsx(Workbook):
             limitation["type"] = self.tr("limitations", l_in.get("type"))
             # legal type
             if l_in.get("type") == "legal":
-                limitation["restriction"] = self.tr("restrictions", l_in.get("restriction"))
+                limitation["restriction"] = self.tr("restrictions",
+                                                    l_in.get("restriction"))
             else:
                 pass
             # INSPIRE precision
@@ -1203,22 +1212,28 @@ class Isogeo2xlsx(Workbook):
 
             # store into the final list
             lims_out.append("{} {}. {} {} {}".format(limitation.get("type"),
-                                                    limitation.get("description", ""),
-                                                    limitation.get("restriction", ""),
-                                                    limitation.get("content", ""),
-                                                    limitation.get("inspire", "")))
+                                                     limitation.get("description", ""),
+                                                     limitation.get("restriction", ""),
+                                                     limitation.get("content", ""),
+                                                     limitation.get("inspire", "")))
 
         ws["P{}".format(idx)] = " ;\n".join(lims_out)
 
         # CONTACTS
         contacts = md.get("contacts")
         if len(contacts):
-            contacts_pt_cct = ["{0} ({1})".format(contact.get("contact").get("name"),
-                                                  contact.get("contact").get("email"))\
-                               for contact in contacts if contact.get("role") == "pointOfContact"]
-            contacts_other_cct = ["{0} ({1})".format(contact.get("contact").get("name"),
-                                                     contact.get("contact").get("email"))\
-                                  for contact in contacts if contact.get("role") != "pointOfContact"]
+            contacts_pt_cct = ["{0} ({1})".format(contact.get("contact")
+                                                         .get("name"),
+                                                  contact.get("contact")
+                                                         .get("email"))
+                               for contact in contacts
+                               if contact.get("role") == "pointOfContact"]
+            contacts_other_cct = ["{0} ({1})".format(contact.get("contact")
+                                                            .get("name"),
+                                                     contact.get("contact")
+                                                            .get("email"))
+                                  for contact in contacts
+                                  if contact.get("role") != "pointOfContact"]
             ws["Q{}".format(idx)] = len(contacts)
             ws["R{}".format(idx)] = " ;\n".join(contacts_pt_cct)
             ws["S{}".format(idx)] = " ;\n".join(contacts_other_cct)
@@ -1238,8 +1253,9 @@ class Isogeo2xlsx(Workbook):
         ws["W{}".format(idx)] = link_edit
         ws["W{}".format(idx)].style = "Hyperlink"
 
-        link_visu = r'=HYPERLINK("{0}","{1}")'.format(self.url_base + "/m/" + md.get("_id"),
-                                                      "Version en ligne")
+        link_visu = r'=HYPERLINK("{0}","{1}")' \
+                    .format(self.url_base + "/m/" + md.get("_id"),
+                            "Version en ligne")
 
         ws["X{}".format(idx)] = link_visu
         ws["X{}".format(idx)].style = "Hyperlink"
@@ -1277,7 +1293,7 @@ class Isogeo2xlsx(Workbook):
 
         # LOG
         logger.info("Service metadata stored: {} ({})".format(md.get("name"),
-                                                               md.get("_id")))
+                                                              md.get("_id")))
 
         # end of method
         return
@@ -1344,17 +1360,19 @@ class Isogeo2xlsx(Workbook):
             # ensure other fields
             cgu["description"] = self.clean_xml(c_in.get("description", ""))
             if "license" in c_in.keys():
-                cgu["name"] = self.clean_xml(c_in.get("license").get("name", "NR"))
+                cgu["name"] = self.clean_xml(c_in.get("license")
+                                                 .get("name", "NR"))
                 cgu["link"] = c_in.get("license").get("link", "")
-                cgu["content"] = self.clean_xml(c_in.get("license").get("content", ""))
+                cgu["content"] = self.clean_xml(c_in.get("license")
+                                                    .get("content", ""))
             else:
                 cgu["name"] = self.tr("conditions", "noLicense")
 
             # store into the final list
             cgus_out.append("{} {}. {} {}".format(cgu.get("name"),
-                                                         cgu.get("description", ""),
-                                                         cgu.get("content", ""),
-                                                         cgu.get("link", "")))
+                                                  cgu.get("description", ""),
+                                                  cgu.get("content", ""),
+                                                  cgu.get("link", "")))
         ws["K{}".format(idx)] = " ;\n".join(cgus_out)
 
         # ---- LIMITATIONS # -------------------------------------------------
@@ -1367,34 +1385,43 @@ class Isogeo2xlsx(Workbook):
             limitation["type"] = self.tr("limitations", l_in.get("type"))
             # legal type
             if l_in.get("type") == "legal":
-                limitation["restriction"] = self.tr("restrictions", l_in.get("restriction"))
+                limitation["restriction"] = self.tr("restrictions",
+                                                    l_in.get("restriction"))
             else:
                 pass
             # INSPIRE precision
             if "directive" in l_in.keys():
-                limitation["inspire"] = self.clean_xml(l_in.get("directive").get("name"))
-                limitation["content"] = self.clean_xml(l_in.get("directive").get("description"))
+                limitation["inspire"] = self.clean_xml(l_in.get("directive")
+                                                           .get("name"))
+                limitation["content"] = self.clean_xml(l_in.get("directive")
+                                                           .get("description"))
             else:
                 pass
 
             # store into the final list
             lims_out.append("{} {}. {} {} {}".format(limitation.get("type"),
-                                                    limitation.get("description", ""),
-                                                    limitation.get("restriction", ""),
-                                                    limitation.get("content", ""),
-                                                    limitation.get("inspire", "")))
+                                                     limitation.get("description", ""),
+                                                     limitation.get("restriction", ""),
+                                                     limitation.get("content", ""),
+                                                     limitation.get("inspire", "")))
 
         ws["L{}".format(idx)] = " ;\n".join(lims_out)
 
         # CONTACTS
         contacts = md.get("contacts")
         if len(contacts):
-            contacts_pt_cct = ["{0} ({1})".format(contact.get("contact").get("name"),
-                                                  contact.get("contact").get("email"))\
-                               for contact in contacts if contact.get("role") == "pointOfContact"]
-            contacts_other_cct = ["{0} ({1})".format(contact.get("contact").get("name"),
-                                                     contact.get("contact").get("email"))\
-                                  for contact in contacts if contact.get("role") != "pointOfContact"]
+            contacts_pt_cct = ["{0} ({1})".format(contact.get("contact")
+                                                         .get("name"),
+                                                  contact.get("contact")
+                                                         .get("email"))
+                               for contact in contacts
+                               if contact.get("role") == "pointOfContact"]
+            contacts_other_cct = ["{0} ({1})".format(contact.get("contact")
+                                                            .get("name"),
+                                                     contact.get("contact")
+                                                            .get("email"))
+                                  for contact in contacts
+                                  if contact.get("role") != "pointOfContact"]
             ws["M{}".format(idx)] = len(contacts)
             ws["N{}".format(idx)] = " ;\n".join(contacts_pt_cct)
             ws["O{}".format(idx)] = " ;\n".join(contacts_other_cct)
@@ -1453,7 +1480,7 @@ class Isogeo2xlsx(Workbook):
 
         # LOG
         logger.info("Resource metadata stored: {} ({})".format(md.get("name"),
-                                                                md.get("_id")))
+                                                               md.get("_id")))
 
         # end of method
         return
@@ -1519,7 +1546,8 @@ class Isogeo2xlsx(Workbook):
 
         source: http://stackoverflow.com/a/5843560
         """
-        return unicode(substitute).join(char for char in input_str if char.isalnum())
+        return unicode(substitute).join(char for char in input_str
+                                        if char.isalnum())
 
     def clean_xml(self, invalid_xml, mode="soft", substitute="_"):
         """Clean string of XML invalid characters.
@@ -1567,7 +1595,9 @@ if __name__ == '__main__':
 
     # ------------ Settings from ini file ----------------
     if not path.isfile(path.realpath(r"..\settings.ini")):
-        logger.error("To execute this script as standalone, you need to store your Isogeo application settings in a isogeo_params.ini file. You can use the template to set your own.")
+        logger.error("To execute this script as standalone, you need to store"
+                     " your Isogeo application settings in a isogeo_params.ini"
+                     " file. You can use the template to set your own.")
         raise ValueError("isogeo_params.ini file missing.")
     else:
         pass
@@ -1617,15 +1647,15 @@ if __name__ == '__main__':
 
     # saving the test file
     dstamp = datetime.now()
-    wb.save(r"..\output\test_isogeo2xlsx_{0}{1}{2}{3}{4}{5}.xlsx".format(dstamp.year,
-                                                                         dstamp.month,
-                                                                         dstamp.day,
-                                                                         dstamp.hour,
-                                                                         dstamp.minute,
-                                                                         dstamp.second))
+    wb.save(r"..\output\test_isogeo2xlsx_{0}{1}{2}{3}{4}{5}.xlsx"
+            .format(dstamp.year,
+                    dstamp.month,
+                    dstamp.day,
+                    dstamp.hour,
+                    dstamp.minute,
+                    dstamp.second))
 
-
-### DEV NOTES
+# DEV NOTES
 # http://wiki.openstreetmap.org/wiki/FR:Parcourir#URL_avec_bbox
 # http://wiki.openstreetmap.org/wiki/Layer_URL_parameter
 # https://www.openstreetmap.org/?bbox=22.3418234%2C57.5129102%2C22.5739625%2C57.6287332&layers=H&box=yes

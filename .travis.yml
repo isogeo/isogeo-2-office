@@ -14,7 +14,6 @@ install:
 # run tests
 script:
   # unit tests
-  #- python -m unittest discover
   - coverage run -m unittest discover -s tests/
   # main
   - pycodestyle isogeo2office.py --ignore="E265,E501" --statistics --show-source

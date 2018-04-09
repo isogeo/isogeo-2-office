@@ -139,10 +139,10 @@ class IsogeoStats(object):
 
         return bar
 
+
 # ############################################################################
 # ###### Stand alone program ########
 # ###################################
-
 if __name__ == '__main__':
     """Standalone execution and tests."""
     from os import environ
@@ -157,7 +157,9 @@ if __name__ == '__main__':
     print(pysdk_version)
 
     # search
-    search = isogeo.search(bearer, whole_share=0, sub_resources=["keywords",])
+    search = isogeo.search(bearer,
+                           whole_share=0,
+                           include=["keywords", ])
 
     # workbook
     wb = Workbook()

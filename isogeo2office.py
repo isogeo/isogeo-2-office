@@ -585,7 +585,7 @@ class Isogeo2office(Tk):
                     "specifications"]
 
         self.search_results = self.isogeo.search(self.token,
-                                                 sub_resources=includes)
+                                                 include=includes)
         self.progbar["maximum"] = self.search_results.get("total")
         logger.info("Isogeo - metadatas retrieved.")
         # EXCEL
@@ -893,7 +893,7 @@ class Isogeo2office(Tk):
         # get settings
         self.settings = default.settings_load()
         self.search_results = self.isogeo.search(self.token,
-                                                 sub_resources=includes)
+                                                 include=includes)
 
         # Excel export
         if self.settings.get('excel').get('excel_opt'):
