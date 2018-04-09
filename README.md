@@ -1,4 +1,7 @@
-[![Build Status](https://travis-ci.org/isogeo/isogeo-2-office.svg?branch=master)](https://travis-ci.org/isogeo/isogeo-2-office)
+[![Build Status](https://travis-ci.org/isogeo/isogeo-2-office.svg?branch=master)](https://travis-ci.org/isogeo/isogeo-2-office) 
+[![codecov](https://codecov.io/gh/isogeo/isogeo-2-office/branch/master/graph/badge.svg)](https://codecov.io/gh/isogeo/isogeo-2-office) 
+[![Python 3.5.x compatiblity](https://img.shields.io/badge/python-3.5-blue.svg)](https://docs.python.org/3.5/whatsnew/changelog.html) 
+[![Python 3.6.x compatiblity](https://img.shields.io/badge/python-3.6-blue.svg)](https://docs.python.org/3.6/whatsnew/changelog.html) 
 
 Isogeo to Office
 ================
