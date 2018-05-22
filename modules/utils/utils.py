@@ -285,7 +285,7 @@ class isogeo2office_utils(IsogeoUtils):
         if mode == "soft":
             return re.sub(r'[\\/*?:"<>|]', substitute, filename)
         elif mode == "strict":
-            return re.sub("[^\w\-_\. ]", substitute, filename)
+            return re.sub(r"[^\w\-_\. ]", substitute, filename)
         else:
             pass
 
