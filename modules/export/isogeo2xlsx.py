@@ -21,10 +21,7 @@
 from collections.abc import KeysView
 from collections import Counter
 from datetime import datetime
-try:
-    from itertools import zip_longest
-except ImportError:
-    from itertools import izip_longest as zip_longest
+from itertools import zip_longest
 import logging
 from os import path
 import re
@@ -203,7 +200,7 @@ class Isogeo2xlsx(Workbook):
                "Occurrences",  # B
                ]
 
-    def __init__(self, lang: str ="FR", url_base: str =""):
+    def __init__(self, lang: str = "FR", url_base: str = ""):
         """Instanciating the output workbook.
 
         :param str lang: selected language for output
@@ -245,10 +242,10 @@ class Isogeo2xlsx(Workbook):
 
     # ------------ Setting workbook ---------------------
 
-    def set_worksheets(self, auto: list=None, vector: bool=1,
-                       raster: bool=1, service: bool=1, resource: bool=1,
-                       dashboard: bool=0, attributes: bool=0,
-                       fillfull: bool=0, inspire: bool=0):
+    def set_worksheets(self, auto: list = None, vector: bool = 1,
+                       raster: bool = 1, service: bool = 1, resource: bool = 1,
+                       dashboard: bool = 0, attributes: bool = 0,
+                       fillfull: bool = 0, inspire: bool = 0):
         """Adds new sheets depending on present metadata types.
 
         :param list auto: typically auto=search_results.get('tags').keys()
@@ -1297,48 +1294,6 @@ class Isogeo2xlsx(Workbook):
             sheet.auto_filter.ref = str("A1:{}{}").format(get_column_letter(sheet.max_column),
                                                           sheet.max_row)
         pass
-
-    def remove_accents(self, input_str, substitute=u""):
-        """Clean string from special characters.
-
-        source: http://stackoverflow.com/a/5843560
-        """
-        return unicode(substitute).join(char for char in input_str
-                                        if char.isalnum())
-
-    def clean_xml(self, invalid_xml, mode="soft", substitute="_"):
-        """Clean string of XML invalid characters.
-
-        source: http://stackoverflow.com/a/13322581/2556577
-        """
-        # assumptions:
-        #   doc = *( start_tag / end_tag / text )
-        #   start_tag = '<' name *attr [ '/' ] '>'
-        #   end_tag = '<' '/' name '>'
-        ws = r'[ \t\r\n]*'  # allow ws between any token
-        name = '[a-zA-Z]+'  # note: expand if necessary but the stricter the better
-        attr = '{name} {ws} = {ws} "[^"]*"'  # note: fragile against missing '"'; no "'"
-        start_tag = '< {ws} {name} {ws} (?:{attr} {ws})* /? {ws} >'
-        end_tag = '{ws}'.join(['<', '/', '{name}', '>'])
-        tag = '{start_tag} | {end_tag}'
-
-        assert '{{' not in tag
-        while '{' in tag:   # unwrap definitions
-            tag = tag.format(**vars())
-
-        tag_regex = re.compile('(%s)' % tag, flags=re.VERBOSE)
-
-        # escape &, <, > in the text
-        iters = [iter(tag_regex.split(invalid_xml))] * 2
-        pairs = zip_longest(*iters, fillvalue='')  # iterate 2 items at a time
-
-        # get the clean version
-        clean_version = ''.join(escape(text) + tag for text, tag in pairs)
-        if mode == "strict":
-            clean_version = re.sub(r"<.*?>", substitute, clean_version)
-        else:
-            pass
-        return clean_version
 
 
 # #############################################################################
