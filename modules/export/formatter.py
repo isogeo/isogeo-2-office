@@ -4,7 +4,7 @@
 # Name:         Isogeo to Microsoft Word 2010
 # Purpose:      Get metadatas from an Isogeo share and store it into
 #               a Word document for each metadata. It's one of the submodules
-#               of isogeo2office (https://bitbucket.org/isogeo/isogeo-2-office).
+#               of isogeo2office (https://github.com/isogeo/isogeo-2-office).
 #
 # Author:       Julien Moura (@geojulien)
 #

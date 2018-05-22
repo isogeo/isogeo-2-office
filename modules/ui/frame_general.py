@@ -81,7 +81,7 @@ class FrameGlobal(Frame):
                                       text="\U00002692 {}".format(_("Admin shares")),
                                       command=lambda: self.utils.open_urls(li_oc))
         # source
-        url_src = "https://bitbucket.org/isogeo/isogeo-2-office/issues"
+        url_src = "https://github.com/isogeo/isogeo-2-office/issues/new"
         self.btn_src = Button(self,
                               text="\U000026A0 {}".format(_("Report")),
                               command=lambda: open_new_tab(url_src))
