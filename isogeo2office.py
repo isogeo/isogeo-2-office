@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+#! python3
 #!/usr/bin/env python
 from __future__ import (absolute_import, print_function, unicode_literals)
 # ----------------------------------------------------------------------------
@@ -433,43 +434,6 @@ class Isogeo2office(Tk):
         self.btn_go.config(state=ACTIVE)
         # end of function
         return foldername
-
-    def get_input_xl(self):
-        """Get the path of the input Excel file with a browse dialog."""
-        self.input_xl = askopenfilename(parent=self,
-                                        filetypes=[("Excel 2010", "*.xlsx")],
-                                        title=_(u"Pick the Excel to merge"))
-
-        # testing file choosen
-        if self.input_xl:
-            print(self.input_xl)
-            pass
-        elif path.splittext(self.input_xl)[1] != ".xlsx":
-            print("Invalid format")
-        else:
-            print(_(u'Any file selected'))
-            return
-
-        # get headers names
-        xlsx_in = openpyxl.load_workbook(filename=self.input_xl,
-                                         read_only=True,
-                                         guess_types=True,
-                                         use_iterators=True)
-        ws1 = xlsx_in.worksheets[0]  # ws = première feuille
-        cols_names = [ws1.cell(row=ws1.min_row, column=col).value
-                      for col in range(1, ws1.max_column)]
-
-        # end of method
-        return
-
-    def ui_switch_xljoiner(self):
-        """Enable/disable the form for input xl to join."""
-        if self.opt_xl_join.get():
-            self.fr_input_xl_join.pack()
-        else:
-            self.fr_input_xl_join.pack_forget()
-        # end of function
-        return
 
 # ----------------------------------------------------------------------------
 

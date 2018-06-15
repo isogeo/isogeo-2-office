@@ -1344,7 +1344,7 @@ if __name__ == '__main__':
                 "specifications"]
 
     search_results = isogeo.search(token,
-                                   sub_resources=includes)
+                                   include=includes)
 
     # ------------ REAL START ----------------------------
     wb = Isogeo2xlsx(url_base=def_oc)
