@@ -19,6 +19,7 @@ six
 codecov
 coverage
 
-# art of code 
+# art of code
+autopep8
 pylint
 pycodestyle

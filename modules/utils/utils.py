@@ -80,7 +80,7 @@ class isogeo2office_utils(IsogeoUtils):
 
     def open_dir_file(self, target):
         """Open a file or a directory in the explorer of the operating system.
-        
+
         :param str target: path of the folder or file to open
         """
         # check if the file or the directory exists
@@ -237,10 +237,10 @@ class isogeo2office_utils(IsogeoUtils):
         return
 
     # ------------------------------------------------------------------------
-    def clean_filename(self, filename: str, substitute: str="", mode: str="soft"):
+    def clean_filename(self, filename: str, substitute: str = "", mode: str = "soft"):
         """Remove invalid characters from filename.
         \\ TO DO: isnt' duplicated with next method on special chars?
-        
+
         :param str filename: filename string to clean
         :param str substitute: character to use for subtistution of special chars
         :param str modeaccents: mode to apply. Available options:
@@ -255,7 +255,7 @@ class isogeo2office_utils(IsogeoUtils):
         else:
             raise ValueError("'mode' option must be one of: soft | strict")
 
-    def clean_special_chars(self, input_str: str, substitute: str="", accents: bool=1):
+    def clean_special_chars(self, input_str: str, substitute: str = "", accents: bool = 1):
         """Clean string from special characters.
 
         Source: https://stackoverflow.com/a/38799620/2556577
@@ -265,11 +265,11 @@ class isogeo2office_utils(IsogeoUtils):
         :param bool accents: option to keep or not the accents
         """
         if accents:
-            return re.sub('\W+', substitute, input_str)
+            return re.sub(r'\W+', substitute, input_str)
         else:
-            return re.sub('[^A-Za-z0-9]+', substitute, input_str)
+            return re.sub(r'[^A-Za-z0-9]+', substitute, input_str)
 
-    def clean_xml(self, invalid_xml, mode: str="soft", substitute: str="_"):
+    def clean_xml(self, invalid_xml, mode: str = "soft", substitute: str = "_"):
         """Clean string of XML invalid characters.
 
         source: https://stackoverflow.com/a/13322581/2556577

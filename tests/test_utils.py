@@ -98,6 +98,8 @@ class Search(unittest.TestCase):
                     try to remove non xml compatible characters.</field>
                  """
         # run
-        clean_xml = self.utils.clean_xml(in_xml)
+        clean_xml_soft = self.utils.clean_xml(in_xml)
+        clean_xml_strict = self.utils.clean_xml(in_xml, mode="strict")
         # check
-        ET.fromstring("<root>{}</root>".format(clean_xml))
+        ET.fromstring("<root>{}</root>".format(clean_xml_soft))
+        ET.fromstring("<root>{}</root>".format(clean_xml_strict))
