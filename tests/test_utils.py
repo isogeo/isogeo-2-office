@@ -7,7 +7,7 @@
 
 # Standard library
 import logging
-from os import environ
+from os import environ, path
 from six import string_types as str
 from sys import exit
 import unittest
@@ -30,6 +30,8 @@ class Search(unittest.TestCase):
     def setUp(self):
         # """Executed before each test."""
         self.utils = isogeo2office_utils()
+        self.fixtures_dir = path.normpath(r"tests/fixtures")
+        self.ini_file = path.normpath(r"tests/fixtures/settings_TPL.ini")
 
     def tearDown(self):
         """Executed after each test."""
@@ -38,9 +40,9 @@ class Search(unittest.TestCase):
     #  -- Openers ------------------------------------------------------------
     def test_url_opener(self):
         """Test URL opener"""
-        self.utils.open_urls(["https://www.isogeo.com", ])
-        self.utils.open_urls(["https://www.isogeo.com",
-                              "https://github.com/isogeo/isogeo-2-office"])
+        self.utils.open_urls(["https://example.com", ])
+        self.utils.open_urls(["https://example.com",
+                              "https://example.org"])
 
     def test_dirfile_opener_ok(self):
         """Test file/folder opener"""
@@ -103,3 +105,56 @@ class Search(unittest.TestCase):
         # check
         ET.fromstring("<root>{}</root>".format(clean_xml_soft))
         ET.fromstring("<root>{}</root>".format(clean_xml_strict))
+
+
+    #  -- Settings manager ----------------------------------------------------
+    def test_settings_loader(self):
+        """test settings loader"""
+        # run
+        settings = self.utils.settings_load(config_file=self.ini_file)
+
+        # check settings structure
+        self.assertIsInstance(settings, dict)
+        self.assertIn("auth", settings)
+        self.assertIn("global", settings)
+        self.assertIn("proxy", settings)
+        self.assertIn("excel", settings)
+        self.assertIn("word", settings)
+        self.assertIn("xml", settings)
+
+        # check auth section
+        self.assertIn("app_id", settings.get("auth"))
+        self.assertIn("app_secret", settings.get("auth"))
+        self.assertEqual(settings.get("auth").get("app_id"), 
+                         "python-minimalist-sdk-test-uuid-1a2b3c4d5e6f7g8h9i0j11k12l")
+        self.assertEqual(settings.get("auth").get("app_secret"),
+                         "application-secret-1a2b3c4d5e6f7g8h9i0j11k12l13m14n15o16p17Q18rS")
+
+        # check proxy section
+        self.assertIn("proxy_needed", settings.get("proxy"))
+        self.assertIn("proxy_type", settings.get("proxy"))
+        self.assertIn("proxy_prot", settings.get("proxy"))
+        self.assertIn("proxy_server", settings.get("proxy"))
+        self.assertIn("proxy_port", settings.get("proxy"))
+        self.assertIn("proxy_user", settings.get("proxy"))
+
+        # check excel section
+        self.assertIn("opt_attributes", settings.get("excel"))
+        self.assertIn("opt_fillfull", settings.get("excel"))
+        self.assertIn("excel_opt", settings.get("excel"))
+        self.assertIn("opt_inspire", settings.get("excel"))
+        self.assertIn("output_name", settings.get("excel"))
+
+        # check word section
+        self.assertIn("word_opt", settings.get("word"))
+        self.assertIn("out_prefix", settings.get("word"))
+        self.assertIn("tpl", settings.get("word"))
+        self.assertIn("opt_date", settings.get("word"))
+        self.assertIn("opt_id", settings.get("word"))
+
+        # check xml section
+        self.assertIn("out_prefix", settings.get("xml"))
+        self.assertIn("xml_opt", settings.get("xml"))
+        self.assertIn("opt_zip", settings.get("xml"))
+        self.assertIn("opt_date", settings.get("xml"))
+        self.assertIn("opt_id", settings.get("xml"))

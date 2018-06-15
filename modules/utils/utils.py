@@ -17,7 +17,7 @@
 
 # Standard library
 from collections import OrderedDict
-from configparser import SafeConfigParser
+from configparser import ConfigParser
 from tkinter.messagebox import showerror as avert
 from itertools import zip_longest
 import logging
@@ -130,10 +130,9 @@ class isogeo2office_utils(IsogeoUtils):
     def entry_validate_uid(self, action, index, value_if_allowed,
                            prior_value, text, validation_type,
                            trigger_type, widget_name):
-        """
-            Ensure that the users enters a boolean value in the UID option field.
+        """Ensure that the users enters an integer value in the UID option field.
 
-            see: http://stackoverflow.com/a/8960839
+        see: https://stackoverflow.com/a/31048136/2556577
         """
         if(action == '1'):
             if text in '012345678' and len(prior_value + text) < 2:
@@ -150,10 +149,9 @@ class isogeo2office_utils(IsogeoUtils):
     def entry_validate_date(self, action, index, value_if_allowed,
                             prior_value, text, validation_type,
                             trigger_type, widget_name):
-        """
-            Ensure that the users neters a valid value in the date option field.
+        """Ensure that the users enters a valid value in the date option field.
 
-            see: http://stackoverflow.com/a/8960839
+        see: https://stackoverflow.com/a/31048136/2556577
         """
         if(action == '1'):
             if text in '012' and len(prior_value + text) < 2:
@@ -171,10 +169,9 @@ class isogeo2office_utils(IsogeoUtils):
 
     def settings_load(self, config_file=r"../settings.ini"):
         """Load settings from the ini file."""
-        config = SafeConfigParser()
+        config = ConfigParser()
         config.read(config_file)
         settings_dict = {s: dict(config.items(s)) for s in config.sections()}
-
         logger.info("Settings loaded from: {}".format(config_file))
 
         # end of method
