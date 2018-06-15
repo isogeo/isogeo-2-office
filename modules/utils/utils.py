@@ -66,6 +66,8 @@ class isogeo2office_utils(IsogeoUtils):
 
         It waits a few seconds between the first and the next URLs
         to handle case when the webbrowser is not yet opened.
+
+        :param list li_url: list of URLs to open in the default browser
         """
         x = 1
         for url in li_url:
@@ -76,11 +78,11 @@ class isogeo2office_utils(IsogeoUtils):
             open_new_tab(url)
             x += 1
 
-        # end of method
-        return
-
     def open_dir_file(self, target):
-        """Open a file or a directory in the explorer of the operating system."""
+        """Open a file or a directory in the explorer of the operating system.
+        
+        :param str target: path of the folder or file to open
+        """
         # check if the file or the directory exists
         if not path.exists(target):
             raise IOError('No such file: {0}'.format(target))
@@ -121,10 +123,7 @@ class isogeo2office_utils(IsogeoUtils):
             pass
 
         # get the clean url
-        url_output = url_input[0:url_input.index(url_input.rsplit('/')[6])]
-
-        # end of method
-        return url_output
+        return url_input[0:url_input.index(url_input.rsplit('/')[6])]
 
     # UI --------------------------------------------------------------------
 
@@ -238,26 +237,59 @@ class isogeo2office_utils(IsogeoUtils):
         return
 
     # ------------------------------------------------------------------------
+    def clean_filename(self, filename: str, substitute: str="", mode: str="soft"):
+        """Remove invalid characters from filename.
+        \\ TO DO: isnt' duplicated with next method on special chars?
+        
+        :param str filename: filename string to clean
+        :param str substitute: character to use for subtistution of special chars
+        :param str modeaccents: mode to apply. Available options:
 
-    def remove_accents(self, input_str, substitute=""):
+          * soft [default]: remove chars which are not accepted in filenames
+          * strict: remove additional chars (punctuation...)
+        """
+        if mode == "soft":
+            return re.sub(r'[\\/*?:"<>|]', substitute, filename)
+        elif mode == "strict":
+            return re.sub(r"[^\w\-_\. ]", substitute, filename)
+        else:
+            raise ValueError("'mode' option must be one of: soft | strict")
+
+    def clean_special_chars(self, input_str: str, substitute: str="", accents: bool=1):
         """Clean string from special characters.
 
-        source: http://stackoverflow.com/a/5843560
-        """
-        return str(substitute).join(char for char in input_str if char.isalnum())
+        Source: https://stackoverflow.com/a/38799620/2556577
 
-    def clean_xml(self, invalid_xml, mode="soft", substitute="_"):
+        :param str input_str: string to clean
+        :param str substitute: character to use for subtistution of special chars
+        :param bool accents: option to keep or not the accents
+        """
+        if accents:
+            return re.sub('\W+', substitute, input_str)
+        else:
+            return re.sub('[^A-Za-z0-9]+', substitute, input_str)
+
+    def clean_xml(self, invalid_xml, mode: str="soft", substitute: str="_"):
         """Clean string of XML invalid characters.
 
-        source: http://stackoverflow.com/a/13322581/2556577
+        source: https://stackoverflow.com/a/13322581/2556577
+
+        :param str invalid_xml: xml string to clean
+        :param str substitute: character to use for subtistution of special chars
+        :param str modeaccents: mode to apply. Available options:
+
+          * soft [default]: remove chars which are not accepted in XML
+          * strict: remove additional chars
         """
         # assumptions:
         #   doc = *( start_tag / end_tag / text )
         #   start_tag = '<' name *attr [ '/' ] '>'
         #   end_tag = '<' '/' name '>'
         ws = r'[ \t\r\n]*'  # allow ws between any token
-        name = '[a-zA-Z]+'  # note: expand if necessary but the stricter the better
-        attr = '{name} {ws} = {ws} "[^"]*"'  # note: fragile against missing '"'; no "'"
+        # note: expand if necessary but the stricter the better
+        name = '[a-zA-Z]+'
+        # note: fragile against missing '"'; no "'"
+        attr = '{name} {ws} = {ws} "[^"]*"'
         start_tag = '< {ws} {name} {ws} (?:{attr} {ws})* /? {ws} >'
         end_tag = '{ws}'.join(['<', '/', '{name}', '>'])
         tag = '{start_tag} | {end_tag}'
@@ -280,15 +312,6 @@ class isogeo2office_utils(IsogeoUtils):
             pass
         return clean_version
 
-    def clean_filename(self, filename, mode="soft", substitute="_"):
-        """Remove invalid characters from filename."""
-        if mode == "soft":
-            return re.sub(r'[\\/*?:"<>|]', substitute, filename)
-        elif mode == "strict":
-            return re.sub(r"[^\w\-_\. ]", substitute, filename)
-        else:
-            pass
-
 
 # ############################################################################
 # ##### Stand alone program ########
@@ -296,4 +319,3 @@ class isogeo2office_utils(IsogeoUtils):
 if __name__ == '__main__':
     """Standalone execution and tests"""
     utils = isogeo2office_utils()
-    print(dir(utils))
