@@ -12,19 +12,24 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+from datetime import date
+import os
+import sys
 
+sys.path.insert(0, os.path.abspath(r'..'))
+from isogeo2office import *
+
+# -- Build environment -----------------------------------------------------
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 # -- Project information -----------------------------------------------------
 
 project = 'Isogeo to Office'
-copyright = '2018, Isogeo to Office'
-author = 'Isogeo to Office'
+author = 'Isogeo'
+copyright = "2016- - {0}, {1}".format(date.today().year, author)
 
 # The short X.Y version
-version = ''
+version = '1.6'
 # The full version, including alpha/beta/rc tags
 release = 'Isogeo to Office'
 
@@ -40,6 +45,7 @@ release = 'Isogeo to Office'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.viewcode',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -59,12 +65,13 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+#language = None
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path .
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ["_build", "samples/*", "Thumbs.db", ".DS_Store",
+                    "*env*", "libs/*"]
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -75,7 +82,7 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = 'default'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -102,7 +109,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'IsogeotoOfficedoc'
+htmlhelp_basename = 'IsogeotoOffice_doc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -157,3 +164,19 @@ texinfo_documents = [
 
 
 # -- Extension configuration -------------------------------------------------
+# -- Options for Sphinx API doc ----------------------------------------------
+# run api doc
+def run_apidoc(_):
+    from sphinx.ext.apidoc import main
+
+    cur_dir = os.path.normpath(os.path.dirname(__file__))
+    output_path = os.path.join(cur_dir, '_apidoc')
+    modules = os.path.normpath(os.path.join(cur_dir, "../modules"))
+    exclusions = [
+        "",
+    ]
+    main(['-e', '-f', '-M', '-o', output_path, modules] + exclusions)
+
+# launch setup
+def setup(app):
+    app.connect('builder-inited', run_apidoc)
