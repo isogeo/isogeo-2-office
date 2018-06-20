@@ -1,0 +1,14 @@
+{
+    "python.pythonPath": "${workspaceFolder}\\env3_tests\\Scripts\\python.exe",
+    "python.formatting.provider": "autopep8",
+    "python.unitTest.unittestArgs": [
+        "-v",
+        "-s",
+        "./tests",
+        "-p",
+        "test_*.py"
+    ],
+    "python.unitTest.pyTestEnabled": false,
+    "python.unitTest.nosetestsEnabled": false,
+    "python.unitTest.unittestEnabled": true
+}

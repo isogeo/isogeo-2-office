@@ -20,9 +20,9 @@ pip install --upgrade -r ./requirements_dev.txt
 
 "`n-- STEP -- Build and bundle forcing clean"
 rm -r dist\*
-# pyinstaller -y --clean bundle_isogeo2office.spec
+pyinstaller -y --clean bundle_isogeo2office.spec
 # UPX? comment previous line, uncomment the next one and adjust UPX path if needed
-pyinstaller -y --clean --upx-dir=lib/upx/ bundle_isogeo2office.spec
+#pyinstaller -y --clean --upx-dir=lib/upx/ bundle_isogeo2office.spec
 
 "`n-- STEP -- Zipping"
 Add-Type -assembly "system.io.compression.filesystem"
