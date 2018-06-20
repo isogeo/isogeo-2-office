@@ -6,13 +6,17 @@
 # ##################################
 
 # Standard library
+from collections import namedtuple
 import logging
 from os import environ, path
 from six import string_types as str
 from sys import exit
+from tempfile import mkstemp
 import unittest
-from six.moves.urllib.parse import urlparse
 import xml.etree.ElementTree as ET
+
+# tests
+from tests import BaseWidgetTest
 
 # module target
 from modules import isogeo2office_utils
@@ -23,7 +27,7 @@ from modules import isogeo2office_utils
 # ##################################
 
 
-class Search(unittest.TestCase):
+class TestIsogeo2officeUtils(unittest.TestCase):
     """Test utils functions of Isogeo to Office."""
 
     # standard methods
@@ -32,6 +36,7 @@ class Search(unittest.TestCase):
         self.utils = isogeo2office_utils()
         self.fixtures_dir = path.normpath(r"tests/fixtures")
         self.ini_file = path.normpath(r"tests/fixtures/settings_TPL.ini")
+        self.ini_out = mkstemp(prefix="i2o_test_settings_")
 
     def tearDown(self):
         """Executed after each test."""
@@ -116,7 +121,7 @@ class Search(unittest.TestCase):
         # check settings structure
         self.assertIsInstance(settings, dict)
         self.assertIn("auth", settings)
-        self.assertIn("global", settings)
+        self.assertIn("local", settings)
         self.assertIn("proxy", settings)
         self.assertIn("excel", settings)
         self.assertIn("word", settings)

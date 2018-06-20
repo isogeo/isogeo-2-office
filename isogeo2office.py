@@ -97,7 +97,7 @@ class Isogeo2office(Tk):
         self.settings = self.utils.settings_load(path.abspath(settings_file))
         self.app_id = self.settings.get("auth").get("app_id")
         self.app_secret = self.settings.get("auth").get("app_secret")
-        self.client_lang = self.settings.get("global").get("def_codelang", "FR")
+        self.client_lang = self.settings.get("local").get("def_codelang", "FR")
 
         # ------------ Localization ------------------------------------------
         if self.client_lang == "FR":
@@ -348,7 +348,7 @@ class Isogeo2office(Tk):
         #                                                        "output")
         try:
             self.out_fold_path = StringVar(fr_process,
-                                           path.relpath(self.settings.get('global')
+                                           path.relpath(self.settings.get("local")
                                                         .get("out_folder")))
         except ValueError as e:
             logger.debug(e)

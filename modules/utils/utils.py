@@ -179,7 +179,7 @@ class isogeo2office_utils(IsogeoUtils):
 
     def settings_save(self, parent, config_file=r"../settings.ini"):
         """Save settings into the ini file."""
-        config = SafeConfigParser(dict_type=OrderedDict)
+        config = ConfigParser(dict_type=OrderedDict)
         config.read(path.realpath(config_file))
         # default OpenCatalog URL
         if len(parent.shares) == 1:
@@ -192,10 +192,10 @@ class isogeo2office_utils(IsogeoUtils):
                           "app_secret": parent.app_secret
                           }
 
-        config["global"] = {"out_folder": path.realpath(parent.out_fold_path.get()),
-                            "def_oc": url_oc,
-                            "def_codelang": parent.client_lang
-                            }
+        config["local"] = {"out_folder": path.realpath(parent.out_fold_path.get()),
+                           "def_oc": url_oc,
+                           "def_codelang": parent.client_lang
+                           }
 
         config["excel"] = {"excel_opt": parent.opt_excel.get(),
                            "output_name": parent.fr_excel.output_name.get(),
