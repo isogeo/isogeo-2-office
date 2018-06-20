@@ -246,7 +246,8 @@ class Isogeo2xlsx(Workbook):
                        raster: bool = 1, service: bool = 1, resource: bool = 1,
                        dashboard: bool = 0, attributes: bool = 0,
                        fillfull: bool = 0, inspire: bool = 0):
-        """Adds new sheets depending on present metadata types.
+        """Adds new sheets depending on present metadata types in isogeo API
+        search tags.
 
         :param list auto: typically auto=search_results.get('tags').keys()
         :param bool vector: add vector sheet
@@ -400,9 +401,6 @@ class Isogeo2xlsx(Workbook):
             logger.info("Resources sheet added")
         else:
             pass
-
-        # end of method
-        return
 
     # ------------ Writing metadata ---------------------
 
