@@ -222,7 +222,7 @@ class Isogeo2xlsx(Workbook):
 
         # deleting the default worksheet
         ws = self.active
-        self.remove_sheet(ws)
+        self.remove(ws)
 
         # LOCALE
         if lang.lower() == "fr":
@@ -242,7 +242,7 @@ class Isogeo2xlsx(Workbook):
 
     # ------------ Setting workbook ---------------------
 
-    def set_worksheets(self, auto: list = None, vector: bool = 1,
+    def set_worksheets(self, auto: KeysView = None, vector: bool = 1,
                        raster: bool = 1, service: bool = 1, resource: bool = 1,
                        dashboard: bool = 0, attributes: bool = 0,
                        fillfull: bool = 0, inspire: bool = 0):
@@ -287,7 +287,7 @@ class Isogeo2xlsx(Workbook):
 
         # SHEETS & HEADERS
         if dashboard:
-            self.ws_d = self.create_sheet(title=_("Dashboard"))
+            self.ws_d = self.create_sheet(title="Tableau de bord")
             # headers
             # self.ws_f.append([i for i in self.cols_v])
             # styling
@@ -417,26 +417,22 @@ class Isogeo2xlsx(Workbook):
             self.idx_v += 1
             self.stats.md_types_repartition["vector"] += 1
             self.store_md_vector(metadata, self.ws_v, self.idx_v)
-            return
         elif metadata.get("type") == "rasterDataset":
             self.idx_r += 1
             self.stats.md_types_repartition["raster"] += 1
             self.store_md_raster(metadata, self.ws_r, self.idx_r)
-            return
         elif metadata.get("type") == "service":
             self.idx_s += 1
             self.stats.md_types_repartition["service"] += 1
             self.store_md_service(metadata, self.ws_s, self.idx_s)
-            return
         elif metadata.get("type") == "resource":
             self.idx_rz += 1
             self.stats.md_types_repartition["resource"] += 1
             self.store_md_resource(metadata, self.ws_rz, self.idx_rz)
-            return
         else:
             logger.error("Type of metadata is not recognized/handled: {}"
                          .format(metadata.get("type")))
-        # end of method
+        # method ending
         return
 
     def store_md_vector(self, md: dict, ws, idx: int):
@@ -585,7 +581,8 @@ class Isogeo2xlsx(Workbook):
                                 for field in fields])
             ws["AA{}".format(idx)] = " ;\n".join(fields_cct)
             # if attributes analisis is activated, append fields dict
-            if self.ws_fa:
+            #if self.ws_fa:
+            if hasattr(self, "ws_fa"):
                 self.fa_all.append(fields)
             else:
                 pass
@@ -707,7 +704,7 @@ class Isogeo2xlsx(Workbook):
 
         # path to source
         src_path = md.get('path', "")
-        if path.isfile(src_path):
+        if path.isfile(path.realpath(src_path)):
             link_path = r'=HYPERLINK("{0}","{1}")'.format(path.dirname(src_path),
                                                           src_path)
             ws["D{}".format(idx)] = link_path
@@ -715,7 +712,6 @@ class Isogeo2xlsx(Workbook):
         else:
             ws["D{}".format(idx)] = src_path
             logger.info("Path not recognized nor reachable")
-            pass
 
         # owner
         ws["E{}".format(idx)] = next(v for k, v in tags.items()
