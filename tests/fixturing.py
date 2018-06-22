@@ -38,13 +38,13 @@ out_search_complete = path.join(BASE_DIR,
                                 "fixtures",
                                 "api_search_complete.json")
 if not path.isfile(out_search_complete):
-request = isogeo.search(token,
-                        whole_share=1, include="all", augment=1)
-with open(path.join(BASE_DIR, "fixtures", "api_search_complete.json"), "w") as json_basic:
-    json.dump(request,
-              json_basic,
-              sort_keys=True,
-              )
+    request = isogeo.search(token,
+                            whole_share=1, include="all", augment=1)
+    with open(path.join(BASE_DIR, "fixtures", "api_search_complete.json"), "w") as json_basic:
+        json.dump(request,
+                json_basic,
+                sort_keys=True,
+                )
 else:
     logging.info(
         "JSON already exists. If you want to update it, delete it first.")
