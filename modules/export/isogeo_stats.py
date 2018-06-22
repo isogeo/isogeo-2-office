@@ -6,7 +6,7 @@ from __future__ import (absolute_import, print_function, unicode_literals)
 # Purpose:      Get metadatas from an Isogeo OpenCatlog and store it into
 #               an Excel workbook.
 #
-# Author:       Julien Moura (@geojulien) & Valentin Blanlot (@bablot)
+# Author:       Isogeo
 #
 # Python:       2.7.x
 # Created:      14/08/2014
@@ -50,17 +50,6 @@ class IsogeoStats(object):
 
     def __init__(self, lang=None):
         """Instanciate stats class."""
-        # localization
-        try:
-            # lang.install(unicode=1)
-            _ = lang.gettext
-            logger.info("Custom language set: {}"
-                        .format(_("English")))
-        except Exception as e:
-            logger.error(e)
-            _ = gettext.gettext
-            logger.info("Default language set: English")
-
         # self._ = _
         super(IsogeoStats, self).__init__()
 
