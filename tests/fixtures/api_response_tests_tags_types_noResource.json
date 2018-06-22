@@ -1,0 +1,7 @@
+{
+    "tags": {
+        "type:raster-dataset": "Dataset (raster)",
+        "type:service": "Service",
+        "type:vector-dataset": "Dataset (vector)"
+    }
+}

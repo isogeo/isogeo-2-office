@@ -32,7 +32,10 @@ pip install --upgrade -r .\tests\requirements_test.txt
   # utils
   pycodestyle modules/utils/utils.py --ignore="E265,E501" --statistics --show-source
 
-"-- STEP -- Run coverage"
+"-- STEP -- Fixturing"
+python .\tests\fixturing.py
+
+  "-- STEP -- Run coverage"
 coverage run -m unittest discover -s tests/
 
 "-- STEP -- Build and open coverage report"

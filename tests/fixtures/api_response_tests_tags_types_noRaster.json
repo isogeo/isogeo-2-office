@@ -1,0 +1,7 @@
+{
+    "tags": {
+        "type:resource": "Resource",
+        "type:service": "Service",
+        "type:vector-dataset": "Dataset (vector)"
+    }
+}
