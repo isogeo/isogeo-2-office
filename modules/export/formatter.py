@@ -147,12 +147,20 @@ class IsogeoFormatter(object):
                 spec["conformity"] = self.tr("quality", "isNotConform")
             # ensure other fields
             spec["name"] = s_in.get("specification").get("name")
-            spec["link"] = s_in.get("specification").get("link")
+            spec["link"] = s_in.get("specification").get("link", "")
             # make data human readable
-            spec_date = arrow.get(s_in.get("specification")
-                                      .get("published")[:19])
-            spec_date = "{0}".format(spec_date.format(self.dates_fmt,
-                                                      self.locale_fmt))
+            try:
+                spec_date = arrow.get(s_in.get("specification")
+                                          .get("published")[:19])
+                spec_date = "{0}".format(spec_date.format(self.dates_fmt,
+                                                          self.locale_fmt))
+            except TypeError:
+                logger.warning("Publication date is missing in the "
+                               "specification '{} ({})'. Specifications should"
+                               " have a publication date."
+                               .format(spec.get("name"),
+                                       s_in.get("specification").get("_tag")))
+                spec_date = ""
             spec["date"] = spec_date
             # store into the final list
             specs_out.append("{} {} {} - {}"
