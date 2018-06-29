@@ -87,7 +87,7 @@ class Isogeo2docx(object):
         self.tr = IsogeoTranslator(lang).tr
 
         # FORMATTER
-        self.fmt = IsogeoFormatter(output_type="Excel")
+        self.fmt = IsogeoFormatter(output_type="Word")
 
     def md2docx(self, docx_template, md, url_base, thumb_path=""):
         """Parse Isogeo metadatas and replace docx template."""
@@ -272,24 +272,26 @@ class Isogeo2docx(object):
 
         # ---- SPECIFICATIONS # -----------------------------------------------
         specs_in = md.get("specifications", [])
-        specs_out = []
-        for s_in in specs_in:
-            spec = {}
-            # translate specification conformity
-            if s_in.get("conformant"):
-                spec["conformity"] = self.tr("quality", "isConform")
-            else:
-                spec["conformity"] = self.tr("quality", "isNotConform")
-            # ensure other fields
-            spec["name"] = s_in.get("specification").get("name")
-            spec["link"] = s_in.get("specification").get("link")
-            # make data human readable
-            spec_date = arrow.get(s_in.get("specification").get("published")[:19])
-            spec_date = "{0}".format(spec_date.format(self.dates_fmt,
-                                                      self.locale_fmt))
-            spec["date"] = spec_date
-            # store into the final list
-            specs_out.append(spec)
+        # specs_out = []
+        # for s_in in specs_in:
+        #     spec = {}
+        #     # translate specification conformity
+        #     if s_in.get("conformant"):
+        #         spec["conformity"] = self.tr("quality", "isConform")
+        #     else:
+        #         spec["conformity"] = self.tr("quality", "isNotConform")
+        #     # ensure other fields
+        #     spec["name"] = s_in.get("specification").get("name")
+        #     spec["link"] = s_in.get("specification").get("link")
+        #     # make data human readable
+        #     spec_date = arrow.get(s_in.get("specification").get("published")[:19])
+        #     spec_date = "{0}".format(spec_date.format(self.dates_fmt,
+        #                                               self.locale_fmt))
+        #     spec["date"] = spec_date
+        #     # store into the final list
+        #     specs_out.append(spec)
+        specs_in = md.get("specifications", [])
+        specs_out = self.fmt.specifications(specs_in)
 
         # ---- CGUs # --------------------------------------------------------
         cgus_in = md.get("conditions", [])

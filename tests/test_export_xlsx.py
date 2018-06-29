@@ -133,7 +133,6 @@ class TestExportXLSX(unittest.TestCase):
         self.out_wb.set_worksheets(
             auto=search.get("tags").keys(), attributes=1,
             inspire=1, dashboard=1, fillfull=1)
-        print(self.out_wb.sheetnames)
         self.assertEqual(len(self.out_wb.worksheets), 8)
         self.assertIn("Raster", self.out_wb.sheetnames)
         self.assertIn("Services", self.out_wb.sheetnames)
@@ -221,7 +220,6 @@ class TestExportXLSX(unittest.TestCase):
             self.out_wb.store_metadatas(md)
         # save
         self.out_wb.save(out_xlsx[1] + ".xlsx")
-        print(out_xlsx[1] + ".xlsx")
 
     def test_metadata_bad_no_dict(self):
         """Test metadata not as a dict."""
