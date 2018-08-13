@@ -1,0 +1,27 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[dev-packages]
+PyInstaller = "*"
+codecov = "*"
+pycodestyle = "*"
+pylint = "*"
+
+[packages]
+arrow = "*"
+pytz = "*"
+requests = "*"
+isogeo-pysdk = ">=2.20.1"
+openpyxl = "*"
+lxml = "*"
+docxtpl = "*"
+future = "*"
+six = "*"
+"pyqt5" = "*"
+"pyqt5-tools" = "*"
+qdarkstyle = "*"
+
+[requires]
+python_version = "3.6"
