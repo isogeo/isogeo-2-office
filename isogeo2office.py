@@ -38,6 +38,7 @@ from docxtpl import DocxTemplate
 from isogeo_pysdk import Isogeo, IsogeoChecker, __version__ as pysdk_version
 import openpyxl
 import requests
+from ttkwidgets.autocomplete import AutocompleteCombobox, AutocompleteEntry
 
 # from modules import DbManager
 from modules import Isogeo2xlsx
@@ -70,7 +71,6 @@ logfile = RotatingFileHandler("LOG_isogeo2office.log", "a", 5000000, 1)
 logfile.setLevel(logging.DEBUG)
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
-logger.info('\n')
 logger.info('================ Isogeo to office ===============')
 
 # ############################################################################
@@ -157,9 +157,12 @@ class Isogeo2office(Tk):
         logger.debug("APP: " + self.utils.get_isogeo_version(component="app"))
         logger.debug("DB: " + self.utils.get_isogeo_version(component="db"))
         # ------------ Isogeo search & shares --------------------------------
-        self.search_results = self.isogeo.search(self.token,
-                                                 page_size=0,
-                                                 whole_share=0)
+        self.search_empty = self.isogeo.search(self.token,
+                                               page_size=0,
+                                               whole_share=0,
+                                               augment=1,
+                                               tags_as_dicts=1)
+        self.isogeo.get_app_properties(self.token)
         self.shares = self.isogeo.shares(self.token)
         self.shares_info = self.get_shares_info()
 
@@ -170,7 +173,7 @@ class Isogeo2office(Tk):
         self.title("isogeo2office - {0}".format(_version))
         icon = Image("photo", file=r"img/favicon_isogeo.gif")
         self.call("wm", "iconphoto", self._w, icon)
-        self.style = Style(self).theme_use("vista")
+        self.style = Style(self).theme_use("clam")
         self.resizable(width=False, height=False)
         self.focus_force()
         self.msg_bar = StringVar(self)
@@ -231,7 +234,7 @@ class Isogeo2office(Tk):
         self.app_metrics.set(_("{}\n{} metadata in {} share(s)"
                                " owned by {} workgroup(s).")
                              .format(self.shares_info[-1].get("name"),
-                                     self.search_results.get('total'),
+                                     self.search_empty.get('total'),
                                      len(self.shares),
                                      len(self.shares_info[1])))
         lb_app_metrics = Label(fr_isogeo,
@@ -272,9 +275,10 @@ class Isogeo2office(Tk):
             status_launch = ACTIVE
 
         # filters
-        cb_fltr_shares = Combobox(fr_isogeo,
-                                  textvariable="Partages : ",
-                                  values=["Partage 1", "Partage 2"])
+        cb_fltr_shares = AutocompleteCombobox(fr_isogeo,
+                                              textvariable="Partages : ",
+                                              completevalues=[i for i in self.search_empty.get("tags")
+                                                              if i.startswith("share")])
 
         # griding widgets
         logo_isogeo.grid(row=1, rowspan=3,
@@ -548,9 +552,9 @@ class Isogeo2office(Tk):
                     "serviceLayers",
                     "specifications"]
 
-        self.search_results = self.isogeo.search(self.token,
-                                                 include=includes)
-        self.progbar["maximum"] = self.search_results.get("total")
+        self.search_empty = self.isogeo.search(self.token,
+                                               include=includes)
+        self.progbar["maximum"] = self.search_empty.get("total")
         logger.info("Isogeo - metadatas retrieved.")
         # EXCEL
         if self.opt_excel.get():
@@ -596,7 +600,7 @@ class Isogeo2office(Tk):
         # workbook
         url_oc = [share[4] for share in self.shares_info[0]][0]
         wb = Isogeo2xlsx(lang=self.client_lang, url_base=url_oc)
-        wb.set_worksheets(auto=self.search_results.get('tags').keys(),
+        wb.set_worksheets(auto=self.search_empty.get('tags').keys(),
                           dashboard=self.fr_excel.opt_dashboard.get(),
                           attributes=self.fr_excel.opt_attributes.get(),
                           fillfull=self.fr_excel.opt_fillfull.get(),
@@ -604,7 +608,7 @@ class Isogeo2office(Tk):
                           )
 
         # parsing metadata
-        for md in self.search_results.get('results'):
+        for md in self.search_empty.get('results'):
             wb.store_metadatas(md)
             if ui:
                 # progression
@@ -630,10 +634,10 @@ class Isogeo2office(Tk):
         if self.fr_excel.opt_dashboard.get():
             # metadata types - pie chart
             pie = self.stats.type_pie(wb.ws_d,
-                                      self.search_results.get('total'))
+                                      self.search_empty.get('total'))
             wb.ws_d.add_chart(pie, "A1")
             # tags - bar charts
-            bar = self.stats.keywords_bar(wb.ws_d, self.search_results.get("results"))
+            bar = self.stats.keywords_bar(wb.ws_d, self.search_empty.get("results"))
             wb.ws_d.add_chart(bar, "A10")
         else:
             pass
@@ -659,7 +663,7 @@ class Isogeo2office(Tk):
         # transformer
         to_docx = Isogeo2docx()
 
-        for md in self.search_results.get("results"):
+        for md in self.search_empty.get("results"):
             # get OpenCatalog related to each metadata
             if len(self.shares) == 1:
                 url_oc = [share[4] for share in self.shares_info[0]][0]
@@ -750,7 +754,7 @@ class Isogeo2office(Tk):
             logger.info("XML - Temporary directory created: {}".format(out_dir))
 
         # parsing results
-        for md in self.search_results.get("results"):
+        for md in self.search_empty.get("results"):
             # name
             md_title = md.get("title", "NR")
             if '.' in md_title:
@@ -831,7 +835,6 @@ class Isogeo2office(Tk):
         """Execute scripts without UI and using settings.ini."""
         logger.info('Launched from command prompt')
         # utils
-        checker = CheckNorris()
         includes = ["conditions",
                     "contacts",
                     "coordinate-system",
@@ -856,8 +859,8 @@ class Isogeo2office(Tk):
 
         # get settings
         self.settings = default.settings_load()
-        self.search_results = self.isogeo.search(self.token,
-                                                 include=includes)
+        self.search_empty = self.isogeo.search(self.token,
+                                               include=includes)
 
         # Excel export
         if self.settings.get('excel').get('excel_opt'):
