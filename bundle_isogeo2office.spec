@@ -17,18 +17,9 @@ with open(path.realpath("build\\settings.ini"), "w") as configfile:
 added_files = [('build\\settings.ini', '.'),
                ('LICENSE', '.'),
                ('README.md', '.'),
-               ('i18n\\isogeo2office.pot', 'i18n'),
-               ('i18n\\fr_FR\\LC_MESSAGES\\isogeo2office.mo', 'i18n\\fr_FR\\LC_MESSAGES'),
                ('templates\\template_Isogeo.docx', 'templates'),
                ('output\\README.md', 'output'),
-               ('img\\favicon.ico', 'img'),
-               ('img\\favicon_isogeo.gif', 'img'),
-               ('img\\logo_isogeo.gif', 'img'),
-               ('img\\logo_Word2013.gif', 'img'),
-               ('img\\logo_Excel2013.gif', 'img'),
-               ('img\\logo_inspireFun.gif', 'img'),
-               ('img\\logo_process.gif', 'img'),
-               ('img\\settings.ico', 'img')
+               ('img\\favicon.ico', 'img')
               ]
 
 
