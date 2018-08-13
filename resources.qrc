@@ -1,0 +1,29 @@
+<RCC>
+  <qresource prefix="IsogeoToOffice">
+    <file>resources/icon.png</file>
+    <file>resources/export/xml.svg</file>
+    <file>resources/export/xml-variant.svg</file>
+    <file>resources/settings/share-alt.svg</file>
+    <file>resources/export/logo_inspireFun.gif</file>
+    <file>resources/export/excel.svg</file>
+    <file>resources/export/word.svg</file>
+    <file>resources/authentication/send-o.svg</file>
+    <file>resources/authentication/sign-in.svg</file>
+    <file>resources/authentication/user.svg</file>
+    <file>resources/credits/github.svg</file>
+    <file>resources/credits/isogeo.png</file>
+    <file>resources/credits/lgplv3.png</file>
+    <file>resources/credits/sponsor_logo_aev.png</file>
+    <file>resources/credits/sponsor_logo_metropole_aix_marseille_provence.png</file>
+    <file>resources/export/download.svg</file>
+    <file>resources/export/folder-open-o.svg</file>
+    <file>resources/export/gear.svg</file>
+    <file>resources/export/send-o.svg</file>
+    <file>resources/settings/bullhorn.svg</file>
+    <file>resources/settings/folder-open-o.svg</file>
+    <file>resources/settings/gear.svg</file>
+    <file>resources/settings/info.svg</file>
+    <file>resources/settings/key.svg</file>
+    <file>resources/settings/question.svg</file>
+  </qresource>
+</RCC>
