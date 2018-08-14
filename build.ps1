@@ -23,13 +23,11 @@ pyrcc5 ".\resources.qrc" -o ".\resources_rc.py"
 "`n-- STEP -- Update UI elements"
 pyuic5 -x .\modules\ui\auth\ui_authentication.ui -o .\modules\ui\auth\ui_authentication.py
 pyuic5 -x .\modules\ui\credits\ui_credits.ui -o .\modules\ui\credits\ui_credits.py
-pyuic5 -x .\modules\ui\export\ui_export.ui -o .\modules\ui\export\ui_export.py
+pyuic5 -x .\modules\ui\main\ui_IsogeoToOffice.ui -o .\modules\ui\main\ui_IsogeoToOffice.py
 
 "`n-- STEP -- Build and bundle forcing clean"
 rm -r dist\*
 pyinstaller -y --clean bundle_isogeo2office.spec
-# UPX? comment previous line, uncomment the next one and adjust UPX path if needed
-#pyinstaller -y --clean --upx-dir=lib/upx/ bundle_isogeo2office.spec
 
 "`n-- STEP -- Zipping"
 # Add-Type -assembly "system.io.compression.filesystem"

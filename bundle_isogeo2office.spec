@@ -2,33 +2,16 @@
 
 block_cipher = None
 
-from configparser import SafeConfigParser
-from os import path
-
-# ------------ Initial settings file -----------------------------------------
-config = SafeConfigParser()
-config.read(path.realpath("settings_TPL.ini"))
-#config.set("global", "excel", "word", "xml", "proxy")
-with open(path.realpath("build\\settings.ini"), "w") as configfile:
-    config.write(configfile)
-
-# ----------------------------------------------------------------------------
-
-added_files = [('build\\settings.ini', '.'),
-               ('LICENSE', '.'),
-               ('README.md', '.'),
-               ('templates\\template_Isogeo.docx', 'templates'),
-               ('output\\README.md', 'output'),
-               ('img\\favicon.ico', 'img')
+added_files = [('i18n', 'i18n'),
+               ('resources', 'resources'),
               ]
 
-
-a = Analysis(['isogeo2office.py'],
+a = Analysis(['__main__.py'],
              pathex=['C:\\Users\\julien.moura\\Documents\\GitHub\\Isogeo\\isogeo-2-office'],
-             binaries=None,
+             binaries=[],
              datas=added_files,
              hiddenimports=[],
-             hookspath=["hooks"],
+             hookspath=[],
              runtime_hooks=[],
              excludes=[],
              win_no_prefer_redirects=False,
@@ -45,7 +28,7 @@ exe = EXE(pyz,
           name='isogeo2office',
           debug=False,
           strip=False,
-          upx=True,
+          upx=False,
           console=False,
           icon='img\\favicon.ico',
           windowed=True,
@@ -56,7 +39,7 @@ coll = COLLECT(exe,
                a.zipfiles,
                a.datas,
                strip=False,
-               upx=True,
+               upx=False,
                name='isogeo2office',
                icon='img\\logo_isogeo.gif'
                )
