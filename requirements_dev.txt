@@ -9,8 +9,11 @@
 #   It's higly recomended to use it within a virtualenv.
 #
 
+# code art
 codecov==2.*
 coverage==4.5.*
 pycodestyle==2.4.*
-PyInstaller==3.3.*
 pylint==2.1.*
+
+# packaging
+https://github.com/pyinstaller/pyinstaller/tarball/b8c5773bd2c07c65a1f30cd5b9b2e9c4a146c2b6

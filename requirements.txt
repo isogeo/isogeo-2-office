@@ -18,6 +18,7 @@ wheel
 # utils
 arrow==0.12.*
 future==0.16.*
+progressbar2==3.38.*
 
 # isogeo to office
 docxtpl==0.5.*

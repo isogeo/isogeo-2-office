@@ -4,10 +4,10 @@ verify_ssl = true
 name = "pypi"
 
 [dev-packages]
-PyInstaller = "*"
 codecov = "*"
 pycodestyle = "*"
 pylint = "*"
+"afcc439" = {file = "https://github.com/pyinstaller/pyinstaller/tarball/b8c5773bd2c07c65a1f30cd5b9b2e9c4a146c2b6"}
 
 [packages]
 arrow = "*"
@@ -19,6 +19,7 @@ lxml = "*"
 docxtpl = "*"
 future = "*"
 six = "*"
+progressbar2 = "*"
 "pyqt5" = "*"
 "pyqt5-tools" = "*"
 qdarkstyle = "*"
