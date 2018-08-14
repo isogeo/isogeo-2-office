@@ -1,10 +1,17 @@
 <RCC>
   <qresource prefix="IsogeoToOffice">
+    <file>resources/export/rocket.svg</file>
+    <file>resources/authentication/upload.svg</file>
+    <file>resources/credits/gavel.svg</file>
+    <file>resources/export/undo.svg</file>
+    <file>resources/export/asterisk.svg</file>
+    <file>resources/export/tag.svg</file>
+    <file>resources/export/users.svg</file>
     <file>resources/icon.png</file>
     <file>resources/export/xml.svg</file>
     <file>resources/export/xml-variant.svg</file>
-    <file>resources/settings/share-alt.svg</file>
     <file>resources/export/logo_inspireFun.gif</file>
+    <file>resources/share-alt.svg</file>
     <file>resources/export/excel.svg</file>
     <file>resources/export/word.svg</file>
     <file>resources/authentication/send-o.svg</file>
