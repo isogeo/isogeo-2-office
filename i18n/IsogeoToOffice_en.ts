@@ -171,173 +171,203 @@
 <context>
     <name>tabs_IsogeoToOffice</name>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="69"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="84"/>
         <source>Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="90"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="105"/>
         <source>Filters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="132"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="153"/>
         <source>Share</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="224"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="251"/>
         <source>Metadata Owner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="318"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="351"/>
         <source>Resource type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="410"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="449"/>
         <source>Keyword</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="490"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="529"/>
         <source>Reset search form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="540"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="579"/>
         <source>Output formats</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="805"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="846"/>
         <source>Launch export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="855"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="930"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="867"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1437"/>
         <source>Resources</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="883"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1453"/>
         <source>Report an issue on the bug tracker</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="918"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1488"/>
         <source>Get the log file: &quot;log_isogeo_isogeo2office.log&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="924"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1494"/>
         <source>LOG File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="974"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1544"/>
         <source>Open online application help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1009"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1579"/>
         <source>Open online help in default browser</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1036"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1606"/>
         <source>Open application credits</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1071"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1641"/>
         <source>Open credits popup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1098"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1366"/>
         <source>Authentication settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1115"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1380"/>
         <source>Set application authentication:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1169"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="951"/>
         <source>Export settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1181"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1155"/>
         <source>Output repository:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1354"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1096"/>
         <source>Enter output file name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1212"/>
-        <source>5</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1225"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1015"/>
         <source>Display Timestamp:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1238"/>
-        <source>UID chars [0 - 8]: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1332"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1337"/>
         <source>Export metadata in XML ISO 19139</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1277"/>
-        <source>Pack all XML into one .zip</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1293"/>
-        <source>Display attributes ocurrences :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1306"/>
-        <source>Display attributs occurrence</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1319"/>
-        <source>Display catalog indicators</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1366"/>
-        <source>isogeo2office</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1379"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1174"/>
         <source>Output fileprefix:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1401"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1074"/>
         <source>Output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="997"/>
+        <source>Location and naming rules</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1035"/>
+        <source>No date (overwrite)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1040"/>
+        <source>Day</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1045"/>
+        <source>Datetime</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1114"/>
+        <source>isogeo2office_</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1136"/>
+        <source>Length of metadata UUID:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1223"/>
+        <source>Excel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1238"/>
+        <source>Features attributes analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1254"/>
+        <source>Cataloguing dashboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1274"/>
+        <source>Word</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1292"/>
+        <source>Template to apply:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1331"/>
+        <source>XML</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1340"/>
+        <source>Pack all XML in one zip archive</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
