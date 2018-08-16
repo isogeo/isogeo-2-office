@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+#! python3
 
 # ----------------------------------------------------------------------------
 # Name:         isogeo2office useful methods
@@ -125,57 +126,7 @@ class isogeo2office_utils(IsogeoUtils):
         # get the clean url
         return url_input[0:url_input.index(url_input.rsplit('/')[6])]
 
-    # UI --------------------------------------------------------------------
-
-    def entry_validate_uid(self, action, index, value_if_allowed,
-                           prior_value, text, validation_type,
-                           trigger_type, widget_name):
-        """Ensure that the users enters an integer value in the UID option field.
-
-        see: https://stackoverflow.com/a/31048136/2556577
-        """
-        if(action == '1'):
-            if text in '012345678' and len(prior_value + text) < 2:
-                try:
-                    float(value_if_allowed)
-                    return True
-                except ValueError:
-                    return False
-            else:
-                return False
-        else:
-            return True
-
-    def entry_validate_date(self, action, index, value_if_allowed,
-                            prior_value, text, validation_type,
-                            trigger_type, widget_name):
-        """Ensure that the users enters a valid value in the date option field.
-
-        see: https://stackoverflow.com/a/31048136/2556577
-        """
-        if(action == '1'):
-            if text in '012' and len(prior_value + text) < 2:
-                try:
-                    float(value_if_allowed)
-                    return True
-                except ValueError:
-                    return False
-            else:
-                return False
-        else:
-            return True
-
     # SETTINGS ---------------------------------------------------------------
-
-    def settings_load(self, config_file=r"../settings.ini"):
-        """Load settings from the ini file."""
-        config = ConfigParser()
-        config.read(config_file)
-        settings_dict = {s: dict(config.items(s)) for s in config.sections()}
-        logger.info("Settings loaded from: {}".format(config_file))
-
-        # end of method
-        return settings_dict
 
     def settings_save(self, parent, config_file=r"../settings.ini"):
         """Save settings into the ini file."""

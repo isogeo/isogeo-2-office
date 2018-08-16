@@ -25,12 +25,6 @@ from os import path, walk
 import platform  # about operating systems
 from sys import argv, exit
 from tempfile import mkdtemp
-from tkinter.filedialog import askdirectory, askopenfilename
-from tkinter.messagebox import showerror as avert
-from tkinter import Tk, Image, PhotoImage
-from tkinter import IntVar, StringVar, ACTIVE, DISABLED, VERTICAL
-from tkinter.ttk import Label, Button, Checkbutton, Combobox
-from tkinter.ttk import Labelframe, Progressbar, Separator, Style
 from zipfile import ZipFile
 
 # 3rd party library
@@ -38,21 +32,12 @@ from docxtpl import DocxTemplate
 from isogeo_pysdk import Isogeo, IsogeoChecker, __version__ as pysdk_version
 import openpyxl
 import requests
-from ttkwidgets.autocomplete import AutocompleteCombobox, AutocompleteEntry
 
 # from modules import DbManager
 from modules import Isogeo2xlsx
 from modules import Isogeo2docx
-from modules import IsogeoAppAuth
 from modules import IsogeoStats
 from modules import isogeo2office_utils
-
-# UI submodules
-from modules import FrameExcel
-from modules import FrameGlobal
-from modules import FrameWord
-from modules import FrameXml
-from modules import ToolTip
 
 # ############################################################################
 # ########## Global ################
