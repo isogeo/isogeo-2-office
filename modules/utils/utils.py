@@ -62,7 +62,6 @@ class isogeo2office_utils(IsogeoUtils):
         # ------------ VARIABLES ---------------------
 
     # MISCELLANOUS -----------------------------------------------------------
-
     def open_urls(self, li_url):
         """Open URLs in new tabs in the default brower.
 
@@ -132,25 +131,21 @@ class isogeo2office_utils(IsogeoUtils):
         if file_type == "credentials":
             file_filters = "Standard credentials file (client_secrets.json);;JSON Files (*.json)"
         else:
-            file_filters = "All Files (*);;Python Files (*.py)"
+            file_filters = "All Files (*)"
 
         # set options
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
+        options |= QFileDialog.ReadOnly
+
         # launch
-        filepath = QFileDialog.getOpenFileName(parent=None,
-                                               caption=parent.tr('Open file'),
-                                               directory=start_dir,
-                                               filter=file_filters,
-                                               options=options)
-        if filepath:
-            logger.debug(filepath)
-            return filepath
-        else:
-            logger.debug("no file selected")
+        return QFileDialog.getOpenFileName(parent=None,
+                                           caption=parent.tr('Open file'),
+                                           directory=start_dir,
+                                           filter=file_filters,
+                                           options=options)
 
     # ISOGEO -----------------------------------------------------------------
-
     def get_url_base(self, url_input):
         """Get OpenCatalog base URL to add resource ID easily."""
         # get the OpenCatalog URL given
@@ -161,8 +156,6 @@ class isogeo2office_utils(IsogeoUtils):
 
         # get the clean url
         return url_input[0:url_input.index(url_input.rsplit('/')[6])]
-
-    # SETTINGS ---------------------------------------------------------------
 
     # ------------------------------------------------------------------------
     def clean_filename(self, filename: str, substitute: str = "", mode: str = "soft"):

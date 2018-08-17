@@ -27,7 +27,8 @@ from os import path
 # 3rd party library
 from isogeo_pysdk import Isogeo, IsogeoChecker
 from isogeo_pysdk import __version__ as pysdk_version
-from PyQt5.QtCore import QLocale, QSettings, QBasicTimer, QTranslator
+from PyQt5.QtCore import QLocale, QSettings, QBasicTimer, QTranslator, QTimerEvent
+from PyQt5.QtGui import QCloseEvent
 from PyQt5.QtWidgets import (QApplication, QDialog, QMenu, QStyle, QSystemTrayIcon,
                              QTabWidget)
 import qdarkstyle
@@ -154,9 +155,10 @@ class IsogeoToOffice_Main(QTabWidget):
         """After UI display, start to try to connect to Isogeo API.
         """
         # check credentials
-        self.processing("start")
         if not api_mngr.manage_api_initialization():
             logger.error("No credentials")
+        else:
+            logger.debug("Access granted!")
         
         # 
         #self.isogeo = Isogeo()
@@ -206,7 +208,10 @@ class IsogeoToOffice_Main(QTabWidget):
             raise ValueError
 
     def closeEvent(self, event_sent):
-        """Actions performed juste before UI is closed."""
+        """Actions performed juste before UI is closed.
+        
+        :param QCloseEvent event_sent: event sent when the main UI is close
+        """
         # misc
         self.app_settings.setValue("log/log_level", "10")
 
@@ -247,13 +252,17 @@ class IsogeoToOffice_Main(QTabWidget):
         event_sent.accept()
 
     def timerEvent(self, event_sent):
+        """Timer event catcher in charge of updating the progress bar.
 
+        :param QTimerEvent event_sent: event automatically sent by QBasicTimer
+        """
+        # check if step is over the end limit
         if self.step >= 100:
             self.timer.stop()
             return
-
-        self.step += 1
-        self.ui.pgb_exports.setValue(self.step)
+        else:
+            self.step += 1
+            self.ui.pgb_exports.setValue(self.step)
 
 # #############################################################################
 # ##### Stand alone program ########

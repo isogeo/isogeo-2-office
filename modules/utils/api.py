@@ -9,8 +9,8 @@ from os import path, rename
 import time
 
 # PyQT
-from PyQt5.QtWidgets import QDialog
-from PyQt5.QtCore import QSettings
+from PyQt5.QtWidgets import QDialog, QErrorMessage
+from PyQt5.QtCore import QLocale, QSettings
 
 # Isogeo
 from isogeo_pysdk import Isogeo, IsogeoChecker
@@ -24,19 +24,22 @@ from .utils import isogeo2office_utils
 # ##################################
 
 app_utils = isogeo2office_utils()
+current_locale = QLocale()
 logger = logging.getLogger("isogeo2office")
-qsettings = QSettings()
+qsettings = QSettings('Isogeo', 'IsogeoToOffice')
 
 # ############################################################################
 # ########## Classes ###############
 # ##################################
 
 
-class IsogeoApiMngr(Isogeo):
+class IsogeoApiMngr(object):
     """Isogeo API manager."""
+    # Isogeo API wrapper
+    isogeo = object
+    token = str
     # ui reference - authentication form
     ui_auth_form = QDialog
-
     # api parameters
     api_app_id = ""
     api_app_secret = ""
@@ -52,13 +55,9 @@ class IsogeoApiMngr(Isogeo):
         }
     auth_folder = ""
 
-    # requests stuff
-    req_status_isClear = True
-
     # API URLs - Prod
     platform, api_url, app_url, csw_url,\
         mng_url, oc_url, ssl = app_utils.set_base_url("prod")
-    
 
     def __init__(self):
         super(IsogeoApiMngr, self)
@@ -84,41 +83,23 @@ class IsogeoApiMngr(Isogeo):
             self.display_auth_form()
             return False
 
+        # start api wrapper
+        self.isogeo = Isogeo(client_id=self.api_app_id,
+                             client_secret=self.api_app_secret,
+                             lang=current_locale.name()[:2])
+        self.token = self.isogeo.connect()
         return True
 
     # CREDENTIALS LOCATORS ----------------------------------------------------
     def credentials_check_qsettings(self):
-        """Retrieve Isogeo API credentials within QGIS QSettings."""
-        if "isogeo-plugin" in qsettings.childGroups():
-            logger.warning("Old credentials found and removed in QGIS QSettings: isogeo-plugin")
-            qsettings.remove("isogeo-plugin")
-            return False
-        elif "isogeo" in qsettings.childGroups():
-            # looking in child groups and clean a little if needed
-            qsettings.beginGroup("isogeo")
-            if "app_auth" in qsettings.childGroups():
-                qsettings.remove("isogeo/app_auth")
-                logger.debug("QSettings clean up - app_auth")
-                pass
-            if "api_auth" in qsettings.childGroups():
-                qsettings.remove("isogeo/api_auth")
-                logger.debug("QSettings clean up - api_auth")
-                pass
-            if "auth" in qsettings.childGroups() \
-            and not qsettings.contains("auth/app_id"):
-                qsettings.remove("isogeo/auth")
-                logger.debug("QSettings clean up - bad formatted auth")
-                pass
-            if "auth" in qsettings.childGroups() \
+        """Retrieve Isogeo API credentials within APP QSettings."""
+        if "auth" in qsettings.childGroups() \
             and qsettings.contains("auth/app_id"):
-                logger.debug("Credentials found within QGIS QSettings: isogeo/")
-                pass
-            qsettings.endGroup()
+            logger.debug("Credentials found within QGIS QSettings: isogeo/")
             return True
         else:
-            pass
-        logger.debug("No Isogeo credentials found within QGIS QSettings.")
-        return False
+            logger.debug("No Isogeo credentials found within QGIS QSettings.")
+            return False
 
     def credentials_check_file(self):
         """Retrieve Isogeo API credentials from a file stored inside the 
@@ -148,13 +129,12 @@ class IsogeoApiMngr(Isogeo):
             - QSettings
         """
         if store_location == "QSettings":
-            logger.debug("youhou")
-            qsettings.setValue("isogeo/auth/app_id", self.api_app_id)
-            qsettings.setValue("isogeo/auth/app_secret", self.api_app_secret)
-            qsettings.setValue("isogeo/auth/url_base", self.api_url_base)
-            qsettings.setValue("isogeo/auth/url_auth", self.api_url_auth)
-            qsettings.setValue("isogeo/auth/url_token", self.api_url_token)
-            qsettings.setValue("isogeo/auth/url_redirect", self.api_url_redirect)
+            qsettings.setValue("auth/app_id", self.api_app_id)
+            qsettings.setValue("auth/app_secret", self.api_app_secret)
+            qsettings.setValue("auth/url_base", self.api_url_base)
+            qsettings.setValue("auth/url_auth", self.api_url_auth)
+            qsettings.setValue("auth/url_token", self.api_url_token)
+            qsettings.setValue("auth/url_redirect", self.api_url_redirect)
         else:
             pass
         logger.debug("Credentials stored into: {}".format(store_location))
@@ -163,12 +143,12 @@ class IsogeoApiMngr(Isogeo):
         """Update class attributes from specified credentials source."""
         # update class attributes
         if credentials_source == "QSettings":
-            self.api_app_id = qsettings.value("isogeo/auth/app_id", "")
-            self.api_app_secret = qsettings.value("isogeo/auth/app_secret", "")
-            self.api_url_base = qsettings.value("isogeo/auth/url_base", "https://v1.api.isogeo.com/")
-            self.api_url_auth = qsettings.value("isogeo/auth/url_auth", "https://id.api.isogeo.com/oauth/authorize")
-            self.api_url_token = qsettings.value("isogeo/auth/url_token", "https://id.api.isogeo.com/oauth/token")
-            self.api_url_redirect = qsettings.value("isogeo/auth/url_redirect", "http://localhost:5000/callback")
+            self.api_app_id = qsettings.value("auth/app_id", "")
+            self.api_app_secret = qsettings.value("auth/app_secret", "")
+            self.api_url_base = qsettings.value("auth/url_base", "https://v1.api.isogeo.com/")
+            self.api_url_auth = qsettings.value("auth/url_auth", "https://id.api.isogeo.com/oauth/authorize")
+            self.api_url_token = qsettings.value("auth/url_token", "https://id.api.isogeo.com/oauth/token")
+            self.api_url_redirect = qsettings.value("auth/url_redirect", "http://localhost:5000/callback")
         elif credentials_source == "oAuth2_file":
             creds = app_utils.credentials_loader(path.join(self.auth_folder,
                                                            "client_secrets.json"))
@@ -178,7 +158,7 @@ class IsogeoApiMngr(Isogeo):
             self.api_url_auth = creds.get("uri_auth")
             self.api_url_token = creds.get("uri_token")
             self.api_url_redirect = creds.get("uri_redirect")
-            #self.credentials_storer(store_location="QSettings")
+            self.credentials_storer(store_location="QSettings")
         else:
             pass
 
@@ -188,17 +168,24 @@ class IsogeoApiMngr(Isogeo):
     # AUTHENTICATION FORM -----------------------------------------------------
     def display_auth_form(self):
         """Show authentication form with prefilled fields."""
-        # connect
-        self.ui_auth_form.btn_browse_credentials.pressed.connect(partial(app_utils.open_FileNameDialog,
-                                                                         self.ui_auth_form)
-                                                                         )
+        # connect widgets
+        self.ui_auth_form.btn_browse_credentials.pressed.connect(partial(self.credentials_uploader))
+        self.ui_auth_form.chb_isogeo_editor\
+                         .stateChanged\
+                         .connect(lambda: qsettings.setValue("user/editor",
+                                                             int(self.ui_auth_form.chb_isogeo_editor.isChecked())
+                                                             )
+                                )
+        # button to request an account by email
+        #self.ui_auth_form.btn_account_new.pressed.connect(
+        #    partial(app_utils.mail_to_isogeo, lang=self.lang))
 
         # fillfull auth form fields from stored settings
         self.ui_auth_form.ent_app_id.setText(self.api_app_id)
         self.ui_auth_form.ent_app_secret.setText(self.api_app_secret)
         self.ui_auth_form.lbl_api_url_value.setText(self.api_url_base)
         self.ui_auth_form.chb_isogeo_editor.setChecked(qsettings
-                                                  .value("isogeo/user/editor", 0))
+                                                  .value("user/editor", 0))
         # display
         logger.debug("Authentication form filled and ready to be launched.")
         self.ui_auth_form.show()
@@ -208,12 +195,20 @@ class IsogeoApiMngr(Isogeo):
         If the selected is compliant, credentials are loaded from then it's
         moved inside plugin\_auth subfolder.
         """
+        selected_file = app_utils.open_FileNameDialog(self.ui_auth_form)
+        logger.debug("QFileDIalog returned: {}".format(selected_file))
         # test file structure
+        if not path.exists(selected_file[0]):
+            logger.error("No file selected")
+            return False
+        else:
+            logger.debug("Selected file exists.")
         try:
-            selected_file = path.normpath(self.ui_auth_form.btn_browse_credentials.filePath())
+            selected_file = path.normpath(selected_file[0])
             api_credentials = app_utils.credentials_loader(selected_file)
         except Exception as e:
-            logger.error(e)
+            logger.error("Selected file is bad formatted: {}".format(e))
+            return False
         # move credentials file into the plugin file structure
         if path.isfile(path.join(self.auth_folder, "client_secrets.json")):
             rename(path.join(self.auth_folder, "client_secrets.json"),
@@ -224,11 +219,19 @@ class IsogeoApiMngr(Isogeo):
                          "Previous file has been renamed.")
         else:
             pass
-        logger.debug("YARK {}".format(path.join(self.auth_folder, "client_secrets.json")))
         rename(selected_file,
                path.join(self.auth_folder, "client_secrets.json"))
         logger.debug("Selected credentials file has been moved into plugin"
                      "_auth subfolder")
+
+        # check validity
+        try:
+            self.isogeo = Isogeo(client_id=api_credentials.get("client_id"),
+                                 client_secret=api_credentials.get("client_secret")
+                                 )
+        except Exception as e:
+            print(e)
+            return False
 
         # set form
         self.ui_auth_form.ent_app_id.setText(api_credentials.get("client_id"))
