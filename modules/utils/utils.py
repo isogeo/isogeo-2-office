@@ -164,62 +164,6 @@ class isogeo2office_utils(IsogeoUtils):
 
     # SETTINGS ---------------------------------------------------------------
 
-    def settings_save(self, parent, config_file=r"../settings.ini"):
-        """Save settings into the ini file."""
-        config = ConfigParser(dict_type=OrderedDict)
-        config.read(path.realpath(config_file))
-        # default OpenCatalog URL
-        if len(parent.shares) == 1:
-            url_oc = [share[4] for share in parent.shares_info[0]][0]
-        else:
-            url_oc = ""
-            pass
-        # new values to save
-        config["auth"] = {"app_id": parent.app_id,
-                          "app_secret": parent.app_secret
-                          }
-
-        config["local"] = {"out_folder": path.realpath(parent.out_fold_path.get()),
-                           "def_oc": url_oc,
-                           "def_codelang": parent.client_lang
-                           }
-
-        config["excel"] = {"excel_opt": parent.opt_excel.get(),
-                           "output_name": parent.fr_excel.output_name.get(),
-                           "opt_dashboard": parent.fr_excel.opt_dashboard.get(),
-                           "opt_attributes": parent.fr_excel.opt_attributes.get(),
-                           "opt_fillfull": parent.fr_excel.opt_fillfull.get(),
-                           "opt_inspire": parent.fr_excel.opt_inspire.get(),
-                           }
-
-        config["word"] = {"word_opt": parent.opt_word.get(),
-                          "out_prefix": parent.fr_word.out_prefix.get(),
-                          "tpl": parent.fr_word.tpl_input.get(),
-                          "opt_id": parent.fr_word.opt_id.get(),
-                          "opt_date": parent.fr_word.opt_date.get(),
-                          }
-
-        config["xml"] = {"xml_opt": parent.opt_xml.get(),
-                         "out_prefix": parent.fr_xml.out_prefix.get(),
-                         "opt_id": parent.fr_xml.opt_id.get(),
-                         "opt_date": parent.fr_xml.opt_date.get(),
-                         "opt_zip": parent.fr_xml.opt_zip.get(),
-                         }
-
-        # writing
-        with open(path.realpath(config_file), mode="w") as configfile:
-            try:
-                config.write(configfile)
-                logger.info("Settings saved into: {}".format(config_file))
-            except UnicodeEncodeError as e:
-                avert(_("Invalid character"),
-                      _("Special character spotted in output filenames.\n"
-                      "Settings couldn't be saved but exports will continue."))
-                logger.error("SETTINGS - Encoding error: {}".format(e))
-
-        # end of method
-        return
-
     # ------------------------------------------------------------------------
     def clean_filename(self, filename: str, substitute: str = "", mode: str = "soft"):
         """Remove invalid characters from filename.
