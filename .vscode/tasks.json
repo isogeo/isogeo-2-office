@@ -1,0 +1,51 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build and package",
+            "type": "shell",
+            "command": "./build.ps1",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Tests and coverage",
+            "type": "shell",
+            "command": "./tests_coverage.ps1",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Build - Create venv",
+            "type": "shell",
+            "command": "py -3 -m venv env3_packaging",
+            "group": "build"
+        },
+        {
+            "label": "Build - Update venv",
+            "type": "shell",
+            "command": "./env3_packaging/Scripts/activate; python -m pip install -U pip; pip install -U -r requirements.txt",
+            "group": "build",
+            "dependsOn": [
+                "Build - Create venv"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Build - UI Translations",
+            "type": "shell",
+            "command": "./ui_compile.ps1",
+            "group": "build",
+            "dependsOn": [
+                "Build - Update venv"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}
