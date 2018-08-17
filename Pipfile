@@ -22,7 +22,7 @@ future = "*"
 six = "*"
 progressbar2 = "*"
 "pyqt5" = "*"
-"pyqt5-tools" = "*"
+"pyqt5-tools" = {version = "*", sys_platform = "== 'win32'"}
 qdarkstyle = "*"
 
 [requires]
