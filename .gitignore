@@ -254,12 +254,6 @@ target/
 .ipynb_checkpoints
 
 #############
-## Sublime Text
-#############
-
-*.sublime-workspace
-
-#############
 ## Custom
 #############
 
@@ -285,3 +279,10 @@ env*
 venv*
 virtenv*
 virtualenv/
+
+# isogeo api
+client_secrets.json
+_auth/
+
+# logs
+_logs/
