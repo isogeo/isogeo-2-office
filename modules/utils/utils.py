@@ -32,6 +32,7 @@ from xml.sax.saxutils import escape  # '<' -> '&lt;'
 
 # 3rd party
 from isogeo_pysdk import IsogeoUtils
+from PyQt5.QtWidgets import QFileDialog
 
 # Depending on operating system
 if opersys == 'win32':
@@ -112,6 +113,41 @@ class isogeo2office_utils(IsogeoUtils):
 
         # end of function
         return proc
+
+    # UI
+    def open_FileNameDialog(self, parent=None, file_type="credentials"):
+        """Manage file dialog to allow user pick a file.
+
+        :param QApplication parent: Qt parent application.
+        :param str file_type: 
+        """
+        # try to get user download directory
+        user_download = path.realpath(path.join(path.expanduser("~"), "Downloads"))
+        if path.exists(user_download):
+            start_dir = user_download
+        else:
+            start_dir = path.expanduser("~")
+
+        # adapt file filters according to file_type option
+        if file_type == "credentials":
+            file_filters = "Standard credentials file (client_secrets.json);;JSON Files (*.json)"
+        else:
+            file_filters = "All Files (*);;Python Files (*.py)"
+
+        # set options
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        # launch
+        filepath = QFileDialog.getOpenFileName(parent=None,
+                                               caption=parent.tr('Open file'),
+                                               directory=start_dir,
+                                               filter=file_filters,
+                                               options=options)
+        if filepath:
+            logger.debug(filepath)
+            return filepath
+        else:
+            logger.debug("no file selected")
 
     # ISOGEO -----------------------------------------------------------------
 

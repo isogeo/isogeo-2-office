@@ -2,6 +2,7 @@
 #! python3
 
 # Standard library
+from functools import partial
 import json
 import logging
 from os import path, rename
@@ -187,13 +188,17 @@ class IsogeoApiMngr(Isogeo):
     # AUTHENTICATION FORM -----------------------------------------------------
     def display_auth_form(self):
         """Show authentication form with prefilled fields."""
+        # connect
+        self.ui_auth_form.btn_browse_credentials.pressed.connect(partial(app_utils.open_FileNameDialog,
+                                                                         self.ui_auth_form)
+                                                                         )
+
         # fillfull auth form fields from stored settings
         self.ui_auth_form.ent_app_id.setText(self.api_app_id)
         self.ui_auth_form.ent_app_secret.setText(self.api_app_secret)
         self.ui_auth_form.lbl_api_url_value.setText(self.api_url_base)
         self.ui_auth_form.chb_isogeo_editor.setChecked(qsettings
                                                   .value("isogeo/user/editor", 0))
-        
         # display
         logger.debug("Authentication form filled and ready to be launched.")
         self.ui_auth_form.show()
