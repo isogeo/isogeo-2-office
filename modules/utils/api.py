@@ -36,7 +36,7 @@ qsettings = QSettings('Isogeo', 'IsogeoToOffice')
 class IsogeoApiMngr(object):
     """Isogeo API manager."""
     # Isogeo API wrapper
-    isogeo = object
+    isogeo = Isogeo
     token = str
     # ui reference - authentication form
     ui_auth_form = QDialog
@@ -84,11 +84,18 @@ class IsogeoApiMngr(object):
             return False
 
         # start api wrapper
-        self.isogeo = Isogeo(client_id=self.api_app_id,
-                             client_secret=self.api_app_secret,
-                             lang=current_locale.name()[:2])
-        self.token = self.isogeo.connect()
-        return True
+        try:
+            self.isogeo = Isogeo(client_id=self.api_app_id,
+                                client_secret=self.api_app_secret,
+                                lang=current_locale.name()[:2])
+            self.token = self.isogeo.connect()
+            return True
+        except ValueError as e:
+            logger.error(e)
+            self.display_auth_form()
+        except Exception as e:
+            logger.error(e)
+            self.display_auth_form()
 
     # CREDENTIALS LOCATORS ----------------------------------------------------
     def credentials_check_qsettings(self):
@@ -230,13 +237,14 @@ class IsogeoApiMngr(object):
                                  client_secret=api_credentials.get("client_secret")
                                  )
         except Exception as e:
-            print(e)
+            logger.debug(e)
             return False
 
         # set form
         self.ui_auth_form.ent_app_id.setText(api_credentials.get("client_id"))
         self.ui_auth_form.ent_app_secret.setText(api_credentials.get("client_secret"))
         self.ui_auth_form.lbl_api_url_value.setText(api_credentials.get("uri_auth"))
+        self.ui_auth_form.btn_ok_cancel.setEnabled(1)
 
         # update class attributes from file
         self.credentials_update(credentials_source="oAuth2_file")

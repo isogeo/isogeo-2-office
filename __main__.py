@@ -25,21 +25,22 @@ from logging.handlers import RotatingFileHandler
 from os import path
 
 # 3rd party library
-from isogeo_pysdk import Isogeo, IsogeoChecker
 from isogeo_pysdk import __version__ as pysdk_version
-from PyQt5.QtCore import QLocale, QSettings, QBasicTimer, QTranslator, QTimerEvent
+from PyQt5.QtCore import (QBasicTimer, QLocale, QSettings, QTimerEvent,
+                          QTranslator)
 from PyQt5.QtGui import QCloseEvent
-from PyQt5.QtWidgets import (QApplication, QDialog, QMenu, QStyle, QSystemTrayIcon,
-                             QTabWidget)
-import qdarkstyle
+from PyQt5.QtWidgets import (QApplication, QComboBox, QDialog, QMenu,
+                             QMessageBox, QStyle, QSystemTrayIcon, QTabWidget)
 
-# submodules - functional
-from modules.utils.api import IsogeoApiMngr
-from modules import Isogeo2docx, Isogeo2xlsx, IsogeoStats, isogeo2office_utils
+import qdarkstyle
+# submodules - export
+from modules import isogeo2office_utils
 # submodules - UI
 from modules.ui.auth.auth_dlg import Auth
 from modules.ui.credits.credits_dlg import Credits
 from modules.ui.main.ui_IsogeoToOffice import Ui_tabs_IsogeoToOffice
+# submodules - functional
+from modules.utils.api import IsogeoApiMngr
 
 # #############################################################################
 # ########## Globals ###############
@@ -105,7 +106,6 @@ class IsogeoToOffice_Main(QTabWidget):
         # timer and progress bar
         self.timer = QBasicTimer()
         self.step = 0
-
         """ --- CONNECTING UI WIDGETS <-> FUNCTIONS --- """
         # -- Export tab - Filters ---------------------------------------------
         self.ui.cbb_share.activated.connect(partial(self.search, 0))
@@ -113,6 +113,15 @@ class IsogeoToOffice_Main(QTabWidget):
         self.ui.cbb_owner.activated.connect(partial(self.search, 0))
         self.ui.cbb_keyword.activated.connect(partial(self.search, 0))
         self.ui.btn_reinit.pressed.connect(partial(self.search, 1))
+
+        # -- Settings tab - Export settings -----------------------------------
+        self.ui.chb_output_excel.toggled\
+               .connect(lambda: self.app_settings
+                                    .setValue("formats/excel",
+                                             int(self.ui.chb_output_excel.isChecked()
+                                                )
+                                             )
+                        )
 
         # -- Settings tab - Application authentication ------------------------
         # Change user -> see below for authentication form
@@ -143,9 +152,14 @@ class IsogeoToOffice_Main(QTabWidget):
         self.ui.btn_credits.pressed.connect(partial(self.displayer,
                                                     self.ui_credits))
 
+        # shortcuts
+        self.cbbs_filters = self.ui.grp_filters.findChildren(QComboBox)
+
         # -- DISPLAY then check API
+        self.setWindowTitle("Isogeo to Office - v{}".format(__version__))
         self.show()
         self.init_api_connection()
+
 
     def displayer(self, ui_class):
         """A simple relay in charge of displaying independant UI classes."""
@@ -154,38 +168,95 @@ class IsogeoToOffice_Main(QTabWidget):
     def init_api_connection(self):
         """After UI display, start to try to connect to Isogeo API.
         """
+        self.processing(step="start")
         # check credentials
         if not api_mngr.manage_api_initialization():
             logger.error("No credentials")
+            QMessageBox(parent=None).show()
+            #self.destroy()
+            return False
         else:
-            logger.debug("Access granted!")
+            logger.debug("Access granted. Fill the shares window")
+            partial(self.fill_app_props)
         
-        # 
-        #self.isogeo = Isogeo()
+        # launch empty search
+        self.search(reset=1)
 
-        #self.processing("stop")
-        #
-
+        # stop timer and progress bar
+        self.processing(step='end')
 
     def search(self, reset: bool = 0):
         """Get filters and make search
         """
+        self.processing("start")
+
+        # fill
         if reset:
             logger.debug("Reset search form.")
-
+            search = api_mngr.isogeo.search(api_mngr.token,
+                                            page_size=0,
+                                            whole_share=0,
+                                            augment=1,
+                                            tags_as_dicts=1)
         else:
             logger.debug("Search with filters")
-            share= self.ui.cbb_share.currentText()
-            type = self.ui.cbb_type.currentText()
-            keyword = self.ui.cbb_keyword.currentText()
-            owner = self.ui.cbb_owner.currentText()
+            search_terms = ""
+            for cbb in self.cbbs_filters:
+                search_terms += cbb.itemData(cbb.currentIndex())
+            logger.debug(search_terms)
+            search = api_mngr.isogeo.search(api_mngr.token,
+                                            query=search_terms,
+                                            page_size=0,
+                                            whole_share=0,
+                                            augment=1,
+                                            tags_as_dicts=1)
+
+        # update ui
+        self.update_search_form(search)
+        self.processing("end")
         
-            print(share, type, keyword, owner)
+
+    def update_search_form(self, search: dict):
+        """Update search form with tags.
+        """
+        # query parameters
+        logger.debug(search.get("query"))
+        # COMBOBOXES - FILTERS
+        # clear previous state
+        for cbb in self.cbbs_filters:
+            cbb.clear()
+        tags = search.get("tags")
+        # add none selection item
+        for cbb in self.cbbs_filters:
+            cbb.addItem(" - ", "")
+
+        # Shares
+        logger.debug(tags.keys())
+        for k, v in tags.get("shares").items():
+            self.ui.cbb_share.addItem(k, v)
+        # Owners
+        for k, v in tags.get("owners").items():
+            self.ui.cbb_owner.addItem(k, v)
+        # Types
+        for k, v in tags.get("types").items():
+            self.ui.cbb_type.addItem(k, v)
+        # Keywords
+        for k, v in tags.get("keywords").items():
+            self.ui.cbb_keyword.addItem(k, v)
+
+        # export button
+        self.ui.btn_launch_export.setText(self.tr("Export {} metadata".format(search.get("total"))))
+        
 
 
     def export(self):
         """Launch export"""
         print(self.app_settings.allKeys())
+
+    def fill_app_props(self):
+        """TO DOC
+        """
+        api_mngr.isogeo.get_app_properties(self.token)
 
     # -- UI utils -------------------------------------------------------------
     def processing(self, step: str = "start"):
