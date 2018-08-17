@@ -22,13 +22,6 @@ defaults:
     attach_workspace:
       at: *workspace_root
 
-  restore_python_modules: &restore_python_modules
-    restore_cache:
-      name: Restore python_modules cache
-      keys:
-        - isogeo-to-office-pip-{{ checksum "Pipfile.lock" }}
-        - isogeo-to-office-
-
 jobs:
   checkout:
     <<: *python_container
@@ -46,7 +39,6 @@ jobs:
     <<: *python_container
     steps:
       - *attach_workspace
-      - *restore_python_modules
 
       - restore_cache:
           name: Restore pipenv cache
@@ -71,7 +63,11 @@ jobs:
     <<: *python_container
     steps:
       - *attach_workspace
-      - *restore_python_modules
+
+      - restore_cache:
+          name: Restore pipenv cache
+          keys:
+            - isogeo-to-office-pip-{{ checksum "Pipfile.lock" }}
 
       - run:
           name: Update PyQt UI - Translations
