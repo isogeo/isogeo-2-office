@@ -1,0 +1,125 @@
+version: 2
+
+defaults:
+  workspace_root: &workspace_root
+    ~/isogeo-to-office
+
+  python_container: &python_container
+    working_directory: *workspace_root
+    docker:
+      - image: circleci/python:3.6
+
+  golang_container: &golang_container
+    working_directory: *workspace_root
+    docker:
+      - image: circleci/golang:1-stretch
+
+  filters: &default_filters
+    tags:
+      only: '/v[0-9]+(\.[0-9]+)*/'
+
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: *workspace_root
+
+  restore_python_modules: &restore_python_modules
+    restore_cache:
+      name: Restore python_modules cache
+      keys:
+        - isogeo-to-office-pip-{{ checksum "Pipfile.lock" }}
+        - isogeo-to-office-
+
+jobs:
+  checkout:
+    <<: *python_container
+    steps:
+      - checkout
+      - run: sudo chown -R circleci:circleci /usr/local/bin
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
+
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - ./
+
+  install:
+    <<: *python_container
+    steps:
+      - *attach_workspace
+      - *restore_python_modules
+
+      - restore_cache:
+          name: Restore pipenv cache
+          keys:
+            - isogeo-to-office-pip-{{ checksum "Pipfile.lock" }}
+
+      - run:
+          name: Install dependencies
+          command: |
+            sudo pip install pipenv
+            pipenv install --dev
+
+      - save_cache:
+          name: Save pip cache
+          key: isogeo-to-office-pip-{{ checksum "Pipfile.lock" }}
+          paths:
+            - ".venv"
+            - "/usr/local/bin"
+            - "/usr/local/lib/python3.6/site-packages"
+
+  build:
+    <<: *python_container
+    steps:
+      - *attach_workspace
+      - *restore_python_modules
+
+      - run:
+          name: Update PyQt UI - Translations
+          command: |
+            pipenv run "pylupdate5 -noobsolete -verbose ./isogeo2office.pro"
+
+      - run:
+          name: Update PyQt UI - Compiling resources
+          command: |
+            pipenv run "pyrcc5 resources.qrc -o resources_rc.py"
+
+      - run:
+          name: Packaging in Windows executable with PyInstaller
+          command: |
+            pipenv run "pyinstaller -y --clean bundle_isogeo2office.spec"
+
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - dist/
+
+
+workflows:
+  version: 2
+
+  push:
+    jobs:
+      - checkout:
+          filters: *default_filters
+
+      - install:
+          requires:
+            - checkout
+          filters: *default_filters
+
+      - build:
+          requires:
+            - install
+          filters: *default_filters
+
+      - deploy-qa:
+          requires:
+            - build
+
+      - deploy-prod:
+          requires:
+            - build
+          filters:
+            <<: *default_filters
+            branches:
+              ignore: /.*/
