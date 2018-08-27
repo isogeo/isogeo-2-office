@@ -8,8 +8,8 @@ defaults:
     working_directory: *workspace_root
     docker:
       - image: circleci/python:3.6
-      environment:
-        PIPENV_VENV_IN_PROJECT: true
+        environment:
+          PIPENV_VENV_IN_PROJECT: true
 
   golang_container: &golang_container
     working_directory: *workspace_root
