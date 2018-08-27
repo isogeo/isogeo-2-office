@@ -199,11 +199,9 @@ class IsogeoToOffice_Main(QTabWidget):
                                             augment=1,
                                             tags_as_dicts=1)
         else:
-            logger.debug("Search with filters")
-            search_terms = ""
-            for cbb in self.cbbs_filters:
-                search_terms += cbb.itemData(cbb.currentIndex())
-            logger.debug(search_terms)
+            share_id, search_terms = self.get_selected_filters()
+            logger.debug("Search with filters: {}. Share: {}."
+                         .format(search_terms, share_id))
             search = api_mngr.isogeo.search(api_mngr.token,
                                             query=search_terms,
                                             page_size=0,
@@ -215,6 +213,18 @@ class IsogeoToOffice_Main(QTabWidget):
         self.update_search_form(search)
         self.processing("end")
         
+    def get_selected_filters(self):
+        """Retrieve selected filters from the search form.
+        """
+        share_id = ""
+        search_terms = ""
+        for cbb in self.cbbs_filters:
+            if cbb.itemData(cbb.currentIndex()).startswith("share:"):
+                share_id = cbb.itemData(cbb.currentIndex()).split(":")[1]
+            else:
+                search_terms += cbb.itemData(cbb.currentIndex())
+        
+        return share_id, search_terms
 
     def update_search_form(self, search: dict):
         """Update search form with tags.
