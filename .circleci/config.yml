@@ -67,8 +67,7 @@ jobs:
 
       - run:
           name: Update PyQt UI - Compiling resources
-          command: |
-            pipenv run "pyrcc5 resources.qrc -o resources_rc.py"
+          command: pyrcc5 resources.qrc -o resources_rc.py
 
       - run:
           name: Packaging in Windows executable with PyInstaller
