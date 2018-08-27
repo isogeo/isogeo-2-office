@@ -12,7 +12,7 @@ py -3 -m venv env3_packaging
 "`n-- STEP -- Install dependencies within the virtualenv and get UPX"
 python -m pip install -U pip
 pip install --upgrade -r ./requirements.txt
-#pip install --upgrade -r ./requirements_dev.txt
+pip install --upgrade -r ./requirements_dev.txt
 
 "`n-- STEP -- Update and compile UI"
 .\ui_compile.ps1
@@ -33,4 +33,4 @@ $dest=Join-Path (pwd) dist\i2o.zip
 
 "`n-- STEP -- Get out the virtualenv and cleanup"
 deactivate
-#rm -r env3_packaging
+rm -r env3_packaging
