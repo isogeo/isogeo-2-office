@@ -36,9 +36,6 @@ jobs:
           root: *workspace_root
           paths:
             - ./
-            - ".venv"
-            - "/usr/local/bin"
-            - "/usr/local/lib/python3.6/site-packages"
 
   install:
     <<: *python_container
@@ -94,6 +91,32 @@ jobs:
           root: *workspace_root
           paths:
             - dist/
+
+  deploy-qa:
+    <<: *golang_container
+    steps:
+      - *attach_workspace
+
+      - run:
+          name: Install rclone
+          command: go get github.com/ncw/rclone
+
+      - deploy:
+          name: Upload to Azure Blob Storage
+          command: rclone sync dist/qgis qa:\$web/qgis --delete-after --exclude .circleci/ --exclude package.json --exclude yarn.lock
+
+  deploy-prod:
+    <<: *golang_container
+    steps:
+      - *attach_workspace
+
+      - run:
+          name: Install rclone
+          command: go get github.com/ncw/rclone
+
+      - deploy:
+          name: Upload to Azure Blob Storage
+          command: rclone sync dist/qgis prod:\$web/qgis --delete-after
 
 
 workflows:
