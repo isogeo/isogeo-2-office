@@ -29,8 +29,6 @@ jobs:
     <<: *python_container
     steps:
       - checkout
-      - run: sudo chown -R circleci:circleci /usr/local/bin
-      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
 
       - persist_to_workspace:
           root: *workspace_root
@@ -122,14 +120,9 @@ workflows:
       - checkout:
           filters: *default_filters
 
-      - install:
-          requires:
-            - checkout
-          filters: *default_filters
-
       - build:
           requires:
-            - install
+            - checkout
           filters: *default_filters
 
       - deploy-qa:
