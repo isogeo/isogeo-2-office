@@ -45,7 +45,7 @@ install:
   # Upgrade pip & co
   - "%PYTHON%\\python.exe -m pip install -U pip pipenv setuptools wheel"
 
-build:
+build_script:
   - ps: .\build.ps1
 
 test: off
