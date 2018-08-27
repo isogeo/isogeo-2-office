@@ -8,6 +8,8 @@ defaults:
     working_directory: *workspace_root
     docker:
       - image: circleci/python:3.6
+      environment:
+        PIPENV_VENV_IN_PROJECT: true
 
   golang_container: &golang_container
     working_directory: *workspace_root
@@ -34,16 +36,20 @@ jobs:
           root: *workspace_root
           paths:
             - ./
+            - ".venv"
+            - "/usr/local/bin"
+            - "/usr/local/lib/python3.6/site-packages"
 
   install:
     <<: *python_container
     steps:
       - *attach_workspace
+      - run: sudo chown -R circleci:circleci /usr/local/bin
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
 
       - restore_cache:
           name: Restore pipenv cache
-          keys:
-            - isogeo-to-office-pip-{{ checksum "Pipfile.lock" }}
+          key: isogeo-to-office-pip-{{ checksum "Pipfile.lock" }}
 
       - run:
           name: Install dependencies
