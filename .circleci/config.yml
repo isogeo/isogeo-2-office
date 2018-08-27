@@ -37,7 +37,7 @@ jobs:
           paths:
             - ./
 
-  install:
+  build:
     <<: *python_container
     steps:
       - *attach_workspace
@@ -51,6 +51,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
+            sudo apt-get -y install python3-pyqt5 pyqt5-dev-tools
             sudo pip install pipenv
             pipenv install --dev
 
@@ -61,17 +62,6 @@ jobs:
             - ".venv"
             - "/usr/local/bin"
             - "/usr/local/lib/python3.6/site-packages"
-
-  build:
-    <<: *python_container
-    steps:
-      - *attach_workspace
-      - run: sudo chown -R circleci:circleci /usr/local/bin
-      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
-
-      - restore_cache:
-          name: Restore pipenv cache
-          key: isogeo-to-office-pip-{{ checksum "Pipfile.lock" }}
 
       - run:
           name: Update PyQt UI - Translations
