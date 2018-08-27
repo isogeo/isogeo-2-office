@@ -63,8 +63,7 @@ jobs:
 
       - run:
           name: Update PyQt UI - Translations
-          command: |
-            pipenv run "pylupdate5 -noobsolete ./isogeo2office.pro"
+          command: pylupdate5 -noobsolete ./isogeo2office.pro
 
       - run:
           name: Update PyQt UI - Compiling resources
