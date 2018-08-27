@@ -71,45 +71,16 @@ jobs:
           command: pyrcc5 resources.qrc -o resources_rc.py
 
       - run:
-          name: Packaging in Windows executable with PyInstaller
+          name: Compiling UI files
           command: |
-            pipenv run pyinstaller -y --clean bundle_isogeo2office.spec
-
-      - run:
-          name: Zipping
-          command: tar cvzf isogeo2office-{{ .Branch }}.tar.gz dist/isogeo2office
+            pyuic5 -x .\modules\ui\auth\ui_authentication.ui -o .\modules\ui\auth\ui_authentication.py
+            pyuic5 -x .\modules\ui\credits\ui_credits.ui -o .\modules\ui\credits\ui_credits.py
+            pyuic5 -x .\modules\ui\main\ui_IsogeoToOffice.ui -o .\modules\ui\main\ui_IsogeoToOffice.py
 
       - persist_to_workspace:
           root: *workspace_root
           paths:
-            - dist/
-
-  deploy-qa:
-    <<: *golang_container
-    steps:
-      - *attach_workspace
-
-      - run:
-          name: Install rclone
-          command: go get github.com/ncw/rclone
-
-      - deploy:
-          name: Upload to Azure Blob Storage
-          command: rclone sync dist/isogeo2office-{{ .Branch }}.tar.gz qa:\$web/i2o_builds --delete-after --exclude .circleci/ --exclude Pipfile --exclude Pipfile.lock
-
-  deploy-prod:
-    <<: *golang_container
-    steps:
-      - *attach_workspace
-
-      - run:
-          name: Install rclone
-          command: go get github.com/ncw/rclone
-
-      - deploy:
-          name: Upload to Azure Blob Storage
-          command: rclone sync dist/isogeo2office-{{ .Branch }}.tar.gz prod:\$web/i2o_builds --delete-after
-
+            - ./
 
 workflows:
   version: 2
@@ -123,15 +94,3 @@ workflows:
           requires:
             - checkout
           filters: *default_filters
-
-      - deploy-qa:
-          requires:
-            - build
-
-      - deploy-prod:
-          requires:
-            - build
-          filters:
-            <<: *default_filters
-            branches:
-              ignore: /.*/
