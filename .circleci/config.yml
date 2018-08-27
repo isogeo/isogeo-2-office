@@ -66,16 +66,17 @@ jobs:
     <<: *python_container
     steps:
       - *attach_workspace
+      - run: sudo chown -R circleci:circleci /usr/local/bin
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
 
       - restore_cache:
           name: Restore pipenv cache
-          keys:
-            - isogeo-to-office-pip-{{ checksum "Pipfile.lock" }}
+          key: isogeo-to-office-pip-{{ checksum "Pipfile.lock" }}
 
       - run:
           name: Update PyQt UI - Translations
           command: |
-            pipenv run "pylupdate5 -noobsolete -verbose ./isogeo2office.pro"
+            pipenv run "pylupdate5 -noobsolete ./isogeo2office.pro"
 
       - run:
           name: Update PyQt UI - Compiling resources
@@ -86,6 +87,10 @@ jobs:
           name: Packaging in Windows executable with PyInstaller
           command: |
             pipenv run "pyinstaller -y --clean bundle_isogeo2office.spec"
+
+      - run:
+          name: Zipping
+          command: tar cvzf isogeo2office-{{ .Branch }}.tar.gz dist/isogeo2office
 
       - persist_to_workspace:
           root: *workspace_root
@@ -103,7 +108,7 @@ jobs:
 
       - deploy:
           name: Upload to Azure Blob Storage
-          command: rclone sync dist/qgis qa:\$web/qgis --delete-after --exclude .circleci/ --exclude package.json --exclude yarn.lock
+          command: rclone sync dist/isogeo2office-{{ .Branch }}.tar.gz qa:\$web/i2o_builds --delete-after --exclude .circleci/ --exclude Pipfile --exclude Pipfile.lock
 
   deploy-prod:
     <<: *golang_container
@@ -116,7 +121,7 @@ jobs:
 
       - deploy:
           name: Upload to Azure Blob Storage
-          command: rclone sync dist/qgis prod:\$web/qgis --delete-after
+          command: rclone sync dist/isogeo2office-{{ .Branch }}.tar.gz prod:\$web/i2o_builds --delete-after
 
 
 workflows:
