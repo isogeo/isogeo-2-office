@@ -33,20 +33,24 @@ init:
   # Free up some disk space; exceeding the limit of 90 GB results in a
   # locked-out account. The Qt directory takes over 30 GB. Do this in the
   # background.
-  - ps: Start-Process -FilePath "$env:comspec" -ArgumentList "/c rmdir C:\Qt /s /q"
+  #- ps: Start-Process -FilePath "$env:comspec" -ArgumentList "/c rmdir C:\Qt /s /q"
 
 cache:
   # Cache downloaded pip packages and built wheels.
   - '%LOCALAPPDATA%\pip\Cache\http'
   - '%LOCALAPPDATA%\pip\Cache\wheels'
 
-
 install:
   # Upgrade pip & co
   - "%PYTHON%\\python.exe -m pip install -U pip pipenv setuptools wheel"
+  # dependencies
+  - "%PYTHON%\\python.exe -m pip install -U -r requirements.txt"
+  - "%PYTHON%\\python.exe -m pip install -U -r requirements_dev.txt"
+
+build: off
 
 build_script:
-  - ps: .\build.ps1
+  - ps: pyinstaller -y --clean bundle_isogeo2office.spec
 
 test: off
 
