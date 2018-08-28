@@ -55,7 +55,7 @@ install:
   - "%PYTHON%\\python.exe -m pip install -U -r requirements.txt"
   - "%PYTHON%\\python.exe -m pip install -U -r requirements_dev.txt"
   # Make sure the help options print.
-  - python -m pyinstaller -h
+  - "%PYTHON%\\python.exe -m pyinstaller -h"
 
 build: off
 
