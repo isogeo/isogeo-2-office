@@ -41,11 +41,21 @@ cache:
   - '%LOCALAPPDATA%\pip\Cache\wheels'
 
 install:
+  # Prepend newly installed Python to the PATH of this build (this cannot be
+  # done from inside the powershell script as it would require to restart
+  # the parent CMD process).
+  - SET PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
+  # Check that we have the expected version and architecture for Python
+  - python --version
+  - python -c "import sys, platform, struct;
+    print(sys.platform, platform.machine(), struct.calcsize('P')*8)"
   # Upgrade pip & co
   - "%PYTHON%\\python.exe -m pip install -U pip pipenv setuptools wheel"
   # dependencies
   - "%PYTHON%\\python.exe -m pip install -U -r requirements.txt"
   - "%PYTHON%\\python.exe -m pip install -U -r requirements_dev.txt"
+  # Make sure the help options print.
+  - python -m pyinstaller -h
 
 build: off
 
