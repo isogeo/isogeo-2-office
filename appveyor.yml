@@ -41,10 +41,6 @@ cache:
   - '%LOCALAPPDATA%\pip\Cache\wheels'
 
 install:
-  # Prepend newly installed Python to the PATH of this build (this cannot be
-  # done from inside the powershell script as it would require to restart
-  # the parent CMD process).
-  - SET PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
   # Check that we have the expected version and architecture for Python
   - python --version
   - python -c "import sys, platform, struct;
@@ -54,13 +50,17 @@ install:
   # dependencies
   - "%PYTHON%\\python.exe -m pip install -U -r requirements.txt"
   - "%PYTHON%\\python.exe -m pip install -U -r requirements_dev.txt"
+  # Prepend newly installed Python to the PATH of this build (this cannot be
+  # done from inside the powershell script as it would require to restart
+  # the parent CMD process).
+  - SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
   # Make sure the help options print.
-  - "%PYTHON%\\python.exe -m pyinstaller -h"
+  - "%PYTHON%\\Scripts\\pyinstaller.exe -h"
 
 build: off
 
 build_script:
-  - ps: pyinstaller -y --clean bundle_isogeo2office.spec
+  - "%PYTHON%\\Scripts\\pyinstaller.exe -y --clean bundle_isogeo2office.spec"
 
 test: off
 
