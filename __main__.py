@@ -124,6 +124,20 @@ class IsogeoToOffice_Main(QTabWidget):
                                                 )
                                              )
                         )
+        self.ui.chb_output_word.toggled\
+               .connect(lambda: self.app_settings
+                                    .setValue("formats/word",
+                                              int(self.ui.chb_output_word.isChecked()
+                                                  )
+                                              )
+                        )
+        self.ui.chb_output_xml.toggled\
+               .connect(lambda: self.app_settings
+                                    .setValue("formats/xml",
+                                              int(self.ui.chb_output_xml.isChecked()
+                                                  )
+                                              )
+                        )
         # -- Settings tab - Global  -------------------------------------------
         self.ui.btn_directory_change.pressed.connect(partial(self.set_output_folder))
 
@@ -176,8 +190,11 @@ class IsogeoToOffice_Main(QTabWidget):
         # check credentials
         if not api_mngr.manage_api_initialization():
             logger.error("No credentials")
-            QMessageBox(parent=None).show()
-            #self.destroy()
+            QMessageBox.warning(self,
+                                self.tr("Authentication - Credentials missing"),
+                                self.tr("Authentication to Isogeo API has failed."
+                                        " Credentials semme to be missing.")
+            )
             return False
         else:
             logger.debug("Access granted. Fill the shares window")
@@ -189,6 +206,7 @@ class IsogeoToOffice_Main(QTabWidget):
         # stop timer and progress bar
         self.processing(step='end')
 
+    # -- SEARCH ---------------------------------------------------------------
     def search(self, reset: bool = 0):
         """Get filters and make search
         """
