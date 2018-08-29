@@ -1,4 +1,4 @@
-version: 2.0.{build}
+version: 2.0.0-{build}
 
 clone_depth: 50
 
@@ -7,13 +7,12 @@ environment:
     - PYTHON: C:\\Python36-x64
       PYTHON_VERSION: 3.6
       PYTHON_ARCH: 64
-      TEST_LIBRARIES_ONLY: False
+      PYTHONOPTIMIZE: 1
 
     - PYTHON: C:\\Python36
       PYTHON_VERSION: 3.6
       PYTHON_ARCH: 32
-      TEST_LIBRARIES_ONLY: False
-
+      PYTHONOPTIMIZE: 1
 
 init:
   # Uncomment the line below to enable Remote Desktop access to the build worker
@@ -33,7 +32,7 @@ init:
   # Free up some disk space; exceeding the limit of 90 GB results in a
   # locked-out account. The Qt directory takes over 30 GB. Do this in the
   # background.
-  #- ps: Start-Process -FilePath "$env:comspec" -ArgumentList "/c rmdir C:\Qt /s /q"
+  - ps: Start-Process -FilePath "$env:comspec" -ArgumentList "/c rmdir C:\Qt /s /q"
 
 cache:
   # Cache downloaded pip packages and built wheels.
@@ -46,7 +45,7 @@ install:
   - python -c "import sys, platform, struct;
     print(sys.platform, platform.machine(), struct.calcsize('P')*8)"
   # Upgrade pip & co
-  - "%PYTHON%\\python.exe -m pip install -U pip pipenv setuptools wheel"
+  - "%PYTHON%\\python.exe -m pip install -U pip setuptools wheel"
   # dependencies
   - "%PYTHON%\\python.exe -m pip install -U -r requirements.txt"
   - "%PYTHON%\\python.exe -m pip install -U -r requirements_dev.txt"
@@ -55,7 +54,7 @@ install:
   # the parent CMD process).
   - SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
   # Make sure the help options print.
-  - "%PYTHON%\\Scripts\\pyinstaller.exe -h"
+  - "%PYTHON%\\Scripts\\pyinstaller.exe -v"
 
 build: off
 
