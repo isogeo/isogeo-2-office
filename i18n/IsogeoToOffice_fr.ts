@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="fr_FR" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.1" language="fr_FR">
 <context>
     <name>Isogeo2docx</name>
     <message>
         <location filename="../modules/export/isogeo2docx.py" line="164"/>
         <source>roles</source>
-        <translation type="unfinished">Rôles</translation>
+        <translation>Rôles</translation>
     </message>
     <message>
         <location filename="../modules/export/isogeo2docx.py" line="214"/>
         <source>events</source>
-        <translation type="unfinished"></translation>
+        <translation>Evénements</translation>
     </message>
     <message>
         <location filename="../modules/export/isogeo2docx.py" line="219"/>
@@ -62,6 +63,64 @@
         <location filename="../modules/export/formatter.py" line="147"/>
         <source>quality</source>
         <comment>isNotConform</comment>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>IsogeoToOffice_Main</name>
+    <message>
+        <location filename="../__main__.py" line="154"/>
+        <source>TITLE ISSUE REPORTED</source>
+        <translation>TITRE DU PROBLEME</translation>
+    </message>
+    <message>
+        <location filename="../__main__.py" line="193"/>
+        <source>Authentication - Credentials missing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../__main__.py" line="193"/>
+        <source>Authentication to Isogeo API has failed. Credentials semme to be missing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../__main__.py" line="283"/>
+        <source>Export {} metadata</source>
+        <translation>Exporter {} métadonnées</translation>
+    </message>
+    <message>
+        <location filename="../__main__.py" line="292"/>
+        <source>Export option is missing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../__main__.py" line="292"/>
+        <source>At least one export option required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../__main__.py" line="345"/>
+        <source>&lt;p&gt;This application is authenticated as &lt;a href=&apos;{}&apos; style=&apos;color: CornflowerBlue;&apos;&gt;{}&lt;/a&gt; and </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../__main__.py" line="351"/>
+        <source> powered by 1 share:&lt;/p&gt;&lt;/br&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../__main__.py" line="353"/>
+        <source> powered by {0} shares:&lt;/p&gt;&lt;/br&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../__main__.py" line="368"/>
+        <source>Updated:</source>
+        <translation>Dernière modification :</translation>
+    </message>
+    <message>
+        <location filename="../__main__.py" line="372"/>
+        <source>&lt;p&gt;Contact: {} - {}&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -129,9 +188,9 @@
 &lt;body&gt;
 
 &lt;ul&gt;
-<byte value="x9"/>&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
+	&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
+	&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
+	&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
 &lt;/ul&gt; 
 
 &lt;/body&gt;
@@ -142,9 +201,9 @@
 &lt;body&gt;
 
 &lt;ul&gt;
-<byte value="x9"/>&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
+	&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
+	&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
+	&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
 &lt;/ul&gt; 
 
 &lt;/body&gt;
@@ -178,6 +237,29 @@
         <location filename="../modules/ui/credits/ui_credits.ui" line="209"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/isogeo/isogeo-2-office&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Code hosted on Github&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>Code hébergé sur Github</translation>
+    </message>
+</context>
+<context>
+    <name>parent</name>
+    <message>
+        <location filename="../modules/utils/utils.py" line="145"/>
+        <source>Open credentials file</source>
+        <translation>Sélectionner le fichier d&apos;authentification</translation>
+    </message>
+    <message>
+        <location filename="../modules/utils/utils.py" line="153"/>
+        <source>Select thumbnails file</source>
+        <translation>Sélectionner le tableau des vignettes</translation>
+    </message>
+    <message>
+        <location filename="../modules/utils/utils.py" line="161"/>
+        <source>Select folder</source>
+        <translation>Sélectionner le dossier</translation>
+    </message>
+    <message>
+        <location filename="../modules/utils/utils.py" line="168"/>
+        <source>Pick a file</source>
+        <translation>Sélectionner un fichier</translation>
     </message>
 </context>
 <context>
@@ -233,42 +315,42 @@
         <translation>Paramètres</translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1437"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1459"/>
         <source>Resources</source>
         <translation>Ressources</translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1453"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1475"/>
         <source>Report an issue on the bug tracker</source>
         <translation>Signaler une anomalie</translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1488"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1510"/>
         <source>Get the log file: &quot;log_isogeo_isogeo2office.log&quot;</source>
         <translation>Récupérer le fichier de log</translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1494"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1516"/>
         <source>LOG File</source>
         <translation>LOG</translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1544"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1566"/>
         <source>Open online application help</source>
         <translation>Documentation</translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1579"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1601"/>
         <source>Open online help in default browser</source>
         <translation>Ouvrir l&apos;aide en ligne dans le navigateur par défaut</translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1606"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1628"/>
         <source>Open application credits</source>
         <translation>Crédits</translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1641"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1663"/>
         <source>Open credits popup</source>
         <translation>Ouvrir les crédits</translation>
     </message>
@@ -288,17 +370,17 @@
         <translation>Paramètres d&apos;export</translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1155"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1015"/>
         <source>Output repository:</source>
         <translation>Dossier de destination :</translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1096"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1106"/>
         <source>Enter output file name</source>
         <translation>Préfixes des fichiers produits</translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1015"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1146"/>
         <source>Display Timestamp:</source>
         <translation>Ajouter la date :</translation>
     </message>
@@ -308,14 +390,14 @@
         <translation>Exporter les métadonnées en XML ISO 19139</translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1174"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1165"/>
         <source>Output fileprefix:</source>
         <translation>Préfixe des fichiers produits :</translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1074"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1193"/>
         <source>Output</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="997"/>
@@ -338,19 +420,14 @@
         <translation>Date et heure (horodatage)</translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1114"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1124"/>
         <source>isogeo2office_</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1136"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1065"/>
         <source>Length of metadata UUID:</source>
         <translation>Longueur de l&apos;identifiant unique :</translation>
-    </message>
-    <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1223"/>
-        <source>Excel</source>
-        <translation>Excel</translation>
     </message>
     <message>
         <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1238"/>
@@ -363,24 +440,14 @@
         <translation>Reporting</translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1274"/>
-        <source>Word</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1292"/>
         <source>Template to apply:</source>
         <translation>Modèle Word à appliquer :</translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1331"/>
-        <source>XML</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1340"/>
         <source>Pack all XML in one zip archive</source>
-        <translation type="unfinished">Compresser les fichiers XMLs</translation>
+        <translation>Compresser les fichiers XMLs</translation>
     </message>
 </context>
 </TS>

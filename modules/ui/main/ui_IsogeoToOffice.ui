@@ -973,8 +973,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>576</width>
-            <height>170</height>
+            <width>580</width>
+            <height>194</height>
            </rect>
           </property>
           <property name="minimumSize">
@@ -997,8 +997,8 @@
            <string>Location and naming rules</string>
           </attribute>
           <layout class="QGridLayout" name="gridLayout">
-           <item row="2" column="0">
-            <widget class="QLabel" name="lbl_timestamp">
+           <item row="1" column="0">
+            <widget class="QLabel" name="lbl_output_folder">
              <property name="minimumSize">
               <size>
                <width>100</width>
@@ -1012,7 +1012,7 @@
               </size>
              </property>
              <property name="text">
-              <string>Display Timestamp:</string>
+              <string>Output repository:</string>
              </property>
             </widget>
            </item>
@@ -1047,34 +1047,44 @@
              </item>
             </widget>
            </item>
-           <item row="1" column="2">
-            <widget class="QLabel" name="lbl_output_folder_value">
+           <item row="3" column="0">
+            <widget class="QLabel" name="lbl_uid">
              <property name="minimumSize">
               <size>
-               <width>150</width>
+               <width>100</width>
                <height>20</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>250</width>
+               <width>200</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Length of metadata UUID:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="2">
+            <widget class="QSpinBox" name="int_md_uuid">
+             <property name="minimumSize">
+              <size>
+               <width>50</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>75</width>
                <height>35</height>
               </size>
              </property>
-             <property name="cursor">
-              <cursorShape>ArrowCursor</cursorShape>
+             <property name="maximum">
+              <number>8</number>
              </property>
-             <property name="styleSheet">
-              <string notr="true">background-color: rgb(255, 255, 255);</string>
-             </property>
-             <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
-             </property>
-             <property name="text">
-              <string>Output</string>
-             </property>
-             <property name="scaledContents">
-              <bool>false</bool>
+             <property name="value">
+              <number>5</number>
              </property>
             </widget>
            </item>
@@ -1118,8 +1128,8 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="lbl_uid">
+           <item row="2" column="0">
+            <widget class="QLabel" name="lbl_timestamp">
              <property name="minimumSize">
               <size>
                <width>100</width>
@@ -1133,26 +1143,7 @@
               </size>
              </property>
              <property name="text">
-              <string>Length of metadata UUID:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="lbl_output_folder">
-             <property name="minimumSize">
-              <size>
-               <width>100</width>
-               <height>20</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>200</width>
-               <height>25</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>Output repository:</string>
+              <string>Display Timestamp:</string>
              </property>
             </widget>
            </item>
@@ -1175,25 +1166,34 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="2">
-            <widget class="QSpinBox" name="int_md_uuid">
+           <item row="1" column="2">
+            <widget class="QLabel" name="lbl_output_folder_value">
              <property name="minimumSize">
               <size>
-               <width>50</width>
+               <width>150</width>
                <height>20</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>75</width>
+               <width>250</width>
                <height>35</height>
               </size>
              </property>
-             <property name="maximum">
-              <number>8</number>
+             <property name="cursor">
+              <cursorShape>ArrowCursor</cursorShape>
              </property>
-             <property name="value">
-              <number>5</number>
+             <property name="autoFillBackground">
+              <bool>true</bool>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="text">
+              <string>Output</string>
+             </property>
+             <property name="scaledContents">
+              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -1211,8 +1211,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>576</width>
-            <height>170</height>
+            <width>580</width>
+            <height>194</height>
            </rect>
           </property>
           <attribute name="icon">
@@ -1220,7 +1220,7 @@
             <normaloff>:/IsogeoToOffice/resources/excel.svg</normaloff>:/IsogeoToOffice/resources/excel.svg</iconset>
           </attribute>
           <attribute name="label">
-           <string>Excel</string>
+           <string notr="true">Excel</string>
           </attribute>
           <layout class="QFormLayout" name="formLayout">
            <item row="0" column="0">
@@ -1262,8 +1262,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>576</width>
-            <height>170</height>
+            <width>580</width>
+            <height>194</height>
            </rect>
           </property>
           <attribute name="icon">
@@ -1271,7 +1271,7 @@
             <normaloff>:/IsogeoToOffice/resources/word.svg</normaloff>:/IsogeoToOffice/resources/word.svg</iconset>
           </attribute>
           <attribute name="label">
-           <string>Word</string>
+           <string notr="true">Word</string>
           </attribute>
           <layout class="QFormLayout" name="formLayout_4">
            <item row="0" column="0">
@@ -1319,8 +1319,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>576</width>
-            <height>170</height>
+            <width>580</width>
+            <height>194</height>
            </rect>
           </property>
           <attribute name="icon">
@@ -1328,7 +1328,7 @@
             <normaloff>:/IsogeoToOffice/resources/xml.svg</normaloff>:/IsogeoToOffice/resources/xml.svg</iconset>
           </attribute>
           <attribute name="label">
-           <string>XML</string>
+           <string notr="true">XML</string>
           </attribute>
           <layout class="QFormLayout" name="formLayout_2">
            <item row="0" column="0">
@@ -1414,7 +1414,29 @@
         </layout>
        </item>
        <item row="1" column="0">
-        <widget class="QTextBrowser" name="txt_shares"/>
+        <widget class="QTextBrowser" name="txt_shares">
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <property name="overwriteMode">
+          <bool>false</bool>
+         </property>
+         <property name="textInteractionFlags">
+          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+         </property>
+         <property name="placeholderText">
+          <string notr="true"/>
+         </property>
+         <property name="openExternalLinks">
+          <bool>true</bool>
+         </property>
+         <property name="openLinks">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -1494,8 +1516,8 @@
               <string>LOG File</string>
              </property>
              <property name="icon">
-              <iconset>
-               <normaloff>:/IsogeoToOffice/resources/settings/folder-open-o.svg</normaloff>:/IsogeoToOffice/resources/settings/folder-open-o.svg</iconset>
+              <iconset resource="../../../resources.qrc">
+               <normaloff>:/IsogeoToOffice/resources/folder-open-o.svg</normaloff>:/IsogeoToOffice/resources/folder-open-o.svg</iconset>
              </property>
             </widget>
            </item>

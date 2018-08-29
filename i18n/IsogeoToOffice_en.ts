@@ -66,6 +66,64 @@
     </message>
 </context>
 <context>
+    <name>IsogeoToOffice_Main</name>
+    <message>
+        <location filename="../__main__.py" line="154"/>
+        <source>TITLE ISSUE REPORTED</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../__main__.py" line="193"/>
+        <source>Authentication - Credentials missing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../__main__.py" line="193"/>
+        <source>Authentication to Isogeo API has failed. Credentials semme to be missing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../__main__.py" line="283"/>
+        <source>Export {} metadata</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../__main__.py" line="292"/>
+        <source>Export option is missing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../__main__.py" line="292"/>
+        <source>At least one export option required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../__main__.py" line="345"/>
+        <source>&lt;p&gt;This application is authenticated as &lt;a href=&apos;{}&apos; style=&apos;color: CornflowerBlue;&apos;&gt;{}&lt;/a&gt; and </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../__main__.py" line="351"/>
+        <source> powered by 1 share:&lt;/p&gt;&lt;/br&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../__main__.py" line="353"/>
+        <source> powered by {0} shares:&lt;/p&gt;&lt;/br&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../__main__.py" line="368"/>
+        <source>Updated:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../__main__.py" line="372"/>
+        <source>&lt;p&gt;Contact: {} - {}&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>dlg_authentication</name>
     <message>
         <location filename="../modules/ui/auth/ui_authentication.ui" line="27"/>
@@ -169,6 +227,29 @@
     </message>
 </context>
 <context>
+    <name>parent</name>
+    <message>
+        <location filename="../modules/utils/utils.py" line="145"/>
+        <source>Open credentials file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/utils/utils.py" line="153"/>
+        <source>Select thumbnails file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/utils/utils.py" line="161"/>
+        <source>Select folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/utils/utils.py" line="168"/>
+        <source>Pick a file</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>tabs_IsogeoToOffice</name>
     <message>
         <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="84"/>
@@ -221,42 +302,42 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1437"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1459"/>
         <source>Resources</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1453"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1475"/>
         <source>Report an issue on the bug tracker</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1488"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1510"/>
         <source>Get the log file: &quot;log_isogeo_isogeo2office.log&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1494"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1516"/>
         <source>LOG File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1544"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1566"/>
         <source>Open online application help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1579"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1601"/>
         <source>Open online help in default browser</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1606"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1628"/>
         <source>Open application credits</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1641"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1663"/>
         <source>Open credits popup</source>
         <translation type="unfinished"></translation>
     </message>
@@ -276,17 +357,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1155"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1015"/>
         <source>Output repository:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1096"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1106"/>
         <source>Enter output file name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1015"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1146"/>
         <source>Display Timestamp:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -296,12 +377,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1174"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1165"/>
         <source>Output fileprefix:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1074"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1193"/>
         <source>Output</source>
         <translation type="unfinished"></translation>
     </message>
@@ -326,18 +407,13 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1114"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1124"/>
         <source>isogeo2office_</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1136"/>
+        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1065"/>
         <source>Length of metadata UUID:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1223"/>
-        <source>Excel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -351,18 +427,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1274"/>
-        <source>Word</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1292"/>
         <source>Template to apply:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/ui/main/ui_IsogeoToOffice.ui" line="1331"/>
-        <source>XML</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

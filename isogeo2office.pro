@@ -2,7 +2,8 @@ FORMS = ./modules/ui/auth/ui_authentication.ui \
     	./modules/ui/credits/ui_credits.ui \
     	./modules/ui/main/ui_IsogeoToOffice.ui \
 
-SOURCES = ./isogeo2office.py \
+SOURCES = ./__main__.py \
+		  ./isogeo2office.py \
 		  ./modules/export/formatter.py \
 		  ./modules/export/isogeo2docx.py \
 		  ./modules/export/isogeo2xlsx.py \

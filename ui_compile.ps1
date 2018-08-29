@@ -18,3 +18,4 @@ pyrcc5 ".\resources.qrc" -o ".\resources_rc.py"
 pyuic5 -x .\modules\ui\auth\ui_authentication.ui -o .\modules\ui\auth\ui_authentication.py
 pyuic5 -x .\modules\ui\credits\ui_credits.ui -o .\modules\ui\credits\ui_credits.py
 pyuic5 -x .\modules\ui\main\ui_IsogeoToOffice.ui -o .\modules\ui\main\ui_IsogeoToOffice.py
+pyuic5 -x .\modules\ui\main\ui_main_windows.ui -o .\modules\ui\main\ui_main_windows.py
