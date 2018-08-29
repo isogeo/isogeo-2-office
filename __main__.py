@@ -122,6 +122,8 @@ class IsogeoToOffice_Main(QTabWidget):
                                                 )
                                              )
                         )
+        # -- Settings tab - Global  -------------------------------------------
+        self.ui.btn_directory_change.pressed.connect(partial(self.set_output_folder))
 
         # -- Settings tab - Application authentication ------------------------
         # Change user -> see below for authentication form
@@ -152,10 +154,10 @@ class IsogeoToOffice_Main(QTabWidget):
         self.ui.btn_credits.pressed.connect(partial(self.displayer,
                                                     self.ui_credits))
 
+
+        # -- DISPLAY  ---------------------------------------------------------
         # shortcuts
         self.cbbs_filters = self.ui.grp_filters.findChildren(QComboBox)
-
-        # -- DISPLAY then check API
         self.setWindowTitle("Isogeo to Office - v{}".format(__version__))
         self.show()
         self.init_api_connection()
@@ -344,6 +346,28 @@ class IsogeoToOffice_Main(QTabWidget):
         else:
             self.step += 1
             self.ui.pgb_exports.setValue(self.step)
+
+    def set_output_folder(self):
+        """Let user pick the folder where to store 
+        """
+        # launch explorer
+        selected_folder = self.app_utils.open_FileNameDialog(self,
+                                                             file_type="folder",
+                                                             from_dir=self.app_settings.value("settings/out_folder"))
+        # test selected folder
+        if not path.exists(selected_folder):
+            logger.error("No folder selected")
+            return False
+        else:
+            selected_folder = path.realpath(selected_folder)
+            logger.debug("Output folder selected: {}".format(selected_folder))
+        
+        # fill label and setttings
+        self.ui.lbl_output_folder_value.setText(path.basename(selected_folder))
+        self.ui.lbl_output_folder_value.setToolTip(path.dirname(selected_folder))
+        self.app_settings.setValue("settings/out_folder",
+                                   selected_folder)
+
 
 # #############################################################################
 # ##### Stand alone program ########

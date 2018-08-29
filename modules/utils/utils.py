@@ -114,36 +114,59 @@ class isogeo2office_utils(IsogeoUtils):
         return proc
 
     # UI
-    def open_FileNameDialog(self, parent=None, file_type="credentials"):
+    def open_FileNameDialog(self, parent=None, file_type: str = "credentials", from_dir: str = "downloads"):
         """Manage file dialog to allow user pick a file.
 
         :param QApplication parent: Qt parent application.
-        :param str file_type: 
+        :param str file_type: credentials | thumbnails | folder
+        :param str from_dir: path to the start directory. Default value: "downloads"
         """
-        # try to get user download directory
-        user_download = path.realpath(path.join(path.expanduser("~"), "Downloads"))
-        if path.exists(user_download):
-            start_dir = user_download
+        if from_dir == "downloads":
+            # get user download directory
+            start_dir = path.realpath(path.join(path.expanduser("~"),
+                                                "Downloads")
+                                                )
         else:
+            start_dir = path.realpath(from_dir)
+        if not path.exists(start_dir):
             start_dir = path.expanduser("~")
+        # set options
+        options = QFileDialog.Options()
+        #options |= QFileDialog.DontUseNativeDialog
+        options |= QFileDialog.ReadOnly
 
         # adapt file filters according to file_type option
         if file_type == "credentials":
             file_filters = "Standard credentials file (client_secrets.json);;JSON Files (*.json)"
+            dlg_title = parent.tr('Open credentials file')
+            return QFileDialog.getOpenFileName(parent=None,
+                                               caption=dlg_title,
+                                               directory=start_dir,
+                                               filter=file_filters,
+                                               options=options)
+        elif file_type == "thumbnails":
+            file_filters = "Standard credentials file (client_secrets.json);;JSON Files (*.json)"
+            dlg_title = parent.tr('Select thumbnails file')
+            return QFileDialog.getOpenFileName(parent=None,
+                                               caption=dlg_title,
+                                               directory=start_dir,
+                                               filter=file_filters,
+                                               options=options)
+        elif file_type == "folder":
+            options |= QFileDialog.ShowDirsOnly
+            dlg_title = parent.tr('Select folder')
+            return QFileDialog.getExistingDirectory(parent=None,
+                                                    caption=dlg_title,
+                                                    directory=start_dir,
+                                                    options=options)
         else:
             file_filters = "All Files (*)"
-
-        # set options
-        options = QFileDialog.Options()
-        options |= QFileDialog.DontUseNativeDialog
-        options |= QFileDialog.ReadOnly
-
-        # launch
-        return QFileDialog.getOpenFileName(parent=None,
-                                           caption=parent.tr('Open file'),
-                                           directory=start_dir,
-                                           filter=file_filters,
-                                           options=options)
+            dlg_title = parent.tr('Pick a file')
+            return QFileDialog.getOpenFileName(parent=None,
+                                               caption=dlg_title,
+                                               directory=start_dir,
+                                               filter=file_filters,
+                                               options=options)
 
     # ISOGEO -----------------------------------------------------------------
     def get_url_base(self, url_input):
