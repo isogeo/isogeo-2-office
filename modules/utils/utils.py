@@ -32,6 +32,7 @@ from xml.sax.saxutils import escape  # '<' -> '&lt;'
 
 # 3rd party
 from isogeo_pysdk import IsogeoUtils
+from PyQt5.QtCore import QUrl
 from PyQt5.QtWidgets import QFileDialog
 
 # Depending on operating system
@@ -70,6 +71,8 @@ class isogeo2office_utils(IsogeoUtils):
 
         :param list li_url: list of URLs to open in the default browser
         """
+        if isinstance(li_url, QUrl):
+            li_url = [li_url.toString(), ]
         x = 1
         for url in li_url:
             if x > 1:
