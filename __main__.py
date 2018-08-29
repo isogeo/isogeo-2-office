@@ -114,7 +114,9 @@ class IsogeoToOffice_Main(QTabWidget):
         self.ui.cbb_keyword.activated.connect(partial(self.search, 0))
         self.ui.btn_reinit.pressed.connect(partial(self.search, 1))
 
-        # -- Settings tab - Export settings -----------------------------------
+        self.ui.btn_launch_export.pressed.connect(partial(self.export))
+
+        # -- Export tab - Output formats --------------------------------------
         self.ui.chb_output_excel.toggled\
                .connect(lambda: self.app_settings
                                     .setValue("formats/excel",
@@ -259,11 +261,20 @@ class IsogeoToOffice_Main(QTabWidget):
         # export button
         self.ui.btn_launch_export.setText(self.tr("Export {} metadata".format(search.get("total"))))
         
-
-
+    # -- EXPORT ---------------------------------------------------------------
     def export(self):
         """Launch export"""
-        print(self.app_settings.allKeys())
+        # check export options
+        if not (self.ui.chb_output_excel.isChecked() +
+                self.ui.chb_output_word.isChecked() +
+                self.ui.chb_output_xml.isChecked()):
+            QMessageBox.critical(self,
+                                 self.tr("Export option is missing"),
+                                 self.tr("At least one export option required."))
+            logger.error("No export option selected.")
+            return
+        else:
+            pass
 
     def fill_app_props(self):
         """TO DOC
