@@ -74,12 +74,6 @@ build_script:
   - ps: new-item -Name "dist\\isogeo2office\\_logs" -ItemType directory
   - ps: new-item -Name "dist\\isogeo2office\\output" -ItemType directory 
 
-  # Zipping
-  - ps: Add-Type -assembly "system.io.compression.filesystem"
-  - ps: $source=Join-Path (pwd) dist\\isogeo2office
-  - ps: $dest=Join-Path (pwd) dist\\i2o.zip
-  - ps: [io.compression.zipfile]::CreateFromDirectory($Source, $dest)
-
 test: off
 
 artifacts:
