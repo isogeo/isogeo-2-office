@@ -42,8 +42,8 @@ cache:
 install:
   # Check that we have the expected version and architecture for Python
   - "%PYTHON%\\python.exe --version"
-  - "%PYTHON%\\python.exe -c "import sys, platform, struct;
-    print(sys.platform, platform.machine(), struct.calcsize('P')*8)"
+  - "%PYTHON%\\python.exe -c \"import sys, platform, struct;
+    print(sys.platform, platform.machine(), struct.calcsize('P')*8)\""
   # Upgrade pip & co
   - "%PYTHON%\\python.exe -m pip install -U pip setuptools wheel"
   # dependencies
