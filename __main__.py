@@ -29,8 +29,8 @@ from isogeo_pysdk import __version__ as pysdk_version
 from PyQt5.QtCore import (QBasicTimer, QLocale, QSettings, QTimerEvent,
                           QTranslator)
 from PyQt5.QtGui import QCloseEvent
-from PyQt5.QtWidgets import (QApplication, QComboBox, QDialog, QMenu,
-                             QMessageBox, QStyle, QSystemTrayIcon, QTabWidget)
+from PyQt5.QtWidgets import (QApplication, QComboBox, QDialog,
+                             QMessageBox, QStyle, QSystemTrayIcon, QMainWindow)
 
 import qdarkstyle
 # submodules - export
@@ -72,7 +72,7 @@ logger.info('================ Isogeo to office ===============')
 # #############################################################################
 # ########## Classes ###############
 # ##################################
-class IsogeoToOffice_Main(QTabWidget):
+class IsogeoToOffice_Main(QMainWindow):
 
     # attributes and global actions
     logger.info('OS: {0}'.format(platform.platform()))
@@ -85,7 +85,8 @@ class IsogeoToOffice_Main(QTabWidget):
 
     def __init__(self):
         super().__init__()
-        self.ui = Ui_tabs_IsogeoToOffice()
+        #self.ui = Ui_tabs_IsogeoToOffice()
+        self.ui = Ui_win_IsogeoToOffice()
         self.ui.setupUi(self)
         # Settings
         self.app_settings = QSettings('Isogeo', 'IsogeoToOffice')
@@ -193,7 +194,7 @@ class IsogeoToOffice_Main(QTabWidget):
             QMessageBox.warning(self,
                                 self.tr("Authentication - Credentials missing"),
                                 self.tr("Authentication to Isogeo API has failed."
-                                        " Credentials semme to be missing.")
+                                        " Credentials seem to be missing.")
             )
             return False
         else:

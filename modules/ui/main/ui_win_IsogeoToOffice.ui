@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>win_main</class>
- <widget class="QMainWindow" name="win_main">
+ <class>win_IsogeoToOffice</class>
+ <widget class="QMainWindow" name="win_IsogeoToOffice">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -23,13 +23,29 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string notr="true">Isogeo To Office</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../../../resources.qrc">
+    <normaloff>:/IsogeoToOffice/resources/icon.png</normaloff>:/IsogeoToOffice/resources/icon.png</iconset>
+  </property>
+  <property name="toolTip">
+   <string notr="true"/>
   </property>
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
   </property>
   <property name="toolButtonStyle">
    <enum>Qt::ToolButtonIconOnly</enum>
+  </property>
+  <property name="tabShape">
+   <enum>QTabWidget::Rounded</enum>
+  </property>
+  <property name="dockOptions">
+   <set>QMainWindow::AllowTabbedDocks</set>
+  </property>
+  <property name="unifiedTitleAndToolBarOnMac">
+   <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QFormLayout" name="formLayout_3">
@@ -87,7 +103,7 @@
           </property>
           <layout class="QGridLayout" name="gridLayout_5">
            <item row="2" column="1">
-            <widget class="QPushButton" name="btn_reinit_2">
+            <widget class="QPushButton" name="btn_reinit">
              <property name="minimumSize">
               <size>
                <width>33</width>
@@ -134,15 +150,15 @@
             </widget>
            </item>
            <item row="0" column="1">
-            <layout class="QHBoxLayout" name="lyt_advc_search_2">
+            <layout class="QHBoxLayout" name="lyt_advc_search">
              <item>
-              <layout class="QVBoxLayout" name="lyt_vert_filters_left_2">
+              <layout class="QVBoxLayout" name="lyt_vert_filters_left">
                <item>
-                <layout class="QVBoxLayout" name="lyt_vert_share_2">
+                <layout class="QVBoxLayout" name="lyt_vert_share">
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_4">
                    <item>
-                    <widget class="QLabel" name="ico_share_2">
+                    <widget class="QLabel" name="ico_share">
                      <property name="maximumSize">
                       <size>
                        <width>18</width>
@@ -161,7 +177,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLabel" name="lbl_share_2">
+                    <widget class="QLabel" name="lbl_share">
                      <property name="minimumSize">
                       <size>
                        <width>110</width>
@@ -195,7 +211,7 @@
                   </layout>
                  </item>
                  <item>
-                  <widget class="QComboBox" name="cbb_share_2">
+                  <widget class="QComboBox" name="cbb_share">
                    <property name="minimumSize">
                     <size>
                      <width>250</width>
@@ -228,11 +244,11 @@
                 </layout>
                </item>
                <item>
-                <layout class="QVBoxLayout" name="lyt_vert_filter_owner_2">
+                <layout class="QVBoxLayout" name="lyt_vert_filter_owner">
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_6">
                    <item>
-                    <widget class="QLabel" name="ico_owner_2">
+                    <widget class="QLabel" name="ico_owner">
                      <property name="maximumSize">
                       <size>
                        <width>18</width>
@@ -258,7 +274,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLabel" name="lbl_owner_2">
+                    <widget class="QLabel" name="lbl_owner">
                      <property name="minimumSize">
                       <size>
                        <width>110</width>
@@ -293,7 +309,7 @@
                   </layout>
                  </item>
                  <item>
-                  <widget class="QComboBox" name="cbb_owner_2">
+                  <widget class="QComboBox" name="cbb_owner">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -334,13 +350,13 @@
               </layout>
              </item>
              <item>
-              <layout class="QVBoxLayout" name="lyt_vert_filters_right_2">
+              <layout class="QVBoxLayout" name="lyt_vert_filters_right">
                <item>
-                <layout class="QVBoxLayout" name="lyt_vert_filter_type_2">
+                <layout class="QVBoxLayout" name="lyt_vert_filter_type">
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_7">
                    <item>
-                    <widget class="QLabel" name="ico_type_2">
+                    <widget class="QLabel" name="ico_type">
                      <property name="maximumSize">
                       <size>
                        <width>18</width>
@@ -359,7 +375,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLabel" name="lbl_type_2">
+                    <widget class="QLabel" name="lbl_type">
                      <property name="minimumSize">
                       <size>
                        <width>110</width>
@@ -393,7 +409,7 @@
                   </layout>
                  </item>
                  <item>
-                  <widget class="QComboBox" name="cbb_type_2">
+                  <widget class="QComboBox" name="cbb_type">
                    <property name="minimumSize">
                     <size>
                      <width>250</width>
@@ -426,11 +442,11 @@
                 </layout>
                </item>
                <item>
-                <layout class="QVBoxLayout" name="lyt_vert_filter_keyword_2">
+                <layout class="QVBoxLayout" name="lyt_vert_filter_keyword">
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_8">
                    <item>
-                    <widget class="QLabel" name="ico_keyword_2">
+                    <widget class="QLabel" name="ico_keyword">
                      <property name="maximumSize">
                       <size>
                        <width>18</width>
@@ -456,7 +472,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLabel" name="lbl_keyword_2">
+                    <widget class="QLabel" name="lbl_keyword">
                      <property name="minimumSize">
                       <size>
                        <width>110</width>
@@ -491,7 +507,7 @@
                   </layout>
                  </item>
                  <item>
-                  <widget class="QComboBox" name="cbb_keyword_2">
+                  <widget class="QComboBox" name="cbb_keyword">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -571,9 +587,9 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <item>
-            <layout class="QHBoxLayout" name="lyt_exports_formats_selection_2">
+            <layout class="QHBoxLayout" name="lyt_exports_formats_selection">
              <item>
-              <widget class="QGroupBox" name="chb_output_excel_2">
+              <widget class="QGroupBox" name="chb_output_excel">
                <property name="minimumSize">
                 <size>
                  <width>50</width>
@@ -603,7 +619,7 @@
                </property>
                <layout class="QGridLayout" name="gridLayout_6">
                 <item row="0" column="0">
-                 <widget class="QLabel" name="ico_excel_2">
+                 <widget class="QLabel" name="ico_excel">
                   <property name="minimumSize">
                    <size>
                     <width>32</width>
@@ -643,7 +659,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QGroupBox" name="chb_output_word_2">
+              <widget class="QGroupBox" name="chb_output_word">
                <property name="minimumSize">
                 <size>
                  <width>50</width>
@@ -676,7 +692,7 @@
                </property>
                <layout class="QGridLayout" name="gridLayout_8">
                 <item row="0" column="0">
-                 <widget class="QLabel" name="ico_word_2">
+                 <widget class="QLabel" name="ico_word">
                   <property name="minimumSize">
                    <size>
                     <width>32</width>
@@ -716,7 +732,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QGroupBox" name="chb_output_xml_2">
+              <widget class="QGroupBox" name="chb_output_xml">
                <property name="minimumSize">
                 <size>
                  <width>50</width>
@@ -746,7 +762,7 @@
                </property>
                <layout class="QGridLayout" name="gridLayout_9">
                 <item row="0" column="0">
-                 <widget class="QLabel" name="ico_xml_2">
+                 <widget class="QLabel" name="ico_xml">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                     <horstretch>0</horstretch>
@@ -864,49 +880,6 @@
           </property>
          </spacer>
         </item>
-        <item>
-         <widget class="QProgressBar" name="pgb_exports">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>550</width>
-            <height>30</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>600</width>
-            <height>40</height>
-           </size>
-          </property>
-          <property name="autoFillBackground">
-           <bool>true</bool>
-          </property>
-          <property name="value">
-           <number>0</number>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
-          </property>
-          <property name="textVisible">
-           <bool>false</bool>
-          </property>
-          <property name="invertedAppearance">
-           <bool>false</bool>
-          </property>
-          <property name="textDirection">
-           <enum>QProgressBar::BottomToTop</enum>
-          </property>
-          <property name="format">
-           <string notr="true">%p%</string>
-          </property>
-         </widget>
-        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="tab_settings">
@@ -1018,6 +991,9 @@
                    <height>35</height>
                   </size>
                  </property>
+                 <property name="toolTip">
+                  <string>Add date or datetime to output filenames</string>
+                 </property>
                  <item>
                   <property name="text">
                    <string>No date (overwrite)</string>
@@ -1052,6 +1028,9 @@
                  <property name="cursor">
                   <cursorShape>ArrowCursor</cursorShape>
                  </property>
+                 <property name="toolTip">
+                  <string>Folder to store exported files</string>
+                 </property>
                  <property name="styleSheet">
                   <string notr="true">background-color: rgb(255, 255, 255);</string>
                  </property>
@@ -1081,7 +1060,7 @@
                   </size>
                  </property>
                  <property name="toolTip">
-                  <string>Enter output file name</string>
+                  <string>Custom output filename prefix</string>
                  </property>
                  <property name="autoFillBackground">
                   <bool>true</bool>
@@ -1093,13 +1072,13 @@
                   <string notr="true"/>
                  </property>
                  <property name="text">
-                  <string>isogeo2office_</string>
+                  <string>IsogeoToOffice</string>
                  </property>
                  <property name="maxLength">
                   <number>25</number>
                  </property>
                  <property name="placeholderText">
-                  <string>isogeo2office_</string>
+                  <string>IsogeoToOffice</string>
                  </property>
                  <property name="clearButtonEnabled">
                   <bool>true</bool>
@@ -1177,6 +1156,12 @@
                    <height>35</height>
                   </size>
                  </property>
+                 <property name="toolTip">
+                  <string>Useful to avoid name conflicts</string>
+                 </property>
+                 <property name="suffix">
+                  <string> chars</string>
+                 </property>
                  <property name="maximum">
                   <number>8</number>
                  </property>
@@ -1187,6 +1172,12 @@
                </item>
                <item row="1" column="3">
                 <widget class="QToolButton" name="btn_directory_change">
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>35</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string notr="true">...</string>
                  </property>
@@ -1208,7 +1199,7 @@
                 <normaloff>:/IsogeoToOffice/resources/excel.svg</normaloff>:/IsogeoToOffice/resources/excel.svg</iconset>
               </attribute>
               <attribute name="label">
-               <string>Excel</string>
+               <string notr="true">Excel</string>
               </attribute>
               <layout class="QFormLayout" name="formLayout">
                <item row="0" column="0">
@@ -1220,7 +1211,7 @@
                   </size>
                  </property>
                  <property name="toolTip">
-                  <string>Export metadata in XML ISO 19139</string>
+                  <string>Add a sheet to the output workbook about features attributes</string>
                  </property>
                  <property name="text">
                   <string>Features attributes analysis</string>
@@ -1236,7 +1227,7 @@
                   </size>
                  </property>
                  <property name="toolTip">
-                  <string>Export metadata in XML ISO 19139</string>
+                  <string>Add a sheet to the the output workbook with some metrics</string>
                  </property>
                  <property name="text">
                   <string>Cataloguing dashboard</string>
@@ -1259,7 +1250,7 @@
                 <normaloff>:/IsogeoToOffice/resources/word.svg</normaloff>:/IsogeoToOffice/resources/word.svg</iconset>
               </attribute>
               <attribute name="label">
-               <string>Word</string>
+               <string notr="true">Word</string>
               </attribute>
               <layout class="QFormLayout" name="formLayout_4">
                <item row="0" column="0">
@@ -1295,6 +1286,9 @@
                    <height>35</height>
                   </size>
                  </property>
+                 <property name="toolTip">
+                  <string>Word template to apply to the exported metadata</string>
+                 </property>
                  <property name="currentText">
                   <string/>
                  </property>
@@ -1316,7 +1310,7 @@
                 <normaloff>:/IsogeoToOffice/resources/xml.svg</normaloff>:/IsogeoToOffice/resources/xml.svg</iconset>
               </attribute>
               <attribute name="label">
-               <string>XML</string>
+               <string notr="true">XML</string>
               </attribute>
               <layout class="QFormLayout" name="formLayout_2">
                <item row="0" column="0">
@@ -1390,8 +1384,11 @@
                  <height>24</height>
                 </size>
                </property>
+               <property name="toolTip">
+                <string>Change authentication settings</string>
+               </property>
                <property name="text">
-                <string/>
+                <string notr="true"/>
                </property>
                <property name="icon">
                 <iconset resource="../../../resources.qrc">
@@ -1402,7 +1399,39 @@
             </layout>
            </item>
            <item row="1" column="0">
-            <widget class="QTextBrowser" name="txt_shares"/>
+            <widget class="QTextBrowser" name="txt_shares">
+             <property name="cursor" stdset="0">
+              <cursorShape>IBeamCursor</cursorShape>
+             </property>
+             <property name="toolTip">
+              <string>Application properties</string>
+             </property>
+             <property name="autoFillBackground">
+              <bool>true</bool>
+             </property>
+             <property name="undoRedoEnabled">
+              <bool>false</bool>
+             </property>
+             <property name="html">
+              <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="textInteractionFlags">
+              <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+             </property>
+             <property name="placeholderText">
+              <string notr="true"/>
+             </property>
+             <property name="openExternalLinks">
+              <bool>true</bool>
+             </property>
+             <property name="openLinks">
+              <bool>false</bool>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -1646,6 +1675,55 @@
         </item>
        </layout>
       </widget>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="2">
+     <widget class="QProgressBar" name="pgb_exports">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>500</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>1000</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="contextMenuPolicy">
+       <enum>Qt::NoContextMenu</enum>
+      </property>
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
+      <property name="maximum">
+       <number>100</number>
+      </property>
+      <property name="value">
+       <number>0</number>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+      </property>
+      <property name="textVisible">
+       <bool>true</bool>
+      </property>
+      <property name="invertedAppearance">
+       <bool>false</bool>
+      </property>
+      <property name="textDirection">
+       <enum>QProgressBar::BottomToTop</enum>
+      </property>
+      <property name="format">
+       <string notr="true">%p%</string>
+      </property>
      </widget>
     </item>
    </layout>
