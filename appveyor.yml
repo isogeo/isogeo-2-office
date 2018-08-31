@@ -74,9 +74,7 @@ build_script:
   - ps: new-item -Name "dist\\isogeo2office\\_logs" -ItemType directory
   - ps: new-item -Name "dist\\isogeo2office\\output" -ItemType directory 
 
-test: off
-
-after_build:
+  # Zip
   - 7z a i2o.zip dist\\isogeo2office\\*
 
 artifacts:
