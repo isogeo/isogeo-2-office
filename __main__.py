@@ -17,30 +17,34 @@
 # ########## Libraries #############
 # ##################################
 
-import logging
-import platform
 # standard library
+from datetime import datetime
+import logging
 from functools import partial
 from logging.handlers import RotatingFileHandler
 from os import path
+import platform
 
 # 3rd party library
 from isogeo_pysdk import __version__ as pysdk_version
-from PyQt5.QtCore import (QBasicTimer, QLocale, QSettings, QTimerEvent,
-                          QTranslator)
+from PyQt5.QtCore import (QBasicTimer, QDate, QLocale, QSettings, QTimerEvent,
+                          QTranslator, QThread, pyqtSignal, pyqtSlot)
 from PyQt5.QtGui import QCloseEvent
 from PyQt5.QtWidgets import (QApplication, QComboBox, QDialog,
                              QMessageBox, QStyle, QSystemTrayIcon, QMainWindow)
 
 import qdarkstyle
 # submodules - export
-from modules import isogeo2office_utils
+from modules import isogeo2office_utils, Isogeo2xlsx
 # submodules - UI
 from modules.ui.auth.auth_dlg import Auth
 from modules.ui.credits.credits_dlg import Credits
-from modules.ui.main.ui_IsogeoToOffice import Ui_tabs_IsogeoToOffice
+from modules.ui.main.ui_win_IsogeoToOffice import Ui_win_IsogeoToOffice
+
 # submodules - functional
-from modules.utils.api import IsogeoApiMngr
+from modules import IsogeoApiMngr
+from modules import AppPropertiesThread, ExportExcelThread
+#from modules.utils.api import IsogeoApiMngr
 
 # #############################################################################
 # ########## Globals ###############
@@ -199,7 +203,9 @@ class IsogeoToOffice_Main(QMainWindow):
             return False
         else:
             logger.debug("Access granted. Fill the shares window")
-            partial(self.fill_app_props)
+            thread_app_props = AppPropertiesThread(api_mngr)
+            thread_app_props.signal.connect(self.fill_app_props)
+            thread_app_props.start()
         
         # launch empty search
         self.search(reset=1)
