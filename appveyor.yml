@@ -59,7 +59,7 @@ install:
 build: off
 
 build_script:
-  - "%PYTHON%\\Scripts\\pylupdate5 -noobsolete -verbose .\isogeo2office.pro"
+  - "%PYTHON%\\Scripts\\pylupdate5 -noobsolete -verbose isogeo2office.pro"
   - "%PYTHON%\\Scripts\\pyinstaller.exe -y --clean bundle_isogeo2office.spec"
 
 test: off
