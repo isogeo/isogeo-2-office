@@ -38,6 +38,8 @@ cache:
   # Cache downloaded pip packages and built wheels.
   - '%LOCALAPPDATA%\pip\Cache\http'
   - '%LOCALAPPDATA%\pip\Cache\wheels'
+  # Cache PyInstaller build bundle env
+  - C:\projects\isogeo-2-office\build\
 
 install:
   # Check that we have the expected version and architecture for Python
