@@ -301,30 +301,71 @@ class IsogeoToOffice_Main(QMainWindow):
         else:
             pass
 
-    def fill_app_props(self):
-        """TO DOC
-        """
-        api_mngr.isogeo.get_app_properties(self.token)
+        # retrieve metadata to export
+        self.processing("start")
+        share_id, search_terms = self.get_selected_filters()
+        includes = ["conditions",
+                    "contacts",
+                    "coordinate-system",
+                    "events",
+                    "feature-attributes",
+                    "keywords",
+                    "layers",
+                    "limitations",
+                    "links",
+                    "operations",
+                    "serviceLayers",
+                    "specifications"]
+        search_to_be_exported = api_mngr.isogeo.search(api_mngr.token,
+                                                        query=search_terms,
+                                                        share=share_id,
+                                                        page_size=100,
+                                                        whole_share=1,
+                                                        include=includes,
+                                                        check=0)
+        self.processing("end")
 
-    # -- UI utils -------------------------------------------------------------
-    def processing(self, step: str = "start"):
-        """Manage UI during a process: progress bar start/end, disable/enable
-        widgets...
+        # prepare progress bar
+        progbar_max = search_to_be_exported.get("total")
+        self.ui.pgb_exports.setRange(0, progbar_max)
+        self.ui.pgb_exports.reset()
 
-        :param str step: step of processing (start, end or progress)
-        """
-        if step == "start":
-            logger.debug("Start processing. Freezing search form.")
-            self.ui.Export.setEnabled(False)
-            self.timer.start(100, self)
-        elif step == "end":
-            logger.debug("End of process. Back to normal.")
-            self.ui.Export.setEnabled(True)
-            self.timer.stop()
-        elif step == "progress":
-            logger.debug("Progress")
+        # -- File naming
+        # prepare filepath
+        generic_filepath = path.join(self.app_settings.value("settings/out_folder",
+                                                             r"output/"),
+                                     self.ui.txt_output_fileprefix.text()
+                                     )
+        # horodating ?
+        opt_timestamp = self.ui.cbb_timestamp.currentText()
+        logger.debug("Timestamp option: {}"
+                     .format(opt_timestamp))
+        if opt_timestamp == self.tr("No date (overwrite)"):
+            horodatage = ""
+        elif opt_timestamp == self.tr("Day"):
+            dstamp = datetime.now()
+            horodatage = "_{}-{}-{}".format(dstamp.year,
+                                            dstamp.month,
+                                            dstamp.day)
+        elif opt_timestamp == self.tr("Datetime"):
+            dstamp = datetime.now()
+            horodatage = "_{}-{}-{}-{}{}{}".format(dstamp.year,
+                                                   dstamp.month,
+                                                   dstamp.day,
+                                                   dstamp.hour,
+                                                   dstamp.minute,
+                                                   dstamp.second)
         else:
-            raise ValueError
+            logger.error("Timestamp option not recognized")
+            horodatage = ""
+        # metadata UUID
+        opt_md_uuid = self.ui.int_md_uuid.value()
+        logger.debug("UUID option: {}"
+                     .format(opt_md_uuid))
+
+
+        else:
+            pass
 
     # -- UI utils -------------------------------------------------------------
     def closeEvent(self, event_sent):
@@ -375,18 +416,25 @@ class IsogeoToOffice_Main(QMainWindow):
         # accept the close
         event_sent.accept()
 
-    def timerEvent(self, event_sent):
-        """Timer event catcher in charge of updating the progress bar.
+    def processing(self, step: str = "start", max: int = 100):
+        """Manage UI during a process: progress bar start/end, disable/enable
+        widgets...
 
-        :param QTimerEvent event_sent: event automatically sent by QBasicTimer
+        :param str step: step of processing (start, end or progress)
+        :param int max: length of the process
         """
-        # check if step is over the end limit
-        if self.step >= 100:
+        if step == "start":
+            logger.debug("Start processing. Freezing search form.")
+            self.ui.tab_export.setEnabled(False)
+            self.timer.start(max, self)
+        elif step == "end":
+            logger.debug("End of process. Back to normal.")
+            self.ui.tab_export.setEnabled(True)
             self.timer.stop()
-            return
+        elif step == "progress":
+            logger.debug("Progress")
         else:
-            self.step += 1
-            self.ui.pgb_exports.setValue(self.step)
+            raise ValueError
 
     def set_output_folder(self):
         """Let user pick the folder where to store 
@@ -402,12 +450,26 @@ class IsogeoToOffice_Main(QMainWindow):
         else:
             selected_folder = path.realpath(selected_folder)
             logger.debug("Output folder selected: {}".format(selected_folder))
-        
+
         # fill label and setttings
         self.ui.lbl_output_folder_value.setText(path.basename(selected_folder))
-        self.ui.lbl_output_folder_value.setToolTip(path.dirname(selected_folder))
+        self.ui.lbl_output_folder_value.setToolTip(
+            path.dirname(selected_folder))
         self.app_settings.setValue("settings/out_folder",
                                    selected_folder)
+
+    def timerEvent(self, event_sent):
+        """Timer event catcher in charge of updating the progress bar.
+
+        :param QTimerEvent event_sent: event automatically sent by QBasicTimer
+        """
+        # check if step is over the end limit
+        if self.step >= 100:
+            self.timer.stop()
+            return
+        else:
+            self.step += 1
+            self.ui.pgb_exports.setValue(self.step)
 
 
 # #############################################################################
