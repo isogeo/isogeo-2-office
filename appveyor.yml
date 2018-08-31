@@ -41,8 +41,8 @@ cache:
 
 install:
   # Check that we have the expected version and architecture for Python
-  - python --version
-  - python -c "import sys, platform, struct;
+  - "%PYTHON%\\python.exe --version"
+  - "%PYTHON%\\python.exe -c "import sys, platform, struct;
     print(sys.platform, platform.machine(), struct.calcsize('P')*8)"
   # Upgrade pip & co
   - "%PYTHON%\\python.exe -m pip install -U pip setuptools wheel"
@@ -59,6 +59,7 @@ install:
 build: off
 
 build_script:
+  - "%PYTHON%\\Scripts\\pylupdate5 -noobsolete -verbose .\isogeo2office.pro"
   - "%PYTHON%\\Scripts\\pyinstaller.exe -y --clean bundle_isogeo2office.spec"
 
 test: off

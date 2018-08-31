@@ -4,10 +4,11 @@ block_cipher = None
 
 added_files = [('i18n', 'i18n'),
                ('resources', 'resources'),
+               ('templates', 'templates'),
               ]
 
 a = Analysis(['__main__.py'],
-             pathex=['C:\\Users\\julien.moura\\Documents\\GitHub\\Isogeo\\isogeo-2-office'],
+             pathex=[],
              binaries=[],
              datas=added_files,
              hiddenimports=[],
@@ -26,10 +27,10 @@ exe = EXE(pyz,
           a.scripts,
           exclude_binaries=True,
           name='isogeo2office',
-          debug=False,
+          debug=True,
           strip=False,
           upx=False,
-          console=False,
+          console=True,
           icon='img\\favicon.ico',
           windowed=True,
           version='bundle_version.txt')

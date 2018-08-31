@@ -23,7 +23,8 @@ pyinstaller -y --clean bundle_isogeo2office.spec
 
 "`n-- STEP -- Add required empty folders"
 new-item -Name "dist/isogeo2office/_auth" -ItemType directory 
-new-item -Name "dist/isogeo2office/_logs" -ItemType directory 
+new-item -Name "dist/isogeo2office/_logs" -ItemType directory
+new-item -Name "dist/isogeo2office/output" -ItemType directory 
 
 "`n-- STEP -- Zipping"
 Add-Type -assembly "system.io.compression.filesystem"

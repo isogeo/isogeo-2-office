@@ -17,7 +17,7 @@ wheel
 
 # utils
 arrow==0.12.*
-future==0.16.*
+future==0.16.* ; python_version < '3.0'
 progressbar2==3.38.*
 
 # isogeo to office
@@ -25,5 +25,5 @@ docxtpl==0.5.*
 isogeo-pysdk==2.20.*
 openpyxl==2.5.*
 PyQt5==5.11.*
-pyqt5-tools
+pyqt5-tools==5.9.* ; sys_platform == 'win32'
 QDarkStyle==2.5.*
