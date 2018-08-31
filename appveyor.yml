@@ -12,13 +12,13 @@ environment:
       PYTHON_VERSION: 3.6
       PYTHON_ARCH: 64
       PYTHONOPTIMIZE: 1
-      PACKAGE_LABEL: IsogeoToOffice_$(env:APPVEYOR_REPO_BRANCH)_v2-b$(env:APPVEYOR_BUILD_NUMBER)_$(env:PYTHON_ARCH)
+      PACKAGE_LABEL: "IsogeoToOffice_$(env:APPVEYOR_REPO_BRANCH)_v2-b$(env:APPVEYOR_BUILD_NUMBER)_$(env:PYTHON_ARCH)"
 
     - PYTHON: C:\\Python36
       PYTHON_VERSION: 3.6
       PYTHON_ARCH: 32
       PYTHONOPTIMIZE: 1
-      PACKAGE_LABEL: IsogeoToOffice_$(env:APPVEYOR_REPO_BRANCH)_v2-b$(env:APPVEYOR_BUILD_NUMBER)_x$(env:PYTHON_ARCH)
+      PACKAGE_LABEL: "IsogeoToOffice_$(env:APPVEYOR_REPO_BRANCH)_v2-b$(env:APPVEYOR_BUILD_NUMBER)_x$(env:PYTHON_ARCH)"
 
 init:
   # Uncomment the line below to enable Remote Desktop access to the build worker
@@ -86,7 +86,7 @@ build_script:
   - ps: new-item -Name "dist\\isogeo2office\\output" -ItemType directory 
 
   # Zip
-  - 7z a $(env:PACKAGE_LABEL).zip %APPVEYOR_BUILD_FOLDER%\dist\*
+  - 7z a %PACKAGE_LABEL%.zip %APPVEYOR_BUILD_FOLDER%\dist\*
 
 test: off
 
@@ -96,5 +96,5 @@ test: off
 
 artifacts:
   # Archive the generated packages in the ci.appveyor.com build report.
-  - path: $(env:PACKAGE_LABEL).zip
+  - path: %PACKAGE_LABEL%.zip
     name: IsogeoToOffice_zipped
