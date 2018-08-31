@@ -143,14 +143,13 @@ class IsogeoToOffice_Main(QMainWindow):
                                                   )
                                               )
                         )
-        # -- Settings tab - Global  -------------------------------------------
+        # -- Settings tab - Export -------------------------------------------
         self.ui.btn_directory_change.pressed.connect(partial(self.set_output_folder))
 
         # -- Settings tab - Application authentication ------------------------
         # Change user -> see below for authentication form
         self.ui.btn_change_user.pressed.connect(partial(api_mngr.display_auth_form))
         # share text window
-        self.ui.txt_shares.setOpenLinks(False)
         self.ui.txt_shares.anchorClicked.connect(self.app_utils.open_urls)
 
         # -- Settings tab - Resources -----------------------------------------
@@ -233,6 +232,7 @@ class IsogeoToOffice_Main(QMainWindow):
                          .format(search_terms, share_id))
             search = api_mngr.isogeo.search(api_mngr.token,
                                             query=search_terms,
+                                            share=share_id,
                                             page_size=0,
                                             whole_share=0,
                                             augment=1,
@@ -326,6 +326,7 @@ class IsogeoToOffice_Main(QMainWindow):
         else:
             raise ValueError
 
+    # -- UI utils -------------------------------------------------------------
     def closeEvent(self, event_sent):
         """Actions performed juste before UI is closed.
         
@@ -340,23 +341,27 @@ class IsogeoToOffice_Main(QMainWindow):
         self.app_settings.setValue("auth/url_base", api_mngr.api_url_base)
         self.app_settings.setValue("auth/url_auth", api_mngr.api_url_auth)
         self.app_settings.setValue("auth/url_token", api_mngr.api_url_token)
-        self.app_settings.setValue("auth/url_redirect", api_mngr.api_url_redirect)
+        self.app_settings.setValue(
+            "auth/url_redirect", api_mngr.api_url_redirect)
 
         # output formats
-        self.app_settings.setValue("formats/excel", self.ui.chb_output_excel.isChecked())
-        self.app_settings.setValue("formats/word", self.ui.chb_output_word.isChecked())
-        self.app_settings.setValue("formats/xml", self.ui.chb_output_xml.isChecked())
+        self.app_settings.setValue(
+            "formats/excel", self.ui.chb_output_excel.isChecked())
+        self.app_settings.setValue(
+            "formats/word", self.ui.chb_output_word.isChecked())
+        self.app_settings.setValue(
+            "formats/xml", self.ui.chb_output_xml.isChecked())
 
         # location and naming rules
-        self.app_settings.setValue("settings/out_folder",
-                                   self.ui.lbl_output_folder_value.text())
+        # self.app_settings.setValue("settings/out_folder",
+        #                            self.ui.lbl_output_folder_value.text())
         self.app_settings.setValue("settings/out_prefix",
                                    self.ui.txt_output_fileprefix.text())
         self.app_settings.setValue("settings/timestamps",
                                    self.ui.cbb_timestamp.currentText())
         self.app_settings.setValue("settings/uuid_length",
                                    self.ui.int_md_uuid.text())
-        
+
         # export options
         self.app_settings.setValue("settings/xls_sheet_attributes",
                                    self.ui.chb_xls_attributes.isChecked())

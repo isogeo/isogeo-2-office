@@ -4,12 +4,9 @@
 """
     Isogeo To Office - Threads used to subprocess some tasks
 
+    Author: Julien Moura (@geojulien)
+    Python: 3.6.x
 
-    Author:       Julien Moura (@geojulien)
-
-    Python:      3.6.x
-    Created:      18/12/2015
-    Updated:      22/08/2018
 """
 
 # #############################################################################
@@ -17,20 +14,12 @@
 # ##################################
 
 # standard library
-from datetime import datetime
 import logging
-from functools import partial
 from logging.handlers import RotatingFileHandler
 from os import path
-import platform
 
 # 3rd party library
-from isogeo_pysdk import __version__ as pysdk_version
-from PyQt5.QtCore import (QBasicTimer, QDate, QLocale, QSettings, QTimerEvent,
-                          QTranslator, QThread, pyqtSignal, pyqtSlot)
-from PyQt5.QtGui import QCloseEvent
-from PyQt5.QtWidgets import (QApplication, QComboBox, QDialog,
-                             QMessageBox, QStyle, QSystemTrayIcon, QMainWindow)
+from PyQt5.QtCore import (QDate, QLocale, QThread, pyqtSignal, pyqtSlot)
 
 # submodules - export
 from . import Isogeo2xlsx, Isogeo2docx
@@ -68,11 +57,13 @@ class AppPropertiesThread(QThread):
                         app.get("name", "Isogeo to Office"))
         # shares feeding the application
         if len(shares) == 1:
-            text += "{}</p></br>".format(self.tr(" powered by 1 share:"))
+            text += "{}{}{}</p></br>".format(self.tr(" powered by "),
+                                             "1",
+                                             self.tr("share:"))
         else:
-            text += self.tr(" powered by {0} shares:</p></br>"
-                            .format(len(shares))
-                            )
+            text += "{}{}{}</p></br>".format(self.tr(" powered by "),
+                                             len(shares),
+                                             self.tr("shares:"))
         # shares details
         for share in shares:
             # share variables

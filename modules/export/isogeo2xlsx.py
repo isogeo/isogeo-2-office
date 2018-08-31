@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+#! python3
 
 # ------------------------------------------------------------------------------
 # Name:         Isogeo to Microsoft Excel 2010
@@ -6,11 +7,9 @@
 #               a Excel worksheet. It's one of the submodules of
 #               isogeo2office (https://github.com/isogeo/isogeo-2-office).
 #
-# Author:       Julien Moura (@geojulien)
+# Author:       Isogeo
 #
-# Python:       2.7.x
-# Created:      14/08/2014
-# Updated:      15/04/2016
+# Python:       3.6
 # ------------------------------------------------------------------------------
 
 # ##############################################################################
