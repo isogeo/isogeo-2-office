@@ -1,7 +1,6 @@
 FORMS = ./modules/ui/auth/ui_authentication.ui \
     	./modules/ui/credits/ui_credits.ui \
-    	./modules/ui/main/ui_IsogeoToOffice.ui \
-		./modules/ui/main/ui_main_windows.ui \
+    	./modules/ui/main/ui_win_IsogeoToOffice.ui \
 
 SOURCES = ./__main__.py \
 		  ./modules/threads.py \

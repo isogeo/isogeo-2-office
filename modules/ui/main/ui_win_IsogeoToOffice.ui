@@ -202,7 +202,7 @@
                      </property>
                      <property name="sizeHint" stdset="0">
                       <size>
-                       <width>48</width>
+                       <width>75</width>
                        <height>20</height>
                       </size>
                      </property>
@@ -291,6 +291,12 @@
                      <property name="text">
                       <string>Metadata Owner</string>
                      </property>
+                     <property name="scaledContents">
+                      <bool>false</bool>
+                     </property>
+                     <property name="wordWrap">
+                      <bool>false</bool>
+                     </property>
                     </widget>
                    </item>
                    <item>
@@ -300,7 +306,7 @@
                      </property>
                      <property name="sizeHint" stdset="0">
                       <size>
-                       <width>138</width>
+                       <width>75</width>
                        <height>20</height>
                       </size>
                      </property>
@@ -400,7 +406,7 @@
                      </property>
                      <property name="sizeHint" stdset="0">
                       <size>
-                       <width>48</width>
+                       <width>75</width>
                        <height>20</height>
                       </size>
                      </property>
@@ -498,7 +504,7 @@
                      </property>
                      <property name="sizeHint" stdset="0">
                       <size>
-                       <width>148</width>
+                       <width>75</width>
                        <height>20</height>
                       </size>
                      </property>

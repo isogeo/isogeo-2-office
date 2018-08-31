@@ -69,7 +69,7 @@ class IsogeoFormatter(object):
         # store params and imports as attributes
         self.output_type = output_type
         self.defs = default_values
-        self.tr = IsogeoTranslator(lang).tr
+        self.isogeo_tr = IsogeoTranslator(lang).tr
 
     # ------------ Metadata sections formatter --------------------------------
     def conditions(self, md_cgus: dict):
@@ -87,7 +87,7 @@ class IsogeoFormatter(object):
                 cgu["link"] = c_in.get("license").get("link", "")
                 cgu["content"] = self.clean_xml(c_in.get("license").get("content", ""))
             else:
-                cgu["name"] = self.tr("conditions", "noLicense")
+                cgu["name"] = self.isogeo_tr("conditions", "noLicense")
 
             # store into the final list
             cgus_out.append("{} {}. {} {}".format(cgu.get("name"),
@@ -107,10 +107,10 @@ class IsogeoFormatter(object):
             limitation = {}
             # ensure other fields
             limitation["description"] = self.clean_xml(l_in.get("description", ""))
-            limitation["type"] = self.tr("limitations", l_in.get("type"))
+            limitation["type"] = self.isogeo_tr("limitations", l_in.get("type"))
             # legal type
             if l_in.get("type") == "legal":
-                limitation["restriction"] = self.tr("restrictions",
+                limitation["restriction"] = self.isogeo_tr("restrictions",
                                                     l_in.get("restriction"))
             else:
                 pass
@@ -142,9 +142,9 @@ class IsogeoFormatter(object):
             spec = {}
             # translate specification conformity
             if s_in.get("conformant"):
-                spec["conformity"] = self.tr("quality", "isConform")
+                spec["conformity"] = self.isogeo_tr("quality", "isConform")
             else:
-                spec["conformity"] = self.tr("quality", "isNotConform")
+                spec["conformity"] = self.isogeo_tr("quality", "isNotConform")
             # ensure other fields
             spec["name"] = s_in.get("specification").get("name")
             spec["link"] = s_in.get("specification").get("link", "")
