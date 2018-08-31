@@ -68,6 +68,8 @@ build_script:
 
   # Building the executable
   - "%PYTHON%\\Scripts\\pyinstaller.exe -y --clean bundle_isogeo2office.spec"
+  - ps: ls
+
 
   # Add required empty folders
   - ps: new-item -Name "dist\\isogeo2office\\_auth" -ItemType directory 
