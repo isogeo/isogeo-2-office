@@ -92,6 +92,69 @@ class AppPropertiesThread(QThread):
         self.signal.emit(text)
 
 
+class ExportExcelThread(QThread):
+    # signals
+    sig_step = pyqtSignal(int, str)
+
+    def __init__(self,
+                 search_to_export: dict = {},
+                 output_path: str = r"output/",
+                 opt_attributes: int = 1, 
+                 opt_dasboard: int = 1,
+                 opt_fillfull: int = 1,
+                 opt_inspire: int = 1):
+        QThread.__init__(self)
+        # export settings
+        self.search = search_to_export
+        self.output_xlsx_path = output_path
+        self.opt_attributes = opt_attributes
+        self.opt_dasboard = opt_dasboard
+        self.opt_fillfull = opt_fillfull
+        self.opt_inspire = opt_inspire
+
+    # run method gets called when we start the thread
+    def run(self):
+        """Export metadata into an Excel workbook
+        """
+        # workbook
+        wb = Isogeo2xlsx(lang="FR",
+                         url_base="https://open.isogeo.com")
+        wb.set_worksheets(auto=self.search.get('tags').keys(),
+                          dashboard=self.opt_dasboard,
+                          attributes=self.opt_attributes,
+                          fillfull=self.opt_fillfull,
+                          inspire=self.opt_inspire)
+
+        # parsing metadata
+        for md in self.search.get("results"):
+            # show progression
+            md_title = md.get("title", "No title")
+            self.sig_step.emit(1, "Processing Excel: {}".format(md_title))
+            # store metadata
+            wb.store_metadatas(md)
+
+        # tunning full worksheet
+        wb.tunning_worksheets()
+
+        # special sheets
+        if self.opt_attributes:
+            wb.analisis_attributes()
+        else:
+            pass
+
+        # save workbook
+        try:
+            wb.save(self.output_xlsx_path)
+        except PermissionError as e:
+            logger.error(e)
+            wb.close()
+            wb.save(path.normpath(self.output_xlsx_path))
+
+        # Excel export finished
+        # Now inform the main thread with the output (fill_app_props)
+        self.sig_step.emit(0, "Excel finished")
+
+
 
 # #############################################################################
 # ##### Stand alone program ########

@@ -35,7 +35,8 @@ from PyQt5.QtWidgets import (QApplication, QComboBox, QDialog,
 
 import qdarkstyle
 # submodules - export
-from modules import isogeo2office_utils, Isogeo2xlsx
+from modules import isogeo2office_utils
+
 # submodules - UI
 from modules.ui.auth.auth_dlg import Auth
 from modules.ui.credits.credits_dlg import Credits
@@ -43,8 +44,7 @@ from modules.ui.main.ui_win_IsogeoToOffice import Ui_win_IsogeoToOffice
 
 # submodules - functional
 from modules import IsogeoApiMngr
-from modules import AppPropertiesThread, ExportExcelThread
-#from modules.utils.api import IsogeoApiMngr
+from modules import AppPropertiesThread, ExportExcelThread, ExportWordThread
 
 # #############################################################################
 # ########## Globals ###############
@@ -363,6 +363,19 @@ class IsogeoToOffice_Main(QMainWindow):
         logger.debug("UUID option: {}"
                      .format(opt_md_uuid))
 
+        # EXCEL
+        if self.ui.chb_output_excel.isChecked():
+            logger.debug("Excel - Preparation")
+            output_xlsx_filepath = "{}{}.xlsx".format(generic_filepath, horodatage)
+            logger.debug("Excel - Destination file: {}".format(output_xlsx_filepath))
+            self.thread_export_xlsx = ExportExcelThread(search_to_be_exported,
+                                                        output_xlsx_filepath,
+                                                        opt_attributes=self.ui.chb_xls_attributes.isChecked(),
+                                                        opt_dasboard=self.ui.chb_xls_stats.isChecked())
+            self.thread_export_xlsx.sig_step.connect(self.update_status_bar)
+            self.thread_export_xlsx.start()
+        else:
+            pass
 
         else:
             pass
@@ -471,6 +484,20 @@ class IsogeoToOffice_Main(QMainWindow):
             self.step += 1
             self.ui.pgb_exports.setValue(self.step)
 
+    # -- UI Slots -------------------------------------------------------------
+    @pyqtSlot(str)
+    def fill_app_props(self, app_infos_retrieved: str = ""):
+        """Get app properties and fillfull the share frame in settings tab.
+        """
+        self.ui.txt_shares.setText(app_infos_retrieved)
+
+    @pyqtSlot(int, str)
+    def update_status_bar(self, prog_step: int = 1, status_msg: str = ""):
+        """Display message into status bar
+        """
+        self.ui.lbl_statusbar.showMessage(status_msg)
+        prog_val = self.ui.pgb_exports.value() + prog_step
+        self.ui.pgb_exports.setValue(prog_val)
 
 # #############################################################################
 # ##### Stand alone program ########
