@@ -19,14 +19,16 @@ from logging.handlers import RotatingFileHandler
 from os import path
 
 # 3rd party library
+from docxtpl import DocxTemplate
 from PyQt5.QtCore import (QDate, QLocale, QThread, pyqtSignal, pyqtSlot)
 
 # submodules - export
-from . import Isogeo2xlsx, Isogeo2docx
+from . import Isogeo2docx, Isogeo2xlsx, isogeo2office_utils
 
 # #############################################################################
 # ########## Globals ###############
 # ##################################
+app_utils = isogeo2office_utils()
 current_locale = QLocale()
 logger = logging.getLogger("isogeo2office")
 
@@ -153,6 +155,71 @@ class ExportExcelThread(QThread):
         # Excel export finished
         # Now inform the main thread with the output (fill_app_props)
         self.sig_step.emit(0, "Excel finished")
+
+
+class ExportWordThread(QThread):
+    # signals
+    sig_step = pyqtSignal(int, str)
+
+    def __init__(self,
+                 search_to_export: dict = {},
+                 output_path: str = r"output/",
+                 tpl_path: str = r"templates/template_Isogeo.docx",
+                 timestamp: str = "",
+                 length_uuid: int = 0):
+        QThread.__init__(self)
+        # export settings
+        self.search = search_to_export
+        self.output_docx_folder = output_path
+        self.tpl_path = path.realpath(tpl_path)
+        self.timestamp = timestamp
+        self.length_uuid = length_uuid
+
+    # run method gets called when we start the thread
+    def run(self):
+        """Export each metadata into a Word document
+        """
+        # word generator
+        to_docx = Isogeo2docx()
+
+        # parsing metadata
+        for md in self.search.get("results"):
+            # progression
+            md_title = md.get("title", "No title")
+            self.sig_step.emit(1, "Processing Word: {}".format(md_title))
+            # templating
+            tpl = DocxTemplate(self.tpl_path)
+            # fill template
+            to_docx.md2docx(docx_template=tpl,
+                            md=md,
+                            url_base="https://open.isogeo.com",
+                            thumb_path="https://www.isogeo.com/images/logo.png")
+            # filename
+            md_name = app_utils.clean_filename(md.get("name",
+                                                      md.get("title", "NR"))
+                                               )
+            if '.' in md_name:
+                md_name = md_name.split(".")[1]
+            else:
+                pass
+            uuid = "{}".format(md.get("_id")[:self.length_uuid])
+        
+
+            out_docx_filename = "{}_{}_{}.docx".format(self.output_docx_folder,
+                                                       md_name,
+                                                       uuid)
+            # saving
+            logger.debug("Saving output Word docx: {}".format(out_docx_filename))
+            try:
+                tpl.save(out_docx_filename)
+            except Exception as e:
+                logger.error(e)
+                self.sig_step.emit(0, "Word: Error")
+            del tpl
+
+        # Word export finished
+        # Now inform the main thread with the output (fill_app_props)
+        self.sig_step.emit(0, "Word finished")
 
 
 

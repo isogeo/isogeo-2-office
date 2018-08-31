@@ -22,7 +22,7 @@ from datetime import datetime
 import logging
 from functools import partial
 from logging.handlers import RotatingFileHandler
-from os import path
+from os import listdir, path
 import platform
 
 # 3rd party library
@@ -51,6 +51,7 @@ from modules import AppPropertiesThread, ExportExcelThread, ExportWordThread
 # ##################################
 app_dir = path.realpath(path.dirname(__file__))
 app_logdir = path.join(app_dir, "_logs")
+app_tpldir = path.join(app_dir, "templates")
 current_locale = QLocale()
 
 api_mngr = IsogeoApiMngr()
@@ -145,6 +146,12 @@ class IsogeoToOffice_Main(QMainWindow):
                         )
         # -- Settings tab - Export -------------------------------------------
         self.ui.btn_directory_change.pressed.connect(partial(self.set_output_folder))
+
+        # populate Word templates combobox
+        for tpl in listdir(app_tpldir):
+            if path.splitext(tpl)[1].lower() == ".docx":
+                self.ui.cbb_word_tpl.addItem(path.basename(tpl),
+                                             path.join(app_tpldir, tpl))
 
         # -- Settings tab - Application authentication ------------------------
         # Change user -> see below for authentication form
@@ -377,6 +384,20 @@ class IsogeoToOffice_Main(QMainWindow):
         else:
             pass
 
+        # WORD
+        if self.ui.chb_output_word.isChecked():
+            logger.debug("Word - Preparation")
+            output_docx_filepath = "{}{}".format(generic_filepath, horodatage)
+            logger.debug("Word - Output folder: {}".format(output_docx_filepath))
+            template_path = self.ui.cbb_word_tpl.itemData(self.ui.cbb_word_tpl.currentIndex())
+            logger.debug("Word - Template choosen: {}".format(template_path))
+            self.thread_export_docx = ExportWordThread(search_to_be_exported,
+                                                       output_docx_filepath,
+                                                       tpl_path=template_path,
+                                                       timestamp=horodatage,
+                                                       length_uuid=opt_md_uuid)
+            self.thread_export_docx.sig_step.connect(self.update_status_bar)
+            self.thread_export_docx.start()
         else:
             pass
 
