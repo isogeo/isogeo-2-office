@@ -59,11 +59,29 @@ install:
 build: off
 
 build_script:
+  # PyQtprocessing
   - "%PYTHON%\\Scripts\\pylupdate5 -noobsolete -verbose isogeo2office.pro"
+  - "%PYTHON%\\Scripts\\pyrcc5 resources.qrc -o resources_rc.py"
+  - "%PYTHON%\\Scripts\\pyuic5 -x modules\\ui\\auth\\ui_authentication.ui -o modules\\ui\\auth\\ui_authentication.py"
+  - "%PYTHON%\\Scripts\\pyuic5 -x modules\\ui\\credits\\ui_credits.ui -o modules\\ui\\credits\\ui_credits.py"
+  - "%PYTHON%\\Scripts\\pyuic5 -x modules\\ui\\main\\ui_win_IsogeoToOffice.ui -o modules\\ui\\main\\ui_win_IsogeoToOffice.py"
+
+  # Building the executable
   - "%PYTHON%\\Scripts\\pyinstaller.exe -y --clean bundle_isogeo2office.spec"
+
+  # Add required empty folders
+  - ps: new-item -Name "dist/isogeo2office/_auth" -ItemType directory 
+  - ps: new-item -Name "dist/isogeo2office/_logs" -ItemType directory
+  - ps: new-item -Name "dist/isogeo2office/output" -ItemType directory 
+
+  # Zipping
+  - ps: Add-Type -assembly "system.io.compression.filesystem"
+  - ps: $source=Join-Path (pwd) dist\isogeo2office
+  - ps: $dest=Join-Path (pwd) dist\i2o.zip
+  - ps: [io.compression.zipfile]::CreateFromDirectory($Source, $dest)
 
 test: off
 
 artifacts:
   # Archive the generated packages in the ci.appveyor.com build report.
-  - path: dist\*
+  - path: dist\\i2o.zip
