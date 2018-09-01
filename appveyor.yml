@@ -82,7 +82,6 @@ build_script:
 
   # Zip
   - 7z a "IsogeoToOffice_v%APPVEYOR_BUILD_VERSION%_br-%APPVEYOR_REPO_BRANCH%_x%PYTHON_ARCH%.zip" %APPVEYOR_BUILD_FOLDER%\dist\*
-  - ps: ls
 
 test: off
 
