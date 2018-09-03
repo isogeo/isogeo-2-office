@@ -18,6 +18,8 @@ environment:
       PYTHON_ARCH: 32
       PYTHONOPTIMIZE: 1
 
+skip_non_tags: true
+
 init:
   # Uncomment the line below to enable Remote Desktop access to the build worker
   # VM. See https://www.appveyor.com/docs/how-to/rdp-to-build-worker/.
