@@ -29,7 +29,7 @@ import platform
 from isogeo_pysdk import __version__ as pysdk_version
 from PyQt5.QtCore import (QBasicTimer, QDate, QLocale, QSettings, QTimerEvent,
                           QTranslator, QThread, pyqtSignal, pyqtSlot)
-from PyQt5.QtGui import QCloseEvent
+from PyQt5.QtGui import QCloseEvent, QIcon
 from PyQt5.QtWidgets import (QApplication, QComboBox, QDialog,
                              QMessageBox, QStyle, QSystemTrayIcon, QMainWindow)
 
@@ -181,6 +181,10 @@ class IsogeoToOffice_Main(QMainWindow):
         # view credits
         self.ui.btn_credits.pressed.connect(partial(self.displayer,
                                                     self.ui_credits))
+
+        # system tray icon
+        self.tray_icon = QSystemTrayIcon(self)
+        self.tray_icon.setIcon(QIcon("img/favicon.ico"))
 
         # -- DISPLAY  ---------------------------------------------------------
         # shortcuts
@@ -527,6 +531,13 @@ class IsogeoToOffice_Main(QMainWindow):
         """Get app properties and fillfull the share frame in settings tab.
         """
         self.ui.txt_shares.setText(app_infos_retrieved)
+        # notification
+        self.tray_icon.show()
+        self.tray_icon.showMessage("Isogeo to Office",
+                                   self.tr("Application information has been retrieved"),
+                                   QIcon("img/favicon.ico"),
+                                   2000
+                                   )
 
     @pyqtSlot(int, str)
     def update_status_bar(self, prog_step: int = 1, status_msg: str = ""):
