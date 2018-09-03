@@ -15,9 +15,6 @@ from tempfile import mkstemp
 import unittest
 import xml.etree.ElementTree as ET
 
-# tests
-from tests import BaseWidgetTest
-
 # module target
 from modules import isogeo2office_utils
 
