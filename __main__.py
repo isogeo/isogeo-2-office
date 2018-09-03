@@ -44,7 +44,7 @@ from modules.ui.main.ui_win_IsogeoToOffice import Ui_win_IsogeoToOffice
 
 # submodules - functional
 from modules import IsogeoApiMngr
-from modules import AppPropertiesThread, ExportExcelThread, ExportWordThread
+from modules import AppPropertiesThread, ExportExcelThread, ExportWordThread, ExportXmlThread
 
 # #############################################################################
 # ########## Globals ###############
@@ -398,6 +398,22 @@ class IsogeoToOffice_Main(QMainWindow):
                                                        length_uuid=opt_md_uuid)
             self.thread_export_docx.sig_step.connect(self.update_status_bar)
             self.thread_export_docx.start()
+        else:
+            pass
+
+        # XML
+        if self.ui.chb_output_xml.isChecked():
+            logger.debug("XML - Preparation")
+            output_xml_filepath = "{}{}".format(generic_filepath, horodatage)
+            logger.debug("XML - Output folder: {}".format(output_xml_filepath))
+            self.thread_export_xml = ExportXmlThread(search_to_be_exported,
+                                                     isogeo_api_mngr=api_mngr,
+                                                     output_path=output_xml_filepath,
+                                                     opt_zip=self.ui.chb_xml_zip.isChecked(),
+                                                     timestamp=horodatage,
+                                                     length_uuid=opt_md_uuid)
+            self.thread_export_xml.sig_step.connect(self.update_status_bar)
+            self.thread_export_xml.start()
         else:
             pass
 
