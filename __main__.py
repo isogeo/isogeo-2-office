@@ -300,10 +300,11 @@ class IsogeoToOffice_Main(QMainWindow):
     def export(self):
         """Launch export"""
         # check export options
-        li_opts = list(self.ui.chb_output_excel.isChecked(),
-                       self.ui.chb_output_word.isChecked(),
-                       self.ui.chb_output_xml.isChecked())
-        if not all(li_opts):
+        li_opts = [self.ui.chb_output_excel.isChecked(),
+                   self.ui.chb_output_word.isChecked(),
+                   self.ui.chb_output_xml.isChecked()
+                   ]
+        if not any(li_opts):
             QMessageBox.critical(self,
                                  self.tr("Export option is missing"),
                                  self.tr("At least one export option required."))

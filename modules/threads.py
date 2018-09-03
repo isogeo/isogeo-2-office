@@ -120,8 +120,9 @@ class ExportExcelThread(QThread):
     def run(self):
         """Export metadata into an Excel workbook
         """
+        language = current_locale.name()[:2]
         # workbook
-        wb = Isogeo2xlsx(lang="FR",
+        wb = Isogeo2xlsx(lang=language,
                          url_base="https://open.isogeo.com")
         wb.set_worksheets(auto=self.search.get('tags').keys(),
                           dashboard=self.opt_dasboard,
@@ -133,7 +134,7 @@ class ExportExcelThread(QThread):
         for md in self.search.get("results"):
             # show progression
             md_title = md.get("title", "No title")
-            self.sig_step.emit(1, "Processing Excel: {}".format(md_title))
+            self.sig_step.emit(1, self.tr("Processing Excel: {}").format(md_title))
             # store metadata
             wb.store_metadatas(md)
 
@@ -156,7 +157,7 @@ class ExportExcelThread(QThread):
 
         # Excel export finished
         # Now inform the main thread with the output (fill_app_props)
-        self.sig_step.emit(0, "Excel finished")
+        self.sig_step.emit(0, self.tr("Excel finished"))
 
 
 class ExportWordThread(QThread):
@@ -188,7 +189,7 @@ class ExportWordThread(QThread):
         for md in self.search.get("results"):
             # progression
             md_title = md.get("title", "No title")
-            self.sig_step.emit(1, "Processing Word: {}".format(md_title))
+            self.sig_step.emit(1, self.tr("Processing Word: {}").format(md_title))
             # templating
             tpl = DocxTemplate(self.tpl_path)
             # fill template
@@ -216,12 +217,12 @@ class ExportWordThread(QThread):
                 tpl.save(out_docx_filename)
             except Exception as e:
                 logger.error(e)
-                self.sig_step.emit(0, "Word: Error")
+                self.sig_step.emit(0, self.tr("Word: error occurred during savgin step. Check the log."))
             del tpl
 
         # Word export finished
         # Now inform the main thread with the output (fill_app_props)
-        self.sig_step.emit(0, "Word finished")
+        self.sig_step.emit(0, self.tr("Word finished"))
 
 
 class ExportXmlThread(QThread):
@@ -273,7 +274,10 @@ class ExportXmlThread(QThread):
                 pass
             uuid = "{}".format(md.get("_id")[:self.length_uuid])
 
-            out_xml_path = path.join(out_dir, "{}_{}.xml".format(md_name, uuid))
+            if self.opt_zip:
+                out_xml_path = path.join(out_dir, "{}_{}.xml".format(md_name, uuid))
+            else:
+                out_xml_path = out_dir + "_{}_{}.xml".format(md_name, uuid)
             logger.debug("XML - Output path: {}".format(out_xml_path))
             # export
             xml_stream = self.api_mngr.isogeo.xml19139(self.api_mngr.token,
