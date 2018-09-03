@@ -84,7 +84,7 @@ class Isogeo2docx(object):
             self.locale_fmt = "uk_UK"
 
         # TRANSLATIONS
-        self.tr = IsogeoTranslator(lang).tr
+        self.isogeo_tr = IsogeoTranslator(lang).tr
 
         # FORMATTER
         self.fmt = IsogeoFormatter(output_type="Word")
@@ -158,7 +158,7 @@ class Isogeo2docx(object):
         for ct_in in contacts_in:
             ct = {}
             # translate contact role
-            ct["role"] = self.tr("roles", ct_in.get("role"))
+            ct["role"] = self.isogeo_tr("roles", ct_in.get("role"))
             # ensure other contacts fields
             ct["name"] = ct_in.get("contact").get("name", "NR")
             ct["organization"] = ct_in.get("contact").get("organization", "")
@@ -208,12 +208,12 @@ class Isogeo2docx(object):
                                           evt_date.humanize(locale=self.locale_fmt))
             e["date"] = evt_date
             # translate event kind
-            e["kind"] = self.tr("events", e.get("kind"))
+            e["kind"] = self.isogeo_tr("events", e.get("kind"))
 
         # ---- IDENTIFICATION # ----------------------------------------------
         # Resource type
         resource_type = md.get("type", self.missing_values())
-        resource_type = self.tr("formatTypes", resource_type)
+        resource_type = self.isogeo_tr("formatTypes", resource_type)
 
         # Format
         format_version = u"{0} ({1} - {2})".format(format_lbl,
@@ -277,9 +277,9 @@ class Isogeo2docx(object):
         #     spec = {}
         #     # translate specification conformity
         #     if s_in.get("conformant"):
-        #         spec["conformity"] = self.tr("quality", "isConform")
+        #         spec["conformity"] = self.isogeo_tr("quality", "isConform")
         #     else:
-        #         spec["conformity"] = self.tr("quality", "isNotConform")
+        #         spec["conformity"] = self.isogeo_tr("quality", "isNotConform")
         #     # ensure other fields
         #     spec["name"] = s_in.get("specification").get("name")
         #     spec["link"] = s_in.get("specification").get("link")
@@ -305,7 +305,7 @@ class Isogeo2docx(object):
                 cgu["link"] = c_in.get("license").get("link", "")
                 cgu["content"] = self.clean_xml(c_in.get("license").get("content", ""))
             else:
-                cgu["name"] = self.tr("conditions", "noLicense")
+                cgu["name"] = self.isogeo_tr("conditions", "noLicense")
 
             # store into the final list
             cgus_out.append(cgu)
@@ -317,10 +317,10 @@ class Isogeo2docx(object):
             limitation = {}
             # ensure other fields
             limitation["description"] = self.clean_xml(l_in.get("description", ""))
-            limitation["type"] = self.tr("limitations", l_in.get("type"))
+            limitation["type"] = self.isogeo_tr("limitations", l_in.get("type"))
             # legal type
             if l_in.get("type") == "legal":
-                limitation["restriction"] = self.tr("restrictions", l_in.get("restriction"))
+                limitation["restriction"] = self.isogeo_tr("restrictions", l_in.get("restriction"))
             else:
                 pass
             # INSPIRE precision

@@ -1,0 +1,95 @@
+version: 2.0.0-{build}
+
+clone_depth: 20
+
+image:
+- Visual Studio 2015
+- Visual Studio 2017
+
+environment:
+  matrix:
+    - PYTHON: C:\\Python36-x64
+      PYTHON_VERSION: 3.6
+      PYTHON_ARCH: 64
+      PYTHONOPTIMIZE: 1
+
+    - PYTHON: C:\\Python36
+      PYTHON_VERSION: 3.6
+      PYTHON_ARCH: 32
+      PYTHONOPTIMIZE: 1
+
+init:
+  # Uncomment the line below to enable Remote Desktop access to the build worker
+  # VM. See https://www.appveyor.com/docs/how-to/rdp-to-build-worker/.
+  #- ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+  - ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%
+  - ECHO \"%APPVEYOR_SCHEDULED_BUILD%\"
+  # If there is a newer build queued for the same PR, cancel this one.
+  # The AppVeyor 'rollout builds' option is supposed to serve the same
+  # purpose but it is problematic because it tends to cancel builds pushed
+  # directly to master instead of just PR builds (or the converse).
+  # credits: JuliaLang developers.
+  - ps: if ($env:APPVEYOR_PULL_REQUEST_NUMBER -and $env:APPVEYOR_BUILD_NUMBER -ne ((Invoke-RestMethod `
+        https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG/history?recordsNumber=50).builds | `
+        Where-Object pullRequestId -eq $env:APPVEYOR_PULL_REQUEST_NUMBER)[0].buildNumber) { `
+          throw "There are newer queued builds for this pull request, failing early." }
+  # Free up some disk space; exceeding the limit of 90 GB results in a
+  # locked-out account. The Qt directory takes over 30 GB. Do this in the
+  # background.
+  - ps: Start-Process -FilePath "$env:comspec" -ArgumentList "/c rmdir C:\Qt /s /q"
+
+cache:
+  # Cache downloaded pip packages and built wheels.
+  - '%LOCALAPPDATA%\pip\Cache\http'
+  - '%LOCALAPPDATA%\pip\Cache\wheels'
+  # Cache PyInstaller build bundle env
+  - C:\projects\isogeo-2-office\build\
+
+install:
+  # Check that we have the expected version and architecture for Python
+  - "%PYTHON%\\python.exe --version"
+  - "%PYTHON%\\python.exe -c \"import sys, platform, struct;
+    print(sys.platform, platform.machine(), struct.calcsize('P')*8)\""
+  # Upgrade pip & co
+  - "%PYTHON%\\python.exe -m pip install -U pip setuptools wheel"
+  # dependencies
+  - "%PYTHON%\\python.exe -m pip install -U -r requirements.txt"
+  - "%PYTHON%\\python.exe -m pip install -U -r requirements_dev.txt"
+  # Prepend newly installed Python to the PATH of this build (this cannot be
+  # done from inside the powershell script as it would require to restart
+  # the parent CMD process).
+  - SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
+  # Make sure the help options print.
+  - "%PYTHON%\\Scripts\\pyinstaller.exe -v"
+
+build: off
+
+build_script:
+  # PyQtprocessing
+  - "%PYTHON%\\Scripts\\pylupdate5 -noobsolete -verbose isogeo2office.pro"
+  - "%PYTHON%\\Scripts\\pyrcc5 resources.qrc -o resources_rc.py"
+  - "%PYTHON%\\Scripts\\pyuic5 -x modules\\ui\\auth\\ui_authentication.ui -o modules\\ui\\auth\\ui_authentication.py"
+  - "%PYTHON%\\Scripts\\pyuic5 -x modules\\ui\\credits\\ui_credits.ui -o modules\\ui\\credits\\ui_credits.py"
+  - "%PYTHON%\\Scripts\\pyuic5 -x modules\\ui\\main\\ui_win_IsogeoToOffice.ui -o modules\\ui\\main\\ui_win_IsogeoToOffice.py"
+
+  # Building the executable
+  - "%PYTHON%\\Scripts\\pyinstaller.exe -y --clean bundle_isogeo2office.spec"
+
+  # Add required empty folders
+  - ps: new-item -Name "dist\\isogeo2office\\_auth" -ItemType directory 
+  - ps: new-item -Name "dist\\isogeo2office\\_logs" -ItemType directory
+  - ps: new-item -Name "dist\\isogeo2office\\output" -ItemType directory 
+
+  # Zip
+  - 7z a "IsogeoToOffice_v%APPVEYOR_BUILD_VERSION%_br-%APPVEYOR_REPO_BRANCH%_x%PYTHON_ARCH%.zip" %APPVEYOR_BUILD_FOLDER%\dist\*
+
+test: off
+
+#---------------------------------#
+#      artifacts configuration    #
+#---------------------------------#
+
+artifacts:
+  # Archive the generated packages in the ci.appveyor.com build report.
+  - path: 'IsogeoToOffice_v$(APPVEYOR_BUILD_VERSION)_br-$(APPVEYOR_REPO_BRANCH)_x%PYTHON_ARCH%.zip'
+    name:  'IsogeoToOffice_v$(APPVEYOR_BUILD_VERSION)_x%PYTHON_ARCH%'

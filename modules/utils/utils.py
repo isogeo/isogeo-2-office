@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+#! python3
 
 # ----------------------------------------------------------------------------
 # Name:         isogeo2office useful methods
@@ -31,6 +32,8 @@ from xml.sax.saxutils import escape  # '<' -> '&lt;'
 
 # 3rd party
 from isogeo_pysdk import IsogeoUtils
+from PyQt5.QtCore import QUrl
+from PyQt5.QtWidgets import QFileDialog
 
 # Depending on operating system
 if opersys == 'win32':
@@ -60,7 +63,6 @@ class isogeo2office_utils(IsogeoUtils):
         # ------------ VARIABLES ---------------------
 
     # MISCELLANOUS -----------------------------------------------------------
-
     def open_urls(self, li_url):
         """Open URLs in new tabs in the default brower.
 
@@ -69,6 +71,8 @@ class isogeo2office_utils(IsogeoUtils):
 
         :param list li_url: list of URLs to open in the default browser
         """
+        if isinstance(li_url, QUrl):
+            li_url = [li_url.toString(), ]
         x = 1
         for url in li_url:
             if x > 1:
@@ -112,8 +116,62 @@ class isogeo2office_utils(IsogeoUtils):
         # end of function
         return proc
 
-    # ISOGEO -----------------------------------------------------------------
+    # UI
+    def open_FileNameDialog(self, parent=None, file_type: str = "credentials", from_dir: str = "downloads"):
+        """Manage file dialog to allow user pick a file.
 
+        :param QApplication parent: Qt parent application.
+        :param str file_type: credentials | thumbnails | folder
+        :param str from_dir: path to the start directory. Default value: "downloads"
+        """
+        if from_dir == "downloads":
+            # get user download directory
+            start_dir = path.realpath(path.join(path.expanduser("~"),
+                                                "Downloads")
+                                      )
+        else:
+            start_dir = path.realpath(from_dir)
+        if not path.exists(start_dir):
+            start_dir = path.expanduser("~")
+        # set options
+        options = QFileDialog.Options()
+        #options |= QFileDialog.DontUseNativeDialog
+        options |= QFileDialog.ReadOnly
+
+        # adapt file filters according to file_type option
+        if file_type == "credentials":
+            file_filters = "Standard credentials file (client_secrets.json);;JSON Files (*.json)"
+            dlg_title = parent.tr('Open credentials file')
+            return QFileDialog.getOpenFileName(parent=None,
+                                               caption=dlg_title,
+                                               directory=start_dir,
+                                               filter=file_filters,
+                                               options=options)
+        elif file_type == "thumbnails":
+            file_filters = "Standard credentials file (client_secrets.json);;JSON Files (*.json)"
+            dlg_title = parent.tr('Select thumbnails file')
+            return QFileDialog.getOpenFileName(parent=None,
+                                               caption=dlg_title,
+                                               directory=start_dir,
+                                               filter=file_filters,
+                                               options=options)
+        elif file_type == "folder":
+            options |= QFileDialog.ShowDirsOnly
+            dlg_title = parent.tr('Select folder')
+            return QFileDialog.getExistingDirectory(parent=None,
+                                                    caption=dlg_title,
+                                                    directory=start_dir,
+                                                    options=options)
+        else:
+            file_filters = "All Files (*)"
+            dlg_title = parent.tr('Pick a file')
+            return QFileDialog.getOpenFileName(parent=None,
+                                               caption=dlg_title,
+                                               directory=start_dir,
+                                               filter=file_filters,
+                                               options=options)
+
+    # ISOGEO -----------------------------------------------------------------
     def get_url_base(self, url_input):
         """Get OpenCatalog base URL to add resource ID easily."""
         # get the OpenCatalog URL given
@@ -124,114 +182,6 @@ class isogeo2office_utils(IsogeoUtils):
 
         # get the clean url
         return url_input[0:url_input.index(url_input.rsplit('/')[6])]
-
-    # UI --------------------------------------------------------------------
-
-    def entry_validate_uid(self, action, index, value_if_allowed,
-                           prior_value, text, validation_type,
-                           trigger_type, widget_name):
-        """Ensure that the users enters an integer value in the UID option field.
-
-        see: https://stackoverflow.com/a/31048136/2556577
-        """
-        if(action == '1'):
-            if text in '012345678' and len(prior_value + text) < 2:
-                try:
-                    float(value_if_allowed)
-                    return True
-                except ValueError:
-                    return False
-            else:
-                return False
-        else:
-            return True
-
-    def entry_validate_date(self, action, index, value_if_allowed,
-                            prior_value, text, validation_type,
-                            trigger_type, widget_name):
-        """Ensure that the users enters a valid value in the date option field.
-
-        see: https://stackoverflow.com/a/31048136/2556577
-        """
-        if(action == '1'):
-            if text in '012' and len(prior_value + text) < 2:
-                try:
-                    float(value_if_allowed)
-                    return True
-                except ValueError:
-                    return False
-            else:
-                return False
-        else:
-            return True
-
-    # SETTINGS ---------------------------------------------------------------
-
-    def settings_load(self, config_file=r"../settings.ini"):
-        """Load settings from the ini file."""
-        config = ConfigParser()
-        config.read(config_file)
-        settings_dict = {s: dict(config.items(s)) for s in config.sections()}
-        logger.info("Settings loaded from: {}".format(config_file))
-
-        # end of method
-        return settings_dict
-
-    def settings_save(self, parent, config_file=r"../settings.ini"):
-        """Save settings into the ini file."""
-        config = ConfigParser(dict_type=OrderedDict)
-        config.read(path.realpath(config_file))
-        # default OpenCatalog URL
-        if len(parent.shares) == 1:
-            url_oc = [share[4] for share in parent.shares_info[0]][0]
-        else:
-            url_oc = ""
-            pass
-        # new values to save
-        config["auth"] = {"app_id": parent.app_id,
-                          "app_secret": parent.app_secret
-                          }
-
-        config["local"] = {"out_folder": path.realpath(parent.out_fold_path.get()),
-                           "def_oc": url_oc,
-                           "def_codelang": parent.client_lang
-                           }
-
-        config["excel"] = {"excel_opt": parent.opt_excel.get(),
-                           "output_name": parent.fr_excel.output_name.get(),
-                           "opt_dashboard": parent.fr_excel.opt_dashboard.get(),
-                           "opt_attributes": parent.fr_excel.opt_attributes.get(),
-                           "opt_fillfull": parent.fr_excel.opt_fillfull.get(),
-                           "opt_inspire": parent.fr_excel.opt_inspire.get(),
-                           }
-
-        config["word"] = {"word_opt": parent.opt_word.get(),
-                          "out_prefix": parent.fr_word.out_prefix.get(),
-                          "tpl": parent.fr_word.tpl_input.get(),
-                          "opt_id": parent.fr_word.opt_id.get(),
-                          "opt_date": parent.fr_word.opt_date.get(),
-                          }
-
-        config["xml"] = {"xml_opt": parent.opt_xml.get(),
-                         "out_prefix": parent.fr_xml.out_prefix.get(),
-                         "opt_id": parent.fr_xml.opt_id.get(),
-                         "opt_date": parent.fr_xml.opt_date.get(),
-                         "opt_zip": parent.fr_xml.opt_zip.get(),
-                         }
-
-        # writing
-        with open(path.realpath(config_file), mode="w") as configfile:
-            try:
-                config.write(configfile)
-                logger.info("Settings saved into: {}".format(config_file))
-            except UnicodeEncodeError as e:
-                avert(_("Invalid character"),
-                      _("Special character spotted in output filenames.\n"
-                      "Settings couldn't be saved but exports will continue."))
-                logger.error("SETTINGS - Encoding error: {}".format(e))
-
-        # end of method
-        return
 
     # ------------------------------------------------------------------------
     def clean_filename(self, filename: str, substitute: str = "", mode: str = "soft"):

@@ -16,20 +16,14 @@ pip install --upgrade -r .\tests\requirements_test.txt
 
 "-- STEP -- Python code style"
 # main
-  pycodestyle isogeo2office.py --ignore="E265,E501" --statistics --show-source
+  pycodestyle __main__.py --ignore="E265,E501" --statistics --show-source
   # export modules
   pycodestyle modules/export/isogeo2docx.py --ignore="E265,E501" --statistics --show-source
   pycodestyle modules/export/isogeo2xlsx.py --ignore="E265,E501" --statistics --show-source
   pycodestyle modules/export/isogeo_stats.py --ignore="E265,E501" --statistics --show-source
   pycodestyle modules/export/formatter.py --ignore="E265,E501" --statistics --show-source
-  # UI
-  pycodestyle modules/ui/tooltip.py --ignore="E265,E501" --statistics --show-source
-  pycodestyle modules/ui/frame_excel.py --ignore="E265,E501" --statistics --show-source
-  pycodestyle modules/ui/frame_general.py --ignore="E265,E501" --statistics --show-source
-  pycodestyle modules/ui/frame_word.py --ignore="E265,E501" --statistics --show-source
-  pycodestyle modules/ui/frame_xml.py --ignore="E265,E501" --statistics --show-source
-  pycodestyle modules/ui/ui_app_settings.py --ignore="E265,E501" --statistics --show-source
   # utils
+  pycodestyle modules/utils/api.py --ignore="E265,E501" --statistics --show-source
   pycodestyle modules/utils/utils.py --ignore="E265,E501" --statistics --show-source
 
 "-- STEP -- Fixturing"

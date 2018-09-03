@@ -4,12 +4,16 @@
 # to run this project. Later you can install all these apps in a row
 # using pip. Example:
 #
-#     pip install -r requirements.txt
+#     pip install -r requirements_dev.txt
 #
-#   It's higly recomended to use it within a virtualenv and with git installed
-#
-#
+#   It's higly recomended to use it within a virtualenv.
 #
 
-# executable generation
-pyinstaller
+# code art
+codecov==2.*
+coverage==4.5.*
+pycodestyle==2.4.*
+pylint==2.1.*
+
+# packaging
+https://github.com/pyinstaller/pyinstaller/tarball/b8c5773bd2c07c65a1f30cd5b9b2e9c4a146c2b6

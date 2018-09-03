@@ -6,65 +6,24 @@
 #
 #     pip install -r requirements.txt
 #
-#   It's higly recomended to use it within a virtualenv and with git installed
+#   It's higly recomended to use it within a virtualenv.
 #
 #
 #
 
-# basic
+# basics
 setuptools
 wheel
 
-# dates
-arrow
-pytz
+# utils
+arrow==0.12.*
+future==0.16.* ; python_version < '3.0'
+progressbar2==3.38.*
 
-# UI
-pyttk
-ttkwidgets
-
-# REST API
-requests
-
-# Isogeo
-isogeo-pysdk>=2.20.1
-
-# Excel
-openpyxl
-
-# templating OOXML
-lxml
-docxtpl
-
-# Python 2 backwards compatibility
-configparser; python_version < '3.0'
-future; python_version < '3.0'
-six
-
-# -----------------------
-# All dependencies
-# arrow==0.8.0
-# docutils==0.12
-# docxtpl==0.2.2
-# et-xmlfile==1.0.1
-# future==0.15.2
-# isogeo-pysdk==2.16.0.post492
-# jdcal==1.2
-# Jinja2==2.8
-# lxml==3.6.1
-# MarkupSafe==0.23
-# openpyxl==2.3.5
-# pefile==2016.3.28
-# pockets==0.3
-# Pygments==2.1.3
-# PyInstaller==3.2
-# pypiwin32==219
-# python-dateutil==2.5.3
-# python-docx==0.8.6
-# pyttk==0.3.2
-# pytz==2016.4
-# requests==2.10.0
-# six==1.10.0
-# Sphinx==1.2.3
-# sphinxcontrib-napoleon==0.5.2
-# xlwt==1.1.2
+# isogeo to office
+docxtpl==0.5.*
+isogeo-pysdk==2.20.*
+openpyxl==2.5.*
+PyQt5==5.11.*
+pyqt5-tools==5.9.* ; sys_platform == 'win32'
+QDarkStyle==2.5.*

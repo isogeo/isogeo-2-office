@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "${workspaceFolder}\\env3_tests\\Scripts\\python.exe",
+    "python.pythonPath": "${workspaceFolder}\\env3\\Scripts\\python.exe",
     "python.formatting.provider": "autopep8",
     "python.unitTest.unittestArgs": [
         "-v",
@@ -10,5 +10,8 @@
     ],
     "python.unitTest.pyTestEnabled": false,
     "python.unitTest.nosetestsEnabled": false,
-    "python.unitTest.unittestEnabled": true
+    "python.unitTest.unittestEnabled": true,
+    "pyqt-integration.qtdesigner.path": "C:\\Users\\julien.moura\\Documents\\GitHub\\Isogeo\\isogeo-2-office\\env3/Lib/site-packages/pyqt5-tools/designer.exe",
+    "python.venvPath": "${workspaceFolder}/env3",
+    "pyqt-integration.linguist.cmd": "C:\\Users\\julien.moura\\Documents\\GitHub\\Isogeo\\isogeo-2-office\\env3/Lib/site-packages/pyqt5-tools/linguist.exe",
 }
