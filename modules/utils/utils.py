@@ -128,7 +128,7 @@ class isogeo2office_utils(IsogeoUtils):
             # get user download directory
             start_dir = path.realpath(path.join(path.expanduser("~"),
                                                 "Downloads")
-                                                )
+                                      )
         else:
             start_dir = path.realpath(from_dir)
         if not path.exists(start_dir):
