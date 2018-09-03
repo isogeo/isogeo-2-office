@@ -74,6 +74,7 @@ logfile.setFormatter(log_form)
 logger.addHandler(logfile)
 logger.info('================ Isogeo to office ===============')
 
+
 # #############################################################################
 # ########## Classes ###############
 # ##################################
@@ -126,9 +127,9 @@ class IsogeoToOffice_Main(QMainWindow):
         self.ui.chb_output_excel.toggled\
                .connect(lambda: self.app_settings
                                     .setValue("formats/excel",
-                                             int(self.ui.chb_output_excel.isChecked()
-                                                )
-                                             )
+                                              int(self.ui.chb_output_excel.isChecked()
+                                                  )
+                                              )
                         )
         self.ui.chb_output_word.toggled\
                .connect(lambda: self.app_settings
@@ -181,14 +182,12 @@ class IsogeoToOffice_Main(QMainWindow):
         self.ui.btn_credits.pressed.connect(partial(self.displayer,
                                                     self.ui_credits))
 
-
         # -- DISPLAY  ---------------------------------------------------------
         # shortcuts
         self.cbbs_filters = self.ui.grp_filters.findChildren(QComboBox)
         self.setWindowTitle("Isogeo to Office - v{}".format(__version__))
         self.show()
         self.init_api_connection()
-
 
     def displayer(self, ui_class):
         """A simple relay in charge of displaying independant UI classes."""
@@ -205,14 +204,14 @@ class IsogeoToOffice_Main(QMainWindow):
                                 self.tr("Authentication - Credentials missing"),
                                 self.tr("Authentication to Isogeo API has failed."
                                         " Credentials seem to be missing.")
-            )
+                                )
             return False
         else:
             logger.debug("Access granted. Fill the shares window")
             thread_app_props = AppPropertiesThread(api_mngr)
             thread_app_props.signal.connect(self.fill_app_props)
             thread_app_props.start()
-        
+
         # launch empty search
         self.search(reset=1)
 
@@ -248,7 +247,7 @@ class IsogeoToOffice_Main(QMainWindow):
         # update ui
         self.update_search_form(search)
         self.processing("end")
-        
+
     def get_selected_filters(self):
         """Retrieve selected filters from the search form.
         """
@@ -259,7 +258,7 @@ class IsogeoToOffice_Main(QMainWindow):
                 share_id = cbb.itemData(cbb.currentIndex()).split(":")[1]
             else:
                 search_terms += cbb.itemData(cbb.currentIndex())
-        
+
         return share_id, search_terms
 
     def update_search_form(self, search: dict):
@@ -292,14 +291,15 @@ class IsogeoToOffice_Main(QMainWindow):
 
         # export button
         self.ui.btn_launch_export.setText(self.tr("Export {} metadata".format(search.get("total"))))
-        
+
     # -- EXPORT ---------------------------------------------------------------
     def export(self):
         """Launch export"""
         # check export options
-        if not (self.ui.chb_output_excel.isChecked() +
-                self.ui.chb_output_word.isChecked() +
-                self.ui.chb_output_xml.isChecked()):
+        li_opts = list(self.ui.chb_output_excel.isChecked(),
+                       self.ui.chb_output_word.isChecked(),
+                       self.ui.chb_output_xml.isChecked())
+        if not all(li_opts):
             QMessageBox.critical(self,
                                  self.tr("Export option is missing"),
                                  self.tr("At least one export option required."))
@@ -324,12 +324,12 @@ class IsogeoToOffice_Main(QMainWindow):
                     "serviceLayers",
                     "specifications"]
         search_to_be_exported = api_mngr.isogeo.search(api_mngr.token,
-                                                        query=search_terms,
-                                                        share=share_id,
-                                                        page_size=100,
-                                                        whole_share=1,
-                                                        include=includes,
-                                                        check=0)
+                                                       query=search_terms,
+                                                       share=share_id,
+                                                       page_size=100,
+                                                       whole_share=1,
+                                                       include=includes,
+                                                       check=0)
         self.processing("end")
 
         # prepare progress bar
@@ -420,7 +420,7 @@ class IsogeoToOffice_Main(QMainWindow):
     # -- UI utils -------------------------------------------------------------
     def closeEvent(self, event_sent):
         """Actions performed juste before UI is closed.
-        
+
         :param QCloseEvent event_sent: event sent when the main UI is close
         """
         # misc
@@ -487,7 +487,7 @@ class IsogeoToOffice_Main(QMainWindow):
             raise ValueError
 
     def set_output_folder(self):
-        """Let user pick the folder where to store 
+        """Let user pick the folder where to store outputs.
         """
         # launch explorer
         selected_folder = self.app_utils.open_FileNameDialog(self,
@@ -535,6 +535,7 @@ class IsogeoToOffice_Main(QMainWindow):
         self.ui.lbl_statusbar.showMessage(status_msg)
         prog_val = self.ui.pgb_exports.value() + prog_step
         self.ui.pgb_exports.setValue(prog_val)
+
 
 # #############################################################################
 # ##### Stand alone program ########

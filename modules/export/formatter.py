@@ -111,7 +111,7 @@ class IsogeoFormatter(object):
             # legal type
             if l_in.get("type") == "legal":
                 limitation["restriction"] = self.isogeo_tr("restrictions",
-                                                    l_in.get("restriction"))
+                                                           l_in.get("restriction"))
             else:
                 pass
             # INSPIRE precision

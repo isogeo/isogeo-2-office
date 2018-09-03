@@ -49,10 +49,9 @@ class IsogeoApiMngr(object):
     api_url_redirect = "http://localhost:5000/callback"
 
     # plugin credentials storage parameters
-    credentials_storage = {
-        "QSettings": 0,
-        "oAuth2_file": 0,
-        }
+    credentials_storage = {"QSettings": 0,
+                           "oAuth2_file": 0,
+                           }
     auth_folder = ""
 
     # API URLs - Prod
@@ -65,7 +64,7 @@ class IsogeoApiMngr(object):
     # MANAGER -----------------------------------------------------------------
     def manage_api_initialization(self):
         """Perform several operations to use Isogeo API:
-        
+
         1. check if existing credentials are stored into QGIS or a file
         2. check if credentials are valid requesting Isogeo API ID
         """
@@ -86,8 +85,8 @@ class IsogeoApiMngr(object):
         # start api wrapper
         try:
             self.isogeo = Isogeo(client_id=self.api_app_id,
-                                client_secret=self.api_app_secret,
-                                lang=current_locale.name()[:2])
+                                 client_secret=self.api_app_secret,
+                                 lang=current_locale.name()[:2])
             self.token = self.isogeo.connect()
             return True
         except ValueError as e:
@@ -100,8 +99,7 @@ class IsogeoApiMngr(object):
     # CREDENTIALS LOCATORS ----------------------------------------------------
     def credentials_check_qsettings(self):
         """Retrieve Isogeo API credentials within APP QSettings."""
-        if "auth" in qsettings.childGroups() \
-            and qsettings.contains("auth/app_id"):
+        if "auth" in qsettings.childGroups() and qsettings.contains("auth/app_id"):
             logger.debug("Credentials found within QGIS QSettings: isogeo/")
             return True
         else:
@@ -109,7 +107,7 @@ class IsogeoApiMngr(object):
             return False
 
     def credentials_check_file(self):
-        """Retrieve Isogeo API credentials from a file stored inside the 
+        """Retrieve Isogeo API credentials from a file stored inside the
         plugin _auth subfolder.
         """
         credentials_filepath = path.join(self.auth_folder, "client_secrets.json")
@@ -131,7 +129,7 @@ class IsogeoApiMngr(object):
     # CREDENTIALS SAVER -------------------------------------------------------
     def credentials_storer(self, store_location="QSettings"):
         """Store class credentials attributes into the specified store_location.
-        
+
         :param store_location str: name of targetted store location. Options:
             - QSettings
         """
@@ -182,7 +180,7 @@ class IsogeoApiMngr(object):
                          .connect(lambda: qsettings.setValue("user/editor",
                                                              int(self.ui_auth_form.chb_isogeo_editor.isChecked())
                                                              )
-                                )
+                                  )
         # button to request an account by email
         #self.ui_auth_form.btn_account_new.pressed.connect(
         #    partial(app_utils.mail_to_isogeo, lang=self.lang))
@@ -192,7 +190,7 @@ class IsogeoApiMngr(object):
         self.ui_auth_form.ent_app_secret.setText(self.api_app_secret)
         self.ui_auth_form.lbl_api_url_value.setText(self.api_url_base)
         self.ui_auth_form.chb_isogeo_editor.setChecked(qsettings
-                                                  .value("user/editor", 0))
+                                                       .value("user/editor", 0))
         # display
         logger.debug("Authentication form filled and ready to be launched.")
         self.ui_auth_form.show()
@@ -200,7 +198,7 @@ class IsogeoApiMngr(object):
     def credentials_uploader(self):
         """Get file selected by the user and loads API credentials into plugin.
         If the selected is compliant, credentials are loaded from then it's
-        moved inside plugin\_auth subfolder.
+        moved inside plugin/_auth subfolder.
         """
         selected_file = app_utils.open_FileNameDialog(self.ui_auth_form)
         logger.debug("QFileDIalog returned: {}".format(selected_file))
@@ -409,6 +407,7 @@ class IsogeoApiMngr(object):
         # method ending
         logger.info("Tags retrieved")
         return tags_parsed
+
 
 # #############################################################################
 # ##### Stand alone program ########
