@@ -34,10 +34,12 @@ app_utils = isogeo2office_utils()
 current_locale = QLocale()
 logger = logging.getLogger("isogeo2office")
 
+
 # #############################################################################
 # ######## QThreads ################
 # ##################################
 
+# API REQUESTS ----------------------------------------------------------------
 class AppPropertiesThread(QThread):
     signal = pyqtSignal(str)
 
@@ -55,19 +57,19 @@ class AppPropertiesThread(QThread):
         text = "<html>"  # opening html content
         # Isogeo application authenticated in the plugin
         app = shares[0].get("applications")[0]
-        text += "<p>{}<a href='{}' style='color: CornflowerBlue;'>{}</a> and "\
+        text += "<p>{}<a href='{}' style='color: CornflowerBlue;'>{}</a> "\
                 .format(self.tr("This application is authenticated as "),
                         app.get("url", "https://isogeo.gitbooks.io/app-isogeo2office/content/"),
                         app.get("name", "Isogeo to Office"))
         # shares feeding the application
         if len(shares) == 1:
-            text += "{}{}{}</p></br>".format(self.tr(" powered by "),
-                                             "1",
-                                             self.tr("share:"))
+            text += "{}{} {}</p></br>".format(self.tr(" and powered by "),
+                                              "1",
+                                              self.tr("share:"))
         else:
-            text += "{}{}{}</p></br>".format(self.tr(" powered by "),
-                                             len(shares),
-                                             self.tr("shares:"))
+            text += "{}{} {}</p></br>".format(self.tr(" and powered by "),
+                                              len(shares),
+                                              self.tr("shares:"))
         # shares details
         for share in shares:
             # share variables
@@ -96,6 +98,7 @@ class AppPropertiesThread(QThread):
         self.signal.emit(text)
 
 
+# EXPORTS ---------------------------------------------------------------------
 class ExportExcelThread(QThread):
     # signals
     sig_step = pyqtSignal(int, str)
@@ -103,7 +106,7 @@ class ExportExcelThread(QThread):
     def __init__(self,
                  search_to_export: dict = {},
                  output_path: str = r"output/",
-                 opt_attributes: int = 1, 
+                 opt_attributes: int = 1,
                  opt_dasboard: int = 1,
                  opt_fillfull: int = 1,
                  opt_inspire: int = 1):
@@ -158,6 +161,7 @@ class ExportExcelThread(QThread):
         # Excel export finished
         # Now inform the main thread with the output (fill_app_props)
         self.sig_step.emit(0, self.tr("Excel finished"))
+        self.deleteLater()
 
 
 class ExportWordThread(QThread):
@@ -206,7 +210,6 @@ class ExportWordThread(QThread):
             else:
                 pass
             uuid = "{}".format(md.get("_id")[:self.length_uuid])
-        
 
             out_docx_filename = "{}_{}_{}.docx".format(self.output_docx_folder,
                                                        md_name,
@@ -217,7 +220,7 @@ class ExportWordThread(QThread):
                 tpl.save(out_docx_filename)
             except Exception as e:
                 logger.error(e)
-                self.sig_step.emit(0, self.tr("Word: error occurred during savgin step. Check the log."))
+                self.sig_step.emit(0, self.tr("Word: error occurred during saving step. Check the log."))
             del tpl
 
         # Word export finished
@@ -267,7 +270,7 @@ class ExportXmlThread(QThread):
             # filename
             md_name = app_utils.clean_filename(md.get("title",
                                                       md.get("name", "No name"))
-                                             ).split(" -")[0]
+                                               ).split(" -")[0]
             if '.' in md_name:
                 md_name = md_name.split(".")[1]
             else:
@@ -301,8 +304,6 @@ class ExportXmlThread(QThread):
         # XML export finished
         # Now inform the main thread with the output (fill_app_props)
         self.sig_step.emit(0, "XML finished")
-
-
 
 
 # #############################################################################
