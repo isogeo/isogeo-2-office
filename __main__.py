@@ -179,6 +179,7 @@ class IsogeoToOffice_Main(QMainWindow):
         # shortcuts
         self.cbbs_filters = self.ui.grp_filters.findChildren(QComboBox)
         self.setWindowTitle("Isogeo to Office - v{}".format(__version__))
+        self.settings_loader()
         self.show()
         self.init_api_connection()
 
@@ -205,6 +206,40 @@ class IsogeoToOffice_Main(QMainWindow):
         self.thread_search = ThreadSearch(api_mngr)
         # launch empty search
         self.search(search_type="reset")
+
+    def settings_loader(self):
+        """Load application settings from QSettings and update UI with."""
+        # output formats
+        self.ui.chb_output_excel.setChecked(self.app_settings.value("formats/excel",
+                                                                    False, type=bool))
+        self.ui.chb_output_word.setChecked(self.app_settings.value("formats/word",
+                                                                   False, type=bool))
+        self.ui.chb_output_xml.setChecked(self.app_settings.value("formats/xml",
+                                                                  False, type=bool))
+        # location and naming rules
+        self.ui.lbl_output_folder_value.setText(self.app_settings.value("settings/out_folder_label",
+                                                                        r"./output"))
+        self.ui.lbl_output_folder_value.setToolTip(self.app_settings.value("settings/out_folder_path",
+                                                                           path.join(app_dir, "output"))
+                                                   )
+        self.ui.txt_output_fileprefix.setText(self.app_settings.value("settings/out_prefix"))
+        dtstamp_index = self.ui.cbb_timestamp.findText(self.tr(self.app_settings.value("settings/timestamps")))
+        self.ui.cbb_timestamp.setCurrentIndex(dtstamp_index)
+        self.ui.int_md_uuid.setValue(self.app_settings.value("settings/uuid_length",
+                                                             5, type=int))
+
+        # export options
+        self.ui.chb_xls_attributes.setChecked(self.app_settings.value("settings/xls_sheet_attributes",
+                                                                      False, type=bool))
+        self.ui.chb_xls_stats.setChecked(self.app_settings.value("settings/xls_sheet_dashboard",
+                                                                 False, type=bool))
+        self.ui.chb_xml_zip.setChecked(self.app_settings.value("settings/xml_zip",
+                                                               False, type=bool))
+        tpl_index = self.ui.cbb_word_tpl.findText(self.app_settings.value("settings/doc_tpl_name"))
+        self.ui.cbb_word_tpl.setCurrentIndex(tpl_index)
+
+        # end of method
+        logger.debug("Settings loaded")
 
     # -- SEARCH ---------------------------------------------------------------
     def search(self, search_type: str = "update"):
@@ -429,14 +464,16 @@ class IsogeoToOffice_Main(QMainWindow):
             "formats/xml", self.ui.chb_output_xml.isChecked())
 
         # location and naming rules
-        # self.app_settings.setValue("settings/out_folder",
+        # self.app_settings.setValue("settings/out_folder_label",
         #                            self.ui.lbl_output_folder_value.text())
+        # self.app_settings.setValue("settings/out_folder_path",
+        #                             self.ui.lbl_output_folder_value.tooltip())
         self.app_settings.setValue("settings/out_prefix",
                                    self.ui.txt_output_fileprefix.text())
         self.app_settings.setValue("settings/timestamps",
                                    self.ui.cbb_timestamp.currentText())
         self.app_settings.setValue("settings/uuid_length",
-                                   self.ui.int_md_uuid.text())
+                                   self.ui.int_md_uuid.value())
 
         # export options
         self.app_settings.setValue("settings/xls_sheet_attributes",
@@ -488,11 +525,13 @@ class IsogeoToOffice_Main(QMainWindow):
             selected_folder = path.realpath(selected_folder)
             logger.debug("Output folder selected: {}".format(selected_folder))
 
-        # fill label and setttings
+        # fill label and tooltip
         self.ui.lbl_output_folder_value.setText(path.basename(selected_folder))
-        self.ui.lbl_output_folder_value.setToolTip(
-            path.dirname(selected_folder))
-        self.app_settings.setValue("settings/out_folder",
+        self.ui.lbl_output_folder_value.setToolTip(path.dirname(selected_folder))
+        # save in settings
+        self.app_settings.setValue("settings/out_folder_label",
+                                   path.basename(selected_folder))
+        self.app_settings.setValue("settings/out_folder_path",
                                    selected_folder)
 
     # -- UI Slots -------------------------------------------------------------
