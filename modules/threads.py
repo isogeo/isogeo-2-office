@@ -101,35 +101,18 @@ class ThreadSearch(QThread):
     # signals
     sig_finished = pyqtSignal(dict)
 
-    def __init__(self, api_manager: object, search_form_retriever):
+    def __init__(self, api_manager: object):
         QThread.__init__(self)
         self.api_mngr = api_manager
-        self.get_selected_filters = search_form_retriever
-        self.reset = bool
+        self.search_params = dict
 
     # run method gets called when we start the thread
     def run(self):
         """Get application and informations
         """
-        logger.debug("youpi")
-        if self.reset:
-            logger.debug("Reset search form.")
-            search = self.api_mngr.isogeo.search(self.api_mngr.token,
-                                                 page_size=0,
-                                                 whole_share=0,
-                                                 augment=1,
-                                                 tags_as_dicts=1)
-        else:
-            share_id, search_terms = self.get_selected_filters()
-            logger.debug("Search with filters: {}. Share: {}."
-                         .format(search_terms, share_id))
-            search = self.api_mngr.isogeo.search(self.api_mngr.token,
-                                                 query=search_terms,
-                                                 share=share_id,
-                                                 page_size=0,
-                                                 whole_share=0,
-                                                 augment=1,
-                                                 tags_as_dicts=1)
+        logger.debug("Search started.")
+        search = self.api_mngr.isogeo.search(**self.search_params)
+        logger.debug("Search finished.")
         # Search request finished
         self.sig_finished.emit(search)
 
@@ -196,6 +179,7 @@ class ThreadExportExcel(QThread):
 
         # Excel export finished
         # Now inform the main thread with the output (fill_app_props)
+        logger.info("Excel - Export is over")
         self.sig_step.emit(0, self.tr("Excel finished"))
         self.deleteLater()
 
@@ -261,7 +245,9 @@ class ThreadExportWord(QThread):
 
         # Word export finished
         # Now inform the main thread with the output (fill_app_props)
+        logger.info("Word - Export is over")
         self.sig_step.emit(0, self.tr("Word finished"))
+        self.deleteLater()
 
 
 class ThreadExportXml(QThread):
@@ -339,7 +325,9 @@ class ThreadExportXml(QThread):
 
         # XML export finished
         # Now inform the main thread with the output (fill_app_props)
+        logger.info("XML - Export is over")
         self.sig_step.emit(0, "XML finished")
+        self.deleteLater()
 
 
 # #############################################################################

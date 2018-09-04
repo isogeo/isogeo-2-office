@@ -104,13 +104,13 @@ class IsogeoToOffice_Main(QMainWindow):
         """
         """ --- CONNECTING UI WIDGETS <-> FUNCTIONS --- """
         # -- Export tab - Filters ---------------------------------------------
-        self.ui.cbb_share.activated.connect(partial(self.search, 0))
-        self.ui.cbb_type.activated.connect(partial(self.search, 0))
-        self.ui.cbb_owner.activated.connect(partial(self.search, 0))
-        self.ui.cbb_keyword.activated.connect(partial(self.search, 0))
-        self.ui.btn_reinit.pressed.connect(partial(self.search, 1))
+        self.ui.cbb_share.activated.connect(partial(self.search, "update"))
+        self.ui.cbb_type.activated.connect(partial(self.search, "update"))
+        self.ui.cbb_owner.activated.connect(partial(self.search, "update"))
+        self.ui.cbb_keyword.activated.connect(partial(self.search, "update"))
+        self.ui.btn_reinit.pressed.connect(partial(self.search, "reset"))
 
-        self.ui.btn_launch_export.pressed.connect(partial(self.export))
+        self.ui.btn_launch_export.pressed.connect(partial(self.search, "export"))
 
         # -- Export tab - Output formats --------------------------------------
         self.ui.chb_output_excel.toggled\
@@ -198,22 +198,81 @@ class IsogeoToOffice_Main(QMainWindow):
         else:
             logger.debug("Access granted. Fill the shares window")
             self.thread_app_props = ThreadAppProperties(api_mngr)
-            self.thread_app_props.signal.connect(self.fill_app_props)
+            self.thread_app_props.sig_finished.connect(self.fill_app_props)
             self.thread_app_props.start()
 
-        # prepare search thread
-        self.thread_search = ThreadSearch(api_mngr, partial(self.get_selected_filters))
-        self.thread_search.sig_finished.connect(self.update_search_form)
+        # instanciate search thread
+        self.thread_search = ThreadSearch(api_mngr)
         # launch empty search
-        self.search(reset=1)
+        self.search(search_type="reset")
 
     # -- SEARCH ---------------------------------------------------------------
-    def search(self, reset: bool = 0):
-        """Get filters and make search."""
-        # launch empty search
+    def search(self, search_type: str = "update"):
+        """Get filters and make search.
+        
+        :param str search_type: can be update, reset or export
+        """
+        # configure thread search
         self.ui.pgb_exports.setRange(0, 0)
-        self.thread_search.reset = reset
+        self.thread_search.search_type = search_type
+
+        # depending on search type
+        if search_type == "reset":
+            self.thread_search.search_params = {"token": api_mngr.token,
+                                                "page_size": 0,
+                                                "whole_share": 0,
+                                                "augment": 1,
+                                                "tags_as_dicts": 1}
+            self.thread_search.sig_finished.connect(self.update_search_form)
+            logger.info("Search  prepared - {}".format(search_type.upper()))
+        elif search_type == "update":
+            share_id, search_terms = self.get_selected_filters()
+            self.thread_search.search_params = {"token": api_mngr.token,
+                                                "query": search_terms,
+                                                "share": share_id,
+                                                "page_size": 0,
+                                                "whole_share": 0,
+                                                "augment": 1,
+                                                "tags_as_dicts": 1}
+            self.thread_search.sig_finished.connect(self.update_search_form)
+            logger.info("Search  prepared - {}".format(search_type.upper()))
+        elif search_type == "export":
+            # checks
+            if not self.export_check():
+                self.processing("end", 100)
+                return False
+
+            # prepare search and launch export process
+            share_id, search_terms = self.get_selected_filters()
+            includes = ["conditions",
+                        "contacts",
+                        "coordinate-system",
+                        "events",
+                        "feature-attributes",
+                        "keywords",
+                        "layers",
+                        "limitations",
+                        "links",
+                        "operations",
+                        "serviceLayers",
+                        "specifications"]
+            self.thread_search.search_params = {"token": api_mngr.token,
+                                                "query": search_terms,
+                                                "share": share_id,
+                                                "page_size": 100,
+                                                "whole_share": 1,
+                                                "include": includes,
+                                                "check": 0}
+            self.thread_search.sig_finished.disconnect()
+            self.thread_search.sig_finished.connect(self.export_process)
+            logger.info("Search  prepared - {}".format(search_type.upper()))
+        else:
+            raise ValueError
+
+        # finally, start thread
         self.thread_search.start()
+        self.update_status_bar(prog_step=0,
+                               status_msg=self.tr("Waiting for Isogeo API"))
 
     def get_selected_filters(self):
         """Retrieve selected filters from the search form.
@@ -229,48 +288,33 @@ class IsogeoToOffice_Main(QMainWindow):
         return share_id, search_terms
 
     # -- EXPORT ---------------------------------------------------------------
-    def export(self):
-        """Launch export"""
+    def export_check(self):
+        """Performs checks before export."""
         # check export options
-        li_opts = [self.ui.chb_output_excel.isChecked(),
+        self.li_opts = [self.ui.chb_output_excel.isChecked(),
                    self.ui.chb_output_word.isChecked(),
                    self.ui.chb_output_xml.isChecked()
                    ]
-        if not any(li_opts):
+        if not any(self.li_opts):
             QMessageBox.critical(self,
                                  self.tr("Export option is missing"),
                                  self.tr("At least one export option required."))
             logger.error("No export option selected.")
-            return
+            return False
         else:
-            pass
+            logger.debug("Export check - {} output formats selected"
+                         .format(sum(self.li_opts)))
+            return True
 
-        # retrieve metadata to export
-        self.processing("start")
-        share_id, search_terms = self.get_selected_filters()
-        includes = ["conditions",
-                    "contacts",
-                    "coordinate-system",
-                    "events",
-                    "feature-attributes",
-                    "keywords",
-                    "layers",
-                    "limitations",
-                    "links",
-                    "operations",
-                    "serviceLayers",
-                    "specifications"]
-        search_to_be_exported = api_mngr.isogeo.search(api_mngr.token,
-                                                       query=search_terms,
-                                                       share=share_id,
-                                                       page_size=100,
-                                                       whole_share=1,
-                                                       include=includes,
-                                                       check=0)
-        self.processing("end")
+    @pyqtSlot(dict)
+    def export_process(self, search_to_be_exported: dict):
+        """Export each metadata in checked output formats.
 
+        :param dict search_to_be_exported: Isogeo search response to export
+        """
+        logger.debug("YOUPI")
         # prepare progress bar
-        progbar_max = sum(li_opts) * search_to_be_exported.get("total")
+        progbar_max = sum(self.li_opts) * search_to_be_exported.get("total")
         self.ui.pgb_exports.setRange(1, progbar_max)
         self.ui.pgb_exports.reset()
 
@@ -411,7 +455,7 @@ class IsogeoToOffice_Main(QMainWindow):
         """A simple relay in charge of displaying independant UI classes."""
         ui_class.exec_()
 
-    def processing(self, step: str = "start"):
+    def processing(self, step: str = "start", progbar_max: int = 0):
         """Manage UI during a process: progress bar start/end, disable/enable
         widgets...
 
@@ -422,6 +466,7 @@ class IsogeoToOffice_Main(QMainWindow):
             self.ui.tab_export.setEnabled(False)
         elif step == "end":
             logger.debug("End of process. Back to normal.")
+            self.ui.pgb_exports.setRange(0, progbar_max)
             self.ui.tab_export.setEnabled(True)
         elif step == "progress":
             logger.debug("Progress")
@@ -463,6 +508,8 @@ class IsogeoToOffice_Main(QMainWindow):
                                    QIcon("img/favicon.ico"),
                                    2000
                                    )
+        self.update_status_bar(prog_step=0,
+                               status_msg=self.tr("Application information has been retrieved"))
         # end thread
         self.thread_app_props.deleteLater()
 
@@ -500,8 +547,8 @@ class IsogeoToOffice_Main(QMainWindow):
             self.tr("Export {} metadata").format(search.get("total")))
 
         # stop progress bar and enable search form
-        self.ui.pgb_exports.setRange(0, search.get("total"))
-        self.processing("end")
+        self.processing("end", progbar_max=search.get("total"))
+        self.update_status_bar(prog_step=0, status_msg=self.tr("Search form updated"))
 
     @pyqtSlot(int, str)
     def update_status_bar(self, prog_step: int = 1, status_msg: str = ""):
