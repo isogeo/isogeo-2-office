@@ -14,4 +14,5 @@
     "pyqt-integration.qtdesigner.path": "C:\\Users\\julien.moura\\Documents\\GitHub\\Isogeo\\isogeo-2-office\\env3/Lib/site-packages/pyqt5-tools/designer.exe",
     "python.venvPath": "${workspaceFolder}/env3",
     "pyqt-integration.linguist.cmd": "C:\\Users\\julien.moura\\Documents\\GitHub\\Isogeo\\isogeo-2-office\\env3/Lib/site-packages/pyqt5-tools/linguist.exe",
+    "python.linting.enabled": true,
 }
