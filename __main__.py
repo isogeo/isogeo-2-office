@@ -360,7 +360,11 @@ class IsogeoToOffice_Main(QMainWindow):
 
         :param QCloseEvent event_sent: event sent when the main UI is close
         """
-        # misc
+        # Force remove UI elements
+        self.tray_icon.hide()
+        self.tray_icon.deleteLater()
+
+        # -- Save settings
         self.app_settings.setValue("log/log_level", "10")
 
         # API
