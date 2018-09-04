@@ -4,82 +4,126 @@
 <context>
     <name>AppPropertiesThread</name>
     <message>
-        <location filename="../modules/threads.py" line="82"/>
+        <location filename="../modules/threads.py" line="84"/>
         <source>Updated:</source>
         <translation>Dernière modification :</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="57"/>
+        <location filename="../modules/threads.py" line="59"/>
         <source>This application is authenticated as </source>
         <translation>Cette application est authentifiée en tant que </translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="87"/>
+        <location filename="../modules/threads.py" line="89"/>
         <source>Contact:</source>
         <translation>Contact :</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="66"/>
-        <source> powered by </source>
-        <translation> alimentée par </translation>
-    </message>
-    <message>
-        <location filename="../modules/threads.py" line="62"/>
+        <location filename="../modules/threads.py" line="64"/>
         <source>share:</source>
         <translation>partage :</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="66"/>
+        <location filename="../modules/threads.py" line="68"/>
         <source>shares:</source>
         <translation>partages :</translation>
+    </message>
+    <message>
+        <location filename="../modules/threads.py" line="68"/>
+        <source> and powered by </source>
+        <translation> et alimentée par </translation>
+    </message>
+</context>
+<context>
+    <name>ExportExcelThread</name>
+    <message>
+        <location filename="../modules/threads.py" line="137"/>
+        <source>Processing Excel: {}</source>
+        <translation>Export Excel : {}</translation>
+    </message>
+    <message>
+        <location filename="../modules/threads.py" line="160"/>
+        <source>Excel finished</source>
+        <translation>Export Excel terminé</translation>
+    </message>
+</context>
+<context>
+    <name>ExportWordThread</name>
+    <message>
+        <location filename="../modules/threads.py" line="193"/>
+        <source>Processing Word: {}</source>
+        <translation>Export Word : {}</translation>
+    </message>
+    <message>
+        <location filename="../modules/threads.py" line="226"/>
+        <source>Word finished</source>
+        <translation>Export Word terminé</translation>
+    </message>
+    <message>
+        <location filename="../modules/threads.py" line="221"/>
+        <source>Word: error occurred during saving step. Check the log.</source>
+        <translation>Word : une erreur est survenue durant l&apos;enregistrement d&apos;un fichier. Consulter le fichier journal.</translation>
+    </message>
+</context>
+<context>
+    <name>ExportXmlThread</name>
+    <message>
+        <location filename="../modules/threads.py" line="266"/>
+        <source>Processing XML: {}</source>
+        <translation>Export XML : {}</translation>
     </message>
 </context>
 <context>
     <name>IsogeoToOffice_Main</name>
     <message>
-        <location filename="../__main__.py" line="165"/>
+        <location filename="../__main__.py" line="162"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation>TITRE DU PROBLEME</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="204"/>
+        <location filename="../__main__.py" line="203"/>
         <source>Authentication - Credentials missing</source>
         <translation>Authentification - Paramètres absents</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="296"/>
+        <location filename="../__main__.py" line="295"/>
         <source>Export {} metadata</source>
         <translation>Exporter {} métadonnées</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="305"/>
+        <location filename="../__main__.py" line="306"/>
         <source>Export option is missing</source>
         <translation>Aucune option d&apos;export</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="305"/>
+        <location filename="../__main__.py" line="306"/>
         <source>At least one export option required.</source>
         <translation>Au moins un format d&apos;export requis.</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="204"/>
+        <location filename="../__main__.py" line="203"/>
         <source>Authentication to Isogeo API has failed. Credentials seem to be missing.</source>
         <translation>L&apos;authentification à l&apos;API Isogeo a échoué. Les paramètres d&apos;authentification semblent absents.</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="352"/>
+        <location filename="../__main__.py" line="353"/>
         <source>No date (overwrite)</source>
         <translation>Pas de date (écrasement)</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="355"/>
+        <location filename="../__main__.py" line="356"/>
         <source>Day</source>
         <translation>Date du jour</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="360"/>
+        <location filename="../__main__.py" line="361"/>
         <source>Datetime</source>
         <translation>Date et heure (horodatage)</translation>
+    </message>
+    <message>
+        <location filename="../__main__.py" line="541"/>
+        <source>Application information has been retrieved</source>
+        <translation>Les informations de l&apos;application ont été récupérées</translation>
     </message>
 </context>
 <context>
@@ -405,7 +449,7 @@
     <message>
         <location filename="../modules/ui/main/ui_win_IsogeoToOffice.ui" line="1394"/>
         <source>Change authentication settings</source>
-        <translation>Changer Importer un fichier d&apos;authentification</translation>
+        <translation>Importer un nouveau fichier d&apos;authentification</translation>
     </message>
     <message>
         <location filename="../modules/ui/main/ui_win_IsogeoToOffice.ui" line="1413"/>
