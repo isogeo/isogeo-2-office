@@ -334,8 +334,8 @@ class IsogeoToOffice_Main(QMainWindow):
         self.processing("end")
 
         # prepare progress bar
-        progbar_max = search_to_be_exported.get("total")
-        self.ui.pgb_exports.setRange(0, progbar_max)
+        progbar_max = sum(li_opts) * search_to_be_exported.get("total")
+        self.ui.pgb_exports.setRange(1, progbar_max)
         self.ui.pgb_exports.reset()
 
         # -- File naming
