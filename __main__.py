@@ -209,7 +209,7 @@ class IsogeoToOffice_Main(QMainWindow):
     # -- SEARCH ---------------------------------------------------------------
     def search(self, search_type: str = "update"):
         """Get filters and make search.
-        
+
         :param str search_type: can be update, reset or export
         """
         # configure thread search
@@ -292,9 +292,9 @@ class IsogeoToOffice_Main(QMainWindow):
         """Performs checks before export."""
         # check export options
         self.li_opts = [self.ui.chb_output_excel.isChecked(),
-                   self.ui.chb_output_word.isChecked(),
-                   self.ui.chb_output_xml.isChecked()
-                   ]
+                        self.ui.chb_output_word.isChecked(),
+                        self.ui.chb_output_xml.isChecked()
+                        ]
         if not any(self.li_opts):
             QMessageBox.critical(self,
                                  self.tr("Export option is missing"),
