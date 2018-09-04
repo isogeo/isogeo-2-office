@@ -6,7 +6,6 @@
 
     Author: Julien Moura (@geojulien)
     Python: 3.6.x
-
 """
 
 # #############################################################################
@@ -15,14 +14,13 @@
 
 # standard library
 import logging
-from logging.handlers import RotatingFileHandler
 from os import path, walk
 from tempfile import mkdtemp
 from zipfile import ZipFile
 
 # 3rd party library
 from docxtpl import DocxTemplate
-from PyQt5.QtCore import (QDate, QLocale, QThread, pyqtSignal, pyqtSlot)
+from PyQt5.QtCore import QDate, QLocale, QThread, pyqtSignal
 
 # submodules - export
 from . import Isogeo2docx, Isogeo2xlsx, isogeo2office_utils
@@ -40,8 +38,9 @@ logger = logging.getLogger("isogeo2office")
 # ##################################
 
 # API REQUESTS ----------------------------------------------------------------
-class AppPropertiesThread(QThread):
-    signal = pyqtSignal(str)
+class ThreadAppProperties(QThread):
+    # signals
+    sig_finished = pyqtSignal(str)
 
     def __init__(self, api_manager: object):
         QThread.__init__(self)
@@ -95,11 +94,11 @@ class AppPropertiesThread(QThread):
         text += "</html>"
         # application and shares informations retrieved.
         # Now inform the main thread with the output (fill_app_props)
-        self.signal.emit(text)
+        self.sig_finished.emit(text)
 
 
 # EXPORTS ---------------------------------------------------------------------
-class ExportExcelThread(QThread):
+class ThreadExportExcel(QThread):
     # signals
     sig_step = pyqtSignal(int, str)
 
@@ -164,7 +163,7 @@ class ExportExcelThread(QThread):
         self.deleteLater()
 
 
-class ExportWordThread(QThread):
+class ThreadExportWord(QThread):
     # signals
     sig_step = pyqtSignal(int, str)
 
@@ -228,7 +227,7 @@ class ExportWordThread(QThread):
         self.sig_step.emit(0, self.tr("Word finished"))
 
 
-class ExportXmlThread(QThread):
+class ThreadExportXml(QThread):
     # signals
     sig_step = pyqtSignal(int, str)
 

@@ -14,33 +14,29 @@
 # ##################################
 
 # standard library
-from datetime import datetime
 import logging
+import platform
+from datetime import datetime
 from functools import partial
 from logging.handlers import RotatingFileHandler
 from os import listdir, path
-import platform
-
-# 3rd party library
-from isogeo_pysdk import __version__ as pysdk_version
-from PyQt5.QtCore import (QBasicTimer, QDate, QLocale, QSettings, QTimerEvent,
-                          QTranslator, QThread, pyqtSignal, pyqtSlot)
-from PyQt5.QtGui import QCloseEvent, QIcon
-from PyQt5.QtWidgets import (QApplication, QComboBox, QDialog,
-                             QMessageBox, QStyle, QSystemTrayIcon, QMainWindow)
 
 import qdarkstyle
-# submodules - export
-from modules import isogeo2office_utils
+from isogeo_pysdk import __version__ as pysdk_version
+from PyQt5.QtCore import (QLocale, QSettings, QThread, QTranslator,
+                          pyqtSignal, pyqtSlot)
+from PyQt5.QtGui import QCloseEvent, QIcon
+from PyQt5.QtWidgets import (QApplication, QComboBox, QMainWindow,
+                             QMessageBox, QSystemTrayIcon)
 
+# submodules - functional
+from modules import (IsogeoApiMngr, ThreadAppProperties, ThreadExportExcel,
+                     ThreadExportWord, ThreadExportXml, ThreadSearch,
+                     isogeo2office_utils)
 # submodules - UI
 from modules.ui.auth.auth_dlg import Auth
 from modules.ui.credits.credits_dlg import Credits
 from modules.ui.main.ui_win_IsogeoToOffice import Ui_win_IsogeoToOffice
-
-# submodules - functional
-from modules import IsogeoApiMngr
-from modules import AppPropertiesThread, ExportExcelThread, ExportWordThread, ExportXmlThread
 
 # #############################################################################
 # ########## Globals ###############
@@ -208,9 +204,9 @@ class IsogeoToOffice_Main(QMainWindow):
             return False
         else:
             logger.debug("Access granted. Fill the shares window")
-            thread_app_props = AppPropertiesThread(api_mngr)
-            thread_app_props.signal.connect(self.fill_app_props)
-            thread_app_props.start()
+            self.thread_app_props = ThreadAppProperties(api_mngr)
+            self.thread_app_props.signal.connect(self.fill_app_props)
+            self.thread_app_props.start()
 
         # launch empty search
         self.search(reset=1)
@@ -376,7 +372,7 @@ class IsogeoToOffice_Main(QMainWindow):
             logger.debug("Excel - Preparation")
             output_xlsx_filepath = "{}{}.xlsx".format(generic_filepath, horodatage)
             logger.debug("Excel - Destination file: {}".format(output_xlsx_filepath))
-            self.thread_export_xlsx = ExportExcelThread(search_to_be_exported,
+            self.thread_export_xlsx = ThreadExportExcel(search_to_be_exported,
                                                         output_xlsx_filepath,
                                                         opt_attributes=self.ui.chb_xls_attributes.isChecked(),
                                                         opt_dasboard=self.ui.chb_xls_stats.isChecked())
@@ -392,7 +388,7 @@ class IsogeoToOffice_Main(QMainWindow):
             logger.debug("Word - Output folder: {}".format(output_docx_filepath))
             template_path = self.ui.cbb_word_tpl.itemData(self.ui.cbb_word_tpl.currentIndex())
             logger.debug("Word - Template choosen: {}".format(template_path))
-            self.thread_export_docx = ExportWordThread(search_to_be_exported,
+            self.thread_export_docx = ThreadExportWord(search_to_be_exported,
                                                        output_docx_filepath,
                                                        tpl_path=template_path,
                                                        timestamp=horodatage,
@@ -407,7 +403,7 @@ class IsogeoToOffice_Main(QMainWindow):
             logger.debug("XML - Preparation")
             output_xml_filepath = "{}{}".format(generic_filepath, horodatage)
             logger.debug("XML - Output folder: {}".format(output_xml_filepath))
-            self.thread_export_xml = ExportXmlThread(search_to_be_exported,
+            self.thread_export_xml = ThreadExportXml(search_to_be_exported,
                                                      isogeo_api_mngr=api_mngr,
                                                      output_path=output_xml_filepath,
                                                      opt_zip=self.ui.chb_xml_zip.isChecked(),
