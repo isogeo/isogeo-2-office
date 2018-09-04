@@ -1,5 +1,4 @@
 language: python
-required: sudo
 python:
   - "3.6"
 
