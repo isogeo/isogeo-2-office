@@ -4,13 +4,9 @@
 """
     Isogeo To Office - Main launcher
 
-    Purpose:      Get metadatas from an Isogeo share and store it into files
-
-    Author:       Julien Moura (@geojulien)
-
-     Python:      3.6.x
-    Created:      18/12/2015
-    Updated:      22/08/2018
+    Purpose:      Get metadatas from Isogeo and export to desktop formats
+    Author:       Isogeo
+    Python:      3.6.x
 """
 
 # #############################################################################
@@ -556,6 +552,10 @@ if __name__ == "__main__":
     import sys
     # create the application and the main window
     app = QApplication(sys.argv)
+    app.setOrganizationName("Isogeo")
+    app.setOrganizationDomain("isogeo.com")
+    app.setApplicationName("Isogeo To Office")
+    app.setApplicationVersion(__version__)
     # apply dark style
     app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
     # apply language
