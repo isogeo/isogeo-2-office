@@ -194,6 +194,7 @@ class IsogeoApiMngr(object):
         # display
         logger.debug("Authentication form filled and ready to be launched.")
         self.ui_auth_form.show()
+        self.ui_auth_form.setFocus()
 
     def credentials_uploader(self):
         """Get file selected by the user and loads API credentials into plugin.
