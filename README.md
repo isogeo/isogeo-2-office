@@ -18,6 +18,7 @@ Desktop toolbox using Isogeo REST API to export metadatas into Microsoft Office 
 Application is built using AppVeyor ([see configuration in appveyor.yml]()).
 
 
+
 ## Build locally
 
 ### Requirements
@@ -31,6 +32,7 @@ First of all, install requirements:
 
 With Visual Studio Code, using defined tasks:
 
+![](https://raw.githubusercontent.com/isogeo/isogeo-2-office/master/img/docs/build_vsc_tasks.png)
 
 ### Manually
 
