@@ -218,10 +218,13 @@ class IsogeoToOffice_Main(QMainWindow):
                                                                   False, type=bool))
         # location and naming rules
         self.ui.lbl_output_folder_value.setText(self.app_settings.value("settings/out_folder_label",
-                                                                        r"./output"))
-        self.ui.lbl_output_folder_value.setToolTip(self.app_settings.value("settings/out_folder_path",
-                                                                           path.join(app_dir, "output"))
-                                                   )
+                                                                        r"./outpudddt"))
+        path_output_folder = self.app_settings.value("settings/out_folder_path",
+                                                     path.join(app_dir, "output"))
+        self.ui.lbl_output_folder_value.setToolTip(path_output_folder)
+        self.ui.btn_open_output_folder.pressed.connect(partial(self.app_utils.open_dir_file,
+                                                               path_output_folder))
+
         self.ui.txt_output_fileprefix.setText(self.app_settings.value("settings/out_prefix"))
         dtstamp_index = self.ui.cbb_timestamp.findText(self.tr(self.app_settings.value("settings/timestamps")))
         self.ui.cbb_timestamp.setCurrentIndex(dtstamp_index)
