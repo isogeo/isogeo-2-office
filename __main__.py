@@ -102,9 +102,6 @@ class IsogeoToOffice_Main(QMainWindow):
     def initUI(self):
         """Start UI display and widgets signals and slots.
         """
-        # timer and progress bar
-        self.timer = QBasicTimer()
-        self.step = 0
         """ --- CONNECTING UI WIDGETS <-> FUNCTIONS --- """
         # -- Export tab - Filters ---------------------------------------------
         self.ui.cbb_share.activated.connect(partial(self.search, 0))
@@ -185,10 +182,6 @@ class IsogeoToOffice_Main(QMainWindow):
         self.show()
         self.init_api_connection()
 
-    def displayer(self, ui_class):
-        """A simple relay in charge of displaying independant UI classes."""
-        ui_class.exec_()
-
     def init_api_connection(self):
         """After UI display, start to try to connect to Isogeo API.
         """
@@ -208,41 +201,19 @@ class IsogeoToOffice_Main(QMainWindow):
             self.thread_app_props.signal.connect(self.fill_app_props)
             self.thread_app_props.start()
 
+        # prepare search thread
+        self.thread_search = ThreadSearch(api_mngr, partial(self.get_selected_filters))
+        self.thread_search.sig_finished.connect(self.update_search_form)
         # launch empty search
         self.search(reset=1)
 
-        # stop timer and progress bar
-        self.processing(step='end')
-
     # -- SEARCH ---------------------------------------------------------------
     def search(self, reset: bool = 0):
-        """Get filters and make search
-        """
-        self.processing("start")
-
-        # fill
-        if reset:
-            logger.debug("Reset search form.")
-            search = api_mngr.isogeo.search(api_mngr.token,
-                                            page_size=0,
-                                            whole_share=0,
-                                            augment=1,
-                                            tags_as_dicts=1)
-        else:
-            share_id, search_terms = self.get_selected_filters()
-            logger.debug("Search with filters: {}. Share: {}."
-                         .format(search_terms, share_id))
-            search = api_mngr.isogeo.search(api_mngr.token,
-                                            query=search_terms,
-                                            share=share_id,
-                                            page_size=0,
-                                            whole_share=0,
-                                            augment=1,
-                                            tags_as_dicts=1)
-
-        # update ui
-        self.update_search_form(search)
-        self.processing("end")
+        """Get filters and make search."""
+        # launch empty search
+        self.ui.pgb_exports.setRange(0, 0)
+        self.thread_search.reset = reset
+        self.thread_search.start()
 
     def get_selected_filters(self):
         """Retrieve selected filters from the search form.
@@ -256,37 +227,6 @@ class IsogeoToOffice_Main(QMainWindow):
                 search_terms += cbb.itemData(cbb.currentIndex())
 
         return share_id, search_terms
-
-    def update_search_form(self, search: dict):
-        """Update search form with tags.
-        """
-        # query parameters
-        logger.debug(search.get("query"))
-        # COMBOBOXES - FILTERS
-        # clear previous state
-        for cbb in self.cbbs_filters:
-            cbb.clear()
-        tags = search.get("tags")
-        # add none selection item
-        for cbb in self.cbbs_filters:
-            cbb.addItem(" - ", "")
-
-        # Shares
-        logger.debug(tags.keys())
-        for k, v in tags.get("shares").items():
-            self.ui.cbb_share.addItem(k, v)
-        # Owners
-        for k, v in tags.get("owners").items():
-            self.ui.cbb_owner.addItem(k, v)
-        # Types
-        for k, v in tags.get("types").items():
-            self.ui.cbb_type.addItem(k, v)
-        # Keywords
-        for k, v in tags.get("keywords").items():
-            self.ui.cbb_keyword.addItem(k, v)
-
-        # export button
-        self.ui.btn_launch_export.setText(self.tr("Export {} metadata".format(search.get("total"))))
 
     # -- EXPORT ---------------------------------------------------------------
     def export(self):
@@ -463,21 +403,22 @@ class IsogeoToOffice_Main(QMainWindow):
         # accept the close
         event_sent.accept()
 
-    def processing(self, step: str = "start", max: int = 100):
+    def displayer(self, ui_class):
+        """A simple relay in charge of displaying independant UI classes."""
+        ui_class.exec_()
+
+    def processing(self, step: str = "start"):
         """Manage UI during a process: progress bar start/end, disable/enable
         widgets...
 
         :param str step: step of processing (start, end or progress)
-        :param int max: length of the process
         """
         if step == "start":
             logger.debug("Start processing. Freezing search form.")
             self.ui.tab_export.setEnabled(False)
-            self.timer.start(max, self)
         elif step == "end":
             logger.debug("End of process. Back to normal.")
             self.ui.tab_export.setEnabled(True)
-            self.timer.stop()
         elif step == "progress":
             logger.debug("Progress")
         else:
@@ -505,19 +446,6 @@ class IsogeoToOffice_Main(QMainWindow):
         self.app_settings.setValue("settings/out_folder",
                                    selected_folder)
 
-    def timerEvent(self, event_sent):
-        """Timer event catcher in charge of updating the progress bar.
-
-        :param QTimerEvent event_sent: event automatically sent by QBasicTimer
-        """
-        # check if step is over the end limit
-        if self.step >= 100:
-            self.timer.stop()
-            return
-        else:
-            self.step += 1
-            self.ui.pgb_exports.setValue(self.step)
-
     # -- UI Slots -------------------------------------------------------------
     @pyqtSlot(str)
     def fill_app_props(self, app_infos_retrieved: str = ""):
@@ -531,6 +459,45 @@ class IsogeoToOffice_Main(QMainWindow):
                                    QIcon("img/favicon.ico"),
                                    2000
                                    )
+        # end thread
+        self.thread_app_props.deleteLater()
+
+    @pyqtSlot(dict)
+    def update_search_form(self, search: dict):
+        """Update search form with tags.
+        """
+        # query parameters
+        logger.debug(search.get("query"))
+        # COMBOBOXES - FILTERS
+        # clear previous state
+        for cbb in self.cbbs_filters:
+            cbb.clear()
+        tags = search.get("tags")
+        # add none selection item
+        for cbb in self.cbbs_filters:
+            cbb.addItem(" - ", "")
+
+        # Shares
+        logger.debug(tags.keys())
+        for k, v in tags.get("shares").items():
+            self.ui.cbb_share.addItem(k, v)
+        # Owners
+        for k, v in tags.get("owners").items():
+            self.ui.cbb_owner.addItem(k, v)
+        # Types
+        for k, v in tags.get("types").items():
+            self.ui.cbb_type.addItem(k, v)
+        # Keywords
+        for k, v in tags.get("keywords").items():
+            self.ui.cbb_keyword.addItem(k, v)
+
+        # export button
+        self.ui.btn_launch_export.setText(
+            self.tr("Export {} metadata").format(search.get("total")))
+
+        # stop progress bar and enable search form
+        self.ui.pgb_exports.setRange(0, search.get("total"))
+        self.processing("end")
 
     @pyqtSlot(int, str)
     def update_status_bar(self, prog_step: int = 1, status_msg: str = ""):

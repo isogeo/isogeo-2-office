@@ -97,6 +97,43 @@ class ThreadAppProperties(QThread):
         self.sig_finished.emit(text)
 
 
+class ThreadSearch(QThread):
+    # signals
+    sig_finished = pyqtSignal(dict)
+
+    def __init__(self, api_manager: object, search_form_retriever):
+        QThread.__init__(self)
+        self.api_mngr = api_manager
+        self.get_selected_filters = search_form_retriever
+        self.reset = bool
+
+    # run method gets called when we start the thread
+    def run(self):
+        """Get application and informations
+        """
+        logger.debug("youpi")
+        if self.reset:
+            logger.debug("Reset search form.")
+            search = self.api_mngr.isogeo.search(self.api_mngr.token,
+                                                 page_size=0,
+                                                 whole_share=0,
+                                                 augment=1,
+                                                 tags_as_dicts=1)
+        else:
+            share_id, search_terms = self.get_selected_filters()
+            logger.debug("Search with filters: {}. Share: {}."
+                         .format(search_terms, share_id))
+            search = self.api_mngr.isogeo.search(self.api_mngr.token,
+                                                 query=search_terms,
+                                                 share=share_id,
+                                                 page_size=0,
+                                                 whole_share=0,
+                                                 augment=1,
+                                                 tags_as_dicts=1)
+        # Search request finished
+        self.sig_finished.emit(search)
+
+
 # EXPORTS ---------------------------------------------------------------------
 class ThreadExportExcel(QThread):
     # signals
