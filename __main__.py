@@ -324,6 +324,7 @@ class IsogeoToOffice_Main(QMainWindow):
             else:
                 search_terms += cbb.itemData(cbb.currentIndex())
 
+        logger.debug("Selected share UUID: {}".format(share_id))
         return share_id, search_terms
 
     # -- EXPORT ---------------------------------------------------------------
@@ -562,12 +563,13 @@ class IsogeoToOffice_Main(QMainWindow):
         """
         # get available search tags
         search_tags = search.get("tags")
+        logger.debug("Search tags keys: {}".format(list(search_tags)))
 
         # -- FILL FILTERS COMBOBOXES ------------------------------------------
         # clear previous state
         for cbb in self.cbbs_filters:
             cbb.clear()
-        
+
         # add none selection item
         for cbb in self.cbbs_filters:
             cbb.addItem(" - ", "")
@@ -609,7 +611,14 @@ class IsogeoToOffice_Main(QMainWindow):
                 pass
             # shares
             if query_tags.get("shares"):
-                prev_val = list(query_tags.get("shares"))[0]
+                # special case because share id aren't contextualized by the API
+                #  so, the combobox is cleared and fillulled again with only the
+                #  selected share and the non selector
+                self.ui.cbb_share.clear()
+                self.ui.cbb_share.addItem(" - ", "")
+                # add selected share
+                prev_val, prev_code = list(query_tags.get("shares").items())[0]
+                self.ui.cbb_share.addItem(prev_val, prev_code)
                 prev_idx = self.ui.cbb_share.findText(prev_val)
                 self.ui.cbb_share.setCurrentIndex(prev_idx)
             else:
