@@ -6,7 +6,7 @@
         {
             "label": "Build and package",
             "type": "shell",
-            "command": "./build.ps1",
+            "command": "./tool_build.ps1",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -15,7 +15,7 @@
         {
             "label": "Tests and coverage",
             "type": "shell",
-            "command": "./tests_coverage.ps1",
+            "command": "./tool_test_coverage.ps1",
             "group": {
                 "kind": "test",
                 "isDefault": true
@@ -40,7 +40,7 @@
         {
             "label": "Build - UI compilation",
             "type": "shell",
-            "command": "./ui_compile.ps1",
+            "command": "./tool_ui_compile.ps1",
             "group": "build",
             "dependsOn": [
                 "Build - Update venv"

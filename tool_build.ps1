@@ -34,4 +34,4 @@ $dest=Join-Path (pwd) dist\i2o.zip
 
 "`n-- STEP -- Get out the virtualenv and cleanup"
 deactivate
-rm -r env3_packaging
+#rm -r env3_packaging
