@@ -308,6 +308,7 @@ class IsogeoToOffice_Main(QMainWindow):
             raise ValueError
 
         # finally, start thread
+        self.search_type = search_type
         self.thread_search.start()
         self.update_status_bar(prog_step=0,
                                status_msg=self.tr("Waiting for Isogeo API"))
@@ -559,34 +560,69 @@ class IsogeoToOffice_Main(QMainWindow):
     def update_search_form(self, search: dict):
         """Update search form with tags.
         """
-        # query parameters
-        logger.debug(search.get("query"))
-        # COMBOBOXES - FILTERS
+        # get available search tags
+        search_tags = search.get("tags")
+
+        # -- FILL FILTERS COMBOBOXES ------------------------------------------
         # clear previous state
         for cbb in self.cbbs_filters:
             cbb.clear()
-        tags = search.get("tags")
+        
         # add none selection item
         for cbb in self.cbbs_filters:
             cbb.addItem(" - ", "")
 
-        # Shares
-        logger.debug(tags.keys())
-        for k, v in tags.get("shares").items():
-            self.ui.cbb_share.addItem(k, v)
-        # Owners
-        for k, v in tags.get("owners").items():
-            self.ui.cbb_owner.addItem(k, v)
-        # Types
-        for k, v in tags.get("types").items():
-            self.ui.cbb_type.addItem(k, v)
-        # Keywords
-        for k, v in tags.get("keywords").items():
+        # Add keywords
+        for k, v in search_tags.get("keywords").items():
             self.ui.cbb_keyword.addItem(k, v)
+        # Add owners
+        for k, v in search_tags.get("owners").items():
+            self.ui.cbb_owner.addItem(k, v)
+        # Add shares
+        for k, v in search_tags.get("shares").items():
+            self.ui.cbb_share.addItem(k, v)
+        # Add types
+        for k, v in search_tags.get("types").items():
+            self.ui.cbb_type.addItem(k, v)
 
         # export button
         self.ui.btn_launch_export.setText(
             self.tr("Export {} metadata").format(search.get("total")))
+
+        # -- RESTORE PREVIOUS SELECTED FILTERS -------------------------------
+        if self.search_type != "reset":
+            query_tags = search.get("query").get("_tags")
+            logger.debug("Previous query: {}".format(query_tags))
+            # keywords
+            if query_tags.get("keywords"):
+                prev_val = list(query_tags.get("keywords"))[0]
+                prev_idx = self.ui.cbb_keyword.findText(prev_val)
+                self.ui.cbb_keyword.setCurrentIndex(prev_idx)
+            else:
+                pass
+            # owners
+            if query_tags.get("owners"):
+                prev_val = list(query_tags.get("owners"))[0]
+                prev_idx = self.ui.cbb_owner.findText(prev_val)
+                self.ui.cbb_owner.setCurrentIndex(prev_idx)
+            else:
+                pass
+            # shares
+            if query_tags.get("shares"):
+                prev_val = list(query_tags.get("shares"))[0]
+                prev_idx = self.ui.cbb_share.findText(prev_val)
+                self.ui.cbb_share.setCurrentIndex(prev_idx)
+            else:
+                pass
+            # types
+            if query_tags.get("types"):
+                prev_val = list(query_tags.get("types"))[0]
+                prev_idx = self.ui.cbb_type.findText(prev_val)
+                self.ui.cbb_type.setCurrentIndex(prev_idx)
+            else:
+                pass
+        else:
+            pass
 
         # stop progress bar and enable search form
         self.processing("end", progbar_max=search.get("total"))
