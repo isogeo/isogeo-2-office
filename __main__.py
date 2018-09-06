@@ -352,7 +352,6 @@ class IsogeoToOffice_Main(QMainWindow):
 
         :param dict search_to_be_exported: Isogeo search response to export
         """
-        logger.debug("YOUPI")
         # prepare progress bar
         progbar_max = sum(self.li_opts) * search_to_be_exported.get("total")
         self.ui.pgb_exports.setRange(1, progbar_max)
@@ -408,13 +407,20 @@ class IsogeoToOffice_Main(QMainWindow):
         # WORD
         if self.ui.chb_output_word.isChecked():
             logger.debug("Word - Preparation")
+            # output folder
             output_docx_filepath = "{}{}".format(generic_filepath, horodatage)
             logger.debug("Word - Output folder: {}".format(output_docx_filepath))
+            # template
             template_path = self.ui.cbb_word_tpl.itemData(self.ui.cbb_word_tpl.currentIndex())
             logger.debug("Word - Template choosen: {}".format(template_path))
+            # thumbnails
+            thumbnails_table = path.realpath(r"thumbnails/tpl_thumbnails.xlsx")
+            thumbnails = self.app_utils.thumbnails_mngr(thumbnails_table)
+            # instanciate thread
             self.thread_export_docx = ThreadExportWord(search_to_be_exported,
                                                        output_docx_filepath,
                                                        tpl_path=template_path,
+                                                       thumbnails=thumbnails,
                                                        timestamp=horodatage,
                                                        length_uuid=opt_md_uuid)
             self.thread_export_docx.sig_step.connect(self.update_status_bar)

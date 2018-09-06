@@ -32,6 +32,7 @@ from xml.sax.saxutils import escape  # '<' -> '&lt;'
 
 # 3rd party
 from isogeo_pysdk import IsogeoUtils
+from openpyxl import load_workbook
 from PyQt5.QtCore import QUrl
 from PyQt5.QtWidgets import QFileDialog
 
@@ -59,8 +60,6 @@ class isogeo2office_utils(IsogeoUtils):
     def __init__(self):
         """Instanciating method."""
         super(isogeo2office_utils, self).__init__()
-
-        # ------------ VARIABLES ---------------------
 
     # MISCELLANOUS -----------------------------------------------------------
     def open_urls(self, li_url):
@@ -183,7 +182,47 @@ class isogeo2office_utils(IsogeoUtils):
         # get the clean url
         return url_input[0:url_input.index(url_input.rsplit('/')[6])]
 
-    # ------------------------------------------------------------------------
+    def thumbnails_mngr(self, in_xlsx_table: str = "thumbnails/tpl_thumbnails.xlsx") -> dict:
+        """Manage the thumbnails table (see: #10): check, read and return a dict.
+        
+        :param str in_xlsx_table: path to the input thumbnails table
+        """
+        thumbnails_dict = {}
+        # check filepath
+        if not path.exists(in_xlsx_table):
+            raise FileNotFoundError(in_xlsx_table)
+
+        # load XLSX and check structure
+        wb = load_workbook(path.realpath(in_xlsx_table),
+                           read_only=True)
+        if "i2o_thumbnails" not in wb.sheetnames:
+            logger.error(self.tr("Thumbnails workbook ({}) doesn't have the good worksheet name"))
+            return False
+
+        # load worksheet and check structure
+        ws = wb["i2o_thumbnails"]
+        try:
+            assert(ws._get_cell(1, 1).value == "isogeo_uuid"),\
+                self.tr("First column must be ".format("isogeo_uuid"))
+            assert(ws._get_cell(1, 2).value == "isogeo_title_slugged"),\
+                self.tr("Second column must be ".format("isogeo_title_slugged"))
+            assert(ws._get_cell(1, 3).value == "img_abs_path"),\
+                self.tr("Third column must be ".format("img_abs_path"))
+        except AssertionError as e:
+            print(e)
+            return False
+
+        # parse worksheet and populate final dict
+        for row in ws.iter_rows(row_offset=1):
+            if row[0].value:
+                thumbnails_dict[row[0].value] = row[2].value
+            else:
+                logger.debug("Thumbnails reader: empty cell spotted. Quit reading.")
+                break
+
+        return thumbnails_dict
+
+    # -- ENCODING AND NAMING STUFFS -------------------------------------------
     def clean_filename(self, filename: str, substitute: str = "", mode: str = "soft"):
         """Remove invalid characters from filename.
         \\ TO DO: isnt' duplicated with next method on special chars?
