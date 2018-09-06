@@ -2,11 +2,13 @@
 
 block_cipher = None
 
+# -- Include ------------------------------------------------------------------
 added_files = [('i18n', 'i18n'),
                ('resources', 'resources'),
                ('templates', 'templates'),
               ]
 
+# -- PyInstaller process ------------------------------------------------------
 a = Analysis(['__main__.py'],
              pathex=[],
              binaries=[],
