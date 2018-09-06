@@ -65,7 +65,7 @@ class IsogeoApiMngr(object):
     def manage_api_initialization(self):
         """Perform several operations to use Isogeo API:
 
-        1. check if existing credentials are stored into QGIS or a file
+        1. check if existing credentials are stored somewhere
         2. check if credentials are valid requesting Isogeo API ID
         """
         # try to retrieve existing credentials from potential sources
@@ -100,10 +100,10 @@ class IsogeoApiMngr(object):
     def credentials_check_qsettings(self):
         """Retrieve Isogeo API credentials within APP QSettings."""
         if "auth" in qsettings.childGroups() and qsettings.contains("auth/app_id"):
-            logger.debug("Credentials found within QGIS QSettings: isogeo/")
+            logger.debug("Credentials found within QSettings: isogeo/")
             return True
         else:
-            logger.debug("No Isogeo credentials found within QGIS QSettings.")
+            logger.debug("No Isogeo credentials found within QSettings.")
             return False
 
     def credentials_check_file(self):

@@ -8,8 +8,6 @@
 #
 #   It's higly recomended to use it within a virtualenv.
 #
-#
-#
 
 # basics
 setuptools
@@ -25,5 +23,4 @@ docxtpl==0.5.*
 isogeo-pysdk==2.20.*
 openpyxl==2.5.*
 PyQt5==5.11.*
-pyqt5-tools==5.9.* ; sys_platform == 'win32'
 QDarkStyle==2.5.*

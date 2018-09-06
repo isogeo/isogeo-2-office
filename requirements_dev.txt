@@ -14,6 +14,8 @@ codecov==2.*
 coverage==4.5.*
 pycodestyle==2.4.*
 pylint==2.1.*
+pyqt5-tools==5.9.* ; sys_platform == 'win32'
+sip
 
 # packaging
 https://github.com/pyinstaller/pyinstaller/tarball/b8c5773bd2c07c65a1f30cd5b9b2e9c4a146c2b6

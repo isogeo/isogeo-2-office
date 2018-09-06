@@ -15,11 +15,11 @@ pip install --upgrade -r ./requirements.txt
 pip install --upgrade -r ./requirements_dev.txt
 
 "`n-- STEP -- Update and compile UI"
-.\ui_compile.ps1
+.\tool_ui_compile.ps1
 
 "`n-- STEP -- Build and bundle forcing clean"
 rm -r dist\*
-pyinstaller -y --clean bundle_isogeo2office.spec
+pyinstaller -y --clean bundle_isogeo2office.spec --upx-dir .\build\upx-3.95-win64
 
 "`n-- STEP -- Add required empty folders"
 new-item -Name "dist/isogeo2office/_auth" -ItemType directory 
