@@ -89,7 +89,7 @@ class Isogeo2docx(object):
         # FORMATTER
         self.fmt = IsogeoFormatter(output_type="Word")
 
-    def md2docx(self, docx_template, md, url_base, thumb_path=""):
+    def md2docx(self, docx_template, md, url_base):
         """Parse Isogeo metadatas and replace docx template."""
         # optional: print resource id (useful in debug mode)
         md_id = md.get("_id")
@@ -345,8 +345,7 @@ class Isogeo2docx(object):
 
         # FILLFULLING THE TEMPLATE #
         context = {'varThumbnail': InlineImage(docx_template,
-                                               thumb_path,
-                                               width=Mm(20)),
+                                               md.get("thumbnail_local", None)),
                    'varTitle': self.clean_xml(md.get("title",
                                               self.missing_values())),
                    'varAbstract': self.clean_xml(md.get("abstract",

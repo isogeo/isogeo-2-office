@@ -192,6 +192,7 @@ class ThreadExportWord(QThread):
                  search_to_export: dict = {},
                  output_path: str = r"output/",
                  tpl_path: str = r"templates/template_Isogeo.docx",
+                 thumbnails: dict = {},
                  timestamp: str = "",
                  length_uuid: int = 0):
         QThread.__init__(self)
@@ -199,6 +200,7 @@ class ThreadExportWord(QThread):
         self.search = search_to_export
         self.output_docx_folder = output_path
         self.tpl_path = path.realpath(tpl_path)
+        self.thumbnails = thumbnails
         self.timestamp = timestamp
         self.length_uuid = length_uuid
 
@@ -206,6 +208,9 @@ class ThreadExportWord(QThread):
     def run(self):
         """Export each metadata into a Word document
         """
+        # vars
+        thumbnail_default = path.realpath(r"resources/credits/isogeo.png")
+
         # word generator
         to_docx = Isogeo2docx()
 
@@ -214,13 +219,17 @@ class ThreadExportWord(QThread):
             # progression
             md_title = md.get("title", "No title")
             self.sig_step.emit(1, self.tr("Processing Word: {}").format(md_title))
+            # thumbnails
+            thumbnail_abs_path = self.thumbnails.get(md.get("_id"),
+                                                     thumbnail_default)
+            logger.debug("Thumbnail used: {}".format(thumbnail_abs_path))
+            md["thumbnail_local"] = thumbnail_abs_path
             # templating
             tpl = DocxTemplate(self.tpl_path)
             # fill template
             to_docx.md2docx(docx_template=tpl,
                             md=md,
-                            url_base="https://open.isogeo.com",
-                            thumb_path="https://www.isogeo.com/images/logo.png")
+                            url_base="https://open.isogeo.com")
             # filename
             md_name = app_utils.clean_filename(md.get("name",
                                                       md.get("title", "NR"))
