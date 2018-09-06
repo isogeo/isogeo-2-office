@@ -265,6 +265,10 @@ target/
 templates/*
 !templates/template_Isogeo.docx
 
+# thumbnails
+*.xlsx
+!thumbnails/tpl_thumbnails.xlsx
+
 # input folder
 input/*
 !input/README.md
@@ -272,7 +276,7 @@ input/*
 # output folder
 output/*
 !output/README.md
-*.xlsx
+
 
 # virtual environments
 env*
