@@ -106,18 +106,21 @@
             <widget class="QPushButton" name="btn_reinit">
              <property name="minimumSize">
               <size>
-               <width>33</width>
+               <width>50</width>
                <height>30</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>16777215</width>
-               <height>16777215</height>
+               <width>600</width>
+               <height>40</height>
               </size>
              </property>
              <property name="cursor">
               <cursorShape>PointingHandCursor</cursorShape>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::ClickFocus</enum>
              </property>
              <property name="toolTip">
               <string>Reset search form</string>
@@ -863,7 +866,7 @@
             <normaloff>:/IsogeoToOffice/resources/export/rocket.svg</normaloff>:/IsogeoToOffice/resources/export/rocket.svg</iconset>
           </property>
           <property name="autoDefault">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="default">
            <bool>true</bool>
@@ -1243,8 +1246,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>424</width>
-                <height>35</height>
+                <width>580</width>
+                <height>197</height>
                </rect>
               </property>
               <attribute name="icon">
@@ -1294,8 +1297,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>274</width>
-                <height>43</height>
+                <width>580</width>
+                <height>197</height>
                </rect>
               </property>
               <attribute name="icon">
@@ -1306,7 +1309,7 @@
                <string notr="true">Word</string>
               </attribute>
               <layout class="QFormLayout" name="formLayout_4">
-               <item row="0" column="0">
+               <item row="3" column="0">
                 <widget class="QLabel" name="lbl_word_tpl">
                  <property name="minimumSize">
                   <size>
@@ -1320,12 +1323,15 @@
                    <height>25</height>
                   </size>
                  </property>
+                 <property name="autoFillBackground">
+                  <bool>true</bool>
+                 </property>
                  <property name="text">
                   <string>Template to apply:</string>
                  </property>
                 </widget>
                </item>
-               <item row="0" column="1">
+               <item row="3" column="1">
                 <widget class="QComboBox" name="cbb_word_tpl">
                  <property name="minimumSize">
                   <size>
@@ -1347,6 +1353,72 @@
                  </property>
                 </widget>
                </item>
+               <item row="5" column="0">
+                <widget class="QLabel" name="lbl_thumbnails_edit">
+                 <property name="toolTip">
+                  <string>Open thumbnails matching table in Excel</string>
+                 </property>
+                 <property name="autoFillBackground">
+                  <bool>true</bool>
+                 </property>
+                 <property name="text">
+                  <string>Thumbnails table:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="1">
+                <widget class="QPushButton" name="btn_thumbnails_edit">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>150</width>
+                   <height>25</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>250</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
+                 <property name="focusPolicy">
+                  <enum>Qt::WheelFocus</enum>
+                 </property>
+                 <property name="contextMenuPolicy">
+                  <enum>Qt::NoContextMenu</enum>
+                 </property>
+                 <property name="toolTip">
+                  <string>Edit the thumbnails matching table in Excel</string>
+                 </property>
+                 <property name="layoutDirection">
+                  <enum>Qt::RightToLeft</enum>
+                 </property>
+                 <property name="autoFillBackground">
+                  <bool>true</bool>
+                 </property>
+                 <property name="text">
+                  <string>Edit the thumbnails matching table in Excel</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../../resources.qrc">
+                   <normaloff>:/IsogeoToOffice/resources/settings/table.svg</normaloff>:/IsogeoToOffice/resources/settings/table.svg</iconset>
+                 </property>
+                 <property name="default">
+                  <bool>false</bool>
+                 </property>
+                 <property name="flat">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
               </layout>
              </widget>
              <widget class="QWidget" name="tlb_section_xml">
@@ -1354,8 +1426,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>190</width>
-                <height>35</height>
+                <width>580</width>
+                <height>197</height>
                </rect>
               </property>
               <attribute name="icon">

@@ -136,6 +136,10 @@ class IsogeoToOffice_Main(QMainWindow):
                         )
         # -- Settings tab - Export -------------------------------------------
         self.ui.btn_directory_change.pressed.connect(partial(self.set_output_folder))
+        self.ui.btn_thumbnails_edit.pressed.connect(
+                                    partial(self.app_utils.open_dir_file,
+                                            path.join(app_dir,
+                                                      "thumbnails/thumbnails.xlsx")))
 
         # populate Word templates combobox
         for tpl in listdir(app_tpldir):

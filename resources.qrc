@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="IsogeoToOffice">
+    <file>resources/settings/table.svg</file>
     <file>resources/save.svg</file>
     <file>resources/settings/bars.svg</file>
     <file>resources/export/rocket.svg</file>
