@@ -701,6 +701,7 @@ class Ui_win_IsogeoToOffice(object):
         self.lbl_report.setText(_translate("win_IsogeoToOffice", "Report an issue on the bug tracker"))
         self.btn_log_dir.setToolTip(_translate("win_IsogeoToOffice", "Get the log file: \"log_isogeo_isogeo2office.log\""))
         self.btn_log_dir.setText(_translate("win_IsogeoToOffice", "LOG File"))
+        self.btn_report.setToolTip(_translate("win_IsogeoToOffice", "Report an issue on the bug tracker"))
         self.lbl_help.setText(_translate("win_IsogeoToOffice", "Open online application help"))
         self.btn_help.setToolTip(_translate("win_IsogeoToOffice", "Open online help in default browser"))
         self.lbl_credits.setText(_translate("win_IsogeoToOffice", "Open application credits"))

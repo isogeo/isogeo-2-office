@@ -1586,6 +1586,9 @@ p, li { white-space: pre-wrap; }
                  <property name="cursor">
                   <cursorShape>PointingHandCursor</cursorShape>
                  </property>
+                 <property name="toolTip">
+                  <string>Report an issue on the bug tracker</string>
+                 </property>
                  <property name="autoFillBackground">
                   <bool>true</bool>
                  </property>
