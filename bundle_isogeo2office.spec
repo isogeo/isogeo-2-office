@@ -6,6 +6,7 @@ block_cipher = None
 added_files = [('i18n', 'i18n'),
                ('resources', 'resources'),
                ('templates', 'templates'),
+               ('thumbnails/thumbnails.xlsx', 'thumbnails'),
               ]
 
 # -- PyInstaller process ------------------------------------------------------
