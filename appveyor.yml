@@ -83,7 +83,7 @@ build_script:
   - ps: new-item -Name "dist\\isogeo2office\\output" -ItemType directory 
 
   # Zip
-  - 7z a "IsogeoToOffice_v%APPVEYOR_BUILD_VERSION%_br-%APPVEYOR_REPO_BRANCH%_x%PYTHON_ARCH%.zip" %APPVEYOR_BUILD_FOLDER%\dist\*
+  - 7z a "IsogeoToOffice_v%APPVEYOR_REPO_BRANCH%_%APPVEYOR_BUILD_WORKER_IMAGE%_x%PYTHON_ARCH%.zip" %APPVEYOR_BUILD_FOLDER%\dist\*
 
 test: off
 
@@ -94,4 +94,4 @@ test: off
 artifacts:
   # Archive the generated packages in the ci.appveyor.com build report.
   - path: 'IsogeoToOffice_v$(APPVEYOR_REPO_BRANCH)_$(APPVEYOR_BUILD_WORKER_IMAGE)_x%PYTHON_ARCH%.zip'
-    name:  'IsogeoToOffice_v$(APPVEYOR_REPO_BRANCH)_$(APPVEYOR_BUILD_WORKER_IMAGE)_x%PYTHON_ARCH%.zip'
+    name: 'IsogeoToOffice_v$(APPVEYOR_REPO_BRANCH)_$(APPVEYOR_BUILD_WORKER_IMAGE)_x%PYTHON_ARCH%.zip'
