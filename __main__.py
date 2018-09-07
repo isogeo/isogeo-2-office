@@ -32,7 +32,6 @@ from PyQt5.QtWidgets import (QApplication, QComboBox, QMainWindow,
 # submodules - functional
 from modules import (IsogeoApiMngr, ThreadAppProperties, ThreadExportExcel,
                      ThreadExportWord, ThreadExportXml, ThreadSearch,
-                     isogeo2office_utils)
 # submodules - UI
 from modules.ui.auth.auth_dlg import Auth
 from modules.ui.credits.credits_dlg import Credits
@@ -447,6 +446,15 @@ class IsogeoToOffice_Main(QMainWindow):
             self.thread_export_xml.start()
         else:
             pass
+
+        # THUMBNAILS
+        logger.debug("Thumbnails - Preparation")
+        logger.debug("Thumbnails - Output file: {}".format(thumbnails_filepath))
+        self.thread_thumbnails_gen = ThreadThumbnails(search_to_be_exported,
+                                                      output_path=thumbnails_filepath,
+                                                      thumbnails=thumbnails_loaded)
+        self.thread_thumbnails_gen.sig_step.connect(self.update_status_bar)
+        self.thread_thumbnails_gen.start()
 
     # -- UI utils -------------------------------------------------------------
     def closeEvent(self, event_sent):
