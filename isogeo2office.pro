@@ -8,7 +8,11 @@ SOURCES = ./__main__.py \
 		  ./modules/export/isogeo2docx.py \
 		  ./modules/export/isogeo2xlsx.py \
 		  ./modules/export/isogeo_stats.py \
+		  ./modules/utils/api.py \
 		  ./modules/utils/utils.py \
+		  ./modules/ui/auth/ui_authentication.py \
+		  ./modules/ui/credits/ui_credits.py \
+		  ./modules/ui/main/ui_win_IsogeoToOffice.py \
 
 TRANSLATIONS = ./i18n/IsogeoToOffice_fr.ts \
 	           ./i18n/IsogeoToOffice_en.ts

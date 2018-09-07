@@ -181,6 +181,7 @@ class IsogeoApiMngr(object):
                                                              int(self.ui_auth_form.chb_isogeo_editor.isChecked())
                                                              )
                                   )
+        self.ui_auth_form.btn_ok_cancel.clicked.connect(self.ui_auth_form.close)
         # button to request an account by email
         #self.ui_auth_form.btn_account_new.pressed.connect(
         #    partial(app_utils.mail_to_isogeo, lang=self.lang))
