@@ -379,7 +379,7 @@ class ThreadThumbnails(QThread):
         head_col3 = WriteOnlyCell(ws, value="img_abs_path")
         # headers comments
         comment = Comment(text="Do not modify worksheet structure",
-                        author="Isogeo")
+                          author="Isogeo")
 
         head_col1.comment = head_col2.comment = head_col3.comment = comment
 
@@ -389,7 +389,7 @@ class ThreadThumbnails(QThread):
         ws.append((head_col1,
                    head_col2,
                    head_col3)
-        )
+                  )
 
         # parsing metadata
         li_exported_md = []
@@ -397,7 +397,7 @@ class ThreadThumbnails(QThread):
             # show progression
             md_title = md.get("title", "No title")
             self.sig_step.emit(1, self.tr("Preparing thumbnail table for: {}")
-                                          .format(md_title))
+                               .format(md_title))
             # thumbnail matching
             thumbnail_abs_path = self.thumbnails.get(md.get("_id"),
                                                      "  ")[1]

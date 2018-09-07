@@ -32,8 +32,13 @@ class TestIsogeo2officeUtils(unittest.TestCase):
         # """Executed before each test."""
         self.utils = isogeo2office_utils()
         self.fixtures_dir = path.normpath(r"tests/fixtures")
-        self.ini_file = path.normpath(r"tests/fixtures/settings_TPL.ini")
-        self.ini_out = mkstemp(prefix="i2o_test_settings_")
+        # thumbnails tables
+        self.thumbs_complete = path.normpath(path.join(self.fixtures_dir,
+                                                       "thumbnails_complete.xlsx"))
+        self.thumbs_bad_sheetname = path.normpath(path.join(self.fixtures_dir,
+                                                            "thumbnails_bad_worksheetName.xlsx"))
+        self.thumbs_bad_header = path.normpath(path.join(self.fixtures_dir,
+                                                         "thumbnails_bad_headers.xlsx"))
 
     def tearDown(self):
         """Executed after each test."""
@@ -107,3 +112,27 @@ class TestIsogeo2officeUtils(unittest.TestCase):
         # check
         ET.fromstring("<root>{}</root>".format(clean_xml_soft))
         ET.fromstring("<root>{}</root>".format(clean_xml_strict))
+
+    #  -- Thumbnails ----------------------------------------------------------
+    def test_thumbnails_loader_complete(self):
+        """Test filenames errors"""
+        expected_dict = {'1234569732454beca1ab3ec1958ffa50': ('title-slugged',
+                                                              'resources/table.svg')
+                                                              }
+        self.assertDictEqual(self.utils.thumbnails_mngr(self.thumbs_complete),
+                             expected_dict)
+
+    def test_thumbnails_loader_bad_notTable(self):
+        """Test filenames errors"""
+        with self.assertRaises(FileNotFoundError):
+            self.utils.thumbnails_mngr(r"table_thumbnails.xlsx")
+
+    def test_thumbnails_loader_bad_sheetname(self):
+        """Test filenames errors"""
+        with self.assertRaises(KeyError):
+            self.utils.thumbnails_mngr(self.thumbs_bad_sheetname)
+
+    def test_thumbnails_loader_bad_headers(self):
+        """Test filenames errors"""
+        with self.assertRaises(KeyError):
+            self.utils.thumbnails_mngr(self.thumbs_bad_header)

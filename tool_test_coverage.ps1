@@ -16,17 +16,17 @@ pip install --upgrade -r .\tests\requirements_test.txt
 
 "-- STEP -- Python code style"
 # main
-  pycodestyle __main__.py --ignore="E265,E501" --statistics --show-source
-  # threads
-  pycodestyle modules/threads.py --ignore="E265,E501" --statistics --show-source
-  # export modules
-  pycodestyle modules/export/isogeo2docx.py --ignore="E265,E501" --statistics --show-source
-  pycodestyle modules/export/isogeo2xlsx.py --ignore="E265,E501" --statistics --show-source
-  pycodestyle modules/export/isogeo_stats.py --ignore="E265,E501" --statistics --show-source
-  pycodestyle modules/export/formatter.py --ignore="E265,E501" --statistics --show-source
-  # utils
-  pycodestyle modules/utils/api.py --ignore="E265,E501" --statistics --show-source
-  pycodestyle modules/utils/utils.py --ignore="E265,E501" --statistics --show-source
+pycodestyle __main__.py --ignore="E265,E501" --statistics --show-source
+# threads
+pycodestyle modules/threads.py --ignore="E265,E501" --statistics --show-source
+# export modules
+pycodestyle modules/export/isogeo2docx.py --ignore="E265,E501" --statistics --show-source
+pycodestyle modules/export/isogeo2xlsx.py --ignore="E265,E501" --statistics --show-source
+pycodestyle modules/export/isogeo_stats.py --ignore="E265,E501" --statistics --show-source
+pycodestyle modules/export/formatter.py --ignore="E265,E501" --statistics --show-source
+# utils
+pycodestyle modules/utils/api.py --ignore="E265,E501" --statistics --show-source
+pycodestyle modules/utils/utils.py --ignore="E265,E501" --statistics --show-source
 
 "-- STEP -- Fixturing"
 python .\tests\fixturing.py

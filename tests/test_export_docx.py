@@ -69,7 +69,7 @@ class TestExportDocx(unittest.TestCase):
             search = json.loads(f.read())
         # load template
         tpl = DocxTemplate(self.word_template)
-        url_oc = "https://open.isogeo.com/s/6dd32c7c4661408280d5b35d29cf0ca3/PnWq0Kg7b3L2l7-XaYyDwh2BHo5i0"
+        url_oc = "https://open.isogeo.com/"
         # run
         for md in search.get('results'):
             # output path
@@ -77,7 +77,7 @@ class TestExportDocx(unittest.TestCase):
             out_docx_path = out_docx[1] + ".docx"
             # templating
             tpl = DocxTemplate(self.word_template)
-            self.to_docx.md2docx(tpl, md, url_oc, "http://www.isogeo.com/images/logo.png")
+            self.to_docx.md2docx(tpl, md, url_oc)
             # save
             tpl.save(out_docx_path)
             del tpl

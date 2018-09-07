@@ -184,7 +184,7 @@ class isogeo2office_utils(IsogeoUtils):
 
     def thumbnails_mngr(self, in_xlsx_table: str = "thumbnails/thumbnails.xlsx") -> dict:
         """Manage the thumbnails table (see: #10): check, read and return a dict.
-        
+
         :param str in_xlsx_table: path to the input thumbnails table
         """
         thumbnails_dict = {}
@@ -204,7 +204,7 @@ class isogeo2office_utils(IsogeoUtils):
 
         # load worksheet and check headers
         ws = wb["i2o_thumbnails"]
-        if not any((ws._get_cell(1, 1).value == "isogeo_uuid",
+        if not all((ws._get_cell(1, 1).value == "isogeo_uuid",
                     ws._get_cell(1, 2).value == "isogeo_title_slugged",
                     ws._get_cell(1, 3).value == "img_abs_path")):
             logger.error("Thumbnails workbook ({}) doesn't have the good headers"
