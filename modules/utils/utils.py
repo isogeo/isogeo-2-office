@@ -182,7 +182,7 @@ class isogeo2office_utils(IsogeoUtils):
         # get the clean url
         return url_input[0:url_input.index(url_input.rsplit('/')[6])]
 
-    def thumbnails_mngr(self, in_xlsx_table: str = "thumbnails/tpl_thumbnails.xlsx") -> dict:
+    def thumbnails_mngr(self, in_xlsx_table: str = "thumbnails/thumbnails.xlsx") -> dict:
         """Manage the thumbnails table (see: #10): check, read and return a dict.
         
         :param str in_xlsx_table: path to the input thumbnails table
@@ -193,29 +193,28 @@ class isogeo2office_utils(IsogeoUtils):
             raise FileNotFoundError(in_xlsx_table)
 
         # load XLSX and check structure
+        # with load_workbook(path.realpath(in_xlsx_table), read_only=True) as wb:
         wb = load_workbook(path.realpath(in_xlsx_table),
                            read_only=True)
         if "i2o_thumbnails" not in wb.sheetnames:
-            logger.error(self.tr("Thumbnails workbook ({}) doesn't have the good worksheet name"))
-            return False
+            logger.error("Thumbnails workbook ({}) doesn't have the good worksheet name"
+                         .format(in_xlsx_table))
+            wb.close()
+            raise KeyError("Thumbnails - Bad worksheet name")
 
-        # load worksheet and check structure
+        # load worksheet and check headers
         ws = wb["i2o_thumbnails"]
-        try:
-            assert(ws._get_cell(1, 1).value == "isogeo_uuid"),\
-                self.tr("First column must be ".format("isogeo_uuid"))
-            assert(ws._get_cell(1, 2).value == "isogeo_title_slugged"),\
-                self.tr("Second column must be ".format("isogeo_title_slugged"))
-            assert(ws._get_cell(1, 3).value == "img_abs_path"),\
-                self.tr("Third column must be ".format("img_abs_path"))
-        except AssertionError as e:
-            print(e)
-            return False
+        if not any((ws._get_cell(1, 1).value == "isogeo_uuid",
+                    ws._get_cell(1, 2).value == "isogeo_title_slugged",
+                    ws._get_cell(1, 3).value == "img_abs_path")):
+            logger.error("Thumbnails workbook ({}) doesn't have the good headers"
+                         .format(in_xlsx_table))
+            raise KeyError("Thumbnails - Bad worksheet headers")
 
         # parse worksheet and populate final dict
         for row in ws.iter_rows(row_offset=1):
-            if row[0].value:
-                thumbnails_dict[row[0].value] = row[2].value
+            if len(row) == 3 and row[0].value:
+                thumbnails_dict[row[0].value] = (row[1].value, row[2].value)
             else:
                 logger.debug("Thumbnails reader: empty cell spotted. Quit reading.")
                 break

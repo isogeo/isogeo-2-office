@@ -32,6 +32,7 @@ from PyQt5.QtWidgets import (QApplication, QComboBox, QMainWindow,
 # submodules - functional
 from modules import (IsogeoApiMngr, ThreadAppProperties, ThreadExportExcel,
                      ThreadExportWord, ThreadExportXml, ThreadSearch,
+                     ThreadThumbnails, isogeo2office_utils)
 # submodules - UI
 from modules.ui.auth.auth_dlg import Auth
 from modules.ui.credits.credits_dlg import Credits
@@ -393,6 +394,50 @@ class IsogeoToOffice_Main(QMainWindow):
         logger.debug("UUID option: {}"
                      .format(opt_md_uuid))
 
+        # thumbnails
+        thumbnails_filepath = path.join(app_dir, "thumbnails/thumbnails.xlsx")
+        try:
+            thumbnails_loaded = self.app_utils.thumbnails_mngr(thumbnails_filepath)
+        except FileNotFoundError as e:
+            QMessageBox.warning(self,
+                                self.tr("Thumbnails - Matching table not found"),
+                                self.tr("The thumbnails matching table has not "
+                                        "been found in the exepected path: {}."
+                                        "{}{} {}"
+                                        .format(thumbnails_filepath,  
+                                                self.tr("\nA new table will be created but "
+                                                        "previous data will be lost."),
+                                                self.tr("\nError message:"),
+                                                e))
+            )
+            thumbnails_loaded = {None: None}
+        except KeyError as e:
+            QMessageBox.warning(self,
+                                self.tr("Thumbnails - Table structure"),
+                                self.tr("The thumbnails matching table {} is "
+                                        "not compliant with the expected structure."
+                                        "{}{} {}"
+                                        .format(thumbnails_filepath,
+                                                self.tr("\nA new table will be created but "
+                                                        "previous data will be lost."),
+                                                self.tr("\nError message:"),
+                                                e))
+            )
+        except Exception as e:
+            QMessageBox.warning(self,
+                                self.tr("Thumbnails - Unknown error"),
+                                self.tr("An unknown error occurred reading the"
+                                        "thumbnails matching table {}. "
+                                        "Please report it."
+                                        "{}{} {}"
+                                        .format(thumbnails_filepath,
+                                                self.tr("\nA new table will be created but "
+                                                        "previous data will be lost."),
+                                                self.tr("\nError message:"),
+                                                e))
+            )
+            thumbnails_loaded = {None: None}
+
         # EXCEL
         if self.ui.chb_output_excel.isChecked():
             logger.debug("Excel - Preparation")
@@ -416,14 +461,11 @@ class IsogeoToOffice_Main(QMainWindow):
             # template
             template_path = self.ui.cbb_word_tpl.itemData(self.ui.cbb_word_tpl.currentIndex())
             logger.debug("Word - Template choosen: {}".format(template_path))
-            # thumbnails
-            thumbnails_table = path.realpath(r"thumbnails/tpl_thumbnails.xlsx")
-            thumbnails = self.app_utils.thumbnails_mngr(thumbnails_table)
             # instanciate thread
             self.thread_export_docx = ThreadExportWord(search_to_be_exported,
                                                        output_docx_filepath,
                                                        tpl_path=template_path,
-                                                       thumbnails=thumbnails,
+                                                       thumbnails=thumbnails_loaded,
                                                        timestamp=horodatage,
                                                        length_uuid=opt_md_uuid)
             self.thread_export_docx.sig_step.connect(self.update_status_bar)
