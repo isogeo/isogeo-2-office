@@ -396,7 +396,7 @@ class ThreadThumbnails(QThread):
         for md in self.search.get("results"):
             # show progression
             md_title = md.get("title", "No title")
-            self.sig_step.emit(1, self.tr("Preparing thumbnail table for: {}")
+            self.sig_step.emit(0, self.tr("Preparing thumbnail table for: {}")
                                .format(md_title))
             # thumbnail matching
             thumbnail_abs_path = self.thumbnails.get(md.get("_id"),

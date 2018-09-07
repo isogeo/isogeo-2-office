@@ -136,10 +136,9 @@ class IsogeoToOffice_Main(QMainWindow):
                         )
         # -- Settings tab - Export -------------------------------------------
         self.ui.btn_directory_change.pressed.connect(partial(self.set_output_folder))
-        self.ui.btn_thumbnails_edit.pressed.connect(
-                                    partial(self.app_utils.open_dir_file,
-                                            path.join(app_dir,
-                                                      "thumbnails/thumbnails.xlsx")))
+        self.ui.btn_thumbnails_edit.pressed.connect(partial(self.app_utils.open_dir_file,
+                                                            path.join(app_dir,
+                                                                      "thumbnails/thumbnails.xlsx")))
 
         # populate Word templates combobox
         for tpl in listdir(app_tpldir):
@@ -404,12 +403,14 @@ class IsogeoToOffice_Main(QMainWindow):
                                 self.tr("The thumbnails matching table has not "
                                         "been found in the exepected path: {}."
                                         "{}{} {}"
-                                        .format(thumbnails_filepath,  
+                                        .format(thumbnails_filepath,
                                                 self.tr("\nA new table will be created but "
                                                         "previous data will be lost."),
                                                 self.tr("\nError message:"),
-                                                e))
-            )
+                                                e
+                                                )
+                                        )
+                                )
             thumbnails_loaded = {None: None}
         except KeyError as e:
             QMessageBox.warning(self,
@@ -421,8 +422,10 @@ class IsogeoToOffice_Main(QMainWindow):
                                                 self.tr("\nA new table will be created but "
                                                         "previous data will be lost."),
                                                 self.tr("\nError message:"),
-                                                e))
-            )
+                                                e)
+                                        )
+                                )
+            thumbnails_loaded = {None: None}
         except Exception as e:
             QMessageBox.warning(self,
                                 self.tr("Thumbnails - Unknown error"),
@@ -434,8 +437,9 @@ class IsogeoToOffice_Main(QMainWindow):
                                                 self.tr("\nA new table will be created but "
                                                         "previous data will be lost."),
                                                 self.tr("\nError message:"),
-                                                e))
-            )
+                                                e)
+                                        )
+                                )
             thumbnails_loaded = {None: None}
 
         # EXCEL
