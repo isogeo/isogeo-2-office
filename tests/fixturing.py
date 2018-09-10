@@ -17,6 +17,23 @@ if not path.exists("_logs"):
 if not path.exists("_auth"):
     mkdir(r"_auth")
 
+# auth fixture
+if not path.exists("_auth/client_secrets.json"):
+    # fake dict
+    auth_dict = {"web": {
+                    "client_id": share_id,
+                    "client_secret": share_token,
+                    "auth_uri": "https://id.api.isogeo.com/oauth/authorize",
+                    "token_uri": "https://id.api.isogeo.com/oauth/token"
+                    }
+                }
+
+    # json dump
+    with open("_auth/client_secrets.json", "w") as json_auth:
+        json.dump(auth_dict,
+                  json_auth)
+    
+
 # instanciating the class
 isogeo = Isogeo(client_id=share_id,
                 client_secret=share_token)
