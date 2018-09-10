@@ -4,6 +4,9 @@
 #
 ###############################################
 
+# ENV VARS
+$env:PYTHONOPTIMIZE = 2;
+
 # EXECUTION
 "-- STEP -- Creating temp virtualenv to perform dependencies packaging"
 py -3 -m venv env3_packaging

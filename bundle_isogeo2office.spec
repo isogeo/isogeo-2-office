@@ -10,7 +10,7 @@ added_files = [('i18n', 'i18n'),
               ]
 
 # -- PyInstaller process ------------------------------------------------------
-a = Analysis(['__main__.py'],
+a = Analysis(['IsogeoToOffice.py'],
              pathex=[],
              binaries=[],
              datas=added_files,

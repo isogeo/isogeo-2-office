@@ -3,103 +3,103 @@
 <context>
     <name>IsogeoToOffice_Main</name>
     <message>
-        <location filename="../__main__.py" line="158"/>
+        <location filename="../IsogeoToOffice.py" line="157"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="196"/>
+        <location filename="../IsogeoToOffice.py" line="195"/>
         <source>Authentication - Credentials missing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="659"/>
+        <location filename="../IsogeoToOffice.py" line="658"/>
         <source>Export {} metadata</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="344"/>
+        <location filename="../IsogeoToOffice.py" line="343"/>
         <source>Export option is missing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="344"/>
+        <location filename="../IsogeoToOffice.py" line="343"/>
         <source>At least one export option required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="196"/>
+        <location filename="../IsogeoToOffice.py" line="195"/>
         <source>Authentication to Isogeo API has failed. Credentials seem to be missing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="375"/>
+        <location filename="../IsogeoToOffice.py" line="374"/>
         <source>No date (overwrite)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="378"/>
+        <location filename="../IsogeoToOffice.py" line="377"/>
         <source>Day</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="383"/>
+        <location filename="../IsogeoToOffice.py" line="382"/>
         <source>Datetime</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="623"/>
+        <location filename="../IsogeoToOffice.py" line="622"/>
         <source>Application information has been retrieved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="316"/>
+        <location filename="../IsogeoToOffice.py" line="315"/>
         <source>Waiting for Isogeo API</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="706"/>
+        <location filename="../IsogeoToOffice.py" line="705"/>
         <source>Search form updated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="405"/>
+        <location filename="../IsogeoToOffice.py" line="404"/>
         <source>Thumbnails - Matching table not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="405"/>
+        <location filename="../IsogeoToOffice.py" line="404"/>
         <source>The thumbnails matching table has not been found in the exepected path: {}.{}{} {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="420"/>
+        <location filename="../IsogeoToOffice.py" line="419"/>
         <source>Thumbnails - Table structure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="420"/>
+        <location filename="../IsogeoToOffice.py" line="419"/>
         <source>The thumbnails matching table {} is not compliant with the expected structure.{}{} {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="434"/>
+        <location filename="../IsogeoToOffice.py" line="433"/>
         <source>Thumbnails - Unknown error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="434"/>
+        <location filename="../IsogeoToOffice.py" line="433"/>
         <source>An unknown error occurred reading thethumbnails matching table {}. Please report it.{}{} {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="434"/>
+        <location filename="../IsogeoToOffice.py" line="433"/>
         <source>
 A new table will be created but previous data will be lost.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="434"/>
+        <location filename="../IsogeoToOffice.py" line="433"/>
         <source>
 Error message:</source>
         <translation type="unfinished"></translation>
@@ -597,6 +597,16 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="718"/>
         <source>Edit the thumbnails matching table in Excel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.ui" line="1243"/>
+        <source>Minimize application into systray icon (near to the clock)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.ui" line="1252"/>
+        <source>Minimize application during export process</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

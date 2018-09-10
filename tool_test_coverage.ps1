@@ -16,7 +16,7 @@ pip install --upgrade -r .\tests\requirements_test.txt
 
 "-- STEP -- Python code style"
 # main
-pycodestyle __main__.py --ignore="E265,E501" --statistics --show-source
+pycodestyle .\IsogeoToOffice.py --ignore="E265,E501" --statistics --show-source
 # threads
 pycodestyle modules/threads.py --ignore="E265,E501" --statistics --show-source
 # export modules

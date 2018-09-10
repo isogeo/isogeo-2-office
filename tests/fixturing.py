@@ -1,7 +1,7 @@
 # Standard library
 import json
 import logging
-from os import environ, path
+from os import environ, mkdir, path
 
 # Isogeo
 from isogeo_pysdk import Isogeo
@@ -9,6 +9,13 @@ from isogeo_pysdk import Isogeo
 # -- FIXTURES -----------------------------------------------------------------
 share_id = environ.get('ISOGEO_API_DEV_ID')
 share_token = environ.get('ISOGEO_API_DEV_SECRET')
+
+# required dirs
+if not path.exists("_logs"):
+    mkdir(r"_logs")
+
+if not path.exists("_auth"):
+    mkdir(r"_auth")
 
 # instanciating the class
 isogeo = Isogeo(client_id=share_id,

@@ -16,7 +16,7 @@ script:
   # unit tests
   - coverage run -m unittest discover -s tests/
   # main
-  - pycodestyle __main__.py --ignore="E265,E501" --statistics --show-source
+  - pycodestyle IsogeoToOffice.py --ignore="E265,E501" --statistics --show-source
   # threads
   - pycodestyle modules/threads.py --ignore="E265,E501" --statistics --show-source
   # export modules

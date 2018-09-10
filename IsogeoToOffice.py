@@ -83,7 +83,6 @@ class IsogeoToOffice_Main(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        #self.ui = Ui_tabs_IsogeoToOffice()
         self.ui = Ui_win_IsogeoToOffice()
         self.ui.setupUi(self)
         # Settings

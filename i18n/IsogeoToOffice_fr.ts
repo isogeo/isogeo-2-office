@@ -1,106 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="fr_FR" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.1" language="fr_FR">
 <context>
     <name>IsogeoToOffice_Main</name>
     <message>
-        <location filename="../__main__.py" line="158"/>
+        <location filename="../IsogeoToOffice.py" line="157"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation>TITRE DU PROBLEME</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="196"/>
+        <location filename="../IsogeoToOffice.py" line="195"/>
         <source>Authentication - Credentials missing</source>
         <translation>Authentification - Paramètres absents</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="659"/>
+        <location filename="../IsogeoToOffice.py" line="658"/>
         <source>Export {} metadata</source>
         <translation>Exporter {} métadonnées</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="344"/>
+        <location filename="../IsogeoToOffice.py" line="343"/>
         <source>Export option is missing</source>
         <translation>Aucune option d&apos;export</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="344"/>
+        <location filename="../IsogeoToOffice.py" line="343"/>
         <source>At least one export option required.</source>
         <translation>Au moins un format d&apos;export requis.</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="196"/>
+        <location filename="../IsogeoToOffice.py" line="195"/>
         <source>Authentication to Isogeo API has failed. Credentials seem to be missing.</source>
         <translation>L&apos;authentification à l&apos;API Isogeo a échoué. Les paramètres d&apos;authentification semblent absents.</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="375"/>
+        <location filename="../IsogeoToOffice.py" line="374"/>
         <source>No date (overwrite)</source>
         <translation>Pas de date (écrasement)</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="378"/>
+        <location filename="../IsogeoToOffice.py" line="377"/>
         <source>Day</source>
         <translation>Date du jour</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="383"/>
+        <location filename="../IsogeoToOffice.py" line="382"/>
         <source>Datetime</source>
         <translation>Date et heure (horodatage)</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="623"/>
+        <location filename="../IsogeoToOffice.py" line="622"/>
         <source>Application information has been retrieved</source>
         <translation>Les informations de l&apos;application ont été récupérées</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="316"/>
+        <location filename="../IsogeoToOffice.py" line="315"/>
         <source>Waiting for Isogeo API</source>
         <translation>En attente de l&apos;API Isogeo</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="706"/>
+        <location filename="../IsogeoToOffice.py" line="705"/>
         <source>Search form updated</source>
         <translation>Formulaire de recherche mis à jour</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="405"/>
+        <location filename="../IsogeoToOffice.py" line="404"/>
         <source>Thumbnails - Matching table not found</source>
         <translation>Vignettes - Table de correspondance non trouvée</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="405"/>
+        <location filename="../IsogeoToOffice.py" line="404"/>
         <source>The thumbnails matching table has not been found in the exepected path: {}.{}{} {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="420"/>
+        <location filename="../IsogeoToOffice.py" line="419"/>
         <source>Thumbnails - Table structure</source>
         <translation>Vignettes - Structure de la table de correspondance</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="420"/>
+        <location filename="../IsogeoToOffice.py" line="419"/>
         <source>The thumbnails matching table {} is not compliant with the expected structure.{}{} {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="434"/>
+        <location filename="../IsogeoToOffice.py" line="433"/>
         <source>Thumbnails - Unknown error</source>
         <translation type="unfinished">Vignettes - Erreur inconnue</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="434"/>
+        <location filename="../IsogeoToOffice.py" line="433"/>
         <source>An unknown error occurred reading thethumbnails matching table {}. Please report it.{}{} {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="434"/>
+        <location filename="../IsogeoToOffice.py" line="433"/>
         <source>
 A new table will be created but previous data will be lost.</source>
         <translation type="unfinished">
 Une nouvelle table de correspondance sera créée mais les données existantes seront perdues.</translation>
     </message>
     <message>
-        <location filename="../__main__.py" line="434"/>
+        <location filename="../IsogeoToOffice.py" line="433"/>
         <source>
 Error message:</source>
         <translation>
@@ -256,9 +257,9 @@ Message d&apos;erreur :</translation>
 &lt;body&gt;
 
 &lt;ul&gt;
-<byte value="x9"/>&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
+	&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
+	&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
+	&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
 &lt;/ul&gt; 
 
 &lt;/body&gt;
@@ -269,9 +270,9 @@ Message d&apos;erreur :</translation>
 &lt;body&gt;
 
 &lt;ul&gt;
-<byte value="x9"/>&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
+	&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
+	&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
+	&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
 &lt;/ul&gt; 
 
 &lt;/body&gt;
@@ -303,9 +304,9 @@ Message d&apos;erreur :</translation>
 &lt;body&gt;
 
 &lt;ul&gt;
-<byte value="x9"/>&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
+	&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
+	&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
+	&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
 &lt;/ul&gt; 
 
 &lt;/body&gt;
@@ -624,6 +625,16 @@ p, li { white-space: pre-wrap; }
         <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="718"/>
         <source>Edit the thumbnails matching table in Excel</source>
         <translation>Editer la table de correspondance des vignettes dans Excel</translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.ui" line="1243"/>
+        <source>Minimize application into systray icon (near to the clock)</source>
+        <translation>Réduire l&apos;application dans la zone de notification (à côté de l&apos;heure) pendant l&apos;export</translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.ui" line="1252"/>
+        <source>Minimize application during export process</source>
+        <translation>Réduire l&apos;application pendant l&apos;export</translation>
     </message>
 </context>
 </TS>
