@@ -31,7 +31,7 @@ print(app.settings.childGroups())
 print(app.settings.allKeys())
 
 settings_cleaner(settings_class=app.settings,
-                 group_to_remove="log")
+                 group_to_remove="")
 
 print(app.settings.childGroups())
 
