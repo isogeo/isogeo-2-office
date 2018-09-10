@@ -160,6 +160,11 @@ class ThreadExportExcel(QThread):
             # show progression
             md_title = md.get("title", "No title")
             self.sig_step.emit(1, self.tr("Processing Excel: {}").format(md_title))
+            # add edit link
+            md["link_edit"] = app_utils.get_edit_url(md_id=md.get("_id"),
+                                                     md_type=md.get("type"),
+                                                     owner_id=md.get("_creator").get("_id"))
+
             # store metadata
             wb.store_metadatas(md)
 

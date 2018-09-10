@@ -22,6 +22,7 @@ from datetime import datetime
 from itertools import zip_longest
 import logging
 import re
+from urllib.parse import urlparse
 from xml.sax.saxutils import escape
 
 # 3rd party library
@@ -214,6 +215,23 @@ class IsogeoFormatter(object):
         else:
             pass
         return clean_version
+
+    # ------------ Hyperlinks -------------------------------------------------
+    def url_edit(self, input_link: str, output_type: str = "xlsx"):
+        """
+        """
+        if output_type == "xlsx":
+            try:
+                urlparse(input_link)
+                link_edit = input_link
+            except:
+                pass
+            out_hyperlink= r'=HYPERLINK("{0}","{1}")'.format(link_edit,
+                                                             "Editer")
+        else:
+            return None
+        
+        return out_hyperlink
 
 
 # ###############################################################################

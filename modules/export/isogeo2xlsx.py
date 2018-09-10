@@ -402,7 +402,6 @@ class Isogeo2xlsx(Workbook):
             pass
 
     # ------------ Writing metadata ---------------------
-
     def store_metadatas(self, metadata: dict):
         """Write metadata into the worksheet.
 
@@ -633,10 +632,8 @@ class Isogeo2xlsx(Workbook):
         ws["AK{}".format(idx)] = "action:other" in tags
 
         # LINKS
-        link_edit = r'=HYPERLINK("{0}","{1}")'\
-                    .format("https://app.isogeo.com/resources/" + md.get("_id"),
-                            "Editer")
-        ws["AL{}".format(idx)] = link_edit
+        ws["AL{}".format(idx)] = self.fmt.url_edit(input_link=md.get("link_edit"),
+                                                   output_type="xlsx")
         ws["AL{}".format(idx)].style = "Hyperlink"
 
         link_visu = r'=HYPERLINK("{0}","{1}")'.format(self.url_base + "/m/" + md.get("_id"),
@@ -862,9 +859,8 @@ class Isogeo2xlsx(Workbook):
         ws["AG{}".format(idx)] = "action:other" in tags
 
         # LINKS
-        link_edit = r'=HYPERLINK("{0}","{1}")'.format("https://app.isogeo.com/resources/" + md.get("_id"),
-                                                      "Editer")
-        ws["AH{}".format(idx)] = link_edit
+        ws["AH{}".format(idx)] = self.fmt.url_edit(input_link=md.get("link_edit"),
+                                                   output_type="xlsx")
         ws["AH{}".format(idx)].style = "Hyperlink"
 
         link_visu = r'=HYPERLINK("{0}","{1}")'.format(self.url_base + "/m/" + md.get("_id"),
@@ -1042,9 +1038,8 @@ class Isogeo2xlsx(Workbook):
         ws["V{}".format(idx)] = "action:other" in tags
 
         # LINKS
-        link_edit = r'=HYPERLINK("{0}","{1}")'.format("https://app.isogeo.com/resources/" + md.get("_id"),
-                                                      "Editer")
-        ws["W{}".format(idx)] = link_edit
+        ws["W{}".format(idx)] = self.fmt.url_edit(input_link=md.get("link_edit"),
+                                                  output_type="xlsx")
         ws["W{}".format(idx)].style = "Hyperlink"
 
         link_visu = r'=HYPERLINK("{0}","{1}")' \
@@ -1183,9 +1178,8 @@ class Isogeo2xlsx(Workbook):
         ws["R{}".format(idx)] = "action:other" in tags
 
         # LINKS
-        link_edit = r'=HYPERLINK("{0}","{1}")'.format("https://app.isogeo.com/resources/" + md.get("_id"),
-                                                      "Editer")
-        ws["S{}".format(idx)] = link_edit
+        ws["S{}".format(idx)] = self.fmt.url_edit(input_link=md.get("link_edit"),
+                                                  output_type="xlsx")
         ws["S{}".format(idx)].style = "Hyperlink"
 
         link_visu = r'=HYPERLINK("{0}","{1}")'.format(self.url_base + "/m/" + md.get("_id"),
@@ -1264,8 +1258,7 @@ class Isogeo2xlsx(Workbook):
             ws["A{}".format(self.idx_fa)] = fa
             ws["B{}".format(self.idx_fa)] = frq_names.get(fa)
 
-    # ------------ Customize worksheet ---------------------------------------
-
+    # ------------ Customize worksheet ----------------------------------------
     def tunning_worksheets(self):
         """Automate"""
         for sheet in self.worksheets:
