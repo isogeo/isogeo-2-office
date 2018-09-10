@@ -11,6 +11,7 @@ install:
 
 # run tests
 script:
+  - xvfb-run make test
   # get fixtures
   - python tests/fixturing.py
   # unit tests
