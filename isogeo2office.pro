@@ -13,6 +13,7 @@ SOURCES = ./IsogeoToOffice.py \
 		  ./modules/ui/auth/ui_authentication.py \
 		  ./modules/ui/credits/ui_credits.py \
 		  ./modules/ui/main/ui_win_IsogeoToOffice.py \
+		  ./modules/ui/systray/ui_systraymenu.py \
 
 TRANSLATIONS = ./i18n/IsogeoToOffice_fr.ts \
 	           ./i18n/IsogeoToOffice_en.ts
