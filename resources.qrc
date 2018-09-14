@@ -1,5 +1,9 @@
 <RCC>
   <qresource prefix="IsogeoToOffice">
+    <file>resources/systray/window-close-o.svg</file>
+    <file>resources/systray/window-minimize.svg</file>
+    <file>resources/systray/window-restore.svg</file>
+    <file>resources/favicon.png</file>
     <file>resources/settings/table.svg</file>
     <file>resources/save.svg</file>
     <file>resources/settings/bars.svg</file>

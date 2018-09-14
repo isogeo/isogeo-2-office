@@ -21,13 +21,14 @@ from functools import partial
 from logging.handlers import RotatingFileHandler
 from os import listdir, path
 
+# 3rd party
 import qdarkstyle
 from isogeo_pysdk import __version__ as pysdk_version
 from PyQt5.QtCore import (QLocale, QSettings, QThread, QTranslator,
                           pyqtSignal, pyqtSlot)
 from PyQt5.QtGui import QCloseEvent, QIcon
 from PyQt5.QtWidgets import (QApplication, QComboBox, QMainWindow,
-                             QMessageBox, QSystemTrayIcon)
+                             QMessageBox)
 
 # submodules - functional
 from modules import (IsogeoApiMngr, ThreadAppProperties, ThreadExportExcel,
@@ -37,6 +38,7 @@ from modules import (IsogeoApiMngr, ThreadAppProperties, ThreadExportExcel,
 from modules.ui.auth.auth_dlg import Auth
 from modules.ui.credits.credits_dlg import Credits
 from modules.ui.main.ui_win_IsogeoToOffice import Ui_win_IsogeoToOffice
+from modules.ui.systray.ui_systraymenu import SystrayMenu
 
 # #############################################################################
 # ########## Globals ###############
@@ -174,8 +176,11 @@ class IsogeoToOffice_Main(QMainWindow):
                                                     self.ui_credits))
 
         # system tray icon
-        self.tray_icon = QSystemTrayIcon(self)
-        self.tray_icon.setIcon(QIcon("img/favicon.ico"))
+        self.tray_icon = SystrayMenu(parent=self)
+        self.tray_icon.setIcon(QIcon("resources/icon.png"))
+        self.tray_icon.act_quit.triggered.connect(self.close)
+        self.tray_icon.act_show.triggered.connect(self.show)
+        self.tray_icon.act_hide.triggered.connect(self.hide)
 
         # -- DISPLAY  ---------------------------------------------------------
         # shortcuts
@@ -354,6 +359,9 @@ class IsogeoToOffice_Main(QMainWindow):
 
         :param dict search_to_be_exported: Isogeo search response to export
         """
+        # minimize application during process if asked. See #22
+        if self.ui.chb_systray_minimize.isChecked():
+            self.tray_icon.act_hide.trigger()
         # prepare progress bar
         progbar_max = sum(self.li_opts) * search_to_be_exported.get("total")
         self.ui.pgb_exports.setRange(1, progbar_max)
@@ -553,6 +561,10 @@ class IsogeoToOffice_Main(QMainWindow):
         self.app_settings.setValue("settings/xml_zip",
                                    self.ui.chb_xml_zip.isChecked())
 
+        # misc
+        self.app_settings.setValue("settings/systray_minimize",
+                                   self.ui.chb_systray_minimize.isChecked())
+
         # accept the close
         event_sent.accept()
 
@@ -704,10 +716,15 @@ class IsogeoToOffice_Main(QMainWindow):
     def update_status_bar(self, prog_step: int = 1, status_msg: str = ""):
         """Display message into status bar
         """
+        # status bar and systray
         self.ui.lbl_statusbar.showMessage(status_msg)
+        self.tray_icon.setToolTip(status_msg)
+        # progressbar
         prog_val = self.ui.pgb_exports.value() + prog_step
         self.ui.pgb_exports.setValue(prog_val)
-
+        # check if progression is over
+        if self.ui.pgb_exports.maximum() == prog_val:
+            self.tray_icon.act_show.trigger()
 
 # #############################################################################
 # ##### Stand alone program ########
