@@ -51,7 +51,7 @@ current_locale = QLocale()
 api_mngr = IsogeoApiMngr()
 
 # VERSION
-__version__ = "2.0.0-beta3"
+__version__ = "2.0.0-beta4"
 
 # LOG FILE ##
 logger = logging.getLogger("isogeo2office")
