@@ -417,9 +417,12 @@ class ThreadThumbnails(QThread):
         # insert previous metadata which have not been exported this time
         for thumb, title_path in self.thumbnails.items():
             if thumb not in li_exported_md:
-                ws.append((thumb,
-                           title_path[0],
-                           title_path[1]))
+                try:
+                    ws.append((thumb,
+                               title_path[0],
+                               title_path[1]))
+                except TypeError as e:
+                    logger.error("Thumbnails table error: {}".format(e))
 
         # save workbook
         try:
@@ -432,7 +435,7 @@ class ThreadThumbnails(QThread):
         # Excel export finished
         # Now inform the main thread with the output (fill_app_props)
         logger.info("Thumbnail - Table creation is over")
-        self.sig_step.emit(0, self.tr("Thmbnail table finished"))
+        self.sig_step.emit(0, self.tr("Thumbnail table finished"))
         self.deleteLater()
 
 
