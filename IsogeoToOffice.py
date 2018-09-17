@@ -20,6 +20,7 @@ from datetime import datetime
 from functools import partial
 from logging.handlers import RotatingFileHandler
 from os import listdir, path
+import pathlib
 
 # 3rd party
 import qdarkstyle
@@ -43,9 +44,19 @@ from modules.ui.systray.ui_systraymenu import SystrayMenu
 # #############################################################################
 # ########## Globals ###############
 # ##################################
+
+# required subfolders
+pathlib.Path("_auth/").mkdir(exist_ok=True)
+pathlib.Path("_logs/").mkdir(exist_ok=True)
+pathlib.Path("_input/").mkdir(exist_ok=True)
+pathlib.Path("_output/").mkdir(exist_ok=True)
+pathlib.Path("_templates/").mkdir(exist_ok=True)
+pathlib.Path("_thumbnails/").mkdir(exist_ok=True)
+
+# vars
 app_dir = path.realpath(path.dirname(__file__))
 app_logdir = path.join(app_dir, "_logs")
-app_tpldir = path.join(app_dir, "templates")
+app_tpldir = path.join(app_dir, "_templates")
 current_locale = QLocale()
 
 api_mngr = IsogeoApiMngr()
@@ -139,7 +150,7 @@ class IsogeoToOffice_Main(QMainWindow):
         self.ui.btn_directory_change.pressed.connect(partial(self.set_output_folder))
         self.ui.btn_thumbnails_edit.pressed.connect(partial(self.app_utils.open_dir_file,
                                                             path.join(app_dir,
-                                                                      "thumbnails/thumbnails.xlsx")))
+                                                                      "_thumbnails/thumbnails.xlsx")))
 
         # populate Word templates combobox
         for tpl in listdir(app_tpldir):
@@ -225,7 +236,7 @@ class IsogeoToOffice_Main(QMainWindow):
                                                                   False, type=bool))
         # location and naming rules
         self.ui.lbl_output_folder_value.setText(self.app_settings.value("settings/out_folder_label",
-                                                                        r"./outpudddt"))
+                                                                        r"./output"))
         path_output_folder = self.app_settings.value("settings/out_folder_path",
                                                      path.join(app_dir, "output"))
         self.ui.lbl_output_folder_value.setToolTip(path_output_folder)
@@ -401,7 +412,7 @@ class IsogeoToOffice_Main(QMainWindow):
                      .format(opt_md_uuid))
 
         # thumbnails
-        thumbnails_filepath = path.join(app_dir, "thumbnails/thumbnails.xlsx")
+        thumbnails_filepath = path.join(app_dir, "_thumbnails/thumbnails.xlsx")
         try:
             thumbnails_loaded = self.app_utils.thumbnails_mngr(thumbnails_filepath)
         except FileNotFoundError as e:

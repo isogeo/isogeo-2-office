@@ -24,11 +24,6 @@ pip install --upgrade -r ./requirements_dev.txt
 rm -r dist\*
 pyinstaller -y --clean bundle_isogeo2office.spec --upx-dir .\build\upx-3.95-win64
 
-"`n-- STEP -- Add required empty folders"
-new-item -Name "dist/isogeo2office/_auth" -ItemType directory 
-new-item -Name "dist/isogeo2office/_logs" -ItemType directory
-new-item -Name "dist/isogeo2office/output" -ItemType directory 
-
 "`n-- STEP -- Zipping"
 Add-Type -assembly "system.io.compression.filesystem"
 $source=Join-Path (pwd) dist\isogeo2office
