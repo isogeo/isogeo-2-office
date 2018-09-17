@@ -22,7 +22,7 @@
             }
         },
         {
-            "label": "Build - Create venv",
+            "label": "Build - Create packaging venv",
             "type": "shell",
             "command": "py -3 -m venv env3_packaging",
             "group": "build"
