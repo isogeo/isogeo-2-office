@@ -287,6 +287,14 @@ class IsogeoToOffice_Main(QMainWindow):
         self.ui.chb_systray_minimize.setChecked(self.app_settings.value("settings/systray_minimize",
                                                                         False, type=bool))
 
+
+        # try full restore
+        try:
+            self.restoreGeometry(self.app_settings.value("geometry"))
+            self.restoreState(self.app_settings.value("windowState"))
+            logger.debug("Application restore successed.")
+        except AttributeError:
+            logger.debug("Application restore failed.")
         # end of method
         logger.debug("Settings loaded")
 
@@ -568,8 +576,6 @@ class IsogeoToOffice_Main(QMainWindow):
         #                             self.ui.lbl_output_folder_value.tooltip())
         self.app_settings.setValue("settings/out_prefix",
                                    self.ui.txt_output_fileprefix.text())
-        self.app_settings.setValue("settings/timestamps",
-                                   self.ui.cbb_timestamp.currentText())
         self.app_settings.setValue("settings/uuid_length",
                                    self.ui.int_md_uuid.value())
 
@@ -587,6 +593,9 @@ class IsogeoToOffice_Main(QMainWindow):
         self.app_settings.setValue("settings/systray_minimize",
                                    self.ui.chb_systray_minimize.isChecked())
 
+        # global
+        self.app_settings.setValue("geometry", self.saveGeometry())
+        self.app_settings.setValue("windowState", self.saveState())
         # accept the close
         event_sent.accept()
 
