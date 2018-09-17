@@ -969,6 +969,20 @@
               <layout class="QGridLayout" name="gridLayout">
                <item row="0" column="1" colspan="2">
                 <layout class="QGridLayout" name="gridLayout_2">
+                 <item row="1" column="3">
+                  <widget class="QPushButton" name="btn_open_output_folder">
+                   <property name="toolTip">
+                    <string>Open the output folder</string>
+                   </property>
+                   <property name="text">
+                    <string notr="true"/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../../../resources.qrc">
+                     <normaloff>:/IsogeoToOffice/resources/folder-open-o.svg</normaloff>:/IsogeoToOffice/resources/folder-open-o.svg</iconset>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="1" column="0">
                   <widget class="QLabel" name="lbl_output_folder">
                    <property name="minimumSize">
@@ -984,7 +998,43 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string>Output repository:</string>
+                    <string>Output directory:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QToolButton" name="btn_directory_change">
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>35</height>
+                    </size>
+                   </property>
+                   <property name="toolTip">
+                    <string>Change the output folder</string>
+                   </property>
+                   <property name="text">
+                    <string notr="true">...</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="0" colspan="5">
+                  <spacer name="verticalSpacer_3">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="5" column="0" colspan="5">
+                  <widget class="Line" name="line">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
                    </property>
                   </widget>
                  </item>
@@ -1028,19 +1078,6 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="4" rowspan="4">
-                  <spacer name="horizontalSpacer_2">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>20</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
                  <item row="3" column="0">
                   <widget class="QLabel" name="lbl_uid">
                    <property name="minimumSize">
@@ -1060,35 +1097,8 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="2">
-                  <widget class="QToolButton" name="btn_directory_change">
-                   <property name="maximumSize">
-                    <size>
-                     <width>16777215</width>
-                     <height>35</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string notr="true">...</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="3">
-                  <widget class="QPushButton" name="btn_open_output_folder">
-                   <property name="toolTip">
-                    <string>Open the output folder</string>
-                   </property>
-                   <property name="text">
-                    <string notr="true"/>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="../../../resources.qrc">
-                     <normaloff>:/IsogeoToOffice/resources/folder-open-o.svg</normaloff>:/IsogeoToOffice/resources/folder-open-o.svg</iconset>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="4" column="0">
-                  <widget class="QLabel" name="lbl_output_fileprefix">
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="lbl_timestamp">
                    <property name="minimumSize">
                     <size>
                      <width>100</width>
@@ -1102,84 +1112,9 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string>Output fileprefix:</string>
+                    <string>Display Timestamp:</string>
                    </property>
                   </widget>
-                 </item>
-                 <item row="2" column="1">
-                  <widget class="QComboBox" name="cbb_timestamp">
-                   <property name="minimumSize">
-                    <size>
-                     <width>150</width>
-                     <height>25</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>250</width>
-                     <height>40</height>
-                    </size>
-                   </property>
-                   <property name="toolTip">
-                    <string>Add date or datetime to output filenames</string>
-                   </property>
-                   <item>
-                    <property name="text">
-                     <string>No date (overwrite)</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Day</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Datetime</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                 <item row="3" column="1">
-                  <widget class="QSpinBox" name="int_md_uuid">
-                   <property name="minimumSize">
-                    <size>
-                     <width>30</width>
-                     <height>25</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>40</width>
-                     <height>40</height>
-                    </size>
-                   </property>
-                   <property name="toolTip">
-                    <string>Useful to avoid name conflicts</string>
-                   </property>
-                   <property name="showGroupSeparator" stdset="0">
-                    <bool>false</bool>
-                   </property>
-                   <property name="maximum">
-                    <number>8</number>
-                   </property>
-                   <property name="value">
-                    <number>5</number>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="7" column="0" colspan="5">
-                  <spacer name="verticalSpacer_3">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>20</width>
-                     <height>40</height>
-                    </size>
-                   </property>
-                  </spacer>
                  </item>
                  <item row="1" column="1">
                   <widget class="QLabel" name="lbl_output_folder_value">
@@ -1218,25 +1153,6 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="0">
-                  <widget class="QLabel" name="lbl_timestamp">
-                   <property name="minimumSize">
-                    <size>
-                     <width>100</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>200</width>
-                     <height>25</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string>Display Timestamp:</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="6" column="0" colspan="2">
                   <widget class="QCheckBox" name="chb_systray_minimize">
                    <property name="toolTip">
@@ -1256,10 +1172,87 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="5" column="0" colspan="5">
-                  <widget class="Line" name="line">
+                 <item row="3" column="1">
+                  <widget class="QSpinBox" name="int_md_uuid">
+                   <property name="minimumSize">
+                    <size>
+                     <width>30</width>
+                     <height>25</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>40</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                   <property name="toolTip">
+                    <string>Useful to avoid name conflicts</string>
+                   </property>
+                   <property name="showGroupSeparator" stdset="0">
+                    <bool>false</bool>
+                   </property>
+                   <property name="maximum">
+                    <number>8</number>
+                   </property>
+                   <property name="value">
+                    <number>5</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="4" rowspan="4">
+                  <spacer name="horizontalSpacer_2">
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="4" column="0">
+                  <widget class="QLabel" name="lbl_output_fileprefix">
+                   <property name="minimumSize">
+                    <size>
+                     <width>100</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>200</width>
+                     <height>25</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Output fileprefix:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="3">
+                  <widget class="QRadioButton" name="rdb_timestamp_datetime">
+                   <property name="text">
+                    <string>Datetime</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
+                  <widget class="QRadioButton" name="rdb_timestamp_day">
+                   <property name="text">
+                    <string>Day</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QRadioButton" name="rdb_timestamp_no">
+                   <property name="text">
+                    <string>No date (overwrite)</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
                    </property>
                   </widget>
                  </item>
@@ -1272,8 +1265,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>580</width>
-                <height>197</height>
+                <width>424</width>
+                <height>35</height>
                </rect>
               </property>
               <attribute name="icon">

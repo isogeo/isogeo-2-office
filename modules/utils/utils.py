@@ -1,16 +1,11 @@
 # -*- coding: UTF-8 -*-
 #! python3
 
-# ----------------------------------------------------------------------------
-# Name:         isogeo2office useful methods
-# Purpose:      externalize util methods from isogeo2office
-#
-# Author:       Julien Moura (@geojulien)
-#
-# Python:       2.7.x
-# Created:      14/08/2016
-# Updated:      28/11/2016
-# ----------------------------------------------------------------------------
+"""
+    Name:         Isogeo to Office utilitaries
+    Author:       Isogeo
+    Python:       3.6.x
+"""
 
 # ############################################################################
 # ########## Libraries #############
@@ -19,6 +14,7 @@
 # Standard library
 from collections import OrderedDict
 from configparser import ConfigParser
+from datetime import datetime
 from tkinter.messagebox import showerror as avert
 from itertools import zip_longest
 import logging
@@ -38,7 +34,7 @@ from PyQt5.QtWidgets import QFileDialog
 
 # Depending on operating system
 if opersys == 'win32':
-    """ windows """
+    """Only on MS Windows."""
     from os import startfile        # to open a folder/file
 else:
     pass
@@ -169,6 +165,28 @@ class isogeo2office_utils(IsogeoUtils):
                                                directory=start_dir,
                                                filter=file_filters,
                                                options=options)
+
+    def timestamps_picker(self, timestamp_opt: str = "no"):
+        """Return timestamp value depending on toggled radio button.
+
+        :param str timestamp_opt: no | day | datetime
+        """
+        dstamp = datetime.now()
+        timestamps = {
+            "no": " ",
+            "day": "_{}-{}-{}".format(dstamp.year,
+                                      dstamp.month,
+                                      dstamp.day),
+            "datetime": "_{}-{}-{}-{}{}{}".format(dstamp.year,
+                                                  dstamp.month,
+                                                  dstamp.day,
+                                                  dstamp.hour,
+                                                  dstamp.minute,
+                                                  dstamp.second)
+        }
+        logger.debug(timestamp_opt)
+        logger.debug("Timestamp option picked: {}".format(timestamps.get(timestamp_opt)))
+        return timestamps.get(timestamp_opt).strip()
 
     # ISOGEO -----------------------------------------------------------------
     def get_url_base(self, url_input):

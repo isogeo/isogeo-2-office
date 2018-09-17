@@ -152,6 +152,13 @@ class IsogeoToOffice_Main(QMainWindow):
                                                             path.join(app_dir,
                                                                       "_thumbnails/thumbnails.xlsx")))
 
+        # -- Settings tab - Timestamp -----------------------------------------
+        self.ui.rdb_timestamp_no.toggled.connect(lambda: self.app_settings.setValue("settings/timestamps",
+                                                                                    "no"))
+        self.ui.rdb_timestamp_day.toggled.connect(lambda: self.app_settings.setValue("settings/timestamps",
+                                                                                     "day"))
+        self.ui.rdb_timestamp_datetime.toggled.connect(lambda: self.app_settings.setValue("settings/timestamps",
+                                                                                          "datetime"))
         # populate Word templates combobox
         for tpl in listdir(app_tpldir):
             if path.splitext(tpl)[1].lower() == ".docx":
@@ -253,11 +260,8 @@ class IsogeoToOffice_Main(QMainWindow):
                                                                path_output_folder))
 
         self.ui.txt_output_fileprefix.setText(self.app_settings.value("settings/out_prefix"))
-        dtstamp_index = self.ui.cbb_timestamp.findText(self.tr(self.app_settings.value("settings/timestamps")))
-        self.ui.cbb_timestamp.setCurrentIndex(dtstamp_index)
         self.ui.int_md_uuid.setValue(self.app_settings.value("settings/uuid_length",
                                                              5, type=int))
-
         # export options
         self.ui.chb_xls_attributes.setChecked(self.app_settings.value("settings/xls_sheet_attributes",
                                                                       False, type=bool))
@@ -267,6 +271,17 @@ class IsogeoToOffice_Main(QMainWindow):
                                                                False, type=bool))
         tpl_index = self.ui.cbb_word_tpl.findText(self.app_settings.value("settings/doc_tpl_name"))
         self.ui.cbb_word_tpl.setCurrentIndex(tpl_index)
+
+        # timestamps
+        if self.app_settings.value("settings/timestamps") == "no":
+            self.ui.rdb_timestamp_no.setChecked(1)
+        elif self.app_settings.value("settings/timestamps") == "day":
+            self.ui.rdb_timestamp_day.setChecked(1)
+        elif self.app_settings.value("settings/timestamps") == "datetime":
+            self.ui.rdb_timestamp_datetime.setChecked(1)
+        else:
+            logger.warning("Timestamp option not recognized: {}"
+                           .format(self.app_settings.value("settings/timestamps")))
 
         # misc
         self.ui.chb_systray_minimize.setChecked(self.app_settings.value("settings/systray_minimize",
@@ -398,27 +413,10 @@ class IsogeoToOffice_Main(QMainWindow):
                                      self.ui.txt_output_fileprefix.text()
                                      )
         # horodating ?
-        opt_timestamp = self.ui.cbb_timestamp.currentText()
-        logger.debug("Timestamp option: {}"
-                     .format(opt_timestamp))
-        if opt_timestamp == self.tr("No date (overwrite)"):
-            horodatage = ""
-        elif opt_timestamp == self.tr("Day"):
-            dstamp = datetime.now()
-            horodatage = "_{}-{}-{}".format(dstamp.year,
-                                            dstamp.month,
-                                            dstamp.day)
-        elif opt_timestamp == self.tr("Datetime"):
-            dstamp = datetime.now()
-            horodatage = "_{}-{}-{}-{}{}{}".format(dstamp.year,
-                                                   dstamp.month,
-                                                   dstamp.day,
-                                                   dstamp.hour,
-                                                   dstamp.minute,
-                                                   dstamp.second)
-        else:
-            logger.error("Timestamp option not recognized")
-            horodatage = ""
+        opt_timestamp = self.app_settings.value("settings/timestamps", "no")
+        logger.debug("Timestamp option: {}".format(opt_timestamp))
+        horodatage = self.app_utils.timestamps_picker(opt_timestamp)
+        logger.debug("Timestamp value applied: ".format(horodatage))
         # metadata UUID
         opt_md_uuid = self.ui.int_md_uuid.value()
         logger.debug("UUID option: {}"
