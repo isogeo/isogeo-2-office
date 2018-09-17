@@ -158,6 +158,15 @@ class IsogeoToOffice_Main(QMainWindow):
                 self.ui.cbb_word_tpl.addItem(path.basename(tpl),
                                              path.join(app_tpldir, tpl))
 
+        # -- Settings tab - System tray icon ----------------------------------
+        self.ui.chb_systray_minimize.toggled\
+               .connect(lambda: self.app_settings
+                                    .setValue("settings/systray_minimize",
+                                              int(self.ui.chb_systray_minimize.isChecked()
+                                                  )
+                                              )
+                        )
+
         # -- Settings tab - Application authentication ------------------------
         # Change user -> see below for authentication form
         self.ui.btn_change_user.pressed.connect(partial(api_mngr.display_auth_form))
@@ -258,6 +267,10 @@ class IsogeoToOffice_Main(QMainWindow):
                                                                False, type=bool))
         tpl_index = self.ui.cbb_word_tpl.findText(self.app_settings.value("settings/doc_tpl_name"))
         self.ui.cbb_word_tpl.setCurrentIndex(tpl_index)
+
+        # misc
+        self.ui.chb_systray_minimize.setChecked(self.app_settings.value("settings/systray_minimize",
+                                                                        False, type=bool))
 
         # end of method
         logger.debug("Settings loaded")
