@@ -213,7 +213,11 @@ class IsogeoToOffice_Main(QMainWindow):
         # shortcuts
         self.cbbs_filters = self.ui.grp_filters.findChildren(QComboBox)
         self.setWindowTitle("Isogeo to Office - v{}".format(__version__))
-        self.settings_loader()
+        try:
+            self.settings_loader()
+        except TypeError as e:
+            self.app_settings.remove("settings")
+            logger.error("Settings loading failed: {}. Settings have been reset.".format(e))
         self.show()
         self.init_api_connection()
 
