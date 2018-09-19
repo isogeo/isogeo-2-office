@@ -56,6 +56,8 @@ pathlib.Path("_thumbnails/").mkdir(exist_ok=True)
 # vars
 app_dir = path.realpath(path.dirname(__file__))
 app_logdir = path.join(app_dir, "_logs")
+app_outdir = path.join(app_dir, "_output")
+app_thbdir = path.join(app_dir, "_thumbnails")
 app_tpldir = path.join(app_dir, "_templates")
 current_locale = QLocale()
 
@@ -161,7 +163,7 @@ class IsogeoToOffice_Main(QMainWindow):
                                                                                      "day"))
         self.ui.rdb_timestamp_datetime.toggled.connect(lambda: self.app_settings.setValue("settings/timestamps",
                                                                                           "datetime"))
-        # populate Word templates combobox
+        # -- Settings tab - Word ----------------------------------------------
         for tpl in listdir(app_tpldir):
             if path.splitext(tpl)[1].lower() == ".docx":
                 self.ui.cbb_word_tpl.addItem(path.basename(tpl),
@@ -261,9 +263,9 @@ class IsogeoToOffice_Main(QMainWindow):
                                                                   False, type=bool))
         # location and naming rules
         self.ui.lbl_output_folder_value.setText(self.app_settings.value("settings/out_folder_label",
-                                                                        r"./output"))
+                                                                        "_output"))
         path_output_folder = self.app_settings.value("settings/out_folder_path",
-                                                     path.join(app_dir, "output"))
+                                                     app_outdir)
         self.ui.lbl_output_folder_value.setToolTip(path_output_folder)
         self.ui.btn_open_output_folder.pressed.connect(partial(self.app_utils.open_dir_file,
                                                                path_output_folder))
@@ -425,8 +427,8 @@ class IsogeoToOffice_Main(QMainWindow):
 
         # -- File naming
         # prepare filepath
-        generic_filepath = path.join(self.app_settings.value("settings/out_folder",
-                                                             r"output/"),
+        generic_filepath = path.join(self.app_settings.value("settings/out_folder_path",
+                                                             app_outdir),
                                      self.ui.txt_output_fileprefix.text()
                                      )
         # horodating ?
@@ -554,12 +556,12 @@ class IsogeoToOffice_Main(QMainWindow):
 
         :param QCloseEvent event_sent: event sent when the main UI is close
         """
-        # Force remove UI elements
+        # force remove UI elements
         self.tray_icon.hide()
         self.tray_icon.deleteLater()
 
-        # -- Save settings
-        self.app_settings.setValue("settings/log_level", "10")
+        # -- Save settings ----------------------------------------------------
+        self.app_settings.setValue("settings/log_level", logger.level)
 
         # API
         self.app_settings.setValue("auth/app_id", api_mngr.api_app_id)
@@ -579,10 +581,7 @@ class IsogeoToOffice_Main(QMainWindow):
             "formats/xml", self.ui.chb_output_xml.isChecked())
 
         # location and naming rules
-        # self.app_settings.setValue("settings/out_folder_label",
-        #                            self.ui.lbl_output_folder_value.text())
-        # self.app_settings.setValue("settings/out_folder_path",
-        #                             self.ui.lbl_output_folder_value.tooltip())
+        # output folder is defined by itso own method 'set_output_folder'
         self.app_settings.setValue("settings/out_prefix",
                                    self.ui.txt_output_fileprefix.text())
         self.app_settings.setValue("settings/uuid_length",
@@ -602,7 +601,7 @@ class IsogeoToOffice_Main(QMainWindow):
         self.app_settings.setValue("settings/systray_minimize",
                                    self.ui.chb_systray_minimize.isChecked())
 
-        # global
+        # global UI position
         self.app_settings.setValue("settings/geometry", self.saveGeometry())
         self.app_settings.setValue("settings/windowState", self.saveState())
         # accept the close
@@ -636,7 +635,7 @@ class IsogeoToOffice_Main(QMainWindow):
         # launch explorer
         selected_folder = self.app_utils.open_FileNameDialog(self,
                                                              file_type="folder",
-                                                             from_dir=self.app_settings.value("settings/out_folder"))
+                                                             from_dir=self.app_settings.value("settings/out_folder_path"))
         # test selected folder
         if not path.exists(selected_folder):
             logger.error("No folder selected")
@@ -653,6 +652,11 @@ class IsogeoToOffice_Main(QMainWindow):
                                    path.basename(selected_folder))
         self.app_settings.setValue("settings/out_folder_path",
                                    selected_folder)
+
+        # connect the open button
+        self.ui.btn_open_output_folder.pressed.disconnect()
+        self.ui.btn_open_output_folder.pressed.connect(partial(self.app_utils.open_dir_file,
+                                                               selected_folder))
 
     def settings_reset(self):
         """Reset settings to factiry defaults. Do not not remove authentication
