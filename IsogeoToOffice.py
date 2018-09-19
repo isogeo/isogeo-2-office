@@ -340,6 +340,7 @@ class IsogeoToOffice_Main(QMainWindow):
                                                 "whole_share": 0,
                                                 "augment": 1,
                                                 "tags_as_dicts": 1}
+            self.thread_search.sig_finished.disconnect()
             self.thread_search.sig_finished.connect(self.update_search_form)
             logger.info("Search  prepared - {}".format(search_type.upper()))
         elif search_type == "export":
