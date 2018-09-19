@@ -266,15 +266,14 @@ templates/*
 !templates/template_Isogeo.docx
 
 # thumbnails
-*.xlsx
-!thumbnails/tpl_thumbnails.xlsx
+*thumbnails.xlsx
 
 # input folder
-input/*
+_input/*
 !input/README.md
 
 # output folder
-output/*
+_output/*
 !output/README.md
 
 
