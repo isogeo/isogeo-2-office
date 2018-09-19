@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
+ <author>Isogeo</author>
  <class>win_IsogeoToOffice</class>
  <widget class="QMainWindow" name="win_IsogeoToOffice">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>643</width>
+    <width>650</width>
     <height>853</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>643</width>
-    <height>795</height>
+    <width>650</width>
+    <height>853</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>643</width>
+    <width>650</width>
     <height>853</height>
    </size>
   </property>
@@ -49,6 +50,55 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QFormLayout" name="formLayout_3">
+    <item row="1" column="0" colspan="2">
+     <widget class="QProgressBar" name="pgb_exports">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>500</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>1000</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="contextMenuPolicy">
+       <enum>Qt::NoContextMenu</enum>
+      </property>
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
+      <property name="maximum">
+       <number>100</number>
+      </property>
+      <property name="value">
+       <number>0</number>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+      </property>
+      <property name="textVisible">
+       <bool>true</bool>
+      </property>
+      <property name="invertedAppearance">
+       <bool>false</bool>
+      </property>
+      <property name="textDirection">
+       <enum>QProgressBar::BottomToTop</enum>
+      </property>
+      <property name="format">
+       <string notr="true">%p%</string>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabs_IsogeoToOffice">
       <property name="minimumSize">
@@ -59,7 +109,7 @@
       </property>
       <property name="maximumSize">
        <size>
-        <width>800</width>
+        <width>850</width>
         <height>1500</height>
        </size>
       </property>
@@ -280,7 +330,7 @@
                     <widget class="QLabel" name="lbl_owner">
                      <property name="minimumSize">
                       <size>
-                       <width>110</width>
+                       <width>200</width>
                        <height>20</height>
                       </size>
                      </property>
@@ -306,6 +356,9 @@
                     <spacer name="horizontalSpacer_4">
                      <property name="orientation">
                       <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::MinimumExpanding</enum>
                      </property>
                      <property name="sizeHint" stdset="0">
                       <size>
@@ -910,7 +963,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>600</width>
+            <width>850</width>
             <height>450</height>
            </size>
           </property>
@@ -925,13 +978,13 @@
             <widget class="QToolBox" name="tlb_settings">
              <property name="minimumSize">
               <size>
-               <width>450</width>
+               <width>500</width>
                <height>250</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>600</width>
+               <width>800</width>
                <height>500</height>
               </size>
              </property>
@@ -943,7 +996,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>580</width>
+                <width>586</width>
                 <height>194</height>
                </rect>
               </property>
@@ -969,20 +1022,72 @@
               <layout class="QGridLayout" name="gridLayout">
                <item row="0" column="1" colspan="2">
                 <layout class="QGridLayout" name="gridLayout_2">
-                 <item row="2" column="3">
-                  <widget class="QRadioButton" name="rdb_timestamp_datetime">
+                 <item row="4" column="0">
+                  <widget class="QLabel" name="lbl_uid">
+                   <property name="minimumSize">
+                    <size>
+                     <width>210</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>200</width>
+                     <height>25</height>
+                    </size>
+                   </property>
                    <property name="text">
-                    <string>Datetime</string>
+                    <string>Length of metadata UUID:</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="1">
-                  <widget class="QRadioButton" name="rdb_timestamp_no">
-                   <property name="text">
-                    <string>No date (overwrite)</string>
+                 <item row="4" column="1">
+                  <widget class="QSpinBox" name="int_md_uuid">
+                   <property name="minimumSize">
+                    <size>
+                     <width>30</width>
+                     <height>25</height>
+                    </size>
                    </property>
-                   <property name="checked">
-                    <bool>true</bool>
+                   <property name="maximumSize">
+                    <size>
+                     <width>40</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                   <property name="toolTip">
+                    <string>Useful to avoid name conflicts</string>
+                   </property>
+                   <property name="showGroupSeparator" stdset="0">
+                    <bool>false</bool>
+                   </property>
+                   <property name="maximum">
+                    <number>8</number>
+                   </property>
+                   <property name="value">
+                    <number>5</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QPushButton" name="btn_directory_change">
+                   <property name="minimumSize">
+                    <size>
+                     <width>75</width>
+                     <height>25</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>75</width>
+                     <height>35</height>
+                    </size>
+                   </property>
+                   <property name="toolTip">
+                    <string>Change the output folder</string>
+                   </property>
+                   <property name="text">
+                    <string notr="true">Select ...</string>
                    </property>
                   </widget>
                  </item>
@@ -1010,16 +1115,35 @@
                     <bool>true</bool>
                    </property>
                    <property name="frameShape">
-                    <enum>QFrame::StyledPanel</enum>
+                    <enum>QFrame::Panel</enum>
                    </property>
                    <property name="frameShadow">
-                    <enum>QFrame::Sunken</enum>
+                    <enum>QFrame::Plain</enum>
+                   </property>
+                   <property name="lineWidth">
+                    <number>1</number>
+                   </property>
+                   <property name="midLineWidth">
+                    <number>1</number>
                    </property>
                    <property name="text">
                     <string>Output</string>
                    </property>
                    <property name="scaledContents">
                     <bool>false</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QRadioButton" name="rdb_timestamp_no">
+                   <property name="toolTip">
+                    <string>No date (overwrite)</string>
+                   </property>
+                   <property name="text">
+                    <string>No date</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
                    </property>
                   </widget>
                  </item>
@@ -1042,39 +1166,17 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="6" column="0" colspan="5">
-                  <widget class="Line" name="line">
-                   <property name="lineWidth">
-                    <number>4</number>
-                   </property>
-                   <property name="midLineWidth">
-                    <number>4</number>
-                   </property>
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="7" column="0" colspan="2">
-                  <widget class="QCheckBox" name="chb_systray_minimize">
+                 <item row="2" column="3">
+                  <widget class="QRadioButton" name="rdb_timestamp_datetime">
                    <property name="toolTip">
-                    <string>Minimize application into systray icon (near to the clock)</string>
-                   </property>
-                   <property name="layoutDirection">
-                    <enum>Qt::LeftToRight</enum>
-                   </property>
-                   <property name="autoFillBackground">
-                    <bool>true</bool>
+                    <string>Datetime</string>
                    </property>
                    <property name="text">
-                    <string>Minimize application during export process</string>
-                   </property>
-                   <property name="tristate">
-                    <bool>false</bool>
+                    <string>Date and time</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="8" column="0" colspan="5">
+                 <item row="7" column="0" colspan="5">
                   <spacer name="verticalSpacer_3">
                    <property name="orientation">
                     <enum>Qt::Vertical</enum>
@@ -1086,35 +1188,6 @@
                     </size>
                    </property>
                   </spacer>
-                 </item>
-                 <item row="2" column="2">
-                  <widget class="QRadioButton" name="rdb_timestamp_day">
-                   <property name="text">
-                    <string>Day</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="2">
-                  <widget class="QToolButton" name="btn_directory_change">
-                   <property name="minimumSize">
-                    <size>
-                     <width>30</width>
-                     <height>25</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>75</width>
-                     <height>35</height>
-                    </size>
-                   </property>
-                   <property name="toolTip">
-                    <string>Change the output folder</string>
-                   </property>
-                   <property name="text">
-                    <string notr="true">Select ...</string>
-                   </property>
-                  </widget>
                  </item>
                  <item row="2" column="0">
                   <widget class="QLabel" name="lbl_timestamp">
@@ -1135,11 +1208,40 @@
                    </property>
                   </widget>
                  </item>
+                 <item row="6" column="0" colspan="2">
+                  <widget class="QCheckBox" name="chb_systray_minimize">
+                   <property name="toolTip">
+                    <string>Minimize application into systray icon (near to the clock)</string>
+                   </property>
+                   <property name="layoutDirection">
+                    <enum>Qt::LeftToRight</enum>
+                   </property>
+                   <property name="autoFillBackground">
+                    <bool>true</bool>
+                   </property>
+                   <property name="text">
+                    <string>Minimize application during export process</string>
+                   </property>
+                   <property name="tristate">
+                    <bool>false</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
+                  <widget class="QRadioButton" name="rdb_timestamp_day">
+                   <property name="toolTip">
+                    <string>Day</string>
+                   </property>
+                   <property name="text">
+                    <string>Date</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="1" column="3">
                   <widget class="QPushButton" name="btn_open_output_folder">
                    <property name="minimumSize">
                     <size>
-                     <width>30</width>
+                     <width>75</width>
                      <height>25</height>
                     </size>
                    </property>
@@ -1161,20 +1263,26 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="5" column="0" colspan="5">
-                  <spacer name="verticalSpacer_4">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="lbl_output_fileprefix">
+                   <property name="minimumSize">
                     <size>
-                     <width>20</width>
-                     <height>40</height>
+                     <width>200</width>
+                     <height>20</height>
                     </size>
                    </property>
-                  </spacer>
+                   <property name="maximumSize">
+                    <size>
+                     <width>200</width>
+                     <height>25</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Output fileprefix:</string>
+                   </property>
+                  </widget>
                  </item>
-                 <item row="3" column="1">
+                 <item row="3" column="1" colspan="2">
                   <widget class="QLineEdit" name="txt_output_fileprefix">
                    <property name="minimumSize">
                     <size>
@@ -1214,84 +1322,18 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="0">
-                  <widget class="QLabel" name="lbl_output_fileprefix">
-                   <property name="minimumSize">
-                    <size>
-                     <width>100</width>
-                     <height>20</height>
-                    </size>
+                 <item row="5" column="0" colspan="4">
+                  <widget class="Line" name="line">
+                   <property name="lineWidth">
+                    <number>4</number>
                    </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>200</width>
-                     <height>25</height>
-                    </size>
+                   <property name="midLineWidth">
+                    <number>4</number>
                    </property>
-                   <property name="text">
-                    <string>Output fileprefix:</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="2">
-                  <widget class="QLabel" name="lbl_uid">
-                   <property name="minimumSize">
-                    <size>
-                     <width>100</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>200</width>
-                     <height>25</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string>Length of metadata UUID:</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="3">
-                  <widget class="QSpinBox" name="int_md_uuid">
-                   <property name="minimumSize">
-                    <size>
-                     <width>30</width>
-                     <height>25</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>40</width>
-                     <height>40</height>
-                    </size>
-                   </property>
-                   <property name="toolTip">
-                    <string>Useful to avoid name conflicts</string>
-                   </property>
-                   <property name="showGroupSeparator" stdset="0">
-                    <bool>false</bool>
-                   </property>
-                   <property name="maximum">
-                    <number>8</number>
-                   </property>
-                   <property name="value">
-                    <number>5</number>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="4" rowspan="4">
-                  <spacer name="horizontalSpacer_2">
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
                    </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>20</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
+                  </widget>
                  </item>
                 </layout>
                </item>
@@ -1302,7 +1344,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>580</width>
+                <width>586</width>
                 <height>194</height>
                </rect>
               </property>
@@ -1359,7 +1401,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>580</width>
+                <width>586</width>
                 <height>194</height>
                </rect>
               </property>
@@ -1377,13 +1419,13 @@
                   <widget class="QPushButton" name="btn_thumbnails_update">
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
+                     <width>75</width>
                      <height>25</height>
                     </size>
                    </property>
                    <property name="maximumSize">
                     <size>
-                     <width>250</width>
+                     <width>275</width>
                      <height>35</height>
                     </size>
                    </property>
@@ -1392,6 +1434,9 @@
                    </property>
                    <property name="toolTip">
                     <string>Generate or update matching table from Isogeo API</string>
+                   </property>
+                   <property name="layoutDirection">
+                    <enum>Qt::LeftToRight</enum>
                    </property>
                    <property name="text">
                     <string>Generate/update</string>
@@ -1448,7 +1493,7 @@
                     <string>Open Excel to complete thumbnails matching table with images paths</string>
                    </property>
                    <property name="layoutDirection">
-                    <enum>Qt::RightToLeft</enum>
+                    <enum>Qt::LeftToRight</enum>
                    </property>
                    <property name="autoFillBackground">
                     <bool>true</bool>
@@ -1500,7 +1545,7 @@
                    </property>
                    <property name="maximumSize">
                     <size>
-                     <width>300</width>
+                     <width>800</width>
                      <height>35</height>
                     </size>
                    </property>
@@ -1547,7 +1592,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>580</width>
+                <width>586</width>
                 <height>194</height>
                </rect>
               </property>
@@ -1621,7 +1666,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>600</width>
+            <width>800</width>
             <height>16777215</height>
            </size>
           </property>
@@ -2008,55 +2053,6 @@ p, li { white-space: pre-wrap; }
         </item>
        </layout>
       </widget>
-     </widget>
-    </item>
-    <item row="1" column="0" colspan="2">
-     <widget class="QProgressBar" name="pgb_exports">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>500</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>1000</width>
-        <height>40</height>
-       </size>
-      </property>
-      <property name="contextMenuPolicy">
-       <enum>Qt::NoContextMenu</enum>
-      </property>
-      <property name="autoFillBackground">
-       <bool>true</bool>
-      </property>
-      <property name="maximum">
-       <number>100</number>
-      </property>
-      <property name="value">
-       <number>0</number>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignBottom|Qt::AlignHCenter</set>
-      </property>
-      <property name="textVisible">
-       <bool>true</bool>
-      </property>
-      <property name="invertedAppearance">
-       <bool>false</bool>
-      </property>
-      <property name="textDirection">
-       <enum>QProgressBar::BottomToTop</enum>
-      </property>
-      <property name="format">
-       <string notr="true">%p%</string>
-      </property>
      </widget>
     </item>
    </layout>
