@@ -407,10 +407,10 @@ class IsogeoToOffice_Main(QMainWindow):
             if cbb.itemData(cbb.currentIndex()).startswith("share:"):
                 share_id = cbb.itemData(cbb.currentIndex()).split(":")[1]
             else:
-                search_terms += cbb.itemData(cbb.currentIndex())
+                search_terms += cbb.itemData(cbb.currentIndex()) + " "
 
         logger.debug("Selected share UUID: {}".format(share_id))
-        return share_id, search_terms
+        return share_id, search_terms.strip()
 
     # -- EXPORT ---------------------------------------------------------------
     def export_check(self):
