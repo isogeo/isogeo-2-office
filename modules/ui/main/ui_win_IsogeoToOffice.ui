@@ -1087,7 +1087,7 @@
                     <string>Change the output folder</string>
                    </property>
                    <property name="text">
-                    <string notr="true">Select ...</string>
+                    <string>Select ...</string>
                    </property>
                   </widget>
                  </item>
@@ -1344,8 +1344,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>586</width>
-                <height>194</height>
+                <width>424</width>
+                <height>38</height>
                </rect>
               </property>
               <attribute name="icon">
@@ -1401,8 +1401,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>586</width>
-                <height>194</height>
+                <width>366</width>
+                <height>76</height>
                </rect>
               </property>
               <attribute name="icon">
@@ -1592,8 +1592,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>586</width>
-                <height>194</height>
+                <width>446</width>
+                <height>70</height>
                </rect>
               </property>
               <attribute name="icon">

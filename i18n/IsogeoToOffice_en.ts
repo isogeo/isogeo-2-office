@@ -3,105 +3,105 @@
 <context>
     <name>IsogeoToOffice_Main</name>
     <message>
-        <location filename="../IsogeoToOffice.py" line="188"/>
+        <location filename="../IsogeoToOffice.py" line="192"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="236"/>
+        <location filename="../IsogeoToOffice.py" line="240"/>
         <source>Authentication - Credentials missing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="721"/>
+        <location filename="../IsogeoToOffice.py" line="759"/>
         <source>Export {} metadata</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="404"/>
+        <location filename="../IsogeoToOffice.py" line="425"/>
         <source>Export option is missing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="404"/>
+        <location filename="../IsogeoToOffice.py" line="425"/>
         <source>At least one export option required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="236"/>
+        <location filename="../IsogeoToOffice.py" line="240"/>
         <source>Authentication to Isogeo API has failed. Credentials seem to be missing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="685"/>
+        <location filename="../IsogeoToOffice.py" line="723"/>
         <source>Application information has been retrieved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="376"/>
+        <location filename="../IsogeoToOffice.py" line="397"/>
         <source>Waiting for Isogeo API</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="768"/>
+        <location filename="../IsogeoToOffice.py" line="806"/>
         <source>Search form updated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="449"/>
+        <location filename="../IsogeoToOffice.py" line="647"/>
         <source>Thumbnails - Matching table not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="449"/>
+        <location filename="../IsogeoToOffice.py" line="647"/>
         <source>The thumbnails matching table has not been found in the exepected path: {}.{}{} {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="464"/>
+        <location filename="../IsogeoToOffice.py" line="663"/>
         <source>Thumbnails - Table structure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="464"/>
+        <location filename="../IsogeoToOffice.py" line="663"/>
         <source>The thumbnails matching table {} is not compliant with the expected structure.{}{} {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="478"/>
+        <location filename="../IsogeoToOffice.py" line="677"/>
         <source>Thumbnails - Unknown error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="478"/>
+        <location filename="../IsogeoToOffice.py" line="677"/>
         <source>An unknown error occurred reading thethumbnails matching table {}. Please report it.{}{} {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="478"/>
+        <location filename="../IsogeoToOffice.py" line="677"/>
         <source>
 A new table will be created but previous data will be lost.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="478"/>
+        <location filename="../IsogeoToOffice.py" line="677"/>
         <source>
 Error message:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="663"/>
+        <location filename="../IsogeoToOffice.py" line="629"/>
         <source>Settings - Reset to factory defaults</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="663"/>
+        <location filename="../IsogeoToOffice.py" line="629"/>
         <source>Settings will be reinitialized (not authentication credentials).
 application will be closed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="109"/>
+        <location filename="../IsogeoToOffice.py" line="111"/>
         <source>https://pipedrivewebforms.com/form/b5bdbdb9b34c3c61202cd8414accbbe252944</source>
         <translation type="unfinished"></translation>
     </message>
@@ -681,6 +681,11 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="773"/>
         <source>Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.ui" line="1090"/>
+        <source>Select ...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
