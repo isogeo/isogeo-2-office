@@ -244,7 +244,6 @@ class isogeo2office_utils(IsogeoUtils):
             else:
                 logger.debug("Thumbnails reader: empty cell spotted. Quit reading.")
                 break
-
         return thumbnails_dict
 
     # -- ENCODING AND NAMING STUFFS -------------------------------------------

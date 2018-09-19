@@ -282,7 +282,8 @@ class IsogeoToOffice_Main(QMainWindow):
                                                                  False, type=bool))
         self.ui.chb_xml_zip.setChecked(self.app_settings.value("settings/xml_zip",
                                                                False, type=bool))
-        tpl_index = self.ui.cbb_word_tpl.findText(self.app_settings.value("settings/doc_tpl_name"))
+        tpl_index = self.ui.cbb_word_tpl.findText(self.app_settings.value("settings/doc_tpl_name",
+                                                                          "template_Isogeo.docx"))
         self.ui.cbb_word_tpl.setCurrentIndex(tpl_index)
 
         # timestamps
@@ -490,14 +491,24 @@ class IsogeoToOffice_Main(QMainWindow):
             logger.debug("Word - Output folder: {}".format(output_docx_filepath))
             # template
             template_path = self.ui.cbb_word_tpl.itemData(self.ui.cbb_word_tpl.currentIndex())
-            logger.debug("Word - Template choosen: {}".format(template_path))
+            if not template_path or not path.exists(template_path):
+                logger.warning("Word - No template choosen. trying to use the Isogeo default.")
+                if not path.exists(path.join(app_tpldir, "template_Isogeo.docx")):
+                    self.update_status_bar(0, self.tr("Word - Error: no template."))
+                    logger.error("Word - No available template")
+                    return False
+                else:
+                    template_path = path.join(app_tpldir, "template_Isogeo.docx")
+            else:
+                logger.debug("Word - Template choosen: {}".format(template_path))
+
             # instanciate thread
             self.thread_export_docx = ThreadExportWord(search_to_be_exported,
-                                                       output_docx_filepath,
-                                                       tpl_path=template_path,
-                                                       thumbnails=thumbnails_loaded,
-                                                       timestamp=horodatage,
-                                                       length_uuid=opt_md_uuid)
+                                                        output_docx_filepath,
+                                                        tpl_path=template_path,
+                                                        thumbnails=thumbnails_loaded,
+                                                        timestamp=horodatage,
+                                                        length_uuid=opt_md_uuid)
             self.thread_export_docx.sig_step.connect(self.update_status_bar)
             self.thread_export_docx.start()
         else:

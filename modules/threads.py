@@ -217,7 +217,7 @@ class ThreadExportWord(QThread):
         """Export each metadata into a Word document
         """
         # vars
-        thumbnail_default = ("", path.realpath(r"resources/credits/isogeo.png"))
+        thumbnail_default = ("", path.realpath(r"resources/favicon.png"))
 
         # word generator
         to_docx = Isogeo2docx()
@@ -230,6 +230,8 @@ class ThreadExportWord(QThread):
             # thumbnails
             thumbnail_abs_path = self.thumbnails.get(md.get("_id"),
                                                      thumbnail_default)[1]
+            if not thumbnail_abs_path or not path.isfile(thumbnail_abs_path):
+                thumbnail_abs_path = path.realpath(r"resources/favicon.png")
             logger.debug("Thumbnail used: {}".format(thumbnail_abs_path))
             md["thumbnail_local"] = thumbnail_abs_path
             # templating
