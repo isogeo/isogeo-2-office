@@ -1,5 +1,8 @@
 <RCC>
   <qresource prefix="IsogeoToOffice">
+    <file>resources/settings/sitemap.svg</file>
+    <file>resources/settings/edit.svg</file>
+    <file>resources/settings/wrench.svg</file>
     <file>resources/systray/window-close-o.svg</file>
     <file>resources/systray/window-minimize.svg</file>
     <file>resources/systray/window-restore.svg</file>

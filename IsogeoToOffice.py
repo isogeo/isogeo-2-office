@@ -198,6 +198,9 @@ class IsogeoToOffice_Main(QMainWindow):
                     li_url=["https://isogeo.gitbooks.io/app-isogeo2office/", ]
                     )
         )
+        # reset factory defaults
+        self.ui.btn_settings_reset.pressed.connect(partial(self.settings_reset))
+
         # view credits
         self.ui.btn_credits.pressed.connect(partial(self.displayer,
                                                     self.ui_credits))
@@ -294,8 +297,8 @@ class IsogeoToOffice_Main(QMainWindow):
 
         # try full restore
         try:
-            self.restoreGeometry(self.app_settings.value("geometry"))
-            self.restoreState(self.app_settings.value("windowState"))
+            self.restoreGeometry(self.app_settings.value("settings/geometry"))
+            self.restoreState(self.app_settings.value("settings/windowState"))
             logger.debug("Application restore successed.")
         except AttributeError:
             logger.debug("Application restore failed.")
@@ -554,7 +557,7 @@ class IsogeoToOffice_Main(QMainWindow):
         self.tray_icon.deleteLater()
 
         # -- Save settings
-        self.app_settings.setValue("log/log_level", "10")
+        self.app_settings.setValue("settings/log_level", "10")
 
         # API
         self.app_settings.setValue("auth/app_id", api_mngr.api_app_id)
@@ -598,8 +601,8 @@ class IsogeoToOffice_Main(QMainWindow):
                                    self.ui.chb_systray_minimize.isChecked())
 
         # global
-        self.app_settings.setValue("geometry", self.saveGeometry())
-        self.app_settings.setValue("windowState", self.saveState())
+        self.app_settings.setValue("settings/geometry", self.saveGeometry())
+        self.app_settings.setValue("settings/windowState", self.saveState())
         # accept the close
         event_sent.accept()
 
@@ -648,6 +651,19 @@ class IsogeoToOffice_Main(QMainWindow):
                                    path.basename(selected_folder))
         self.app_settings.setValue("settings/out_folder_path",
                                    selected_folder)
+
+    def settings_reset(self):
+        """Reset settings to factiry defaults. Do not not remove authentication
+        credentials. See #41
+        """
+        QMessageBox.information(self,
+                                self.tr("Settings - Reset to factory defaults"),
+                                self.tr("Settings will be reinitialized (not"
+                                        " authentication credentials).\n"
+                                        "application will be closed."))
+        logger.info("Settings - Reset to factory defaults.")
+        self.app_settings.remove("settings")
+        self.close()
 
     # -- UI Slots -------------------------------------------------------------
     @pyqtSlot(str)
