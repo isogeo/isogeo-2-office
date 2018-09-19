@@ -183,6 +183,7 @@ class IsogeoToOffice_Main(QMainWindow):
         self.ui.btn_change_user.pressed.connect(partial(api_mngr.display_auth_form))
         # share text window
         self.ui.txt_shares.anchorClicked.connect(self.app_utils.open_urls)
+        api_mngr.ui_auth_form.btn_ok_cancel.pressed.connect(self.update_credentials)
 
         # -- Settings tab - Resources -----------------------------------------
         self.ui.btn_log_dir.pressed.connect(partial(self.app_utils.open_dir_file,
@@ -672,6 +673,14 @@ class IsogeoToOffice_Main(QMainWindow):
         self.close()
 
     # -- UI Slots -------------------------------------------------------------
+    @pyqtSlot()
+    def update_credentials(self):
+        """Executed after credentials have been updated.
+        """
+        api_mngr.manage_api_initialization()
+        self.thread_app_props.start()
+        self.search(search_type="reset")
+
     @pyqtSlot(str)
     def fill_app_props(self, app_infos_retrieved: str = ""):
         """Get app properties and fillfull the share frame in settings tab.
@@ -687,7 +696,7 @@ class IsogeoToOffice_Main(QMainWindow):
         self.update_status_bar(prog_step=0,
                                status_msg=self.tr("Application information has been retrieved"))
         # end thread
-        self.thread_app_props.deleteLater()
+        #self.thread_app_props.deleteLater()
 
     @pyqtSlot(dict)
     def update_search_form(self, search: dict):

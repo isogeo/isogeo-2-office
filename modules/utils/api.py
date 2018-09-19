@@ -164,7 +164,6 @@ class IsogeoApiMngr(object):
             self.api_url_auth = creds.get("uri_auth")
             self.api_url_token = creds.get("uri_token")
             self.api_url_redirect = creds.get("uri_redirect")
-            self.credentials_storer(store_location="QSettings")
         else:
             pass
 
@@ -175,6 +174,7 @@ class IsogeoApiMngr(object):
     def display_auth_form(self):
         """Show authentication form with prefilled fields."""
         # connect widgets
+        self.ui_auth_form.btn_browse_credentials.pressed.disconnect()
         self.ui_auth_form.btn_browse_credentials.pressed.connect(partial(self.credentials_uploader))
         self.ui_auth_form.chb_isogeo_editor\
                          .stateChanged\
@@ -189,6 +189,7 @@ class IsogeoApiMngr(object):
                     [self.auth_form_request_url, ]))
 
         # fillfull auth form fields from stored settings
+        self.ui_auth_form.btn_ok_cancel.setEnabled(0)
         self.ui_auth_form.ent_app_id.setText(self.api_app_id)
         self.ui_auth_form.ent_app_secret.setText(self.api_app_secret)
         self.ui_auth_form.lbl_api_url_value.setText(self.api_url_base)
@@ -205,7 +206,8 @@ class IsogeoApiMngr(object):
         moved inside plugin/_auth subfolder.
         """
         selected_file = app_utils.open_FileNameDialog(self.ui_auth_form)
-        logger.debug("QFileDIalog returned: {}".format(selected_file))
+        logger.debug("Credentials file picker (QFileDialog) returned: {}"
+                     .format(selected_file))
         # test file structure
         if not path.exists(selected_file[0]):
             logger.error("No file selected")
@@ -218,6 +220,7 @@ class IsogeoApiMngr(object):
         except Exception as e:
             logger.error("Selected file is bad formatted: {}".format(e))
             return False
+
         # move credentials file into the plugin file structure
         if path.isfile(path.join(self.auth_folder, "client_secrets.json")):
             rename(path.join(self.auth_folder, "client_secrets.json"),
@@ -412,6 +415,8 @@ class IsogeoApiMngr(object):
         logger.info("Tags retrieved")
         return tags_parsed
 
+        # connect "Apply" button to manage
+        #self.ui_auth_form.btn_ok_cancel.pressed.connect(self.manage_api_initialization)
 
 # #############################################################################
 # ##### Stand alone program ########
