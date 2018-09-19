@@ -208,7 +208,15 @@ class isogeo2office_utils(IsogeoUtils):
         thumbnails_dict = {}
         # check filepath
         if not path.exists(in_xlsx_table):
-            raise FileNotFoundError(in_xlsx_table)
+            logger.info("Thumbnails - Table not present. An empty one will be created.")
+            return {None: (None, None)}
+
+        # check if file is not already opened
+        try:
+            open(path.realpath(in_xlsx_table), "r+")
+        except IOError:
+            logger.error("Thumbnails table file is already opened.")
+            raise IOError("Thumbnails - Table is already opened.")
 
         # load XLSX and check structure
         # with load_workbook(path.realpath(in_xlsx_table), read_only=True) as wb:

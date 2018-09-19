@@ -189,7 +189,7 @@ class ThreadExportExcel(QThread):
         # Now inform the main thread with the output (fill_app_props)
         logger.info("Excel - Export is over")
         self.sig_step.emit(0, self.tr("Excel finished"))
-        self.deleteLater()
+        # self.deleteLater()
 
 
 class ThreadExportWord(QThread):
@@ -264,7 +264,7 @@ class ThreadExportWord(QThread):
         # Now inform the main thread with the output (fill_app_props)
         logger.info("Word - Export is over")
         self.sig_step.emit(0, self.tr("Word finished"))
-        self.deleteLater()
+        # self.deleteLater()
 
 
 class ThreadExportXml(QThread):
@@ -344,7 +344,7 @@ class ThreadExportXml(QThread):
         # Now inform the main thread with the output (fill_app_props)
         logger.info("XML - Export is over")
         self.sig_step.emit(0, "XML finished")
-        self.deleteLater()
+        # self.deleteLater()
 
 
 # TO IMPORT LATER -------------------------------------------------------------
@@ -436,7 +436,7 @@ class ThreadThumbnails(QThread):
         # Now inform the main thread with the output (fill_app_props)
         logger.info("Thumbnail - Table creation is over")
         self.sig_step.emit(0, self.tr("Thumbnail table finished"))
-        self.deleteLater()
+        # self.deleteLater()
 
 
 # #############################################################################

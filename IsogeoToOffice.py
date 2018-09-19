@@ -169,6 +169,7 @@ class IsogeoToOffice_Main(QMainWindow):
                 self.ui.cbb_word_tpl.addItem(path.basename(tpl),
                                              path.join(app_tpldir, tpl))
 
+        self.ui.btn_thumbnails_update.pressed.connect(partial(self.search, "thumbnails"))
         # -- Settings tab - System tray icon ----------------------------------
         self.ui.chb_systray_minimize.toggled\
                .connect(lambda: self.app_settings
@@ -370,6 +371,23 @@ class IsogeoToOffice_Main(QMainWindow):
             self.thread_search.sig_finished.disconnect()
             self.thread_search.sig_finished.connect(self.export_process)
             logger.info("Search  prepared - {}".format(search_type.upper()))
+        elif search_type == "thumbnails":
+            # checks
+            if not self.export_check():
+                self.processing("end", 100)
+                return False
+
+            # prepare search and launch export process
+            share_id, search_terms = self.get_selected_filters()
+            self.thread_search.search_params = {"token": api_mngr.token,
+                                                "query": search_terms,
+                                                "share": share_id,
+                                                "page_size": 100,
+                                                "whole_share": 1,
+                                                "check": 0}
+            self.thread_search.sig_finished.disconnect()
+            self.thread_search.sig_finished.connect(self.thumbnails_generation)
+            logger.info("Search  prepared - {}".format(search_type.upper()))
         else:
             raise ValueError
 
@@ -442,54 +460,13 @@ class IsogeoToOffice_Main(QMainWindow):
         logger.debug("UUID option: {}"
                      .format(opt_md_uuid))
 
-        # thumbnails
-        thumbnails_filepath = path.join(app_dir, "_thumbnails/thumbnails.xlsx")
+        # -- Inputs ---
+        thumbs_filepath = path.join(app_thbdir, "thumbnails.xlsx")
         try:
-            thumbnails_loaded = self.app_utils.thumbnails_mngr(thumbnails_filepath)
-        except FileNotFoundError as e:
-            QMessageBox.warning(self,
-                                self.tr("Thumbnails - Matching table not found"),
-                                self.tr("The thumbnails matching table has not "
-                                        "been found in the exepected path: {}."
-                                        "{}{} {}"
-                                        .format(thumbnails_filepath,
-                                                self.tr("\nA new table will be created but "
-                                                        "previous data will be lost."),
-                                                self.tr("\nError message:"),
-                                                e
-                                                )
-                                        )
-                                )
-            thumbnails_loaded = {None: None}
-        except KeyError as e:
-            QMessageBox.warning(self,
-                                self.tr("Thumbnails - Table structure"),
-                                self.tr("The thumbnails matching table {} is "
-                                        "not compliant with the expected structure."
-                                        "{}{} {}"
-                                        .format(thumbnails_filepath,
-                                                self.tr("\nA new table will be created but "
-                                                        "previous data will be lost."),
-                                                self.tr("\nError message:"),
-                                                e)
-                                        )
-                                )
-            thumbnails_loaded = {None: None}
+            thumbnails_loaded = self.app_utils.thumbnails_mngr(thumbs_filepath)
         except Exception as e:
-            QMessageBox.warning(self,
-                                self.tr("Thumbnails - Unknown error"),
-                                self.tr("An unknown error occurred reading the"
-                                        "thumbnails matching table {}. "
-                                        "Please report it."
-                                        "{}{} {}"
-                                        .format(thumbnails_filepath,
-                                                self.tr("\nA new table will be created but "
-                                                        "previous data will be lost."),
-                                                self.tr("\nError message:"),
-                                                e)
-                                        )
-                                )
-            thumbnails_loaded = {None: None}
+            logger.error(e)
+            thumbnails_loaded = {None: (None, None)}
 
         # EXCEL
         if self.ui.chb_output_excel.isChecked():
@@ -542,11 +519,68 @@ class IsogeoToOffice_Main(QMainWindow):
         else:
             pass
 
-        # THUMBNAILS
+    @pyqtSlot(dict)
+    def thumbnails_generation(self, search_to_be_exported: dict):
+        """Process thumbnails table generation.
+
+        :param dict search_to_be_exported: Isogeo search response to export
+        """
+        # prepare progress bar
+        progbar_max = sum(self.li_opts) * search_to_be_exported.get("total")
+        self.ui.pgb_exports.setRange(1, progbar_max)
+        self.ui.pgb_exports.reset()
+
+        # Try to load from existig table
+        thumbs_filepath = path.join(app_thbdir, "thumbnails.xlsx")
+        try:
+            thumbnails_loaded = self.app_utils.thumbnails_mngr(thumbs_filepath)
+        except IOError as e:
+            QMessageBox.critical(self,
+                                 self.tr("Thumbnails - Table already opened"),
+                                 self.tr("The thumbnails matching table {} is "
+                                         "already opened. Close it please "
+                                         "before to try again."
+                                         .format(thumbs_filepath)
+                                         )
+                                 )
+            self.update_status_bar(0,
+                                   self.tr("Error - Thumbnails table is opened. Close it before contiinue."))
+            return False
+        except KeyError as e:
+            QMessageBox.warning(self,
+                                self.tr("Thumbnails - Table structure"),
+                                self.tr("The thumbnails matching table {} is "
+                                        "not compliant with the expected structure."
+                                        "{}{} {}"
+                                        .format(thumbs_filepath,
+                                                self.tr("\nA new table will be created but "
+                                                        "previous data will be lost."),
+                                                self.tr("\nError message:"),
+                                                e)
+                                        )
+                                )
+            thumbnails_loaded = {None: None}
+        except Exception as e:
+            QMessageBox.warning(self,
+                                self.tr("Thumbnails - Unknown error"),
+                                self.tr("An unknown error occurred reading the"
+                                        "thumbnails matching table {}. "
+                                        "Please report it."
+                                        "{}{} {}"
+                                        .format(thumbs_filepath,
+                                                self.tr("\nA new table will be created but "
+                                                        "previous data will be lost."),
+                                                self.tr("\nError message:"),
+                                                e)
+                                        )
+                                )
+            thumbnails_loaded = {None: (None, None)}
+
+        # STORE
         logger.debug("Thumbnails - Preparation")
-        logger.debug("Thumbnails - Output file: {}".format(thumbnails_filepath))
+        logger.debug("Thumbnails - Output file: {}".format(thumbs_filepath))
         self.thread_thumbnails_gen = ThreadThumbnails(search_to_be_exported,
-                                                      output_path=thumbnails_filepath,
+                                                      output_path=thumbs_filepath,
                                                       thumbnails=thumbnails_loaded)
         self.thread_thumbnails_gen.sig_step.connect(self.update_status_bar)
         self.thread_thumbnails_gen.start()
@@ -673,21 +707,12 @@ class IsogeoToOffice_Main(QMainWindow):
         self.close()
 
     # -- UI Slots -------------------------------------------------------------
-    @pyqtSlot()
-    def update_credentials(self):
-        """Executed after credentials have been updated.
-        """
-        api_mngr.manage_api_initialization()
-        self.thread_app_props.start()
-        self.search(search_type="reset")
-
     @pyqtSlot(str)
     def fill_app_props(self, app_infos_retrieved: str = ""):
         """Get app properties and fillfull the share frame in settings tab.
         """
         self.ui.txt_shares.setText(app_infos_retrieved)
         # notification
-        self.tray_icon.show()
         self.tray_icon.showMessage("Isogeo to Office",
                                    self.tr("Application information has been retrieved"),
                                    QIcon("img/favicon.ico"),
@@ -695,8 +720,14 @@ class IsogeoToOffice_Main(QMainWindow):
                                    )
         self.update_status_bar(prog_step=0,
                                status_msg=self.tr("Application information has been retrieved"))
-        # end thread
-        #self.thread_app_props.deleteLater()
+
+    @pyqtSlot()
+    def update_credentials(self):
+        """Executed after credentials have been updated.
+        """
+        api_mngr.manage_api_initialization()
+        self.thread_app_props.start()
+        self.search(search_type="reset")
 
     @pyqtSlot(dict)
     def update_search_form(self, search: dict):
