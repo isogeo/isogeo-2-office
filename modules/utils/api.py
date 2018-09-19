@@ -40,6 +40,7 @@ class IsogeoApiMngr(object):
     token = str
     # ui reference - authentication form
     ui_auth_form = QDialog
+    auth_form_request_url = "https://www.isogeo.com"
     # api parameters
     api_app_id = ""
     api_app_secret = ""
@@ -183,8 +184,9 @@ class IsogeoApiMngr(object):
                                   )
         self.ui_auth_form.btn_ok_cancel.clicked.connect(self.ui_auth_form.close)
         # button to request an account by email
-        #self.ui_auth_form.btn_account_new.pressed.connect(
-        #    partial(app_utils.mail_to_isogeo, lang=self.lang))
+        self.ui_auth_form.btn_account_new.pressed.connect(
+            partial(app_utils.open_urls,
+                    [self.auth_form_request_url, ]))
 
         # fillfull auth form fields from stored settings
         self.ui_auth_form.ent_app_id.setText(self.api_app_id)

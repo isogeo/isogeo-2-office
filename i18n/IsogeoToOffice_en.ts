@@ -3,90 +3,106 @@
 <context>
     <name>IsogeoToOffice_Main</name>
     <message>
-        <location filename="../IsogeoToOffice.py" line="187"/>
+        <location filename="../IsogeoToOffice.py" line="188"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="228"/>
+        <location filename="../IsogeoToOffice.py" line="236"/>
         <source>Authentication - Credentials missing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="713"/>
+        <location filename="../IsogeoToOffice.py" line="721"/>
         <source>Export {} metadata</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="396"/>
+        <location filename="../IsogeoToOffice.py" line="404"/>
         <source>Export option is missing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="396"/>
+        <location filename="../IsogeoToOffice.py" line="404"/>
         <source>At least one export option required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="228"/>
+        <location filename="../IsogeoToOffice.py" line="236"/>
         <source>Authentication to Isogeo API has failed. Credentials seem to be missing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="677"/>
+        <location filename="../IsogeoToOffice.py" line="685"/>
         <source>Application information has been retrieved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="368"/>
+        <location filename="../IsogeoToOffice.py" line="376"/>
         <source>Waiting for Isogeo API</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="760"/>
+        <location filename="../IsogeoToOffice.py" line="768"/>
         <source>Search form updated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="441"/>
+        <location filename="../IsogeoToOffice.py" line="449"/>
         <source>Thumbnails - Matching table not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="441"/>
+        <location filename="../IsogeoToOffice.py" line="449"/>
         <source>The thumbnails matching table has not been found in the exepected path: {}.{}{} {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="456"/>
+        <location filename="../IsogeoToOffice.py" line="464"/>
         <source>Thumbnails - Table structure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="456"/>
+        <location filename="../IsogeoToOffice.py" line="464"/>
         <source>The thumbnails matching table {} is not compliant with the expected structure.{}{} {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="470"/>
+        <location filename="../IsogeoToOffice.py" line="478"/>
         <source>Thumbnails - Unknown error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="470"/>
+        <location filename="../IsogeoToOffice.py" line="478"/>
         <source>An unknown error occurred reading thethumbnails matching table {}. Please report it.{}{} {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="470"/>
+        <location filename="../IsogeoToOffice.py" line="478"/>
         <source>
 A new table will be created but previous data will be lost.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="470"/>
+        <location filename="../IsogeoToOffice.py" line="478"/>
         <source>
 Error message:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../IsogeoToOffice.py" line="663"/>
+        <source>Settings - Reset to factory defaults</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../IsogeoToOffice.py" line="663"/>
+        <source>Settings will be reinitialized (not authentication credentials).
+application will be closed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../IsogeoToOffice.py" line="109"/>
+        <source>https://pipedrivewebforms.com/form/b5bdbdb9b34c3c61202cd8414accbbe252944</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -196,62 +212,62 @@ Error message:</source>
 <context>
     <name>dlg_authentication</name>
     <message>
-        <location filename="../modules/ui/auth/ui_authentication.py" line="258"/>
+        <location filename="../modules/ui/auth/ui_authentication.py" line="263"/>
         <source>Isogeo authentication settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/auth/ui_authentication.py" line="259"/>
+        <location filename="../modules/ui/auth/ui_authentication.py" line="264"/>
         <source>I already have Isogeo ID and SECRET for this application</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/auth/ui_authentication.py" line="260"/>
+        <location filename="../modules/ui/auth/ui_authentication.py" line="265"/>
         <source>Application SECRET:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/auth/ui_authentication.py" line="261"/>
+        <location filename="../modules/ui/auth/ui_authentication.py" line="266"/>
         <source>Application ID:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/auth/ui_authentication.py" line="264"/>
+        <location filename="../modules/ui/auth/ui_authentication.py" line="273"/>
         <source>Pick your credentials file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/auth/ui_authentication.py" line="266"/>
+        <location filename="../modules/ui/auth/ui_authentication.py" line="269"/>
         <source>I&apos;ve got the power hey yeah heh!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/auth/ui_authentication.py" line="267"/>
+        <location filename="../modules/ui/auth/ui_authentication.py" line="270"/>
         <source>I&apos;ve got edition rights on app.isogeo.com</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/auth/ui_authentication.py" line="262"/>
+        <location filename="../modules/ui/auth/ui_authentication.py" line="267"/>
         <source>Only for information, the Isogeo API base URL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/auth/ui_authentication.py" line="263"/>
+        <location filename="../modules/ui/auth/ui_authentication.py" line="268"/>
         <source>API location:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/auth/ui_authentication.py" line="270"/>
+        <location filename="../modules/ui/auth/ui_authentication.py" line="275"/>
         <source>Don&apos;t have an account yet ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/auth/ui_authentication.py" line="271"/>
+        <location filename="../modules/ui/auth/ui_authentication.py" line="277"/>
         <source>Request plugin access</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/auth/ui_authentication.ui" line="575"/>
+        <location filename="../modules/ui/auth/ui_authentication.ui" line="608"/>
         <source>&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;body&gt;
@@ -268,12 +284,12 @@ Error message:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/auth/ui_authentication.py" line="265"/>
+        <location filename="../modules/ui/auth/ui_authentication.py" line="274"/>
         <source>Import the Isogeo API credentials file ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/auth/ui_authentication.py" line="272"/>
+        <location filename="../modules/ui/auth/ui_authentication.py" line="278"/>
         <source>&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;body&gt;
@@ -290,13 +306,18 @@ Error message:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/auth/ui_authentication.py" line="268"/>
+        <location filename="../modules/ui/auth/ui_authentication.py" line="271"/>
         <source>Save credentials</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/auth/ui_authentication.py" line="269"/>
+        <location filename="../modules/ui/auth/ui_authentication.py" line="272"/>
         <source>Apply</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/auth/ui_authentication.py" line="276"/>
+        <source>Open request form into the default web browser</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -349,267 +370,302 @@ Error message:</source>
 <context>
     <name>win_IsogeoToOffice</name>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="705"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="759"/>
         <source>Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="696"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="750"/>
         <source>Filters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="697"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="751"/>
         <source>Reset search form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="698"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="752"/>
         <source>Share</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="699"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="753"/>
         <source>Metadata Owner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="700"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="754"/>
         <source>Resource type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="701"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="755"/>
         <source>Keyword</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="702"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="756"/>
         <source>Output formats</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="704"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="758"/>
         <source>Launch export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="754"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="814"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="706"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="760"/>
         <source>Export settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="723"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="777"/>
         <source>Location and naming rules</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="714"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="769"/>
         <source>Display Timestamp:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="721"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="762"/>
         <source>No date (overwrite)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="722"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="767"/>
         <source>Day</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="720"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="761"/>
         <source>Datetime</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="715"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="763"/>
         <source>Output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="710"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="771"/>
         <source>Custom output filename prefix</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="712"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="773"/>
         <source>IsogeoToOffice</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="713"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="775"/>
         <source>Length of metadata UUID:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="719"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="774"/>
         <source>Output fileprefix:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="718"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="776"/>
         <source>Useful to avoid name conflicts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="724"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="778"/>
         <source>Add a sheet to the output workbook about features attributes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="725"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="779"/>
         <source>Features attributes analysis</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="726"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="780"/>
         <source>Add a sheet to the the output workbook with some metrics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="727"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="781"/>
         <source>Cataloguing dashboard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="728"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="788"/>
         <source>Template to apply:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="729"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="789"/>
         <source>Word template to apply to the exported metadata</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="734"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="792"/>
         <source>Export metadata in XML ISO 19139</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="735"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="793"/>
         <source>Pack all XML in one zip archive</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="736"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="794"/>
         <source>Authentication settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="737"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="795"/>
         <source>Set application authentication:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="738"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="796"/>
         <source>Change authentication settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="739"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="797"/>
         <source>Application properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="740"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="745"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="803"/>
         <source>Resources</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="749"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="807"/>
         <source>Report an issue on the bug tracker</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="747"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="805"/>
         <source>Get the log file: &quot;log_isogeo_isogeo2office.log&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="748"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="806"/>
         <source>LOG File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="750"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="808"/>
         <source>Open online application help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="751"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="809"/>
         <source>Open online help in default browser</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="752"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="812"/>
         <source>Open application credits</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="753"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="813"/>
         <source>Open credits popup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="755"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="815"/>
         <source>Status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="707"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="770"/>
         <source>Open the output folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="730"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="784"/>
         <source>Open thumbnails matching table in Excel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="731"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="785"/>
         <source>Thumbnails table:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="733"/>
-        <source>Edit the thumbnails matching table in Excel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="716"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="765"/>
         <source>Minimize application into systray icon (near to the clock)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="717"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="766"/>
         <source>Minimize application during export process</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="708"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="764"/>
         <source>Output directory:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="709"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="768"/>
         <source>Change the output folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="782"/>
+        <source>Generate or update matching table from Isogeo API</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="783"/>
+        <source>Generate/update</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="786"/>
+        <source>Open Excel to complete thumbnails matching table with images paths</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="810"/>
+        <source>Reset application settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="811"/>
+        <source>Reset application settings to factory default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="787"/>
+        <source>Complete the matching table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="790"/>
+        <source>Select input table and generate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="791"/>
+        <source>Fillfull XML from an Excel workbook:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="798"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:9.75pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8.25pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

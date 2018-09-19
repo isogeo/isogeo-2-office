@@ -106,6 +106,8 @@ class IsogeoToOffice_Main(QMainWindow):
         # Credits
         self.ui_credits = Credits()
         # Auth
+        api_mngr.auth_form_request_url = self.tr(
+            "https://pipedrivewebforms.com/form/b5bdbdb9b34c3c61202cd8414accbbe252944")
         api_mngr.ui_auth_form = Auth()
         api_mngr.auth_folder = path.join(app_dir, "_auth")
         # build UI
