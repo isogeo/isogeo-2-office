@@ -224,13 +224,14 @@ class IsogeoFormatter(object):
             try:
                 urlparse(input_link)
                 link_edit = input_link
-            except:
-                pass
-            out_hyperlink= r'=HYPERLINK("{0}","{1}")'.format(link_edit,
-                                                             "Editer")
+            except Exception as e:
+                logger.error(e)
+                link_edit = ""
+            out_hyperlink = r'=HYPERLINK("{0}","{1}")'.format(link_edit,
+                                                              "Editer")
         else:
             return None
-        
+
         return out_hyperlink
 
 

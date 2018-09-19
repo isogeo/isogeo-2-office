@@ -260,6 +260,7 @@ class IsogeoApiMngr(object):
         # connect "Apply" button to manage
         #self.ui_auth_form.btn_ok_cancel.pressed.connect(self.manage_api_initialization)
 
+
 # #############################################################################
 # ##### Stand alone program ########
 # ##################################

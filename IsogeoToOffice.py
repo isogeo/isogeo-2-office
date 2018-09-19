@@ -301,7 +301,6 @@ class IsogeoToOffice_Main(QMainWindow):
         self.ui.chb_systray_minimize.setChecked(self.app_settings.value("settings/systray_minimize",
                                                                         False, type=bool))
 
-
         # try full restore
         try:
             self.restoreGeometry(self.app_settings.value("settings/geometry"))
@@ -505,11 +504,11 @@ class IsogeoToOffice_Main(QMainWindow):
 
             # instanciate thread
             self.thread_export_docx = ThreadExportWord(search_to_be_exported,
-                                                        output_docx_filepath,
-                                                        tpl_path=template_path,
-                                                        thumbnails=thumbnails_loaded,
-                                                        timestamp=horodatage,
-                                                        length_uuid=opt_md_uuid)
+                                                       output_docx_filepath,
+                                                       tpl_path=template_path,
+                                                       thumbnails=thumbnails_loaded,
+                                                       timestamp=horodatage,
+                                                       length_uuid=opt_md_uuid)
             self.thread_export_docx.sig_step.connect(self.update_status_bar)
             self.thread_export_docx.start()
         else:
@@ -834,6 +833,7 @@ class IsogeoToOffice_Main(QMainWindow):
         # check if progression is over
         if self.ui.pgb_exports.maximum() == prog_val:
             self.tray_icon.act_show.trigger()
+
 
 # #############################################################################
 # ##### Stand alone program ########
