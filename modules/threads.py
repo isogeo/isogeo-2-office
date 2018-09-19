@@ -441,6 +441,40 @@ class ThreadThumbnails(QThread):
         # self.deleteLater()
 
 
+class ThreadExportHtmlReport(QThread):
+    # signals
+    sig_step = pyqtSignal(int, str)
+
+    def __init__(self,
+                 search_to_export: dict = {},
+                 isogeo_api_mngr: object = None,
+                 html_template: str = "",
+                 output_path: str = r"output/",
+                 timestamp: str = ""):
+        QThread.__init__(self)
+        # export settings
+        self.search = search_to_export
+        self.api_mngr = isogeo_api_mngr
+        self.html_tpl = html_template
+        self.output_path = output_path
+        self.timestamp = timestamp
+
+    # run method gets called when we start the thread
+    def run(self):
+        """Export each metadata into an XML ISO 19139
+        """
+        logger.debug("hohohoho")
+        # ZIP or not ZIP
+        stats_types = [100, 50, 25, 15]
+
+        # output template
+        out_html_file = self.html_tpl.render(varTitle="Isogeo To Office - Report",
+                                             varLblChartTypes="Metadta by types")
+
+        with open("test_out_html_templated.html", "w") as fh:
+            fh.write(out_html_file)
+
+
 # #############################################################################
 # ##### Stand alone program ########
 # ##################################
