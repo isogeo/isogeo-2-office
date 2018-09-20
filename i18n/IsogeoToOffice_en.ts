@@ -13,17 +13,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="759"/>
+        <location filename="../IsogeoToOffice.py" line="776"/>
         <source>Export {} metadata</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="425"/>
+        <location filename="../IsogeoToOffice.py" line="426"/>
         <source>Export option is missing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="425"/>
+        <location filename="../IsogeoToOffice.py" line="426"/>
         <source>At least one export option required.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -33,69 +33,59 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="723"/>
+        <location filename="../IsogeoToOffice.py" line="734"/>
         <source>Application information has been retrieved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="397"/>
+        <location filename="../IsogeoToOffice.py" line="398"/>
         <source>Waiting for Isogeo API</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="806"/>
+        <location filename="../IsogeoToOffice.py" line="823"/>
         <source>Search form updated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="647"/>
-        <source>Thumbnails - Matching table not found</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../IsogeoToOffice.py" line="647"/>
-        <source>The thumbnails matching table has not been found in the exepected path: {}.{}{} {}</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../IsogeoToOffice.py" line="663"/>
+        <location filename="../IsogeoToOffice.py" line="563"/>
         <source>Thumbnails - Table structure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="663"/>
+        <location filename="../IsogeoToOffice.py" line="563"/>
         <source>The thumbnails matching table {} is not compliant with the expected structure.{}{} {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="677"/>
+        <location filename="../IsogeoToOffice.py" line="577"/>
         <source>Thumbnails - Unknown error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="677"/>
+        <location filename="../IsogeoToOffice.py" line="577"/>
         <source>An unknown error occurred reading thethumbnails matching table {}. Please report it.{}{} {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="677"/>
+        <location filename="../IsogeoToOffice.py" line="577"/>
         <source>
 A new table will be created but previous data will be lost.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="677"/>
+        <location filename="../IsogeoToOffice.py" line="577"/>
         <source>
 Error message:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="629"/>
+        <location filename="../IsogeoToOffice.py" line="713"/>
         <source>Settings - Reset to factory defaults</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="629"/>
+        <location filename="../IsogeoToOffice.py" line="713"/>
         <source>Settings will be reinitialized (not authentication credentials).
 application will be closed.</source>
         <translation type="unfinished"></translation>
@@ -103,6 +93,26 @@ application will be closed.</source>
     <message>
         <location filename="../IsogeoToOffice.py" line="111"/>
         <source>https://pipedrivewebforms.com/form/b5bdbdb9b34c3c61202cd8414accbbe252944</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../IsogeoToOffice.py" line="499"/>
+        <source>Word - Error: no template.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../IsogeoToOffice.py" line="551"/>
+        <source>Thumbnails - Table already opened</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../IsogeoToOffice.py" line="551"/>
+        <source>The thumbnails matching table {} is already opened. Close it please before to try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../IsogeoToOffice.py" line="559"/>
+        <source>Error - Thumbnails table is opened. Close it before contiinue.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -178,12 +188,12 @@ application will be closed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="260"/>
+        <location filename="../modules/threads.py" line="262"/>
         <source>Word: error occurred during saving step. Check the log.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="266"/>
+        <location filename="../modules/threads.py" line="268"/>
         <source>Word finished</source>
         <translation type="unfinished"></translation>
     </message>
@@ -191,7 +201,7 @@ application will be closed.</source>
 <context>
     <name>ThreadExportXml</name>
     <message>
-        <location filename="../modules/threads.py" line="307"/>
+        <location filename="../modules/threads.py" line="309"/>
         <source>Processing XML: {}</source>
         <translation type="unfinished"></translation>
     </message>
@@ -199,12 +209,12 @@ application will be closed.</source>
 <context>
     <name>ThreadThumbnails</name>
     <message>
-        <location filename="../modules/threads.py" line="404"/>
+        <location filename="../modules/threads.py" line="406"/>
         <source>Preparing thumbnail table for: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="438"/>
+        <location filename="../modules/threads.py" line="440"/>
         <source>Thumbnail table finished</source>
         <translation type="unfinished"></translation>
     </message>
@@ -370,47 +380,47 @@ application will be closed.</source>
 <context>
     <name>win_IsogeoToOffice</name>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="758"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="757"/>
         <source>Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="749"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="748"/>
         <source>Filters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="750"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="749"/>
         <source>Reset search form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="751"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="750"/>
         <source>Share</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="752"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="751"/>
         <source>Metadata Owner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="753"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="752"/>
         <source>Resource type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="754"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="753"/>
         <source>Keyword</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="755"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="754"/>
         <source>Output formats</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="757"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="756"/>
         <source>Launch export</source>
         <translation type="unfinished"></translation>
     </message>
@@ -420,7 +430,7 @@ application will be closed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="759"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="758"/>
         <source>Export settings</source>
         <translation type="unfinished"></translation>
     </message>
@@ -465,7 +475,7 @@ application will be closed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="760"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="759"/>
         <source>Length of metadata UUID:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -475,7 +485,7 @@ application will be closed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="761"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="760"/>
         <source>Useful to avoid name conflicts</source>
         <translation type="unfinished"></translation>
     </message>
@@ -615,7 +625,7 @@ application will be closed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="762"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="761"/>
         <source>Change the output folder</source>
         <translation type="unfinished"></translation>
     </message>
@@ -684,7 +694,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.ui" line="1090"/>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.py" line="762"/>
         <source>Select ...</source>
         <translation type="unfinished"></translation>
     </message>
