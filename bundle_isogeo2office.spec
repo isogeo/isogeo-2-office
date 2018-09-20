@@ -5,8 +5,8 @@ block_cipher = None
 # -- Include ------------------------------------------------------------------
 added_files = [('i18n', 'i18n'),
                ('resources', 'resources'),
-               ('templates', 'templates'),
-               ('thumbnails/thumbnails.xlsx', 'thumbnails'),
+               ('_templates/template_Isogeo.docx', '_templates'),
+               ('_thumbnails/thumbnails.xlsx', '_thumbnails'),
               ]
 
 # -- PyInstaller process ------------------------------------------------------
