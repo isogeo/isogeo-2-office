@@ -174,8 +174,6 @@ class IsogeoApiMngr(object):
     def display_auth_form(self):
         """Show authentication form with prefilled fields."""
         # connect widgets
-        self.ui_auth_form.btn_browse_credentials.pressed.disconnect()
-        self.ui_auth_form.btn_browse_credentials.pressed.connect(partial(self.credentials_uploader))
         self.ui_auth_form.chb_isogeo_editor\
                          .stateChanged\
                          .connect(lambda: qsettings.setValue("user/editor",

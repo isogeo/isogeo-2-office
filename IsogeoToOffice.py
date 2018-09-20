@@ -182,9 +182,10 @@ class IsogeoToOffice_Main(QMainWindow):
         # -- Settings tab - Application authentication ------------------------
         # Change user -> see below for authentication form
         self.ui.btn_change_user.pressed.connect(partial(api_mngr.display_auth_form))
+        api_mngr.ui_auth_form.btn_browse_credentials.pressed.connect(partial(api_mngr.credentials_uploader))
+        api_mngr.ui_auth_form.btn_ok_cancel.pressed.connect(self.update_credentials)
         # share text window
         self.ui.txt_shares.anchorClicked.connect(self.app_utils.open_urls)
-        api_mngr.ui_auth_form.btn_ok_cancel.pressed.connect(self.update_credentials)
 
         # -- Settings tab - Resources -----------------------------------------
         self.ui.btn_log_dir.pressed.connect(partial(self.app_utils.open_dir_file,
