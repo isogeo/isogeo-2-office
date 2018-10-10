@@ -202,7 +202,6 @@ class IsogeoToOffice_Main(QMainWindow):
         # help button
         self.ui.btn_help.pressed.connect(
             partial(self.app_utils.open_urls,
-                    li_url=["https://isogeo.gitbooks.io/app-isogeo2office/", ]
                     )
         )
         # reset factory defaults

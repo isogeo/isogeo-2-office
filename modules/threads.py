@@ -61,7 +61,7 @@ class ThreadAppProperties(QThread):
         app = shares[0].get("applications")[0]
         text += "<p>{}<a href='{}' style='color: CornflowerBlue;'>{}</a> "\
                 .format(self.tr("This application is authenticated as "),
-                        app.get("url", "https://isogeo.gitbooks.io/app-isogeo2office/content/"),
+                        app.get("url", "http://help.isogeo.com/isogeo2office/"),
                         app.get("name", "Isogeo to Office"))
         # shares feeding the application
         if len(shares) == 1:

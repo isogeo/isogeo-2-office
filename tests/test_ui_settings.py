@@ -35,7 +35,7 @@ class TestUiSettings(unittest.TestCase):
 
     # standard methods
     def setUp(self):
-        # """Executed before each test."""
+        """Executed before each test."""
         self.i2o = IsogeoToOffice.IsogeoToOffice_Main()
 
     def tearDown(self):

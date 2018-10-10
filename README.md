@@ -10,8 +10,8 @@ Desktop toolbox using Isogeo REST API to export metadatas into Microsoft Office 
 
 ## User documentation
 
-* [French : documentation utilisateur](https://www.gitbook.com/book/isogeo/app-isogeo2office/details) ;
-* [English: user documentation](https://www.gitbook.com/book/isogeo/app-isogeo2office/details).
+* [French : documentation utilisateur](http://help.isogeo.com/isogeo2office/fr/) ;
+* [English: user documentation](http://help.isogeo.com/isogeo2office/en/).
 
 ## Continuous integration
 
