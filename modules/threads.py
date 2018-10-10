@@ -128,10 +128,10 @@ class ThreadExportExcel(QThread):
     def __init__(self,
                  search_to_export: dict = {},
                  output_path: str = r"output/",
-                 opt_attributes: int = 1,
-                 opt_dasboard: int = 1,
-                 opt_fillfull: int = 1,
-                 opt_inspire: int = 1):
+                 opt_attributes: int = 0,
+                 opt_dasboard: int = 0,
+                 opt_fillfull: int = 0,
+                 opt_inspire: int = 0):
         QThread.__init__(self)
         # export settings
         self.search = search_to_export

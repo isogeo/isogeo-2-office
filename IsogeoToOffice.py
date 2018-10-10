@@ -202,6 +202,7 @@ class IsogeoToOffice_Main(QMainWindow):
         # help button
         self.ui.btn_help.pressed.connect(
             partial(self.app_utils.open_urls,
+                    li_url=["http://help.isogeo.com/isogeo2office/", ]
                     )
         )
         # reset factory defaults
@@ -477,7 +478,9 @@ class IsogeoToOffice_Main(QMainWindow):
             self.thread_export_xlsx = ThreadExportExcel(search_to_be_exported,
                                                         output_xlsx_filepath,
                                                         opt_attributes=self.ui.chb_xls_attributes.isChecked(),
-                                                        opt_dasboard=self.ui.chb_xls_stats.isChecked())
+                                                        opt_dasboard=self.ui.chb_xls_stats.isChecked(),
+                                                        opt_fillfull=0,
+                                                        opt_inspire=0)
             self.thread_export_xlsx.sig_step.connect(self.update_status_bar)
             self.thread_export_xlsx.start()
         else:
