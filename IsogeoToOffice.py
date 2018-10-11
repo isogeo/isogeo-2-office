@@ -82,7 +82,7 @@ log_form = logging.Formatter("%(asctime)s || %(levelname)s "
 logfile = RotatingFileHandler(path.join(app_logdir,
                                         "log_IsogeoToOffice.log"),
                               "a", 5000000, 1)
-logfile.setLevel(logging.DEBUG)
+logfile.setLevel(log_level)
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
 logger.info('================ Isogeo to office ===============')
@@ -108,6 +108,7 @@ class IsogeoToOffice_Main(QMainWindow):
         self.ui.setupUi(self)
         # Settings
         self.app_settings = QSettings('Isogeo', 'IsogeoToOffice')
+        self.settings_noSave = 0
         # usage metrics
         launch_counter = self.app_settings.value("usage/launch", 0)
         self.app_settings.setValue("usage/launch", launch_counter + 1)
@@ -462,7 +463,7 @@ class IsogeoToOffice_Main(QMainWindow):
         opt_timestamp = self.app_settings.value("settings/timestamps", "no")
         logger.debug("Timestamp option: {}".format(opt_timestamp))
         horodatage = self.app_utils.timestamps_picker(opt_timestamp)
-        logger.debug("Timestamp value applied: ".format(horodatage))
+        logger.debug("Timestamp value applied: {}".format(horodatage))
         # metadata UUID
         opt_md_uuid = self.ui.int_md_uuid.value()
         logger.debug("UUID option: {}"
@@ -615,50 +616,54 @@ class IsogeoToOffice_Main(QMainWindow):
         self.tray_icon.hide()
         self.tray_icon.deleteLater()
 
-        # -- Save settings ----------------------------------------------------
-        self.app_settings.setValue("settings/log_level", logger.level)
+        if not self.settings_noSave:
+            # -- Save settings ------------------------------------------------
+            self.app_settings.setValue("settings/log_level", logger.level)
+            # API
+            self.app_settings.setValue("auth/app_id", api_mngr.api_app_id)
+            self.app_settings.setValue("auth/app_secret", api_mngr.api_app_secret)
+            self.app_settings.setValue("auth/url_base", api_mngr.api_url_base)
+            self.app_settings.setValue("auth/url_auth", api_mngr.api_url_auth)
+            self.app_settings.setValue("auth/url_token", api_mngr.api_url_token)
+            self.app_settings.setValue(
+                "auth/url_redirect", api_mngr.api_url_redirect)
 
-        # API
-        self.app_settings.setValue("auth/app_id", api_mngr.api_app_id)
-        self.app_settings.setValue("auth/app_secret", api_mngr.api_app_secret)
-        self.app_settings.setValue("auth/url_base", api_mngr.api_url_base)
-        self.app_settings.setValue("auth/url_auth", api_mngr.api_url_auth)
-        self.app_settings.setValue("auth/url_token", api_mngr.api_url_token)
-        self.app_settings.setValue(
-            "auth/url_redirect", api_mngr.api_url_redirect)
+            # output formats
+            self.app_settings.setValue(
+                "formats/excel", self.ui.chb_output_excel.isChecked())
+            self.app_settings.setValue(
+                "formats/word", self.ui.chb_output_word.isChecked())
+            self.app_settings.setValue(
+                "formats/xml", self.ui.chb_output_xml.isChecked())
 
-        # output formats
-        self.app_settings.setValue(
-            "formats/excel", self.ui.chb_output_excel.isChecked())
-        self.app_settings.setValue(
-            "formats/word", self.ui.chb_output_word.isChecked())
-        self.app_settings.setValue(
-            "formats/xml", self.ui.chb_output_xml.isChecked())
+            # location and naming rules
+            # output folder is defined by itso own method 'set_output_folder'
+            self.app_settings.setValue("settings/out_prefix",
+                                    self.ui.txt_output_fileprefix.text())
+            self.app_settings.setValue("settings/uuid_length",
+                                    self.ui.int_md_uuid.value())
 
-        # location and naming rules
-        # output folder is defined by itso own method 'set_output_folder'
-        self.app_settings.setValue("settings/out_prefix",
-                                   self.ui.txt_output_fileprefix.text())
-        self.app_settings.setValue("settings/uuid_length",
-                                   self.ui.int_md_uuid.value())
+            # export options
+            self.app_settings.setValue("settings/xls_sheet_attributes",
+                                    self.ui.chb_xls_attributes.isChecked())
+            self.app_settings.setValue("settings/xls_sheet_dashboard",
+                                    self.ui.chb_xls_stats.isChecked())
+            self.app_settings.setValue("settings/doc_tpl_name",
+                                    self.ui.cbb_word_tpl.currentText())
+            self.app_settings.setValue("settings/xml_zip",
+                                    self.ui.chb_xml_zip.isChecked())
 
-        # export options
-        self.app_settings.setValue("settings/xls_sheet_attributes",
-                                   self.ui.chb_xls_attributes.isChecked())
-        self.app_settings.setValue("settings/xls_sheet_dashboard",
-                                   self.ui.chb_xls_stats.isChecked())
-        self.app_settings.setValue("settings/doc_tpl_name",
-                                   self.ui.cbb_word_tpl.currentText())
-        self.app_settings.setValue("settings/xml_zip",
-                                   self.ui.chb_xml_zip.isChecked())
+            # misc
+            self.app_settings.setValue("settings/systray_minimize",
+                                    self.ui.chb_systray_minimize.isChecked())
 
-        # misc
-        self.app_settings.setValue("settings/systray_minimize",
-                                   self.ui.chb_systray_minimize.isChecked())
+            # global UI position
+            self.app_settings.setValue("settings/geometry", self.saveGeometry())
 
-        # global UI position
-        self.app_settings.setValue("settings/geometry", self.saveGeometry())
-        self.app_settings.setValue("settings/windowState", self.saveState())
+            # global UI position
+            self.app_settings.setValue("settings/geometry", self.saveGeometry())
+            self.app_settings.setValue("settings/windowState", self.saveState())
+
         # accept the close
         event_sent.accept()
 
@@ -723,7 +728,9 @@ class IsogeoToOffice_Main(QMainWindow):
                                         " authentication credentials).\n"
                                         "application will be closed."))
         logger.info("Settings - Reset to factory defaults.")
+        self.app_settings.remove("formats")
         self.app_settings.remove("settings")
+        self.settings_noSave = 1
         self.close()
 
     # -- UI Slots -------------------------------------------------------------
