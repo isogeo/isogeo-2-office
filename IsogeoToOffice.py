@@ -4,8 +4,8 @@
 """
     Isogeo To Office - Main launcher
 
-    Purpose:      Get metadatas from Isogeo and export to desktop formats
-    Author:       Isogeo
+    Purpose:     Get metadatas from Isogeo and export to desktop formats
+    Author:      Isogeo
     Python:      3.6.x
 """
 
@@ -66,10 +66,16 @@ api_mngr = IsogeoApiMngr()
 # VERSION
 __version__ = "2.0.0-beta5"
 
-# LOG FILE ##
+# LOG FILE #
+# log level depends on version
+if "beta" in __version__:
+    log_level = logging.DEBUG
+else:
+    log_level = logging.INFO
+
 logger = logging.getLogger("isogeo2office")
 logging.captureWarnings(True)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(log_level)
 log_form = logging.Formatter("%(asctime)s || %(levelname)s "
                              "|| %(module)s - %(lineno)d ||"
                              " %(funcName)s || %(message)s")
