@@ -639,23 +639,23 @@ class IsogeoToOffice_Main(QMainWindow):
             # location and naming rules
             # output folder is defined by itso own method 'set_output_folder'
             self.app_settings.setValue("settings/out_prefix",
-                                    self.ui.txt_output_fileprefix.text())
+                                       self.ui.txt_output_fileprefix.text())
             self.app_settings.setValue("settings/uuid_length",
-                                    self.ui.int_md_uuid.value())
+                                       self.ui.int_md_uuid.value())
 
             # export options
             self.app_settings.setValue("settings/xls_sheet_attributes",
-                                    self.ui.chb_xls_attributes.isChecked())
+                                       self.ui.chb_xls_attributes.isChecked())
             self.app_settings.setValue("settings/xls_sheet_dashboard",
-                                    self.ui.chb_xls_stats.isChecked())
+                                       self.ui.chb_xls_stats.isChecked())
             self.app_settings.setValue("settings/doc_tpl_name",
-                                    self.ui.cbb_word_tpl.currentText())
+                                       self.ui.cbb_word_tpl.currentText())
             self.app_settings.setValue("settings/xml_zip",
-                                    self.ui.chb_xml_zip.isChecked())
+                                       self.ui.chb_xml_zip.isChecked())
 
             # misc
             self.app_settings.setValue("settings/systray_minimize",
-                                    self.ui.chb_systray_minimize.isChecked())
+                                       self.ui.chb_systray_minimize.isChecked())
 
             # global UI position
             self.app_settings.setValue("settings/geometry", self.saveGeometry())
