@@ -22,7 +22,7 @@ pip install --upgrade -r ./requirements_dev.txt
 
 "`n-- STEP -- Build and bundle forcing clean"
 rm -r dist\*
-pyinstaller -y --clean bundle_isogeo2office.spec --upx-dir .\build\upx-3.95-win64
+python -OO -m PyInstaller -y bundle_isogeo2office.spec --upx-dir .\build\upx-3.95-win64
 
 "`n-- STEP -- Zipping"
 Add-Type -assembly "system.io.compression.filesystem"
