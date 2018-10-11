@@ -1,6 +1,10 @@
 {
     "python.pythonPath": "${workspaceFolder}\\env3\\Scripts\\python.exe",
-    "python.formatting.provider": "autopep8",
+    "python.formatting.provider": "black",
+    "python.formatting.blackArgs": [
+        "--line-length",
+        "100"
+    ],
     "python.unitTest.unittestArgs": [
         "-v",
         "-s",
@@ -11,8 +15,8 @@
     "python.unitTest.pyTestEnabled": false,
     "python.unitTest.nosetestsEnabled": false,
     "python.unitTest.unittestEnabled": true,
-    "pyqt-integration.qtdesigner.path": "C:\\Users\\julien.moura\\Documents\\GitHub\\Isogeo\\isogeo-2-office\\env3/Lib/site-packages/pyqt5-tools/designer.exe",
+    "pyqt-integration.qtdesigner.path": "C:\\Users\\julien.moura\\Documents\\GitHub\\Isogeo\\isogeo-2-office\\env3/Lib/site-packages/pyqt5_tools/designer.exe",
     "python.venvPath": "${workspaceFolder}/env3",
-    "pyqt-integration.linguist.cmd": "C:\\Users\\julien.moura\\Documents\\GitHub\\Isogeo\\isogeo-2-office\\env3/Lib/site-packages/pyqt5-tools/linguist.exe",
+    "pyqt-integration.linguist.cmd": "C:\\Users\\julien.moura\\Documents\\GitHub\\Isogeo\\isogeo-2-office\\env3\\Lib\\site-packages\\pyqt5_tools\\linguist.exe",
     "python.linting.enabled": true,
 }
