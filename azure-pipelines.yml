@@ -6,8 +6,6 @@
 jobs:
 
 - job: 'Install'
-  pool:
-    vmImage: 'Ubuntu 16.04'
   strategy:
     matrix:
       Python36_VS17_64bits:
