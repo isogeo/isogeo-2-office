@@ -10,12 +10,12 @@ jobs:
     matrix:
       Python36_VS17_64bits:
         pool:
-          vmImage: vs2017-win2016
+          vmImage: 'vs2017-win2016'
         python.version: '3.6'
         python.arch: 'x64'
       Python36_VS15_32bits:
         pool:
-          vmImage: vs2015-win2012r2
+          vmImage: 'vs2015-win2012r2'
         python.version: '3.6'
         python.arch: 'x86'
     maxParallel: 4
