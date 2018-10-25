@@ -26,3 +26,14 @@ jobs:
 
   - script: python -m pip install -U pip && pip install -U -r requirements.txt && pip install -U -r requirements_dev.txt
     displayName: 'Install dependencies'
+
+  - script: |
+      pylupdate5 -noobsolete -verbose isogeo2office.pro
+      pyrcc5 resources.qrc -o resources_rc.py
+      pyuic5 -x modules\\ui\\auth\\ui_authentication.ui -o modules\\ui\\auth\\ui_authentication.py"
+      pyuic5 -x modules\\ui\\credits\\ui_credits.ui -o modules\\ui\\credits\\ui_credits.py
+      pyuic5 -x modules\\ui\\main\\ui_win_IsogeoToOffice.ui -o modules\\ui\\main\\ui_win_IsogeoToOffice.py
+    displayName: 'PyQt processing'
+
+  - script: pyinstaller.exe -y bundle_isogeo2office.spec
+    displayName: 'Building the executable'
