@@ -1,0 +1,29 @@
+# Python package
+# Create and test a Python package on multiple Python versions.
+# Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/python
+
+jobs:
+
+- job: 'Install'
+  pool:
+    vmImage: 'Ubuntu 16.04'
+  strategy:
+    matrix:
+      Python36_VS17_64bits:
+        python.version: '3.6'
+        vmImage: vs2017-win2016
+        python.arch: 'x64'
+      Python36_VS15_32bits:
+        python.version: '3.6'
+        python.arch: 'x86'
+    maxParallel: 4
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+      architecture: '$(python.arch)'
+
+  - script: python -m pip install -U pip && pip install -U -r requirements.txt && pip install -U -r requirements_dev.txt
+    displayName: 'Install dependencies'
