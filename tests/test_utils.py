@@ -1,6 +1,14 @@
 # -*- coding: UTF-8 -*-
 #! python3
 
+"""
+    Usage from the repo root folder:
+    
+    ```python
+    python -m unittest tests.test_utils
+    ```
+"""
+
 # #############################################################################
 # ########## Libraries #############
 # ##################################
@@ -124,8 +132,8 @@ class TestIsogeo2officeUtils(unittest.TestCase):
 
     def test_thumbnails_loader_bad_notTable(self):
         """Test filenames errors"""
-        with self.assertRaises(FileNotFoundError):
-            self.utils.thumbnails_mngr(r"table_thumbnails.xlsx")
+        thumbs_loaded = self.utils.thumbnails_mngr(r"table_thumbnails.xlsx")
+        self.assertEqual(thumbs_loaded, {None: (None, None)})
 
     def test_thumbnails_loader_bad_sheetname(self):
         """Test filenames errors"""
