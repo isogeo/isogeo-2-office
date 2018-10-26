@@ -37,3 +37,12 @@ jobs:
 
   - script: pyinstaller.exe -y bundle_isogeo2office.spec
     displayName: 'Building the executable'
+
+  # Archive Files
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: 'dist' 
+      includeRootFolder: 
+      archiveType: 'zip' # Options: zip, 7z, tar, wim
+      archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip' 
+      replaceExistingArchive: true 
