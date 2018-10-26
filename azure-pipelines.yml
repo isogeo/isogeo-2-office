@@ -41,8 +41,7 @@ jobs:
   # Archive Files
   - task: ArchiveFiles@2
     inputs:
-      rootFolderOrFile: 'dist' 
-      includeRootFolder: 
+      rootFolderOrFile: 'dist/'
       archiveType: 'zip' # Options: zip, 7z, tar, wim
       archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip' 
       replaceExistingArchive: true 
