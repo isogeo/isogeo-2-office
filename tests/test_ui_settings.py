@@ -46,7 +46,7 @@ class TestUiSettings(unittest.TestCase):
     def test_defaults(self):
         '''Test the GUI in its default state'''
         self.assertListEqual(self.i2o.app_settings.childGroups(),
-                             ['auth', 'formats', 'usage'])
+                             ['formats', 'usage'])
 
 
 # #############################################################################
