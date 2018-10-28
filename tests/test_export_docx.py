@@ -50,7 +50,7 @@ class TestExportDocx(unittest.TestCase):
             r"tests/fixtures/api_search_complete.json")
         # template
         self.word_template = path.normpath(
-            r"templates/template_Isogeo.docx")
+            r"tests/fixtures/template_Isogeo.docx")
 
         # target class instanciation
         self.to_docx = Isogeo2docx()
