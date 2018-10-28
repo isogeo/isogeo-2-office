@@ -1,5 +1,6 @@
 [![Tests status](https://travis-ci.org/isogeo/isogeo-2-office.svg?branch=master)](https://travis-ci.org/isogeo/isogeo-2-office)
 [![Build status](https://ci.appveyor.com/api/projects/status/u003l71d0u42u0xn?svg=true)](https://ci.appveyor.com/project/GutsJM/isogeo-2-office)
+[![Build Status](https://dev.azure.com/julienmoura0734/Isogeo%20Python%20SDK/_apis/build/status/isogeo.isogeo-2-office)](https://dev.azure.com/julienmoura0734/Isogeo%20Python%20SDK/_build/latest?definitionId=2)
 [![codecov](https://codecov.io/gh/isogeo/isogeo-2-office/branch/master/graph/badge.svg)](https://codecov.io/gh/isogeo/isogeo-2-office) 
 [![Python 3.6.x compatiblity](https://img.shields.io/badge/python-3.6-blue.svg)](https://docs.python.org/3.6/whatsnew/changelog.html) 
 
