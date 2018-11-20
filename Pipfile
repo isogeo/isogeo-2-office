@@ -6,8 +6,8 @@ name = "pypi"
 [dev-packages]
 codecov = "*"
 pylint = "*"
-"afcc439" = {file = "https://github.com/pyinstaller/pyinstaller/tarball/b8c5773bd2c07c65a1f30cd5b9b2e9c4a146c2b6"}
-"pyqt5-tools" = {version = "*", sys_platform = "== 'win32'"}
+pyinstaller = "==3.4"
+pyqt5-tools = {version = "*",sys_platform = "== 'win32'"}
 pip = "*"
 setuptools = "*"
 sip = "*"
@@ -24,7 +24,7 @@ future = "*"
 six = "*"
 progressbar2 = "*"
 "pyqt5" = "*"
-qdarkstyle = "*"
+qdarkstyle = "==2.5.4"
 
 [requires]
 python_version = "3.6"

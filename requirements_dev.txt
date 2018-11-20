@@ -19,4 +19,3 @@ sip
 
 # packaging
 pyinstaller==3.4.*
-#https://github.com/pyinstaller/pyinstaller/tarball/b8c5773bd2c07c65a1f30cd5b9b2e9c4a146c2b6
