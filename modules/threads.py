@@ -24,6 +24,7 @@ from openpyxl import Workbook
 from openpyxl.comments import Comment
 from openpyxl.worksheet.write_only import WriteOnlyCell
 from PyQt5.QtCore import QDate, QLocale, QThread, pyqtSignal
+import requests
 
 # submodules - export
 from . import Isogeo2docx, Isogeo2xlsx, isogeo2office_utils
@@ -43,7 +44,7 @@ logger = logging.getLogger("isogeo2office")
 # API REQUESTS ----------------------------------------------------------------
 class ThreadAppProperties(QThread):
     # signals
-    sig_finished = pyqtSignal(str)
+    sig_finished = pyqtSignal(str, str)
 
     def __init__(self, api_manager: object):
         QThread.__init__(self)
@@ -95,9 +96,24 @@ class ThreadAppProperties(QThread):
                             creator_email)
             text += "<p><hr></p>"
         text += "</html>"
-        # application and shares informations retrieved.
+
+        # -- Check IsogeoToOffice version ----------------
+        proxies = self.api_mngr.isogeo.proxies
+        # get latest release on Github
+        try:
+            latest_v = requests.get("https://api.github.com/repos/isogeo/isogeo-2-office/releases?per_page=1",
+                                    proxies=proxies).json()[0]
+            online_version = latest_v.get("tag_name")
+        except Exception:
+            logger.error("Unable to ")
+            online_version = "0.0.0"
+
+        # handle version label starting with a non digit char
+        if not online_version[0].isdigit():
+            online_version = online_version[1:]
+
         # Now inform the main thread with the output (fill_app_props)
-        self.sig_finished.emit(text)
+        self.sig_finished.emit(text, online_version)
 
 
 class ThreadSearch(QThread):

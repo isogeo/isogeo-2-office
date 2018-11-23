@@ -30,6 +30,7 @@ from PyQt5.QtCore import (QLocale, QSettings, QThread, QTranslator,
 from PyQt5.QtGui import QCloseEvent, QIcon
 from PyQt5.QtWidgets import (QApplication, QComboBox, QMainWindow,
                              QMessageBox)
+import semver
 
 # submodules - functional
 from modules import (IsogeoApiMngr, ThreadAppProperties, ThreadExportExcel,
@@ -109,9 +110,10 @@ class IsogeoToOffice_Main(QMainWindow):
         # Settings
         self.app_settings = QSettings('Isogeo', 'IsogeoToOffice')
         self.settings_noSave = 0
-        # usage metrics
+        # usage
         launch_counter = self.app_settings.value("usage/launch", 0)
         self.app_settings.setValue("usage/launch", launch_counter + 1)
+        self.app_settings.setValue("usage/version", __version__)
         # Credits
         self.ui_credits = Credits()
         # Auth
@@ -244,7 +246,7 @@ class IsogeoToOffice_Main(QMainWindow):
         self.processing(step="start")
         # check credentials
         if not api_mngr.manage_api_initialization():
-            logger.error("No credentials")
+            logger.error("Connection to Isogeo API failed.")
             QMessageBox.warning(self,
                                 self.tr("Authentication - Credentials missing"),
                                 self.tr("Authentication to Isogeo API has failed."
@@ -734,14 +736,27 @@ class IsogeoToOffice_Main(QMainWindow):
         self.close()
 
     # -- UI Slots -------------------------------------------------------------
-    @pyqtSlot(str)
-    def fill_app_props(self, app_infos_retrieved: str = ""):
+    @pyqtSlot(str, str)
+    def fill_app_props(self, app_infos_retrieved: str = "", latest_online_version: str = ""):
         """Get app properties and fillfull the share frame in settings tab.
         """
+        # fill settings tab text
         self.ui.txt_shares.setText(app_infos_retrieved)
+        # compare version used and online
+        print(__version__, latest_online_version)
+        try:
+            if semver.compare(__version__, latest_online_version) < 0:
+                logger.info("A newer version is available.")
+                print(self.ui.title)
+            else:
+                logger.debug("Used version is up-to-date")
+
+        except:
+            logger.error("Version comparison failed.")
+
         # notification
         self.tray_icon.showMessage("Isogeo to Office",
-                                   self.tr("Application information has been retrieved"),
+                                   self.tr("Application information has been retrieved."),
                                    QIcon("img/favicon.ico"),
                                    2000
                                    )

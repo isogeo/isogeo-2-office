@@ -25,6 +25,7 @@ six = "*"
 progressbar2 = "*"
 "pyqt5" = "*"
 qdarkstyle = "==2.5.4"
+semver = "*"
 
 [requires]
 python_version = "3.6"
