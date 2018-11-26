@@ -7,7 +7,7 @@ name = "pypi"
 codecov = "*"
 pylint = "*"
 pyinstaller = "==3.4"
-pyqt5-tools = {version = "*",sys_platform = "== 'win32'"}
+pyqt5-tools = {version ~="5.11",sys_platform = "== 'win32'"}
 pip = "*"
 setuptools = "*"
 sip = "*"

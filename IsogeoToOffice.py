@@ -751,8 +751,7 @@ class IsogeoToOffice_Main(QMainWindow):
             else:
                 logger.debug("Used version is up-to-date")
                 version_msg = self.tr("Version is up-to-date.")
-
-        except:
+        except Exception:
             logger.error("Version comparison failed.")
 
         # notification
