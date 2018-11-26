@@ -743,21 +743,23 @@ class IsogeoToOffice_Main(QMainWindow):
         # fill settings tab text
         self.ui.txt_shares.setText(app_infos_retrieved)
         # compare version used and online
-        print(__version__, latest_online_version)
         try:
             if semver.compare(__version__, latest_online_version) < 0:
                 logger.info("A newer version is available.")
-                print(self.ui.title)
+                version_msg = self.tr("New version available.")
+                self.setWindowTitle(self.windowTitle() + " ! " + version_msg)
             else:
                 logger.debug("Used version is up-to-date")
+                version_msg = self.tr("Version is up-to-date.")
 
         except:
             logger.error("Version comparison failed.")
 
         # notification
+        self.tray_icon.show()
         self.tray_icon.showMessage("Isogeo to Office",
-                                   self.tr("Application information has been retrieved."),
-                                   QIcon("img/favicon.ico"),
+                                   self.tr("Application information has been retrieved.") + " " + version_msg,
+                                   QIcon("resources/favicon.png"),
                                    2000
                                    )
         self.update_status_bar(prog_step=0,
