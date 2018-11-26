@@ -14,11 +14,12 @@
 # Standard library
 from collections import OrderedDict
 from configparser import ConfigParser
-from datetime import datetime
+from datetime import datetime, timedelta
 from tkinter.messagebox import showerror as avert
 from itertools import zip_longest
 import logging
 from os import access, path, R_OK
+from pathlib import Path    # TO DO: replace os.path by pathlib
 import re
 import subprocess
 from sys import platform as opersys
@@ -58,6 +59,33 @@ class isogeo2office_utils(IsogeoUtils):
         super(isogeo2office_utils, self).__init__()
 
     # MISCELLANOUS -----------------------------------------------------------
+    def clean_credentials_files(self, folder_to_clean: str = "_auth"):
+        """Remove files from the specified folder which are older than a month.
+        See: https://github.com/isogeo/isogeo-2-office/issues/51
+
+        :param str folder_to_clean: directory to clean
+        """
+        # timestamp a month ago
+        last_month = datetime.now() - timedelta(days=31)
+        # check folder
+        folder_path = Path(folder_to_clean)
+        if folder_path.is_dir():
+            for f in folder_path.glob("*.json"):
+                if f.name == "client_secrets.json":
+                    logger.debug("Credentials file in use. Do not delete it.")
+                    continue
+                elif f.stat().st_mtime > last_month.timestamp():
+                    logger.debug("Credentials file modified during last 31 days: " + f.name)
+                    continue
+                else:
+                    logger.info("Credentials file older than 31 days marked for deletion: " + f.name)
+                    try:
+                        f.unlink()
+                    except Exception as e:
+                        logger.error(e)
+        else:
+            raise TypeError
+
     def open_urls(self, li_url):
         """Open URLs in new tabs in the default brower.
 

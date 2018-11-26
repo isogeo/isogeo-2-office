@@ -20,7 +20,7 @@ from datetime import datetime
 from functools import partial
 from logging.handlers import RotatingFileHandler
 from os import listdir, path
-import pathlib
+import pathlib  # TO DO: replace os.path by pathlib
 
 # 3rd party
 import qdarkstyle
@@ -121,6 +121,7 @@ class IsogeoToOffice_Main(QMainWindow):
             "https://pipedrivewebforms.com/form/b5bdbdb9b34c3c61202cd8414accbbe252944")
         api_mngr.ui_auth_form = Auth()
         api_mngr.auth_folder = path.join(app_dir, "_auth")
+        self.app_utils.clean_credentials_files(path.join(app_dir, "_auth"))
         # build UI
         self.initUI()
 
