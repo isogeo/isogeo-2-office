@@ -863,8 +863,13 @@ class IsogeoToOffice_Main(QMainWindow):
         prog_val = self.ui.pgb_exports.value() + prog_step
         self.ui.pgb_exports.setValue(prog_val)
         # check if progression is over
-        if self.ui.pgb_exports.maximum() == prog_val:
+        if self.ui.pgb_exports.maximum() == prog_val and prog_step > 0:
             self.tray_icon.act_show.trigger()
+            self.tray_icon.showMessage("Isogeo to Office",
+                                       self.tr("Export operations are over."),
+                                       QIcon("resources/favicon.png"),
+                                       2000
+                                       )
 
 
 # #############################################################################
