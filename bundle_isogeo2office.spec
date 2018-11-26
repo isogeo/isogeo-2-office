@@ -34,7 +34,7 @@ exe = EXE(pyz,
           strip=False,
           upx=False,
           console=False,
-          icon='img\\favicon.ico',
+          icon='resources\\favicon.ico',
           windowed=True,
           version='bundle_version.txt')
 
@@ -45,5 +45,5 @@ coll = COLLECT(exe,
                strip=False,
                upx=False,
                name='isogeo2office',
-               icon='img\\logo_isogeo.gif'
+               icon='resources\\logo_isogeo.gif'
                )
