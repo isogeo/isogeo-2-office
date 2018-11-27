@@ -664,6 +664,7 @@ class Isogeo2xlsx(Workbook):
         ws["AQ{}".format(idx)] = md.get("language")
 
         # STYLING
+        ws.row_dimensions[idx].height = 35  # line height - see #52
         ws["C{}".format(idx)].style = "wrap"
         ws["F{}".format(idx)].style = "wrap"
         ws["G{}".format(idx)].style = "wrap"
@@ -890,6 +891,7 @@ class Isogeo2xlsx(Workbook):
         ws["AM{}".format(idx)] = md.get("language")
 
         # STYLING
+        ws.row_dimensions[idx].height = 35  # line height - see #52
         ws["C{}".format(idx)].style = "wrap"
         ws["F{}".format(idx)].style = "wrap"
         ws["G{}".format(idx)].style = "wrap"
@@ -1071,6 +1073,7 @@ class Isogeo2xlsx(Workbook):
         ws["AB{}".format(idx)] = md.get("language")
 
         # STYLING
+        ws.row_dimensions[idx].height = 35  # line height - see #52
         ws["C{}".format(idx)].style = "wrap"
         ws["F{}".format(idx)].style = "wrap"
         ws["M{}".format(idx)].style = "wrap"
@@ -1210,6 +1213,7 @@ class Isogeo2xlsx(Workbook):
         ws["X{}".format(idx)] = md.get("language")
 
         # STYLING
+        ws.row_dimensions[idx].height = 35  # line height - see #52
         ws["C{}".format(idx)].style = "wrap"
         ws["F{}".format(idx)].style = "wrap"
         ws["M{}".format(idx)].style = "wrap"
@@ -1230,7 +1234,7 @@ class Isogeo2xlsx(Workbook):
     def analisis_attributes(self):
         """Perform feature attributes analisis and write results into the
         dedicated worksheet."""
-        # lcoal arrays
+        # local arrays
         fa_names = []
         fa_types = []
         fa_alias = []
