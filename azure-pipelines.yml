@@ -41,16 +41,16 @@ jobs:
   # Archive Files
   - task: ArchiveFiles@2
     inputs:
-      rootFolderOrFile: 'dist/'
+      rootFolderOrFile: 'dist/isogeo2office'
       archiveType: 'zip' # Options: zip, 7z, tar, wim
-      archiveFile: '$(Build.ArtifactStagingDirectory)/IsogeoToOffice-$(Build.SourceBranchName)-b$(Build.BuildId).zip' 
+      archiveFile: '$(Build.ArtifactStagingDirectory)/IsogeoToOffice-$(python.arch)-$(Build.SourceBranchName)-b$(Build.BuildId).zip' 
       replaceExistingArchive: true 
 
   - task: CopyFiles@2
     displayName: 'Copy File to: $(TargetFolder)'
     inputs:
       SourceFolder: '$(Build.ArtifactStagingDirectory)'
-      Contents: 'IsogeoToOffice-$(Build.SourceBranchName)-b$(Build.BuildId).zip'
+      Contents: 'IsogeoToOffice-$(python.arch)-$(Build.SourceBranchName)-b$(Build.BuildId).zip'
       TargetFolder: '$(Build.ArtifactStagingDirectory)\ArtifactsToBePublished'
 
   - task: PublishBuildArtifacts@1
