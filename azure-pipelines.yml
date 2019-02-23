@@ -43,5 +43,18 @@ jobs:
     inputs:
       rootFolderOrFile: 'dist/'
       archiveType: 'zip' # Options: zip, 7z, tar, wim
-      archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip' 
+      archiveFile: '$(Build.ArtifactStagingDirectory)/IsogeoToOffice-$(Build.SourceBranchName)-b$(Build.BuildId).zip' 
       replaceExistingArchive: true 
+
+  - task: CopyFiles@2
+    displayName: 'Copy File to: $(TargetFolder)'
+    inputs:
+      SourceFolder: '$(Build.ArtifactStagingDirectory)'
+      Contents: 'IsogeoToOffice-$(Build.SourceBranchName)-b$(Build.BuildId).zip'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)\ArtifactsToBePublished'
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: IsogeoToOffice'
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)\ArtifactsToBePublished'
+      ArtifactName: IsogeoToOffice
