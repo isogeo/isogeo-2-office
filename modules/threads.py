@@ -22,7 +22,7 @@ from zipfile import ZipFile
 from docxtpl import DocxTemplate
 from openpyxl import Workbook
 from openpyxl.comments import Comment
-from openpyxl.worksheet.write_only import WriteOnlyCell
+from openpyxl.cell import WriteOnlyCell
 from PyQt5.QtCore import QDate, QLocale, QThread, pyqtSignal
 import requests
 
