@@ -23,5 +23,5 @@ docxtpl==0.5.*
 isogeo-pysdk==2.20.*
 openpyxl==2.6.*
 PyQt5==5.11.*
-QDarkStyle==2.5.*
+QDarkStyle==2.6.*
 semver
