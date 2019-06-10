@@ -25,18 +25,30 @@ import pathlib  # TO DO: replace os.path by pathlib
 # 3rd party
 import qdarkstyle
 from isogeo_pysdk import __version__ as pysdk_version
-from PyQt5.QtCore import (QLocale, QSettings, QThread, QTranslator,
-                          pyqtSignal, pyqtSlot)
+from PyQt5.QtCore import QLocale, QSettings, QThread, QTranslator, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QCloseEvent, QIcon
-from PyQt5.QtWidgets import (QApplication, QComboBox, QMainWindow,
-                             QMessageBox, QStyleFactory)
+from PyQt5.QtWidgets import (
+    QApplication,
+    QComboBox,
+    QMainWindow,
+    QMessageBox,
+    QStyleFactory,
+)
 
 import semver
 
 # submodules - functional
-from modules import (IsogeoApiMngr, ThreadAppProperties, ThreadExportExcel,
-                     ThreadExportWord, ThreadExportXml, ThreadSearch,
-                     ThreadThumbnails, isogeo2office_utils)
+from modules import (
+    IsogeoApiMngr,
+    ThreadAppProperties,
+    ThreadExportExcel,
+    ThreadExportWord,
+    ThreadExportXml,
+    ThreadSearch,
+    ThreadThumbnails,
+    isogeo2office_utils,
+)
+
 # submodules - UI
 from modules.ui.auth.auth_dlg import Auth
 from modules.ui.credits.credits_dlg import Credits
@@ -78,16 +90,18 @@ else:
 logger = logging.getLogger("isogeo2office")
 logging.captureWarnings(True)
 logger.setLevel(log_level)
-log_form = logging.Formatter("%(asctime)s || %(levelname)s "
-                             "|| %(module)s - %(lineno)d ||"
-                             " %(funcName)s || %(message)s")
-logfile = RotatingFileHandler(path.join(app_logdir,
-                                        "log_IsogeoToOffice.log"),
-                              "a", 5000000, 1)
+log_form = logging.Formatter(
+    "%(asctime)s || %(levelname)s "
+    "|| %(module)s - %(lineno)d ||"
+    " %(funcName)s || %(message)s"
+)
+logfile = RotatingFileHandler(
+    path.join(app_logdir, "log_IsogeoToOffice.log"), "a", 5000000, 1
+)
 logfile.setLevel(log_level)
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
-logger.info('================ Isogeo to office ===============')
+logger.info("================ Isogeo to office ===============")
 
 
 # #############################################################################
@@ -96,10 +110,10 @@ logger.info('================ Isogeo to office ===============')
 class IsogeoToOffice_Main(QMainWindow):
 
     # attributes and global actions
-    logger.info('OS: {0}'.format(platform.platform()))
-    logger.info('Version: {0}'.format(__version__))
-    logger.info('Isogeo PySDK version: {0}'.format(pysdk_version))
-    logger.info('System locale: {0}'.format(current_locale.name()))
+    logger.info("OS: {0}".format(platform.platform()))
+    logger.info("Version: {0}".format(__version__))
+    logger.info("Isogeo PySDK version: {0}".format(pysdk_version))
+    logger.info("System locale: {0}".format(current_locale.name()))
 
     # submodules shortcuts
     app_utils = isogeo2office_utils()
@@ -109,7 +123,7 @@ class IsogeoToOffice_Main(QMainWindow):
         self.ui = Ui_win_IsogeoToOffice()
         self.ui.setupUi(self)
         # Settings
-        self.app_settings = QSettings('Isogeo', 'IsogeoToOffice')
+        self.app_settings = QSettings("Isogeo", "IsogeoToOffice")
         self.settings_noSave = 0
         # usage
         launch_counter = self.app_settings.value("usage/launch", 0)
@@ -119,7 +133,8 @@ class IsogeoToOffice_Main(QMainWindow):
         self.ui_credits = Credits()
         # Auth
         api_mngr.auth_form_request_url = self.tr(
-            "https://pipedrivewebforms.com/form/b5bdbdb9b34c3c61202cd8414accbbe252944")
+            "https://pipedrivewebforms.com/form/b5bdbdb9b34c3c61202cd8414accbbe252944"
+        )
         api_mngr.ui_auth_form = Auth()
         api_mngr.auth_folder = path.join(app_dir, "_auth")
         self.app_utils.clean_credentials_files(path.join(app_dir, "_auth"))
@@ -140,88 +155,97 @@ class IsogeoToOffice_Main(QMainWindow):
         self.ui.btn_launch_export.pressed.connect(partial(self.search, "export"))
 
         # -- Export tab - Output formats --------------------------------------
-        self.ui.chb_output_excel.toggled\
-               .connect(lambda: self.app_settings
-                                    .setValue("formats/excel",
-                                              int(self.ui.chb_output_excel.isChecked()
-                                                  )
-                                              )
-                        )
-        self.ui.chb_output_word.toggled\
-               .connect(lambda: self.app_settings
-                                    .setValue("formats/word",
-                                              int(self.ui.chb_output_word.isChecked()
-                                                  )
-                                              )
-                        )
-        self.ui.chb_output_xml.toggled\
-               .connect(lambda: self.app_settings
-                                    .setValue("formats/xml",
-                                              int(self.ui.chb_output_xml.isChecked()
-                                                  )
-                                              )
-                        )
+        self.ui.chb_output_excel.toggled.connect(
+            lambda: self.app_settings.setValue(
+                "formats/excel", int(self.ui.chb_output_excel.isChecked())
+            )
+        )
+        self.ui.chb_output_word.toggled.connect(
+            lambda: self.app_settings.setValue(
+                "formats/word", int(self.ui.chb_output_word.isChecked())
+            )
+        )
+        self.ui.chb_output_xml.toggled.connect(
+            lambda: self.app_settings.setValue(
+                "formats/xml", int(self.ui.chb_output_xml.isChecked())
+            )
+        )
         # -- Settings tab - Export -------------------------------------------
         self.ui.btn_directory_change.pressed.connect(partial(self.set_output_folder))
-        self.ui.btn_thumbnails_edit.pressed.connect(partial(self.app_utils.open_dir_file,
-                                                            path.join(app_dir,
-                                                                      "_thumbnails/thumbnails.xlsx")))
+        self.ui.btn_thumbnails_edit.pressed.connect(
+            partial(
+                self.app_utils.open_dir_file,
+                path.join(app_dir, "_thumbnails/thumbnails.xlsx"),
+            )
+        )
 
         # -- Settings tab - Timestamp -----------------------------------------
-        self.ui.rdb_timestamp_no.toggled.connect(lambda: self.app_settings.setValue("settings/timestamps",
-                                                                                    "no"))
-        self.ui.rdb_timestamp_day.toggled.connect(lambda: self.app_settings.setValue("settings/timestamps",
-                                                                                     "day"))
-        self.ui.rdb_timestamp_datetime.toggled.connect(lambda: self.app_settings.setValue("settings/timestamps",
-                                                                                          "datetime"))
+        self.ui.rdb_timestamp_no.toggled.connect(
+            lambda: self.app_settings.setValue("settings/timestamps", "no")
+        )
+        self.ui.rdb_timestamp_day.toggled.connect(
+            lambda: self.app_settings.setValue("settings/timestamps", "day")
+        )
+        self.ui.rdb_timestamp_datetime.toggled.connect(
+            lambda: self.app_settings.setValue("settings/timestamps", "datetime")
+        )
         # -- Settings tab - Word ----------------------------------------------
         for tpl in listdir(app_tpldir):
             if path.splitext(tpl)[1].lower() == ".docx":
-                self.ui.cbb_word_tpl.addItem(path.basename(tpl),
-                                             path.join(app_tpldir, tpl))
+                self.ui.cbb_word_tpl.addItem(
+                    path.basename(tpl), path.join(app_tpldir, tpl)
+                )
 
-        self.ui.btn_thumbnails_update.pressed.connect(partial(self.search, "thumbnails"))
+        self.ui.btn_thumbnails_update.pressed.connect(
+            partial(self.search, "thumbnails")
+        )
         # -- Settings tab - System tray icon ----------------------------------
-        self.ui.chb_systray_minimize.toggled\
-               .connect(lambda: self.app_settings
-                                    .setValue("settings/systray_minimize",
-                                              int(self.ui.chb_systray_minimize.isChecked()
-                                                  )
-                                              )
-                        )
+        self.ui.chb_systray_minimize.toggled.connect(
+            lambda: self.app_settings.setValue(
+                "settings/systray_minimize",
+                int(self.ui.chb_systray_minimize.isChecked()),
+            )
+        )
 
         # -- Settings tab - Application authentication ------------------------
         # Change user -> see below for authentication form
         self.ui.btn_change_user.pressed.connect(partial(api_mngr.display_auth_form))
-        api_mngr.ui_auth_form.btn_browse_credentials.pressed.connect(partial(api_mngr.credentials_uploader))
+        api_mngr.ui_auth_form.btn_browse_credentials.pressed.connect(
+            partial(api_mngr.credentials_uploader)
+        )
         api_mngr.ui_auth_form.btn_ok_cancel.pressed.connect(self.update_credentials)
         # share text window
         self.ui.txt_shares.anchorClicked.connect(self.app_utils.open_urls)
 
         # -- Settings tab - Resources -----------------------------------------
-        self.ui.btn_log_dir.pressed.connect(partial(self.app_utils.open_dir_file,
-                                                    target=app_logdir))
+        self.ui.btn_log_dir.pressed.connect(
+            partial(self.app_utils.open_dir_file, target=app_logdir)
+        )
         self.ui.btn_report.pressed.connect(
-            partial(self.app_utils.open_urls,
-                    li_url=["https://github.com/isogeo/isogeo-2-office/issues/new?title={}"
-                            " - version {} Windows {}&labels=bug&milestone=3"
-                            .format(self.tr("TITLE ISSUE REPORTED"),
-                                    __version__,
-                                    platform.platform()), ]
+            partial(
+                self.app_utils.open_urls,
+                li_url=[
+                    "https://github.com/isogeo/isogeo-2-office/issues/new?title={}"
+                    " - version {} Windows {}&labels=bug&milestone=3".format(
+                        self.tr("TITLE ISSUE REPORTED"),
+                        __version__,
+                        platform.platform(),
                     )
+                ],
+            )
         )
         # help button
         self.ui.btn_help.pressed.connect(
-            partial(self.app_utils.open_urls,
-                    li_url=["http://help.isogeo.com/isogeo2office/", ]
-                    )
+            partial(
+                self.app_utils.open_urls,
+                li_url=["http://help.isogeo.com/isogeo2office/"],
+            )
         )
         # reset factory defaults
         self.ui.btn_settings_reset.pressed.connect(partial(self.settings_reset))
 
         # view credits
-        self.ui.btn_credits.pressed.connect(partial(self.displayer,
-                                                    self.ui_credits))
+        self.ui.btn_credits.pressed.connect(partial(self.displayer, self.ui_credits))
 
         # system tray icon
         self.tray_icon = SystrayMenu(parent=self)
@@ -238,7 +262,9 @@ class IsogeoToOffice_Main(QMainWindow):
             self.settings_loader()
         except TypeError as e:
             self.app_settings.remove("settings")
-            logger.error("Settings loading failed: {}. Settings have been reset.".format(e))
+            logger.error(
+                "Settings loading failed: {}. Settings have been reset.".format(e)
+            )
         self.show()
         self.init_api_connection()
 
@@ -249,11 +275,14 @@ class IsogeoToOffice_Main(QMainWindow):
         # check credentials
         if not api_mngr.manage_api_initialization():
             logger.error("Connection to Isogeo API failed.")
-            QMessageBox.warning(self,
-                                self.tr("Authentication - Credentials missing"),
-                                self.tr("Authentication to Isogeo API has failed."
-                                        " Credentials seem to be missing.")
-                                )
+            QMessageBox.warning(
+                self,
+                self.tr("Authentication - Credentials missing"),
+                self.tr(
+                    "Authentication to Isogeo API has failed."
+                    " Credentials seem to be missing."
+                ),
+            )
             return False
         else:
             logger.debug("Access granted. Fill the shares window")
@@ -269,33 +298,46 @@ class IsogeoToOffice_Main(QMainWindow):
     def settings_loader(self):
         """Load application settings from QSettings and update UI with."""
         # output formats
-        self.ui.chb_output_excel.setChecked(self.app_settings.value("formats/excel",
-                                                                    False, type=bool))
-        self.ui.chb_output_word.setChecked(self.app_settings.value("formats/word",
-                                                                   False, type=bool))
-        self.ui.chb_output_xml.setChecked(self.app_settings.value("formats/xml",
-                                                                  False, type=bool))
+        self.ui.chb_output_excel.setChecked(
+            self.app_settings.value("formats/excel", False, type=bool)
+        )
+        self.ui.chb_output_word.setChecked(
+            self.app_settings.value("formats/word", False, type=bool)
+        )
+        self.ui.chb_output_xml.setChecked(
+            self.app_settings.value("formats/xml", False, type=bool)
+        )
         # location and naming rules
-        self.ui.lbl_output_folder_value.setText(self.app_settings.value("settings/out_folder_label",
-                                                                        "_output"))
-        path_output_folder = self.app_settings.value("settings/out_folder_path",
-                                                     app_outdir)
+        self.ui.lbl_output_folder_value.setText(
+            self.app_settings.value("settings/out_folder_label", "_output")
+        )
+        path_output_folder = self.app_settings.value(
+            "settings/out_folder_path", app_outdir
+        )
         self.ui.lbl_output_folder_value.setToolTip(path_output_folder)
-        self.ui.btn_open_output_folder.pressed.connect(partial(self.app_utils.open_dir_file,
-                                                               path_output_folder))
+        self.ui.btn_open_output_folder.pressed.connect(
+            partial(self.app_utils.open_dir_file, path_output_folder)
+        )
 
-        self.ui.txt_output_fileprefix.setText(self.app_settings.value("settings/out_prefix"))
-        self.ui.int_md_uuid.setValue(self.app_settings.value("settings/uuid_length",
-                                                             5, type=int))
+        self.ui.txt_output_fileprefix.setText(
+            self.app_settings.value("settings/out_prefix")
+        )
+        self.ui.int_md_uuid.setValue(
+            self.app_settings.value("settings/uuid_length", 5, type=int)
+        )
         # export options
-        self.ui.chb_xls_attributes.setChecked(self.app_settings.value("settings/xls_sheet_attributes",
-                                                                      False, type=bool))
-        self.ui.chb_xls_stats.setChecked(self.app_settings.value("settings/xls_sheet_dashboard",
-                                                                 False, type=bool))
-        self.ui.chb_xml_zip.setChecked(self.app_settings.value("settings/xml_zip",
-                                                               False, type=bool))
-        tpl_index = self.ui.cbb_word_tpl.findText(self.app_settings.value("settings/doc_tpl_name",
-                                                                          "template_Isogeo.docx"))
+        self.ui.chb_xls_attributes.setChecked(
+            self.app_settings.value("settings/xls_sheet_attributes", False, type=bool)
+        )
+        self.ui.chb_xls_stats.setChecked(
+            self.app_settings.value("settings/xls_sheet_dashboard", False, type=bool)
+        )
+        self.ui.chb_xml_zip.setChecked(
+            self.app_settings.value("settings/xml_zip", False, type=bool)
+        )
+        tpl_index = self.ui.cbb_word_tpl.findText(
+            self.app_settings.value("settings/doc_tpl_name", "template_Isogeo.docx")
+        )
         self.ui.cbb_word_tpl.setCurrentIndex(tpl_index)
 
         # timestamps
@@ -306,12 +348,16 @@ class IsogeoToOffice_Main(QMainWindow):
         elif self.app_settings.value("settings/timestamps") == "datetime":
             self.ui.rdb_timestamp_datetime.setChecked(1)
         else:
-            logger.warning("Timestamp option not recognized: {}"
-                           .format(self.app_settings.value("settings/timestamps")))
+            logger.warning(
+                "Timestamp option not recognized: {}".format(
+                    self.app_settings.value("settings/timestamps")
+                )
+            )
 
         # misc
-        self.ui.chb_systray_minimize.setChecked(self.app_settings.value("settings/systray_minimize",
-                                                                        False, type=bool))
+        self.ui.chb_systray_minimize.setChecked(
+            self.app_settings.value("settings/systray_minimize", False, type=bool)
+        )
 
         # try full restore
         try:
@@ -335,22 +381,26 @@ class IsogeoToOffice_Main(QMainWindow):
 
         # depending on search type
         if search_type == "reset":
-            self.thread_search.search_params = {"token": api_mngr.token,
-                                                "page_size": 0,
-                                                "whole_share": 0,
-                                                "augment": 1,
-                                                "tags_as_dicts": 1}
+            self.thread_search.search_params = {
+                "token": api_mngr.token,
+                "page_size": 0,
+                "whole_share": 0,
+                "augment": 1,
+                "tags_as_dicts": 1,
+            }
             self.thread_search.sig_finished.connect(self.update_search_form)
             logger.info("Search  prepared - {}".format(search_type.upper()))
         elif search_type == "update":
             share_id, search_terms = self.get_selected_filters()
-            self.thread_search.search_params = {"token": api_mngr.token,
-                                                "query": search_terms,
-                                                "share": share_id,
-                                                "page_size": 0,
-                                                "whole_share": 0,
-                                                "augment": 1,
-                                                "tags_as_dicts": 1}
+            self.thread_search.search_params = {
+                "token": api_mngr.token,
+                "query": search_terms,
+                "share": share_id,
+                "page_size": 0,
+                "whole_share": 0,
+                "augment": 1,
+                "tags_as_dicts": 1,
+            }
             self.thread_search.sig_finished.disconnect()
             self.thread_search.sig_finished.connect(self.update_search_form)
             logger.info("Search  prepared - {}".format(search_type.upper()))
@@ -362,25 +412,29 @@ class IsogeoToOffice_Main(QMainWindow):
 
             # prepare search and launch export process
             share_id, search_terms = self.get_selected_filters()
-            includes = ["conditions",
-                        "contacts",
-                        "coordinate-system",
-                        "events",
-                        "feature-attributes",
-                        "keywords",
-                        "layers",
-                        "limitations",
-                        "links",
-                        "operations",
-                        "serviceLayers",
-                        "specifications"]
-            self.thread_search.search_params = {"token": api_mngr.token,
-                                                "query": search_terms,
-                                                "share": share_id,
-                                                "page_size": 100,
-                                                "whole_share": 1,
-                                                "include": includes,
-                                                "check": 0}
+            includes = [
+                "conditions",
+                "contacts",
+                "coordinate-system",
+                "events",
+                "feature-attributes",
+                "keywords",
+                "layers",
+                "limitations",
+                "links",
+                "operations",
+                "serviceLayers",
+                "specifications",
+            ]
+            self.thread_search.search_params = {
+                "token": api_mngr.token,
+                "query": search_terms,
+                "share": share_id,
+                "page_size": 100,
+                "whole_share": 1,
+                "include": includes,
+                "check": 0,
+            }
             self.thread_search.sig_finished.disconnect()
             self.thread_search.sig_finished.connect(self.export_process)
             logger.info("Search  prepared - {}".format(search_type.upper()))
@@ -392,12 +446,14 @@ class IsogeoToOffice_Main(QMainWindow):
 
             # prepare search and launch export process
             share_id, search_terms = self.get_selected_filters()
-            self.thread_search.search_params = {"token": api_mngr.token,
-                                                "query": search_terms,
-                                                "share": share_id,
-                                                "page_size": 100,
-                                                "whole_share": 1,
-                                                "check": 0}
+            self.thread_search.search_params = {
+                "token": api_mngr.token,
+                "query": search_terms,
+                "share": share_id,
+                "page_size": 100,
+                "whole_share": 1,
+                "check": 0,
+            }
             self.thread_search.sig_finished.disconnect()
             self.thread_search.sig_finished.connect(self.thumbnails_generation)
             logger.info("Search  prepared - {}".format(search_type.upper()))
@@ -407,8 +463,9 @@ class IsogeoToOffice_Main(QMainWindow):
         # finally, start thread
         self.search_type = search_type
         self.thread_search.start()
-        self.update_status_bar(prog_step=0,
-                               status_msg=self.tr("Waiting for Isogeo API"))
+        self.update_status_bar(
+            prog_step=0, status_msg=self.tr("Waiting for Isogeo API")
+        )
 
     def get_selected_filters(self):
         """Retrieve selected filters from the search form.
@@ -428,19 +485,23 @@ class IsogeoToOffice_Main(QMainWindow):
     def export_check(self):
         """Performs checks before export."""
         # check export options
-        self.li_opts = [self.ui.chb_output_excel.isChecked(),
-                        self.ui.chb_output_word.isChecked(),
-                        self.ui.chb_output_xml.isChecked()
-                        ]
+        self.li_opts = [
+            self.ui.chb_output_excel.isChecked(),
+            self.ui.chb_output_word.isChecked(),
+            self.ui.chb_output_xml.isChecked(),
+        ]
         if not any(self.li_opts):
-            QMessageBox.critical(self,
-                                 self.tr("Export option is missing"),
-                                 self.tr("At least one export option required."))
+            QMessageBox.critical(
+                self,
+                self.tr("Export option is missing"),
+                self.tr("At least one export option required."),
+            )
             logger.error("No export option selected.")
             return False
         else:
-            logger.debug("Export check - {} output formats selected"
-                         .format(sum(self.li_opts)))
+            logger.debug(
+                "Export check - {} output formats selected".format(sum(self.li_opts))
+            )
             return True
 
     @pyqtSlot(dict)
@@ -459,10 +520,10 @@ class IsogeoToOffice_Main(QMainWindow):
 
         # -- File naming
         # prepare filepath
-        generic_filepath = path.join(self.app_settings.value("settings/out_folder_path",
-                                                             app_outdir),
-                                     self.ui.txt_output_fileprefix.text()
-                                     )
+        generic_filepath = path.join(
+            self.app_settings.value("settings/out_folder_path", app_outdir),
+            self.ui.txt_output_fileprefix.text(),
+        )
         # horodating ?
         opt_timestamp = self.app_settings.value("settings/timestamps", "no")
         logger.debug("Timestamp option: {}".format(opt_timestamp))
@@ -470,8 +531,7 @@ class IsogeoToOffice_Main(QMainWindow):
         logger.debug("Timestamp value applied: {}".format(horodatage))
         # metadata UUID
         opt_md_uuid = self.ui.int_md_uuid.value()
-        logger.debug("UUID option: {}"
-                     .format(opt_md_uuid))
+        logger.debug("UUID option: {}".format(opt_md_uuid))
 
         # -- Inputs ---
         thumbs_filepath = path.join(app_thbdir, "thumbnails.xlsx")
@@ -486,12 +546,14 @@ class IsogeoToOffice_Main(QMainWindow):
             logger.debug("Excel - Preparation")
             output_xlsx_filepath = "{}{}.xlsx".format(generic_filepath, horodatage)
             logger.debug("Excel - Destination file: {}".format(output_xlsx_filepath))
-            self.thread_export_xlsx = ThreadExportExcel(search_to_be_exported,
-                                                        output_xlsx_filepath,
-                                                        opt_attributes=self.ui.chb_xls_attributes.isChecked(),
-                                                        opt_dasboard=self.ui.chb_xls_stats.isChecked(),
-                                                        opt_fillfull=0,
-                                                        opt_inspire=0)
+            self.thread_export_xlsx = ThreadExportExcel(
+                search_to_be_exported,
+                output_xlsx_filepath,
+                opt_attributes=self.ui.chb_xls_attributes.isChecked(),
+                opt_dasboard=self.ui.chb_xls_stats.isChecked(),
+                opt_fillfull=0,
+                opt_inspire=0,
+            )
             self.thread_export_xlsx.sig_step.connect(self.update_status_bar)
             self.thread_export_xlsx.start()
         else:
@@ -504,9 +566,13 @@ class IsogeoToOffice_Main(QMainWindow):
             output_docx_filepath = "{}{}".format(generic_filepath, horodatage)
             logger.debug("Word - Output folder: {}".format(output_docx_filepath))
             # template
-            template_path = self.ui.cbb_word_tpl.itemData(self.ui.cbb_word_tpl.currentIndex())
+            template_path = self.ui.cbb_word_tpl.itemData(
+                self.ui.cbb_word_tpl.currentIndex()
+            )
             if not template_path or not path.exists(template_path):
-                logger.warning("Word - No template choosen. trying to use the Isogeo default.")
+                logger.warning(
+                    "Word - No template choosen. trying to use the Isogeo default."
+                )
                 if not path.exists(path.join(app_tpldir, "template_Isogeo.docx")):
                     self.update_status_bar(0, self.tr("Word - Error: no template."))
                     logger.error("Word - No available template")
@@ -517,12 +583,14 @@ class IsogeoToOffice_Main(QMainWindow):
                 logger.debug("Word - Template choosen: {}".format(template_path))
 
             # instanciate thread
-            self.thread_export_docx = ThreadExportWord(search_to_be_exported,
-                                                       output_docx_filepath,
-                                                       tpl_path=template_path,
-                                                       thumbnails=thumbnails_loaded,
-                                                       timestamp=horodatage,
-                                                       length_uuid=opt_md_uuid)
+            self.thread_export_docx = ThreadExportWord(
+                search_to_be_exported,
+                output_docx_filepath,
+                tpl_path=template_path,
+                thumbnails=thumbnails_loaded,
+                timestamp=horodatage,
+                length_uuid=opt_md_uuid,
+            )
             self.thread_export_docx.sig_step.connect(self.update_status_bar)
             self.thread_export_docx.start()
         else:
@@ -533,12 +601,14 @@ class IsogeoToOffice_Main(QMainWindow):
             logger.debug("XML - Preparation")
             output_xml_filepath = "{}{}".format(generic_filepath, horodatage)
             logger.debug("XML - Output folder: {}".format(output_xml_filepath))
-            self.thread_export_xml = ThreadExportXml(search_to_be_exported,
-                                                     isogeo_api_mngr=api_mngr,
-                                                     output_path=output_xml_filepath,
-                                                     opt_zip=self.ui.chb_xml_zip.isChecked(),
-                                                     timestamp=horodatage,
-                                                     length_uuid=opt_md_uuid)
+            self.thread_export_xml = ThreadExportXml(
+                search_to_be_exported,
+                isogeo_api_mngr=api_mngr,
+                output_path=output_xml_filepath,
+                opt_zip=self.ui.chb_xml_zip.isChecked(),
+                timestamp=horodatage,
+                length_uuid=opt_md_uuid,
+            )
             self.thread_export_xml.sig_step.connect(self.update_status_bar)
             self.thread_export_xml.start()
         else:
@@ -560,53 +630,70 @@ class IsogeoToOffice_Main(QMainWindow):
         try:
             thumbnails_loaded = self.app_utils.thumbnails_mngr(thumbs_filepath)
         except IOError as e:
-            QMessageBox.critical(self,
-                                 self.tr("Thumbnails - Table already opened"),
-                                 self.tr("The thumbnails matching table {} is "
-                                         "already opened. Close it please "
-                                         "before to try again."
-                                         .format(thumbs_filepath)
-                                         )
-                                 )
-            self.update_status_bar(0,
-                                   self.tr("Error - Thumbnails table is opened. Close it before contiinue."))
+            QMessageBox.critical(
+                self,
+                self.tr("Thumbnails - Table already opened"),
+                self.tr(
+                    "The thumbnails matching table {} is "
+                    "already opened. Close it please "
+                    "before to try again.".format(thumbs_filepath)
+                ),
+            )
+            self.update_status_bar(
+                0,
+                self.tr(
+                    "Error - Thumbnails table is opened. Close it before contiinue."
+                ),
+            )
             return False
         except KeyError as e:
-            QMessageBox.warning(self,
-                                self.tr("Thumbnails - Table structure"),
-                                self.tr("The thumbnails matching table {} is "
-                                        "not compliant with the expected structure."
-                                        "{}{} {}"
-                                        .format(thumbs_filepath,
-                                                self.tr("\nA new table will be created but "
-                                                        "previous data will be lost."),
-                                                self.tr("\nError message:"),
-                                                e)
-                                        )
-                                )
+            QMessageBox.warning(
+                self,
+                self.tr("Thumbnails - Table structure"),
+                self.tr(
+                    "The thumbnails matching table {} is "
+                    "not compliant with the expected structure."
+                    "{}{} {}".format(
+                        thumbs_filepath,
+                        self.tr(
+                            "\nA new table will be created but "
+                            "previous data will be lost."
+                        ),
+                        self.tr("\nError message:"),
+                        e,
+                    )
+                ),
+            )
             thumbnails_loaded = {None: None}
         except Exception as e:
-            QMessageBox.warning(self,
-                                self.tr("Thumbnails - Unknown error"),
-                                self.tr("An unknown error occurred reading the"
-                                        "thumbnails matching table {}. "
-                                        "Please report it."
-                                        "{}{} {}"
-                                        .format(thumbs_filepath,
-                                                self.tr("\nA new table will be created but "
-                                                        "previous data will be lost."),
-                                                self.tr("\nError message:"),
-                                                e)
-                                        )
-                                )
+            QMessageBox.warning(
+                self,
+                self.tr("Thumbnails - Unknown error"),
+                self.tr(
+                    "An unknown error occurred reading the"
+                    "thumbnails matching table {}. "
+                    "Please report it."
+                    "{}{} {}".format(
+                        thumbs_filepath,
+                        self.tr(
+                            "\nA new table will be created but "
+                            "previous data will be lost."
+                        ),
+                        self.tr("\nError message:"),
+                        e,
+                    )
+                ),
+            )
             thumbnails_loaded = {None: (None, None)}
 
         # STORE
         logger.debug("Thumbnails - Preparation")
         logger.debug("Thumbnails - Output file: {}".format(thumbs_filepath))
-        self.thread_thumbnails_gen = ThreadThumbnails(search_to_be_exported,
-                                                      output_path=thumbs_filepath,
-                                                      thumbnails=thumbnails_loaded)
+        self.thread_thumbnails_gen = ThreadThumbnails(
+            search_to_be_exported,
+            output_path=thumbs_filepath,
+            thumbnails=thumbnails_loaded,
+        )
         self.thread_thumbnails_gen.sig_step.connect(self.update_status_bar)
         self.thread_thumbnails_gen.start()
 
@@ -629,37 +716,46 @@ class IsogeoToOffice_Main(QMainWindow):
             self.app_settings.setValue("auth/url_base", api_mngr.api_url_base)
             self.app_settings.setValue("auth/url_auth", api_mngr.api_url_auth)
             self.app_settings.setValue("auth/url_token", api_mngr.api_url_token)
-            self.app_settings.setValue(
-                "auth/url_redirect", api_mngr.api_url_redirect)
+            self.app_settings.setValue("auth/url_redirect", api_mngr.api_url_redirect)
 
             # output formats
             self.app_settings.setValue(
-                "formats/excel", self.ui.chb_output_excel.isChecked())
+                "formats/excel", self.ui.chb_output_excel.isChecked()
+            )
             self.app_settings.setValue(
-                "formats/word", self.ui.chb_output_word.isChecked())
+                "formats/word", self.ui.chb_output_word.isChecked()
+            )
             self.app_settings.setValue(
-                "formats/xml", self.ui.chb_output_xml.isChecked())
+                "formats/xml", self.ui.chb_output_xml.isChecked()
+            )
 
             # location and naming rules
             # output folder is defined by itso own method 'set_output_folder'
-            self.app_settings.setValue("settings/out_prefix",
-                                       self.ui.txt_output_fileprefix.text())
-            self.app_settings.setValue("settings/uuid_length",
-                                       self.ui.int_md_uuid.value())
+            self.app_settings.setValue(
+                "settings/out_prefix", self.ui.txt_output_fileprefix.text()
+            )
+            self.app_settings.setValue(
+                "settings/uuid_length", self.ui.int_md_uuid.value()
+            )
 
             # export options
-            self.app_settings.setValue("settings/xls_sheet_attributes",
-                                       self.ui.chb_xls_attributes.isChecked())
-            self.app_settings.setValue("settings/xls_sheet_dashboard",
-                                       self.ui.chb_xls_stats.isChecked())
-            self.app_settings.setValue("settings/doc_tpl_name",
-                                       self.ui.cbb_word_tpl.currentText())
-            self.app_settings.setValue("settings/xml_zip",
-                                       self.ui.chb_xml_zip.isChecked())
+            self.app_settings.setValue(
+                "settings/xls_sheet_attributes", self.ui.chb_xls_attributes.isChecked()
+            )
+            self.app_settings.setValue(
+                "settings/xls_sheet_dashboard", self.ui.chb_xls_stats.isChecked()
+            )
+            self.app_settings.setValue(
+                "settings/doc_tpl_name", self.ui.cbb_word_tpl.currentText()
+            )
+            self.app_settings.setValue(
+                "settings/xml_zip", self.ui.chb_xml_zip.isChecked()
+            )
 
             # misc
-            self.app_settings.setValue("settings/systray_minimize",
-                                       self.ui.chb_systray_minimize.isChecked())
+            self.app_settings.setValue(
+                "settings/systray_minimize", self.ui.chb_systray_minimize.isChecked()
+            )
 
             # global UI position
             self.app_settings.setValue("settings/geometry", self.saveGeometry())
@@ -697,9 +793,11 @@ class IsogeoToOffice_Main(QMainWindow):
         """Let user pick the folder where to store outputs.
         """
         # launch explorer
-        selected_folder = self.app_utils.open_FileNameDialog(self,
-                                                             file_type="folder",
-                                                             from_dir=self.app_settings.value("settings/out_folder_path"))
+        selected_folder = self.app_utils.open_FileNameDialog(
+            self,
+            file_type="folder",
+            from_dir=self.app_settings.value("settings/out_folder_path"),
+        )
         # test selected folder
         if not path.exists(selected_folder):
             logger.error("No folder selected")
@@ -712,25 +810,30 @@ class IsogeoToOffice_Main(QMainWindow):
         self.ui.lbl_output_folder_value.setText(path.basename(selected_folder))
         self.ui.lbl_output_folder_value.setToolTip(path.dirname(selected_folder))
         # save in settings
-        self.app_settings.setValue("settings/out_folder_label",
-                                   path.basename(selected_folder))
-        self.app_settings.setValue("settings/out_folder_path",
-                                   selected_folder)
+        self.app_settings.setValue(
+            "settings/out_folder_label", path.basename(selected_folder)
+        )
+        self.app_settings.setValue("settings/out_folder_path", selected_folder)
 
         # connect the open button
         self.ui.btn_open_output_folder.pressed.disconnect()
-        self.ui.btn_open_output_folder.pressed.connect(partial(self.app_utils.open_dir_file,
-                                                               selected_folder))
+        self.ui.btn_open_output_folder.pressed.connect(
+            partial(self.app_utils.open_dir_file, selected_folder)
+        )
 
     def settings_reset(self):
         """Reset settings to factiry defaults. Do not not remove authentication
         credentials. See #41
         """
-        QMessageBox.information(self,
-                                self.tr("Settings - Reset to factory defaults"),
-                                self.tr("Settings will be reinitialized (not"
-                                        " authentication credentials).\n"
-                                        "application will be closed."))
+        QMessageBox.information(
+            self,
+            self.tr("Settings - Reset to factory defaults"),
+            self.tr(
+                "Settings will be reinitialized (not"
+                " authentication credentials).\n"
+                "application will be closed."
+            ),
+        )
         logger.info("Settings - Reset to factory defaults.")
         self.app_settings.remove("formats")
         self.app_settings.remove("settings")
@@ -739,7 +842,9 @@ class IsogeoToOffice_Main(QMainWindow):
 
     # -- UI Slots -------------------------------------------------------------
     @pyqtSlot(str, str)
-    def fill_app_props(self, app_infos_retrieved: str = "", latest_online_version: str = ""):
+    def fill_app_props(
+        self, app_infos_retrieved: str = "", latest_online_version: str = ""
+    ):
         """Get app properties and fillfull the share frame in settings tab.
         """
         # fill settings tab text
@@ -758,13 +863,16 @@ class IsogeoToOffice_Main(QMainWindow):
 
         # notification
         self.tray_icon.show()
-        self.tray_icon.showMessage("Isogeo to Office",
-                                   self.tr("Application information has been retrieved.") + " " + version_msg,
-                                   QIcon("resources/favicon.png"),
-                                   2000
-                                   )
-        self.update_status_bar(prog_step=0,
-                               status_msg=self.tr("Application information has been retrieved"))
+        self.tray_icon.showMessage(
+            "Isogeo to Office",
+            self.tr("Application information has been retrieved.") + " " + version_msg,
+            QIcon("resources/favicon.png"),
+            2000,
+        )
+        self.update_status_bar(
+            prog_step=0,
+            status_msg=self.tr("Application information has been retrieved"),
+        )
 
     @pyqtSlot()
     def update_credentials(self):
@@ -806,7 +914,8 @@ class IsogeoToOffice_Main(QMainWindow):
 
         # export button
         self.ui.btn_launch_export.setText(
-            self.tr("Export {} metadata").format(search.get("total")))
+            self.tr("Export {} metadata").format(search.get("total"))
+        )
 
         # -- RESTORE PREVIOUS SELECTED FILTERS -------------------------------
         if self.search_type != "reset":
@@ -869,13 +978,16 @@ class IsogeoToOffice_Main(QMainWindow):
             # display main window - see #22
             self.tray_icon.act_show.trigger()
             # notify the user - see #12
-            self.tray_icon.showMessage("Isogeo to Office",
-                                       self.tr("Export operations are over."),
-                                       QIcon("resources/favicon.png"),
-                                       2000
-                                       )
+            self.tray_icon.showMessage(
+                "Isogeo to Office",
+                self.tr("Export operations are over."),
+                QIcon("resources/favicon.png"),
+                2000,
+            )
             # open output dir - see #27
-            self.app_utils.open_dir_file(self.app_settings.value("settings/out_folder_path", app_outdir))
+            self.app_utils.open_dir_file(
+                self.app_settings.value("settings/out_folder_path", app_outdir)
+            )
 
 
 # #############################################################################
@@ -883,6 +995,7 @@ class IsogeoToOffice_Main(QMainWindow):
 # ##################################
 if __name__ == "__main__":
     import sys
+
     # create the application and the main window
     app = QApplication(sys.argv)
     app.setOrganizationName("Isogeo")
@@ -892,9 +1005,9 @@ if __name__ == "__main__":
     # apply dark style
     app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
     # apply language
-    locale_path = path.join(app_dir,
-                            'i18n',
-                            'IsogeoToOffice_{}.qm'.format(current_locale.system().name()))
+    locale_path = path.join(
+        app_dir, "i18n", "IsogeoToOffice_{}.qm".format(current_locale.system().name())
+    )
     translator = QTranslator()
     translator.load(path.realpath(locale_path))
     app.installTranslator(translator)
