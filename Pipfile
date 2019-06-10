@@ -4,27 +4,30 @@ verify_ssl = true
 name = "pypi"
 
 [dev-packages]
+black = "==19.3b0"
 codecov = "*"
-pylint = "*"
-pyinstaller = "==3.4"
 pyqt5-tools = {version ~="5.11",sys_platform = "== 'win32'"}
 pip = "*"
+pyinstaller = "==3.4.*"
+pylint = "*"
+pytest= "*"
+pytest-cov="*"
 setuptools = "*"
 sip = "*"
+wheel = "*"
 
 [packages]
 arrow = "*"
-pytz = "*"
-requests = "*"
-isogeo-pysdk = ">=2.20.1"
-openpyxl = "*"
-lxml = "*"
 docxtpl = "*"
-future = "*"
-six = "*"
+isogeo-pysdk = ">=2.20.1"
+lxml = "*"
+openpyxl = "*"
 progressbar2 = "*"
 "pyqt5" = "*"
-qdarkstyle = "==2.5.4"
+python-dotenv = "*"
+pytz = "*"
+requests = "*"
+qdarkstyle = "*"
 semver = "*"
 
 [requires]
