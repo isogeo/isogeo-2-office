@@ -10,7 +10,8 @@
             "group": {
                 "kind": "build",
                 "isDefault": true
-            }
+            },
+            "problemMatcher": []
         },
         {
             "label": "Tests and coverage",
@@ -45,6 +46,40 @@
             "dependsOn": [
                 "Build - Update venv"
             ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Format code and tests",
+            "dependsOn": [
+                "Format code",
+                "Format tests"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Format code",
+            "type": "shell",
+            "command": "${config:python.pythonPath}",
+            "args": [
+                "-m",
+                "black",
+                "--target-version=py36",
+                "./modules"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "Format tests",
+            "type": "shell",
+            "command": "${config:python.pythonPath}",
+            "args": [
+                "-m",
+                "black",
+                "--target-version=py36",
+                "./tests"
+            ],
+            "group": "build",
             "problemMatcher": []
         }
     ]
