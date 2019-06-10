@@ -5,7 +5,9 @@ from PyQt5 import QtCore
 app = QtWidgets.QApplication(sys.argv)
 
 model = QtCore.QStringListModel()
-model.setStringList(['some', 'words', 'in', 'my', 'dictionary', "ploup", "dinausaurus", "chokobons"])
+model.setStringList(
+    ["some", "words", "in", "my", "dictionary", "ploup", "dinausaurus", "chokobons"]
+)
 
 completer = QtWidgets.QCompleter()
 completer.setModel(model)

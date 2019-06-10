@@ -18,24 +18,17 @@ head_col1 = WriteOnlyCell(ws, value="isogeo_uuid")
 head_col2 = WriteOnlyCell(ws, value="isogeo_title_slugged")
 head_col3 = WriteOnlyCell(ws, value="img_abs_path")
 # comments
-comment = Comment(text="Do not modify worksheet structure",
-                  author="Isogeo")
+comment = Comment(text="Do not modify worksheet structure", author="Isogeo")
 
 head_col1.comment = head_col2.comment = head_col3.comment = comment
 
 # styling
 head_col1.style = head_col2.style = head_col3.style = "Headline 2"
 # insert
-ws.append((head_col1,
-           head_col2,
-           head_col3)
-)
+ws.append((head_col1, head_col2, head_col3))
 
 # realist fake
-ws.append(("c4b7ad9732454beca1ab3ec1958ffa50",
-           "title-slugged",
-           "resources/table.svg")
-)
+ws.append(("c4b7ad9732454beca1ab3ec1958ffa50", "title-slugged", "resources/table.svg"))
 
 # random values
 for letter in "Isogeo, easy access to geodata!":

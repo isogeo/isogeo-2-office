@@ -27,8 +27,8 @@ from modules import IsogeoStats
 # ##################################
 
 # API access
-app_id = environ.get('ISOGEO_API_DEV_ID')
-app_secret = environ.get('ISOGEO_API_DEV_SECRET')
+app_id = environ.get("ISOGEO_API_DEV_ID")
+app_secret = environ.get("ISOGEO_API_DEV_SECRET")
 
 # #############################################################################
 # ########## Classes ###############
@@ -37,21 +37,28 @@ app_secret = environ.get('ISOGEO_API_DEV_SECRET')
 
 class TestExportXLSX(unittest.TestCase):
     """Test export to Microsoft Excel XLSX."""
+
     def setUp(self):
         """Executed before each test."""
         # API response samples
         self.tags_sample_types_all = path.normpath(
-            r"tests/fixtures/api_response_tests_tags_types_all.json")
+            r"tests/fixtures/api_response_tests_tags_types_all.json"
+        )
         self.tags_sample_types_noRaster = path.normpath(
-            r"tests/fixtures/api_response_tests_tags_types_noRaster.json")
+            r"tests/fixtures/api_response_tests_tags_types_noRaster.json"
+        )
         self.tags_sample_types_noVector = path.normpath(
-            r"tests/fixtures/api_response_tests_tags_types_noVector.json")
+            r"tests/fixtures/api_response_tests_tags_types_noVector.json"
+        )
         self.tags_sample_types_noService = path.normpath(
-            r"tests/fixtures/api_response_tests_tags_types_noService.json")
+            r"tests/fixtures/api_response_tests_tags_types_noService.json"
+        )
         self.tags_sample_types_noResource = path.normpath(
-            r"tests/fixtures/api_response_tests_tags_types_noResource.json")
+            r"tests/fixtures/api_response_tests_tags_types_noResource.json"
+        )
         self.search_all_includes = path.normpath(
-            r"tests/fixtures/api_search_complete.json")
+            r"tests/fixtures/api_search_complete.json"
+        )
 
         # target class instanciation
         self.out_wb = Isogeo2xlsx(lang="FR", url_base="https://open.isogeo.com/s")
@@ -87,13 +94,11 @@ class TestExportXLSX(unittest.TestCase):
         self.assertIsInstance(self.out_wb.stats, IsogeoStats)
 
         # languages variations
-        out_wb_fr = Isogeo2xlsx(lang="FR",
-                                url_base="https://open.isogeo.com/s")
+        out_wb_fr = Isogeo2xlsx(lang="FR", url_base="https://open.isogeo.com/s")
         self.assertEqual(out_wb_fr.dates_fmt, "DD/MM/YYYY")
         self.assertEqual(out_wb_fr.locale_fmt, "fr_FR")
 
-        out_wb_en = Isogeo2xlsx(lang="EN",
-                                url_base="https://open.isogeo.com/s")
+        out_wb_en = Isogeo2xlsx(lang="EN", url_base="https://open.isogeo.com/s")
         self.assertEqual(out_wb_en.dates_fmt, "YYYY/MM/DD")
         self.assertEqual(out_wb_en.locale_fmt, "uk_UK")
 
@@ -131,8 +136,12 @@ class TestExportXLSX(unittest.TestCase):
             search = json.loads(f.read())
         # run
         self.out_wb.set_worksheets(
-            auto=search.get("tags").keys(), attributes=1,
-            inspire=1, dashboard=1, fillfull=1)
+            auto=search.get("tags").keys(),
+            attributes=1,
+            inspire=1,
+            dashboard=1,
+            fillfull=1,
+        )
         self.assertEqual(len(self.out_wb.worksheets), 8)
         self.assertIn("Raster", self.out_wb.sheetnames)
         self.assertIn("Services", self.out_wb.sheetnames)
@@ -162,8 +171,7 @@ class TestExportXLSX(unittest.TestCase):
         with open(self.tags_sample_types_noRaster, "r") as f:
             search = json.loads(f.read())
         # run
-        self.out_wb.set_worksheets(
-            auto=search.get("tags").keys(), attributes=1)
+        self.out_wb.set_worksheets(auto=search.get("tags").keys(), attributes=1)
         self.assertEqual(len(self.out_wb.worksheets), 4)
         self.assertNotIn("Raster", self.out_wb.sheetnames)
         self.assertIn("Services", self.out_wb.sheetnames)
@@ -177,8 +185,7 @@ class TestExportXLSX(unittest.TestCase):
         with open(self.tags_sample_types_noService, "r") as f:
             search = json.loads(f.read())
         # run
-        self.out_wb.set_worksheets(
-            auto=search.get("tags").keys())
+        self.out_wb.set_worksheets(auto=search.get("tags").keys())
         self.assertEqual(len(self.out_wb.worksheets), 3)
         self.assertIn("Raster", self.out_wb.sheetnames)
         self.assertNotIn("Services", self.out_wb.sheetnames)
@@ -191,8 +198,7 @@ class TestExportXLSX(unittest.TestCase):
         with open(self.tags_sample_types_noResource, "r") as f:
             search = json.loads(f.read())
         # run
-        self.out_wb.set_worksheets(
-            auto=search.get("tags").keys())
+        self.out_wb.set_worksheets(auto=search.get("tags").keys())
         self.assertEqual(len(self.out_wb.worksheets), 3)
         self.assertIn("Raster", self.out_wb.sheetnames)
         self.assertIn("Services", self.out_wb.sheetnames)
@@ -214,9 +220,9 @@ class TestExportXLSX(unittest.TestCase):
         with open(self.search_all_includes, "r") as f:
             search = json.loads(f.read())
         # add worksheets
-        self.out_wb.set_worksheets(auto=search.get('tags').keys())
+        self.out_wb.set_worksheets(auto=search.get("tags").keys())
         # run
-        for md in search.get('results'):
+        for md in search.get("results"):
             self.out_wb.store_metadatas(md)
         # save
         self.out_wb.save(out_xlsx[1] + ".xlsx")
@@ -225,8 +231,9 @@ class TestExportXLSX(unittest.TestCase):
         """Test metadata not as a dict."""
         # run
         with self.assertRaises(TypeError):
-            self.out_wb.store_metadatas(["_id", "azertyqwerty",
-                                         "title", "fixturing me", ])
+            self.out_wb.store_metadatas(
+                ["_id", "azertyqwerty", "title", "fixturing me"]
+            )
 
     # def test_metadata_bad_type(self):
     #     """Test bad metadata type."""
@@ -235,8 +242,9 @@ class TestExportXLSX(unittest.TestCase):
     #         self.out_wb.store_metadatas({"_id": "azertyqwerty",
     #                                      "type": "datasetEtMatch"})
 
+
 # #############################################################################
 # ##### Stand alone program ########
 # ##################################
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

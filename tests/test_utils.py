@@ -41,12 +41,15 @@ class TestIsogeo2officeUtils(unittest.TestCase):
         self.utils = isogeo2office_utils()
         self.fixtures_dir = path.normpath(r"tests/fixtures")
         # thumbnails tables
-        self.thumbs_complete = path.normpath(path.join(self.fixtures_dir,
-                                                       "thumbnails_complete.xlsx"))
-        self.thumbs_bad_sheetname = path.normpath(path.join(self.fixtures_dir,
-                                                            "thumbnails_bad_worksheetName.xlsx"))
-        self.thumbs_bad_header = path.normpath(path.join(self.fixtures_dir,
-                                                         "thumbnails_bad_headers.xlsx"))
+        self.thumbs_complete = path.normpath(
+            path.join(self.fixtures_dir, "thumbnails_complete.xlsx")
+        )
+        self.thumbs_bad_sheetname = path.normpath(
+            path.join(self.fixtures_dir, "thumbnails_bad_worksheetName.xlsx")
+        )
+        self.thumbs_bad_header = path.normpath(
+            path.join(self.fixtures_dir, "thumbnails_bad_headers.xlsx")
+        )
 
     def tearDown(self):
         """Executed after each test."""
@@ -55,9 +58,8 @@ class TestIsogeo2officeUtils(unittest.TestCase):
     #  -- Openers ------------------------------------------------------------
     def test_url_opener(self):
         """Test URL opener"""
-        self.utils.open_urls(["https://example.com", ])
-        self.utils.open_urls(["https://example.com",
-                              "https://example.org"])
+        self.utils.open_urls(["https://example.com"])
+        self.utils.open_urls(["https://example.com", "https://example.org"])
 
     def test_dirfile_opener_ok(self):
         """Test file/folder opener"""
@@ -79,14 +81,20 @@ class TestIsogeo2officeUtils(unittest.TestCase):
         clean_stripped_pure = self.utils.clean_special_chars(in_str, accents=0)
         clean_underscored_pure = self.utils.clean_special_chars(in_str, "_", accents=0)
         # check
-        self.assertEqual(clean_stripped_accent,
-                         "Spécialcaractèresnontquedesespcesàdroite888323")
-        self.assertEqual(clean_underscored_accent,
-                         "Spécial_caractères_n_ont_que_des_esp_ces_à_droite_888323")
-        self.assertEqual(clean_stripped_pure,
-                         "Spcialcaractresnontquedesespcesdroite888323")
-        self.assertEqual(clean_underscored_pure,
-                         "Sp_cial_caract_res_n_ont_que_des_esp_ces_droite_888323")
+        self.assertEqual(
+            clean_stripped_accent, "Spécialcaractèresnontquedesespcesàdroite888323"
+        )
+        self.assertEqual(
+            clean_underscored_accent,
+            "Spécial_caractères_n_ont_que_des_esp_ces_à_droite_888323",
+        )
+        self.assertEqual(
+            clean_stripped_pure, "Spcialcaractresnontquedesespcesdroite888323"
+        )
+        self.assertEqual(
+            clean_underscored_pure,
+            "Sp_cial_caract_res_n_ont_que_des_esp_ces_droite_888323",
+        )
 
     def test_clean_filename_ok(self):
         """Test clean filenames"""
@@ -96,10 +104,8 @@ class TestIsogeo2officeUtils(unittest.TestCase):
         filename_soft = self.utils.clean_filename(in_filename, mode="soft")
         filename_strict = self.utils.clean_filename(in_filename, mode="strict")
         # check
-        self.assertEqual(filename_soft,
-                         "mon rapport de catalogage super cool ! .zip")
-        self.assertEqual(filename_strict,
-                         "mon rapport de catalogage super cool  .zip")
+        self.assertEqual(filename_soft, "mon rapport de catalogage super cool ! .zip")
+        self.assertEqual(filename_strict, "mon rapport de catalogage super cool  .zip")
 
     def test_clean_filename_bad(self):
         """Test filenames errors"""
@@ -124,11 +130,12 @@ class TestIsogeo2officeUtils(unittest.TestCase):
     #  -- Thumbnails ----------------------------------------------------------
     def test_thumbnails_loader_complete(self):
         """Test filenames errors"""
-        expected_dict = {'1234569732454beca1ab3ec1958ffa50': ('title-slugged',
-                                                              'resources/table.svg')
-                                                              }
-        self.assertDictEqual(self.utils.thumbnails_mngr(self.thumbs_complete),
-                             expected_dict)
+        expected_dict = {
+            "1234569732454beca1ab3ec1958ffa50": ("title-slugged", "resources/table.svg")
+        }
+        self.assertDictEqual(
+            self.utils.thumbnails_mngr(self.thumbs_complete), expected_dict
+        )
 
     def test_thumbnails_loader_bad_notTable(self):
         """Test filenames errors"""
