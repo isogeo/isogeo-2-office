@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '.\modules\ui\main\ui_win_IsogeoToOffice.ui'
 #
-# Created by: PyQt5 UI code generator 5.11.2
+# Created by: PyQt5 UI code generator 5.11.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -69,7 +69,7 @@ class Ui_win_IsogeoToOffice(object):
         self.btn_reinit.setMaximumSize(QtCore.QSize(600, 40))
         self.btn_reinit.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_reinit.setFocusPolicy(QtCore.Qt.ClickFocus)
-        self.btn_reinit.setAutoFillBackground(True)
+        self.btn_reinit.setAutoFillBackground(False)
         self.btn_reinit.setText("")
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap(":/IsogeoToOffice/resources/export/undo.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -381,7 +381,7 @@ class Ui_win_IsogeoToOffice(object):
         self.tlb_settings.setMaximumSize(QtCore.QSize(800, 500))
         self.tlb_settings.setObjectName("tlb_settings")
         self.tlb_section_global = QtWidgets.QWidget()
-        self.tlb_section_global.setGeometry(QtCore.QRect(0, 0, 586, 194))
+        self.tlb_section_global.setGeometry(QtCore.QRect(0, 0, 98, 171))
         self.tlb_section_global.setMinimumSize(QtCore.QSize(3, 0))
         self.tlb_section_global.setMaximumSize(QtCore.QSize(600, 200))
         self.tlb_section_global.setObjectName("tlb_section_global")
@@ -484,7 +484,7 @@ class Ui_win_IsogeoToOffice(object):
         icon5.addPixmap(QtGui.QPixmap(":/IsogeoToOffice/resources/settings/bars.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.tlb_settings.addItem(self.tlb_section_global, icon5, "")
         self.tlb_section_excel = QtWidgets.QWidget()
-        self.tlb_section_excel.setGeometry(QtCore.QRect(0, 0, 424, 38))
+        self.tlb_section_excel.setGeometry(QtCore.QRect(0, 0, 424, 35))
         self.tlb_section_excel.setObjectName("tlb_section_excel")
         self.formLayout = QtWidgets.QFormLayout(self.tlb_section_excel)
         self.formLayout.setObjectName("formLayout")
@@ -502,7 +502,7 @@ class Ui_win_IsogeoToOffice(object):
         icon6.addPixmap(QtGui.QPixmap(":/IsogeoToOffice/resources/excel.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.tlb_settings.addItem(self.tlb_section_excel, icon6, "Excel")
         self.tlb_section_word = QtWidgets.QWidget()
-        self.tlb_section_word.setGeometry(QtCore.QRect(0, 0, 366, 76))
+        self.tlb_section_word.setGeometry(QtCore.QRect(0, 0, 363, 76))
         self.tlb_section_word.setObjectName("tlb_section_word")
         self.formLayout_4 = QtWidgets.QFormLayout(self.tlb_section_word)
         self.formLayout_4.setObjectName("formLayout_4")
@@ -563,7 +563,7 @@ class Ui_win_IsogeoToOffice(object):
         icon9.addPixmap(QtGui.QPixmap(":/IsogeoToOffice/resources/word.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.tlb_settings.addItem(self.tlb_section_word, icon9, "Word")
         self.tlb_section_xml = QtWidgets.QWidget()
-        self.tlb_section_xml.setGeometry(QtCore.QRect(0, 0, 446, 70))
+        self.tlb_section_xml.setGeometry(QtCore.QRect(0, 0, 360, 66))
         self.tlb_section_xml.setObjectName("tlb_section_xml")
         self.formLayout_2 = QtWidgets.QFormLayout(self.tlb_section_xml)
         self.formLayout_2.setObjectName("formLayout_2")
@@ -800,8 +800,8 @@ class Ui_win_IsogeoToOffice(object):
         self.txt_shares.setHtml(_translate("win_IsogeoToOffice", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:9.75pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8.25pt;\"><br /></p></body></html>"))
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.grp_ressources.setTitle(_translate("win_IsogeoToOffice", "Resources"))
         self.lbl_report.setText(_translate("win_IsogeoToOffice", "Report an issue on the bug tracker"))
         self.btn_log_dir.setToolTip(_translate("win_IsogeoToOffice", "Get the log file: \"log_isogeo_isogeo2office.log\""))

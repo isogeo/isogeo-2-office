@@ -29,7 +29,8 @@ from PyQt5.QtCore import (QLocale, QSettings, QThread, QTranslator,
                           pyqtSignal, pyqtSlot)
 from PyQt5.QtGui import QCloseEvent, QIcon
 from PyQt5.QtWidgets import (QApplication, QComboBox, QMainWindow,
-                             QMessageBox)
+                             QMessageBox, QStyleFactory)
+
 import semver
 
 # submodules - functional

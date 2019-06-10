@@ -19,7 +19,7 @@ from tkinter.messagebox import showerror as avert
 from itertools import zip_longest
 import logging
 from os import access, path, R_OK
-from pathlib import Path    # TO DO: replace os.path by pathlib
+from pathlib import Path  # TO DO: replace os.path by pathlib
 import re
 import subprocess
 from sys import platform as opersys
@@ -34,9 +34,9 @@ from PyQt5.QtCore import QUrl
 from PyQt5.QtWidgets import QFileDialog
 
 # Depending on operating system
-if opersys == 'win32':
+if opersys == "win32":
     """Only on MS Windows."""
-    from os import startfile        # to open a folder/file
+    from os import startfile  # to open a folder/file
 else:
     pass
 
@@ -75,10 +75,15 @@ class isogeo2office_utils(IsogeoUtils):
                     logger.debug("Credentials file in use. Do not delete it.")
                     continue
                 elif f.stat().st_mtime > last_month.timestamp():
-                    logger.debug("Credentials file modified during last 31 days: " + f.name)
+                    logger.debug(
+                        "Credentials file modified during last 31 days: " + f.name
+                    )
                     continue
                 else:
-                    logger.info("Credentials file older than 31 days marked for deletion: " + f.name)
+                    logger.info(
+                        "Credentials file older than 31 days marked for deletion: "
+                        + f.name
+                    )
                     try:
                         f.unlink()
                     except Exception as e:
@@ -95,7 +100,7 @@ class isogeo2office_utils(IsogeoUtils):
         :param list li_url: list of URLs to open in the default browser
         """
         if isinstance(li_url, QUrl):
-            li_url = [li_url.toString(), ]
+            li_url = [li_url.toString()]
         x = 1
         for url in li_url:
             if x > 1:
@@ -112,35 +117,38 @@ class isogeo2office_utils(IsogeoUtils):
         """
         # check if the file or the directory exists
         if not path.exists(target):
-            raise IOError('No such file: {0}'.format(target))
+            raise IOError("No such file: {0}".format(target))
 
         # check the read permission
         if not access(target, R_OK):
-            raise IOError('Cannot access file: {0}'.format(target))
+            raise IOError("Cannot access file: {0}".format(target))
 
         # open the directory or the file according to the os
-        if opersys == 'win32':  # Windows
+        if opersys == "win32":  # Windows
             proc = startfile(path.realpath(target))
 
-        elif opersys.startswith('linux'):  # Linux:
-            proc = subprocess.Popen(['xdg-open', target],
-                                    stdout=subprocess.PIPE,
-                                    stderr=subprocess.PIPE)
+        elif opersys.startswith("linux"):  # Linux:
+            proc = subprocess.Popen(
+                ["xdg-open", target], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
 
-        elif opersys == 'darwin':  # Mac:
-            proc = subprocess.Popen(['open', '--', target],
-                                    stdout=subprocess.PIPE,
-                                    stderr=subprocess.PIPE)
+        elif opersys == "darwin":  # Mac:
+            proc = subprocess.Popen(
+                ["open", "--", target], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
 
         else:
             raise NotImplementedError(
-                "Your `%s` isn't a supported operating system`." % opersys)
+                "Your `%s` isn't a supported operating system`." % opersys
+            )
 
         # end of function
         return proc
 
     # UI
-    def open_FileNameDialog(self, parent=None, file_type: str = "credentials", from_dir: str = "downloads"):
+    def open_FileNameDialog(
+        self, parent=None, file_type: str = "credentials", from_dir: str = "downloads"
+    ):
         """Manage file dialog to allow user pick a file.
 
         :param QApplication parent: Qt parent application.
@@ -149,50 +157,57 @@ class isogeo2office_utils(IsogeoUtils):
         """
         if from_dir == "downloads":
             # get user download directory
-            start_dir = path.realpath(path.join(path.expanduser("~"),
-                                                "Downloads")
-                                      )
+            start_dir = path.realpath(path.join(path.expanduser("~"), "Downloads"))
         else:
             start_dir = path.realpath(from_dir)
         if not path.exists(start_dir):
             start_dir = path.expanduser("~")
         # set options
         options = QFileDialog.Options()
-        #options |= QFileDialog.DontUseNativeDialog
+        # options |= QFileDialog.DontUseNativeDialog
         options |= QFileDialog.ReadOnly
 
         # adapt file filters according to file_type option
         if file_type == "credentials":
-            file_filters = "Standard credentials file (client_secrets.json);;JSON Files (*.json)"
-            dlg_title = parent.tr('Open credentials file')
-            return QFileDialog.getOpenFileName(parent=None,
-                                               caption=dlg_title,
-                                               directory=start_dir,
-                                               filter=file_filters,
-                                               options=options)
+            file_filters = (
+                "Standard credentials file (client_secrets.json);;JSON Files (*.json)"
+            )
+            dlg_title = parent.tr("Open credentials file")
+            return QFileDialog.getOpenFileName(
+                parent=None,
+                caption=dlg_title,
+                directory=start_dir,
+                filter=file_filters,
+                options=options,
+            )
         elif file_type == "thumbnails":
-            file_filters = "Standard credentials file (client_secrets.json);;JSON Files (*.json)"
-            dlg_title = parent.tr('Select thumbnails file')
-            return QFileDialog.getOpenFileName(parent=None,
-                                               caption=dlg_title,
-                                               directory=start_dir,
-                                               filter=file_filters,
-                                               options=options)
+            file_filters = (
+                "Standard credentials file (client_secrets.json);;JSON Files (*.json)"
+            )
+            dlg_title = parent.tr("Select thumbnails file")
+            return QFileDialog.getOpenFileName(
+                parent=None,
+                caption=dlg_title,
+                directory=start_dir,
+                filter=file_filters,
+                options=options,
+            )
         elif file_type == "folder":
             options |= QFileDialog.ShowDirsOnly
-            dlg_title = parent.tr('Select folder')
-            return QFileDialog.getExistingDirectory(parent=None,
-                                                    caption=dlg_title,
-                                                    directory=start_dir,
-                                                    options=options)
+            dlg_title = parent.tr("Select folder")
+            return QFileDialog.getExistingDirectory(
+                parent=None, caption=dlg_title, directory=start_dir, options=options
+            )
         else:
             file_filters = "All Files (*)"
-            dlg_title = parent.tr('Pick a file')
-            return QFileDialog.getOpenFileName(parent=None,
-                                               caption=dlg_title,
-                                               directory=start_dir,
-                                               filter=file_filters,
-                                               options=options)
+            dlg_title = parent.tr("Pick a file")
+            return QFileDialog.getOpenFileName(
+                parent=None,
+                caption=dlg_title,
+                directory=start_dir,
+                filter=file_filters,
+                options=options,
+            )
 
     def timestamps_picker(self, timestamp_opt: str = "no"):
         """Return timestamp value depending on toggled radio button.
@@ -202,33 +217,37 @@ class isogeo2office_utils(IsogeoUtils):
         dstamp = datetime.now()
         timestamps = {
             "no": " ",
-            "day": "_{}-{}-{}".format(dstamp.year,
-                                      dstamp.month,
-                                      dstamp.day),
-            "datetime": "_{}-{}-{}-{}{}{}".format(dstamp.year,
-                                                  dstamp.month,
-                                                  dstamp.day,
-                                                  dstamp.hour,
-                                                  dstamp.minute,
-                                                  dstamp.second)
+            "day": "_{}-{}-{}".format(dstamp.year, dstamp.month, dstamp.day),
+            "datetime": "_{}-{}-{}-{}{}{}".format(
+                dstamp.year,
+                dstamp.month,
+                dstamp.day,
+                dstamp.hour,
+                dstamp.minute,
+                dstamp.second,
+            ),
         }
         logger.debug(timestamp_opt)
-        logger.debug("Timestamp option picked: {}".format(timestamps.get(timestamp_opt)))
+        logger.debug(
+            "Timestamp option picked: {}".format(timestamps.get(timestamp_opt))
+        )
         return timestamps.get(timestamp_opt).strip()
 
     # ISOGEO -----------------------------------------------------------------
     def get_url_base(self, url_input):
         """Get OpenCatalog base URL to add resource ID easily."""
         # get the OpenCatalog URL given
-        if not url_input[-1] == '/':
-            url_input = url_input + '/'
+        if not url_input[-1] == "/":
+            url_input = url_input + "/"
         else:
             pass
 
         # get the clean url
-        return url_input[0:url_input.index(url_input.rsplit('/')[6])]
+        return url_input[0 : url_input.index(url_input.rsplit("/")[6])]
 
-    def thumbnails_mngr(self, in_xlsx_table: str = "thumbnails/thumbnails.xlsx") -> dict:
+    def thumbnails_mngr(
+        self, in_xlsx_table: str = "thumbnails/thumbnails.xlsx"
+    ) -> dict:
         """Manage the thumbnails table (see: #10): check, read and return a dict.
 
         :param str in_xlsx_table: path to the input thumbnails table
@@ -248,21 +267,30 @@ class isogeo2office_utils(IsogeoUtils):
 
         # load XLSX and check structure
         # with load_workbook(path.realpath(in_xlsx_table), read_only=True) as wb:
-        wb = load_workbook(path.realpath(in_xlsx_table),
-                           read_only=True)
+        wb = load_workbook(path.realpath(in_xlsx_table), read_only=True)
         if "i2o_thumbnails" not in wb.sheetnames:
-            logger.error("Thumbnails workbook ({}) doesn't have the good worksheet name"
-                         .format(in_xlsx_table))
+            logger.error(
+                "Thumbnails workbook ({}) doesn't have the good worksheet name".format(
+                    in_xlsx_table
+                )
+            )
             wb.close()
             raise KeyError("Thumbnails - Bad worksheet name")
 
         # load worksheet and check headers
         ws = wb["i2o_thumbnails"]
-        if not all((ws._get_cell(1, 1).value == "isogeo_uuid",
-                    ws._get_cell(1, 2).value == "isogeo_title_slugged",
-                    ws._get_cell(1, 3).value == "img_abs_path")):
-            logger.error("Thumbnails workbook ({}) doesn't have the good headers"
-                         .format(in_xlsx_table))
+        if not all(
+            (
+                ws._get_cell(1, 1).value == "isogeo_uuid",
+                ws._get_cell(1, 2).value == "isogeo_title_slugged",
+                ws._get_cell(1, 3).value == "img_abs_path",
+            )
+        ):
+            logger.error(
+                "Thumbnails workbook ({}) doesn't have the good headers".format(
+                    in_xlsx_table
+                )
+            )
             raise KeyError("Thumbnails - Bad worksheet headers")
 
         # parse worksheet and populate final dict
@@ -293,7 +321,9 @@ class isogeo2office_utils(IsogeoUtils):
         else:
             raise ValueError("'mode' option must be one of: soft | strict")
 
-    def clean_special_chars(self, input_str: str, substitute: str = "", accents: bool = 1):
+    def clean_special_chars(
+        self, input_str: str, substitute: str = "", accents: bool = 1
+    ):
         """Clean string from special characters.
 
         Source: https://stackoverflow.com/a/38799620/2556577
@@ -303,9 +333,9 @@ class isogeo2office_utils(IsogeoUtils):
         :param bool accents: option to keep or not the accents
         """
         if accents:
-            return re.sub(r'\W+', substitute, input_str)
+            return re.sub(r"\W+", substitute, input_str)
         else:
-            return re.sub(r'[^A-Za-z0-9]+', substitute, input_str)
+            return re.sub(r"[^A-Za-z0-9]+", substitute, input_str)
 
     def clean_xml(self, invalid_xml, mode: str = "soft", substitute: str = "_"):
         """Clean string of XML invalid characters.
@@ -323,27 +353,27 @@ class isogeo2office_utils(IsogeoUtils):
         #   doc = *( start_tag / end_tag / text )
         #   start_tag = '<' name *attr [ '/' ] '>'
         #   end_tag = '<' '/' name '>'
-        ws = r'[ \t\r\n]*'  # allow ws between any token
+        ws = r"[ \t\r\n]*"  # allow ws between any token
         # note: expand if necessary but the stricter the better
-        name = '[a-zA-Z]+'
+        name = "[a-zA-Z]+"
         # note: fragile against missing '"'; no "'"
         attr = '{name} {ws} = {ws} "[^"]*"'
-        start_tag = '< {ws} {name} {ws} (?:{attr} {ws})* /? {ws} >'
-        end_tag = '{ws}'.join(['<', '/', '{name}', '>'])
-        tag = '{start_tag} | {end_tag}'
+        start_tag = "< {ws} {name} {ws} (?:{attr} {ws})* /? {ws} >"
+        end_tag = "{ws}".join(["<", "/", "{name}", ">"])
+        tag = "{start_tag} | {end_tag}"
 
-        assert '{{' not in tag
-        while '{' in tag:   # unwrap definitions
+        assert "{{" not in tag
+        while "{" in tag:  # unwrap definitions
             tag = tag.format(**vars())
 
-        tag_regex = re.compile('(%s)' % tag, flags=re.VERBOSE)
+        tag_regex = re.compile("(%s)" % tag, flags=re.VERBOSE)
 
         # escape &, <, > in the text
         iters = [iter(tag_regex.split(invalid_xml))] * 2
-        pairs = zip_longest(*iters, fillvalue='')  # iterate 2 items at a time
+        pairs = zip_longest(*iters, fillvalue="")  # iterate 2 items at a time
 
         # get the clean version
-        clean_version = ''.join(escape(text) + tag for text, tag in pairs)
+        clean_version = "".join(escape(text) + tag for text, tag in pairs)
         if mode == "strict":
             clean_version = re.sub(r"<.*?>", substitute, clean_version)
         else:
@@ -354,6 +384,9 @@ class isogeo2office_utils(IsogeoUtils):
 # ############################################################################
 # ##### Stand alone program ########
 # ##################################
-if __name__ == '__main__':
+if __name__ == "__main__":
     """Standalone execution and tests"""
     utils = isogeo2office_utils()
+
+    utils.clean_credentials_files(r"_auth")
+

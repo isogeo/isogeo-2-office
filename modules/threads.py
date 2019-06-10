@@ -60,40 +60,41 @@ class ThreadAppProperties(QThread):
         text = "<html>"  # opening html content
         # Isogeo application authenticated in the plugin
         app = shares[0].get("applications")[0]
-        text += "<p>{}<a href='{}' style='color: CornflowerBlue;'>{}</a> "\
-                .format(self.tr("This application is authenticated as "),
-                        app.get("url", "http://help.isogeo.com/isogeo2office/"),
-                        app.get("name", "Isogeo to Office"))
+        text += "<p>{}<a href='{}' style='color: CornflowerBlue;'>{}</a> ".format(
+            self.tr("This application is authenticated as "),
+            app.get("url", "http://help.isogeo.com/isogeo2office/"),
+            app.get("name", "Isogeo to Office"),
+        )
         # shares feeding the application
         if len(shares) == 1:
-            text += "{}{} {}</p></br>".format(self.tr(" and powered by "),
-                                              "1",
-                                              self.tr("share:"))
+            text += "{}{} {}</p></br>".format(
+                self.tr(" and powered by "), "1", self.tr("share:")
+            )
         else:
-            text += "{}{} {}</p></br>".format(self.tr(" and powered by "),
-                                              len(shares),
-                                              self.tr("shares:"))
+            text += "{}{} {}</p></br>".format(
+                self.tr(" and powered by "), len(shares), self.tr("shares:")
+            )
         # shares details
         for share in shares:
             # share variables
             creator_name = share.get("_creator").get("contact").get("name")
             creator_email = share.get("_creator").get("contact").get("email")
             creator_id = share.get("_creator").get("_tag")[6:]
-            share_url = "https://app.isogeo.com/groups/{}/admin/shares/{}"\
-                        .format(creator_id, share.get("_id"))
+            share_url = "https://app.isogeo.com/groups/{}/admin/shares/{}".format(
+                creator_id, share.get("_id")
+            )
             # formatting text
-            text += "<p><a href='{}' style='color: CornflowerBlue;'><b>{}</b></a></p>"\
-                    .format(share_url,
-                            share.get("name"))
-            text += "<p>{} {}</p>"\
-                    .format(self.tr("Updated:"),
-                            QDate.fromString(share.get("_modified")[:10],
-                                             "yyyy-MM-dd").toString())
+            text += "<p><a href='{}' style='color: CornflowerBlue;'><b>{}</b></a></p>".format(
+                share_url, share.get("name")
+            )
+            text += "<p>{} {}</p>".format(
+                self.tr("Updated:"),
+                QDate.fromString(share.get("_modified")[:10], "yyyy-MM-dd").toString(),
+            )
 
-            text += "<p>{} {} - {}</p>"\
-                    .format(self.tr("Contact:"),
-                            creator_name,
-                            creator_email)
+            text += "<p>{} {} - {}</p>".format(
+                self.tr("Contact:"), creator_name, creator_email
+            )
             text += "<p><hr></p>"
         text += "</html>"
 
@@ -101,8 +102,10 @@ class ThreadAppProperties(QThread):
         proxies = self.api_mngr.isogeo.proxies
         # get latest release on Github
         try:
-            latest_v = requests.get("https://api.github.com/repos/isogeo/isogeo-2-office/releases?per_page=1",
-                                    proxies=proxies).json()[0]
+            latest_v = requests.get(
+                "https://api.github.com/repos/isogeo/isogeo-2-office/releases?per_page=1",
+                proxies=proxies,
+            ).json()[0]
             online_version = latest_v.get("tag_name")
         except Exception:
             logger.error("Unable to ")
@@ -141,13 +144,15 @@ class ThreadExportExcel(QThread):
     # signals
     sig_step = pyqtSignal(int, str)
 
-    def __init__(self,
-                 search_to_export: dict = {},
-                 output_path: str = r"output/",
-                 opt_attributes: int = 0,
-                 opt_dasboard: int = 0,
-                 opt_fillfull: int = 0,
-                 opt_inspire: int = 0):
+    def __init__(
+        self,
+        search_to_export: dict = {},
+        output_path: str = r"output/",
+        opt_attributes: int = 0,
+        opt_dasboard: int = 0,
+        opt_fillfull: int = 0,
+        opt_inspire: int = 0,
+    ):
         QThread.__init__(self)
         # export settings
         self.search = search_to_export
@@ -163,13 +168,14 @@ class ThreadExportExcel(QThread):
         """
         language = current_locale.name()[:2]
         # workbook
-        wb = Isogeo2xlsx(lang=language,
-                         url_base="https://open.isogeo.com")
-        wb.set_worksheets(auto=self.search.get('tags').keys(),
-                          dashboard=self.opt_dasboard,
-                          attributes=self.opt_attributes,
-                          fillfull=self.opt_fillfull,
-                          inspire=self.opt_inspire)
+        wb = Isogeo2xlsx(lang=language, url_base="https://open.isogeo.com")
+        wb.set_worksheets(
+            auto=self.search.get("tags").keys(),
+            dashboard=self.opt_dasboard,
+            attributes=self.opt_attributes,
+            fillfull=self.opt_fillfull,
+            inspire=self.opt_inspire,
+        )
 
         # parsing metadata
         for md in self.search.get("results"):
@@ -177,9 +183,11 @@ class ThreadExportExcel(QThread):
             md_title = md.get("title", "No title")
             self.sig_step.emit(1, self.tr("Processing Excel: {}").format(md_title))
             # add edit link
-            md["link_edit"] = app_utils.get_edit_url(md_id=md.get("_id"),
-                                                     md_type=md.get("type"),
-                                                     owner_id=md.get("_creator").get("_id"))
+            md["link_edit"] = app_utils.get_edit_url(
+                md_id=md.get("_id"),
+                md_type=md.get("type"),
+                owner_id=md.get("_creator").get("_id"),
+            )
 
             # store metadata
             wb.store_metadatas(md)
@@ -212,13 +220,15 @@ class ThreadExportWord(QThread):
     # signals
     sig_step = pyqtSignal(int, str)
 
-    def __init__(self,
-                 search_to_export: dict = {},
-                 output_path: str = r"output/",
-                 tpl_path: str = r"templates/template_Isogeo.docx",
-                 thumbnails: dict = {},
-                 timestamp: str = "",
-                 length_uuid: int = 0):
+    def __init__(
+        self,
+        search_to_export: dict = {},
+        output_path: str = r"output/",
+        tpl_path: str = r"templates/template_Isogeo.docx",
+        thumbnails: dict = {},
+        timestamp: str = "",
+        length_uuid: int = 0,
+    ):
         QThread.__init__(self)
         # export settings
         self.search = search_to_export
@@ -244,8 +254,9 @@ class ThreadExportWord(QThread):
             md_title = md.get("title", "No title")
             self.sig_step.emit(1, self.tr("Processing Word: {}").format(md_title))
             # thumbnails
-            thumbnail_abs_path = self.thumbnails.get(md.get("_id"),
-                                                     thumbnail_default)[1]
+            thumbnail_abs_path = self.thumbnails.get(md.get("_id"), thumbnail_default)[
+                1
+            ]
             if not thumbnail_abs_path or not path.isfile(thumbnail_abs_path):
                 thumbnail_abs_path = path.realpath(r"resources/favicon.png")
             logger.debug("Thumbnail used: {}".format(thumbnail_abs_path))
@@ -253,29 +264,30 @@ class ThreadExportWord(QThread):
             # templating
             tpl = DocxTemplate(self.tpl_path)
             # fill template
-            to_docx.md2docx(docx_template=tpl,
-                            md=md,
-                            url_base="https://open.isogeo.com")
+            to_docx.md2docx(
+                docx_template=tpl, md=md, url_base="https://open.isogeo.com"
+            )
             # filename
-            md_name = app_utils.clean_filename(md.get("name",
-                                                      md.get("title", "NR"))
-                                               )
-            if '.' in md_name:
+            md_name = app_utils.clean_filename(md.get("name", md.get("title", "NR")))
+            if "." in md_name:
                 md_name = md_name.split(".")[1]
             else:
                 pass
-            uuid = "{}".format(md.get("_id")[:self.length_uuid])
+            uuid = "{}".format(md.get("_id")[: self.length_uuid])
 
-            out_docx_filename = "{}_{}_{}.docx".format(self.output_docx_folder,
-                                                       md_name,
-                                                       uuid)
+            out_docx_filename = "{}_{}_{}.docx".format(
+                self.output_docx_folder, md_name, uuid
+            )
             # saving
             logger.debug("Saving output Word docx: {}".format(out_docx_filename))
             try:
                 tpl.save(out_docx_filename)
             except Exception as e:
                 logger.error(e)
-                self.sig_step.emit(0, self.tr("Word: error occurred during saving step. Check the log."))
+                self.sig_step.emit(
+                    0,
+                    self.tr("Word: error occurred during saving step. Check the log."),
+                )
             del tpl
 
         # Word export finished
@@ -289,13 +301,15 @@ class ThreadExportXml(QThread):
     # signals
     sig_step = pyqtSignal(int, str)
 
-    def __init__(self,
-                 search_to_export: dict = {},
-                 isogeo_api_mngr: object = None,
-                 output_path: str = r"output/",
-                 opt_zip: int = 0,
-                 timestamp: str = "",
-                 length_uuid: int = 0):
+    def __init__(
+        self,
+        search_to_export: dict = {},
+        isogeo_api_mngr: object = None,
+        output_path: str = r"output/",
+        opt_zip: int = 0,
+        timestamp: str = "",
+        length_uuid: int = 0,
+    ):
         QThread.__init__(self)
         # export settings
         self.search = search_to_export
@@ -325,14 +339,14 @@ class ThreadExportXml(QThread):
             self.sig_step.emit(1, self.tr("Processing XML: {}").format(md_title))
 
             # filename
-            md_name = app_utils.clean_filename(md.get("title",
-                                                      md.get("name", "No name"))
-                                               ).split(" -")[0]
-            if '.' in md_name:
+            md_name = app_utils.clean_filename(
+                md.get("title", md.get("name", "No name"))
+            ).split(" -")[0]
+            if "." in md_name:
                 md_name = md_name.split(".")[1]
             else:
                 pass
-            uuid = "{}".format(md.get("_id")[:self.length_uuid])
+            uuid = "{}".format(md.get("_id")[: self.length_uuid])
 
             if self.opt_zip:
                 out_xml_path = path.join(out_dir, "{}_{}.xml".format(md_name, uuid))
@@ -340,9 +354,10 @@ class ThreadExportXml(QThread):
                 out_xml_path = out_dir + "_{}_{}.xml".format(md_name, uuid)
             logger.debug("XML - Output path: {}".format(out_xml_path))
             # export
-            xml_stream = self.api_mngr.isogeo.xml19139(self.api_mngr.token,
-                                                       md.get("_id"))
-            with open(path.realpath(out_xml_path), 'wb') as out_md:
+            xml_stream = self.api_mngr.isogeo.xml19139(
+                self.api_mngr.token, md.get("_id")
+            )
+            with open(path.realpath(out_xml_path), "wb") as out_md:
                 for block in xml_stream.iter_content(1024):
                     out_md.write(block)
 
@@ -370,11 +385,12 @@ class ThreadThumbnails(QThread):
     # signals
     sig_step = pyqtSignal(int, str)
 
-    def __init__(self,
-                 search_to_export: dict = {},
-                 output_path: str = r"thumbnails/thumbnails.xlsx",
-                 thumbnails: dict = {},
-                 ):
+    def __init__(
+        self,
+        search_to_export: dict = {},
+        output_path: str = r"thumbnails/thumbnails.xlsx",
+        thumbnails: dict = {},
+    ):
         QThread.__init__(self)
         # export settings
         self.search = search_to_export
@@ -401,34 +417,35 @@ class ThreadThumbnails(QThread):
         head_col2 = WriteOnlyCell(ws, value="isogeo_title_slugged")
         head_col3 = WriteOnlyCell(ws, value="img_abs_path")
         # headers comments
-        comment = Comment(text="Do not modify worksheet structure",
-                          author="Isogeo")
+        comment = Comment(text="Do not modify worksheet structure", author="Isogeo")
 
         head_col1.comment = head_col2.comment = head_col3.comment = comment
 
         # headers styling
         head_col1.style = head_col2.style = head_col3.style = "Headline 2"
         # insert headers
-        ws.append((head_col1,
-                   head_col2,
-                   head_col3)
-                  )
+        ws.append((head_col1, head_col2, head_col3))
 
         # parsing metadata
         li_exported_md = []
         for md in self.search.get("results"):
             # show progression
             md_title = md.get("title", "No title")
-            self.sig_step.emit(0, self.tr("Preparing thumbnail table for: {}")
-                               .format(md_title))
+            self.sig_step.emit(
+                0, self.tr("Preparing thumbnail table for: {}").format(md_title)
+            )
             # thumbnail matching
-            thumbnail_abs_path = self.thumbnails.get(md.get("_id"),
-                                                     "  ")[1]
+            thumbnail_abs_path = self.thumbnails.get(md.get("_id"), "  ")[1]
             # fill with metadata
-            ws.append((md.get("_id"),
-                       app_utils.clean_filename(md.get("title", md.get("name", "NR")),
-                                                mode="strict"),
-                       thumbnail_abs_path))
+            ws.append(
+                (
+                    md.get("_id"),
+                    app_utils.clean_filename(
+                        md.get("title", md.get("name", "NR")), mode="strict"
+                    ),
+                    thumbnail_abs_path,
+                )
+            )
             # list exported metadata to compare with previous
             li_exported_md.append(md.get("_id"))
 
@@ -436,9 +453,7 @@ class ThreadThumbnails(QThread):
         for thumb, title_path in self.thumbnails.items():
             if thumb not in li_exported_md:
                 try:
-                    ws.append((thumb,
-                               title_path[0],
-                               title_path[1]))
+                    ws.append((thumb, title_path[0], title_path[1]))
                 except TypeError as e:
                     logger.error("Thumbnails table error: {}".format(e))
 
@@ -461,12 +476,14 @@ class ThreadExportHtmlReport(QThread):
     # signals
     sig_step = pyqtSignal(int, str)
 
-    def __init__(self,
-                 search_to_export: dict = {},
-                 isogeo_api_mngr: object = None,
-                 html_template: str = "",
-                 output_path: str = r"output/",
-                 timestamp: str = ""):
+    def __init__(
+        self,
+        search_to_export: dict = {},
+        isogeo_api_mngr: object = None,
+        html_template: str = "",
+        output_path: str = r"output/",
+        timestamp: str = "",
+    ):
         QThread.__init__(self)
         # export settings
         self.search = search_to_export
@@ -484,8 +501,9 @@ class ThreadExportHtmlReport(QThread):
         stats_types = [100, 50, 25, 15]
 
         # output template
-        out_html_file = self.html_tpl.render(varTitle="Isogeo To Office - Report",
-                                             varLblChartTypes="Metadta by types")
+        out_html_file = self.html_tpl.render(
+            varTitle="Isogeo To Office - Report", varLblChartTypes="Metadta by types"
+        )
 
         with open("test_out_html_templated.html", "w") as fh:
             fh.write(out_html_file)

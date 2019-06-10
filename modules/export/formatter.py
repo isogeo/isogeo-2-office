@@ -44,9 +44,12 @@ logger = logging.getLogger("isogeo2office")  # LOG
 class IsogeoFormatter(object):
     """IsogeoFormatter class."""
 
-    def __init__(self, lang="FR",
-                 output_type="Excel",
-                 default_values=("NR", "1970-01-01T00:00:00+00:00")):
+    def __init__(
+        self,
+        lang="FR",
+        output_type="Excel",
+        default_values=("NR", "1970-01-01T00:00:00+00:00"),
+    ):
         """Metadata formatter to avoid repeat oeprations on metadata.
 
         :param str lang: selected language
@@ -91,10 +94,14 @@ class IsogeoFormatter(object):
                 cgu["name"] = self.isogeo_tr("conditions", "noLicense")
 
             # store into the final list
-            cgus_out.append("{} {}. {} {}".format(cgu.get("name"),
-                                                  cgu.get("description", ""),
-                                                  cgu.get("content", ""),
-                                                  cgu.get("link", "")))
+            cgus_out.append(
+                "{} {}. {} {}".format(
+                    cgu.get("name"),
+                    cgu.get("description", ""),
+                    cgu.get("content", ""),
+                    cgu.get("link", ""),
+                )
+            )
         # return formatted result
         return cgus_out
 
@@ -111,25 +118,32 @@ class IsogeoFormatter(object):
             limitation["type"] = self.isogeo_tr("limitations", l_in.get("type"))
             # legal type
             if l_in.get("type") == "legal":
-                limitation["restriction"] = self.isogeo_tr("restrictions",
-                                                           l_in.get("restriction"))
+                limitation["restriction"] = self.isogeo_tr(
+                    "restrictions", l_in.get("restriction")
+                )
             else:
                 pass
             # INSPIRE precision
             if "directive" in l_in.keys():
-                limitation["inspire"] = self.clean_xml(l_in.get("directive")
-                                                           .get("name"))
-                limitation["content"] = self.clean_xml(l_in.get("directive")
-                                                           .get("description"))
+                limitation["inspire"] = self.clean_xml(
+                    l_in.get("directive").get("name")
+                )
+                limitation["content"] = self.clean_xml(
+                    l_in.get("directive").get("description")
+                )
             else:
                 pass
 
             # store into the final list
-            lims_out.append("{} {}. {} {} {}".format(limitation.get("type"),
-                                                     limitation.get("description", ""),
-                                                     limitation.get("restriction", ""),
-                                                     limitation.get("content", ""),
-                                                     limitation.get("inspire", "")))
+            lims_out.append(
+                "{} {}. {} {} {}".format(
+                    limitation.get("type"),
+                    limitation.get("description", ""),
+                    limitation.get("restriction", ""),
+                    limitation.get("content", ""),
+                    limitation.get("inspire", ""),
+                )
+            )
         # return formatted result
         return lims_out
 
@@ -151,36 +165,40 @@ class IsogeoFormatter(object):
             spec["link"] = s_in.get("specification").get("link", "")
             # make data human readable
             try:
-                spec_date = arrow.get(s_in.get("specification")
-                                          .get("published")[:19])
-                spec_date = "{0}".format(spec_date.format(self.dates_fmt,
-                                                          self.locale_fmt))
+                spec_date = arrow.get(s_in.get("specification").get("published")[:19])
+                spec_date = "{0}".format(
+                    spec_date.format(self.dates_fmt, self.locale_fmt)
+                )
             except TypeError:
-                logger.warning("Publication date is missing in the "
-                               "specification '{} ({})'. Specifications should"
-                               " have a publication date."
-                               .format(spec.get("name"),
-                                       s_in.get("specification").get("_tag")))
+                logger.warning(
+                    "Publication date is missing in the "
+                    "specification '{} ({})'. Specifications should"
+                    " have a publication date.".format(
+                        spec.get("name"), s_in.get("specification").get("_tag")
+                    )
+                )
                 spec_date = ""
             spec["date"] = spec_date
             # store into the final list
-            specs_out.append("{} {} {} - {}"
-                             .format(spec.get("name"),
-                                     spec.get("date"),
-                                     spec.get("link"),
-                                     spec.get("conformity")))
+            specs_out.append(
+                "{} {} {} - {}".format(
+                    spec.get("name"),
+                    spec.get("date"),
+                    spec.get("link"),
+                    spec.get("conformity"),
+                )
+            )
 
         # return formatted result
         return specs_out
 
     # ------------ Prevent encoding errors ------------------------------------
-    def remove_accents(self, input_str, substitute=u""):
+    def remove_accents(self, input_str, substitute=""):
         """Clean string from special characters.
 
         source: http://stackoverflow.com/a/5843560
         """
-        return unicode(substitute).join(char for char in input_str
-                                        if char.isalnum())
+        return unicode(substitute).join(char for char in input_str if char.isalnum())
 
     def clean_xml(self, invalid_xml, mode="soft", substitute="_"):
         """Clean string of XML invalid characters.
@@ -191,25 +209,25 @@ class IsogeoFormatter(object):
         #   doc = *( start_tag / end_tag / text )
         #   start_tag = '<' name *attr [ '/' ] '>'
         #   end_tag = '<' '/' name '>'
-        ws = r'[ \t\r\n]*'  # allow ws between any token
-        name = '[a-zA-Z]+'  # note: expand if necessary but the stricter the better
+        ws = r"[ \t\r\n]*"  # allow ws between any token
+        name = "[a-zA-Z]+"  # note: expand if necessary but the stricter the better
         attr = '{name} {ws} = {ws} "[^"]*"'  # note: fragile against missing '"'; no "'"
-        start_tag = '< {ws} {name} {ws} (?:{attr} {ws})* /? {ws} >'
-        end_tag = '{ws}'.join(['<', '/', '{name}', '>'])
-        tag = '{start_tag} | {end_tag}'
+        start_tag = "< {ws} {name} {ws} (?:{attr} {ws})* /? {ws} >"
+        end_tag = "{ws}".join(["<", "/", "{name}", ">"])
+        tag = "{start_tag} | {end_tag}"
 
-        assert '{{' not in tag
-        while '{' in tag:   # unwrap definitions
+        assert "{{" not in tag
+        while "{" in tag:  # unwrap definitions
             tag = tag.format(**vars())
 
-        tag_regex = re.compile('(%s)' % tag, flags=re.VERBOSE)
+        tag_regex = re.compile("(%s)" % tag, flags=re.VERBOSE)
 
         # escape &, <, > in the text
         iters = [iter(tag_regex.split(invalid_xml))] * 2
-        pairs = zip_longest(*iters, fillvalue='')  # iterate 2 items at a time
+        pairs = zip_longest(*iters, fillvalue="")  # iterate 2 items at a time
 
         # get the clean version
-        clean_version = ''.join(escape(text) + tag for text, tag in pairs)
+        clean_version = "".join(escape(text) + tag for text, tag in pairs)
         if mode == "strict":
             clean_version = re.sub(r"<.*?>", substitute, clean_version)
         else:
@@ -227,8 +245,7 @@ class IsogeoFormatter(object):
             except Exception as e:
                 logger.error(e)
                 link_edit = ""
-            out_hyperlink = r'=HYPERLINK("{0}","{1}")'.format(link_edit,
-                                                              "Editer")
+            out_hyperlink = r'=HYPERLINK("{0}","{1}")'.format(link_edit, "Editer")
         else:
             return None
 
@@ -238,6 +255,6 @@ class IsogeoFormatter(object):
 # ###############################################################################
 # ###### Stand alone program ########
 # ###################################
-if __name__ == '__main__':
+if __name__ == "__main__":
     """Try me"""
     formatter = IsogeoFormatter()
