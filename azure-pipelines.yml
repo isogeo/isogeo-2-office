@@ -58,3 +58,26 @@ jobs:
     inputs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)\ArtifactsToBePublished'
       ArtifactName: IsogeoToOffice
+
+# LINT AND FORMATTING CODE
+- job: 'Lint'
+  dependsOn: 'Install'
+  pool:
+    vmImage: "vs2017-win2016"
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.6'
+      architecture: 'x64'
+      addToPath: true
+
+  - script: |
+      python -m pip install -U pip
+      pip install -U black
+    displayName: 'Install black dependencies'
+
+  - script: |
+      python -m black --target-version=py36 .\modules
+      python -m black --target-version=py36 .\IsogeoToOffice.py
+    displayName: 'Apply black code formatting'
