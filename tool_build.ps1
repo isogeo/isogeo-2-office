@@ -9,8 +9,8 @@ $env:PYTHONOPTIMIZE = 2;
 
 # EXECUTION
 "-- STEP -- Creating temp virtualenv to perform dependencies packaging"
-py -3 -m venv env3_packaging
-./env3_packaging/Scripts/activate
+py -3 -m venv .venv_packaging
+./.venv_packaging/Scripts/activate
 
 "`n-- STEP -- Install dependencies within the virtualenv and get UPX"
 python -m pip install -U pip
@@ -27,9 +27,10 @@ python -OO -m PyInstaller -y bundle_isogeo2office.spec --upx-dir .\build\upx-3.9
 "`n-- STEP -- Zipping"
 Add-Type -assembly "system.io.compression.filesystem"
 $source=Join-Path (pwd) dist\isogeo2office
-$dest=Join-Path (pwd) dist\i2o.zip
+$dest=Join-Path (pwd) dist\IsogeoToOffice_GenericBundle.zip
 [io.compression.zipfile]::CreateFromDirectory($Source, $dest)
 
 "`n-- STEP -- Get out the virtualenv and cleanup"
 deactivate
-#rm -r env3_packaging
+#rm -r .venv_packaging
+
