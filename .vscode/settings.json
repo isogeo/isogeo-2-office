@@ -5,16 +5,16 @@
         "--line-length",
         "100"
     ],
-    "python.unitTest.unittestArgs": [
+    "python.testing.unittestArgs": [
         "-v",
         "-s",
         "./tests",
         "-p",
         "test_*.py"
     ],
-    "python.unitTest.pyTestEnabled": false,
-    "python.unitTest.nosetestsEnabled": false,
-    "python.unitTest.unittestEnabled": true,
+    "python.testing.pyTestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.unittestEnabled": true,
     "pyqt-integration.qtdesigner.path": "C:\\Users\\julien.moura\\Documents\\GitHub\\Isogeo\\isogeo-2-office\\env3/Lib/site-packages/pyqt5_tools/designer.exe",
     "python.venvPath": "${workspaceFolder}/env3",
     "pyqt-integration.linguist.cmd": "C:\\Users\\julien.moura\\Documents\\GitHub\\Isogeo\\isogeo-2-office\\env3\\Lib\\site-packages\\pyqt5_tools\\linguist.exe",
