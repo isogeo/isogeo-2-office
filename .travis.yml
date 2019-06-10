@@ -22,18 +22,6 @@ script:
   - python tests/fixturing.py
   # unit tests
   - coverage run -m unittest discover -s tests/
-  # main
-  - pycodestyle IsogeoToOffice.py --ignore="E265,E501" --statistics --show-source
-  # threads
-  - pycodestyle modules/threads.py --ignore="E265,E501" --statistics --show-source
-  # export modules
-  - pycodestyle modules/export/isogeo2docx.py --ignore="E265,E501" --statistics --show-source
-  - pycodestyle modules/export/isogeo2xlsx.py --ignore="E265,E501" --statistics --show-source
-  - pycodestyle modules/export/isogeo_stats.py --ignore="E265,E501" --statistics --show-source
-  - pycodestyle modules/export/formatter.py --ignore="E265,E501" --statistics --show-source
-  # utils
-  - pycodestyle modules/utils/api.py --ignore="E265,E501" --statistics --show-source
-  - pycodestyle modules/utils/utils.py --ignore="E265,E501" --statistics --show-source
 
 # coverage reporting
 after_success:
