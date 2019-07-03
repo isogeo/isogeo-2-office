@@ -34,7 +34,7 @@ jobs:
     displayName: 'Apply black code formatting'
 
 # BUILD
-- job: 'Install'
+- job: 'Build'
   dependsOn: 'Lint'
   pool:
     vmImage: 'windows-2019'
