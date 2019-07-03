@@ -22,6 +22,6 @@ progressbar2==3.42.*
 docxtpl==0.6.*
 isogeo-pysdk==2.21.*
 openpyxl==2.6.*
-PyQt5==5.12.*
+PyQt5==5.12.1
 QDarkStyle==2.7.*
 semver
