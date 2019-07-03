@@ -25,13 +25,14 @@
         {
             "label": "Build - Create packaging venv",
             "type": "shell",
-            "command": "py -3 -m venv env3_packaging",
-            "group": "build"
+            "command": "py -3 -m venv venv_packaging",
+            "group": "build",
+            "problemMatcher": []
         },
         {
             "label": "Build - Update venv",
             "type": "shell",
-            "command": "./env3_packaging/Scripts/activate; python -m pip install -U pip; pip install -U -r requirements.txt",
+            "command": "./venv_packaging/Scripts/activate; python -m pip install -U pip; python -m pip install -U -r requirements.txt",
             "group": "build",
             "dependsOn": [
                 "Build - Create venv"
