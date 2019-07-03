@@ -3,11 +3,41 @@
 # Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/python
 
+trigger:
+- master
+
+pr:
+- master
+
 jobs:
 
-- job: 'Install'
+# LINT AND FORMATTING CODE
+- job: 'Lint'
   pool:
-    vmImage: 'vs2017-win2016'
+    vmImage: "vs2017-win2016"
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.6'
+      architecture: 'x64'
+      addToPath: true
+
+  - script: |
+      python -m pip install -U pip
+      python -m pip install -U black
+    displayName: 'Install black dependencies'
+
+  - script: |
+      python -m black --target-version=py36 .\modules
+      python -m black --target-version=py36 .\IsogeoToOffice.py
+    displayName: 'Apply black code formatting'
+
+# BUILD
+- job: 'Install'
+  dependsOn: 'Lint'
+  pool:
+    vmImage: 'vs2017-win2019'
   strategy:
     matrix:
       Python36_VS17_64bits:
@@ -16,6 +46,9 @@ jobs:
       Python36_VS17_32bits:
         python.version: '3.6'
         python.arch: 'x86'
+      Python37_VS17_64bits:
+        python.version: '3.7'
+        python.arch: 'x64'
     maxParallel: 2
 
   steps:
@@ -23,8 +56,12 @@ jobs:
     inputs:
       versionSpec: '$(python.version)'
       architecture: '$(python.arch)'
+      addToPath: True
 
-  - script: python -m pip install -U pip && pip install -U -r requirements.txt && pip install -U -r requirements_dev.txt
+  - script: |
+      python -m pip install -U pip
+      pip install -U -r ./requirements.txt
+      pip install -U -r ./requirements_dev.txt
     displayName: 'Install dependencies'
 
   - script: |
@@ -36,7 +73,7 @@ jobs:
     displayName: 'PyQt processing'
 
   - script: pyinstaller.exe -y bundle_isogeo2office.spec
-    displayName: 'Building the executable'
+    displayName: 'Building the executable with PyInstaller'
 
   # Archive Files
   - task: ArchiveFiles@2
@@ -58,26 +95,3 @@ jobs:
     inputs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)\ArtifactsToBePublished'
       ArtifactName: IsogeoToOffice
-
-# LINT AND FORMATTING CODE
-- job: 'Lint'
-  dependsOn: 'Install'
-  pool:
-    vmImage: "vs2017-win2016"
-
-  steps:
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: '3.6'
-      architecture: 'x64'
-      addToPath: true
-
-  - script: |
-      python -m pip install -U pip
-      pip install -U black
-    displayName: 'Install black dependencies'
-
-  - script: |
-      python -m black --target-version=py36 .\modules
-      python -m black --target-version=py36 .\IsogeoToOffice.py
-    displayName: 'Apply black code formatting'
