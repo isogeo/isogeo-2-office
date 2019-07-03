@@ -40,15 +40,12 @@ jobs:
     vmImage: 'windows-2019'
   strategy:
     matrix:
-      Python36_VS17_64bits:
-        python.version: '3.6'
-        python.arch: 'x64'
-      Python36_VS17_32bits:
-        python.version: '3.6'
-        python.arch: 'x86'
       Python37_VS17_64bits:
         python.version: '3.7'
         python.arch: 'x64'
+      Python37_VS17_32bits:
+        python.version: '3.7'
+        python.arch: 'x86'
     maxParallel: 2
 
   steps:
@@ -60,8 +57,8 @@ jobs:
 
   - script: |
       python -m pip install -U pip
-      pip install -U -r ./requirements.txt
-      pip install -U -r ./requirements_dev.txt
+      python -m pip install -U -r ./requirements.txt
+      python -m pip install -U -r ./requirements_dev.txt
     displayName: 'Install dependencies'
 
   - script: |
