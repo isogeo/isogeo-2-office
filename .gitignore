@@ -286,6 +286,8 @@ virtualenv/
 # isogeo api
 client_secrets.json
 _auth/
+*env*
+!.env.example
 
 # logs
 _logs/
