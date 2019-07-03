@@ -15,6 +15,8 @@ codecov==2.*
 coverage==4.5.*
 pylint==2.1.*
 pyqt5-tools~=5.11 ; sys_platform == 'win32'
+pytest
+pytest-cov
 sip
 
 # packaging
