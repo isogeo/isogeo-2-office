@@ -389,4 +389,3 @@ if __name__ == "__main__":
     utils = isogeo2office_utils()
 
     utils.clean_credentials_files(r"_auth")
-

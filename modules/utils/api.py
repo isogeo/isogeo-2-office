@@ -2,20 +2,24 @@
 #! python3
 
 # Standard library
-from functools import partial
 import json
 import logging
+import time
+from functools import partial
 from os import path, rename
 from pathlib import Path  # TO DO: replace os.path by pathlib
-import time
+from urllib.request import getproxies
 
-# PyQT
-from PyQt5.QtWidgets import QDialog, QErrorMessage
-from PyQt5.QtCore import QLocale, QSettings
+# 3rd party
+from dotenv import load_dotenv
 
 # Isogeo
 from isogeo_pysdk import Isogeo, IsogeoChecker
 from isogeo_pysdk import __version__ as pysdk_version
+
+# PyQT
+from PyQt5.QtCore import QLocale, QSettings
+from PyQt5.QtWidgets import QDialog, QErrorMessage
 
 # submodules
 from .utils import isogeo2office_utils
@@ -24,6 +28,7 @@ from .utils import isogeo2office_utils
 # ########## Globals ###############
 # ##################################
 
+load_dotenv(".env")
 app_utils = isogeo2office_utils()
 current_locale = QLocale()
 logger = logging.getLogger("isogeo2office")
@@ -91,6 +96,7 @@ class IsogeoApiMngr(object):
                 client_id=self.api_app_id,
                 client_secret=self.api_app_secret,
                 lang=current_locale.name()[:2],
+                proxy=getproxies(),
             )
             self.token = self.isogeo.connect()
             logger.debug("Connection succeeded")

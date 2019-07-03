@@ -15,40 +15,30 @@
 
 # standard library
 import logging
+import pathlib  # TO DO: replace os.path by pathlib
 import platform
 from datetime import datetime
 from functools import partial
 from logging.handlers import RotatingFileHandler
 from os import listdir, path
-import pathlib  # TO DO: replace os.path by pathlib
 
 # 3rd party
 import qdarkstyle
+import semver
+from dotenv import load_dotenv
 from isogeo_pysdk import __version__ as pysdk_version
-from PyQt5.QtCore import QLocale, QSettings, QThread, QTranslator, pyqtSignal, pyqtSlot
+
+# PyQt
+from PyQt5.QtCore import (
+    QLocale, QSettings, QThread, QTranslator, pyqtSignal, pyqtSlot)
 from PyQt5.QtGui import QCloseEvent, QIcon
 from PyQt5.QtWidgets import (
-    QApplication,
-    QComboBox,
-    QMainWindow,
-    QMessageBox,
-    QStyleFactory,
-)
-
-import semver
+    QApplication, QComboBox, QMainWindow, QMessageBox, QStyleFactory)
 
 # submodules - functional
-from modules import (
-    IsogeoApiMngr,
-    ThreadAppProperties,
-    ThreadExportExcel,
-    ThreadExportWord,
-    ThreadExportXml,
-    ThreadSearch,
-    ThreadThumbnails,
-    isogeo2office_utils,
-)
-
+from modules import (IsogeoApiMngr, ThreadAppProperties, ThreadExportExcel,
+                     ThreadExportWord, ThreadExportXml, ThreadSearch,
+                     ThreadThumbnails, isogeo2office_utils)
 # submodules - UI
 from modules.ui.auth.auth_dlg import Auth
 from modules.ui.credits.credits_dlg import Credits
@@ -58,6 +48,9 @@ from modules.ui.systray.ui_systraymenu import SystrayMenu
 # #############################################################################
 # ########## Globals ###############
 # ##################################
+
+# load specific enviroment vars
+load_dotenv(".env")
 
 # required subfolders
 pathlib.Path("_auth/").mkdir(exist_ok=True)
