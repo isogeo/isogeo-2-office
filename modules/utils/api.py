@@ -114,7 +114,7 @@ class IsogeoApiMngr(object):
                 client_id=self.api_app_id,
                 client_secret=self.api_app_secret,
                 lang=current_locale.name()[:2],
-                proxy=getproxies(),
+                proxy=proxy_settings,
             )
             self.token = self.isogeo.connect()
             logger.debug("Connection succeeded")
@@ -122,6 +122,8 @@ class IsogeoApiMngr(object):
         except ValueError as e:
             logger.error(e)
             self.display_auth_form()
+        except EnvironmentError as e:
+            logger.error(e)
         except Exception as e:
             logger.error(e)
             self.display_auth_form()
