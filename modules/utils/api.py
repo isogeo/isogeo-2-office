@@ -6,7 +6,7 @@ import json
 import logging
 import time
 from functools import partial
-from os import path, rename
+from os import environ, path, rename
 from pathlib import Path  # TO DO: replace os.path by pathlib
 from urllib.request import getproxies
 
@@ -82,16 +82,34 @@ class IsogeoApiMngr(object):
         # update class attributes from credentials found
         if self.credentials_storage.get("QSettings"):
             self.credentials_update("QSettings")
+            logger.debug("Credentials used: QSettings")
         elif self.credentials_storage.get("oAuth2_file"):
             self.credentials_update("oAuth2_file")
+            logger.debug("Credentials used: client_secrets file")
         else:
-            logger.info("No credentials found. ")
+            logger.info("No credentials found. Opening the authentication form...")
             self.display_auth_form()
             return False
 
         # start api wrapper
         try:
             logger.debug("Start connection attempts")
+            # proxy
+            if getproxies():
+                logger.debug("Proxies settings found in the OS.")
+                proxy_settings = getproxies()
+            elif environ.get("HTTP_PROXY") or environ.get("HTTPS_PROXY"):
+                logger.debug(
+                    "Proxies settings found in environment vars (loaded from .env file)."
+                )
+                proxy_settings = {
+                    "http": environ.get("HTTP_PROXY"),
+                    "https": environ.get("HTTPS_PROXY"),
+                }
+            else:
+                logger.debug("No proxy settings found.")
+
+            # client connexion
             self.isogeo = Isogeo(
                 client_id=self.api_app_id,
                 client_secret=self.api_app_secret,
