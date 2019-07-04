@@ -14,7 +14,7 @@ from urllib.request import getproxies
 from dotenv import load_dotenv
 
 # Isogeo
-from isogeo_pysdk import Isogeo, IsogeoChecker
+from isogeo_pysdk import Isogeo
 from isogeo_pysdk import __version__ as pysdk_version
 
 # PyQT
@@ -108,6 +108,7 @@ class IsogeoApiMngr(object):
                 }
             else:
                 logger.debug("No proxy settings found.")
+                proxy_settings = None
 
             # client connexion
             self.isogeo = Isogeo(
