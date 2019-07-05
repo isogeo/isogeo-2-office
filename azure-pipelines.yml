@@ -19,7 +19,7 @@ jobs:
   steps:
   - task: UsePythonVersion@0
     inputs:
-      versionSpec: '3.6'
+      versionSpec: '3.7'
       architecture: 'x64'
       addToPath: true
 
@@ -29,13 +29,36 @@ jobs:
     displayName: 'Install black dependencies'
 
   - script: |
-      python -m black --target-version=py36 .\modules
-      python -m black --target-version=py36 .\IsogeoToOffice.py
+      python -m black --target-version=py37 .\modules
+      python -m black --target-version=py37 .\IsogeoToOffice.py
     displayName: 'Apply black code formatting'
+
+# LINT AND FORMATTING CODE
+- job: 'Test'
+  dependsOn: 'Lint'
+  pool:
+    vmImage: "windows-2019"
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.7'
+      architecture: 'x64'
+      addToPath: true
+
+  - script: |
+      python -m pip install -U pip setuptools wheel
+      python -m pip install -U -r ./requirements.txt
+      python -m pip install -U pytest-cov
+    displayName: 'Install dependencies'
+
+  - script: |
+        python .\tests\fixturing.py
+    displayName: 'Preparing fixtures'
 
 # BUILD
 - job: 'Build'
-  dependsOn: 'Lint'
+  dependsOn: 'Test'
   pool:
     vmImage: 'windows-2019'
   strategy:
