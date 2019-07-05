@@ -14,13 +14,15 @@ py -3 -m venv .venv_packaging
 
 "`n-- STEP -- Install dependencies within the virtualenv and get UPX"
 python -m pip install -U pip
-pip install --upgrade -r ./requirements.txt
-pip install --upgrade -r ./requirements_dev.txt
+python -m pip install --upgrade setuptools wheel
+python -m pip install --upgrade -r ./requirements.txt
+python -m pip install --upgrade -r ./requirements_dev.txt
 
 "`n-- STEP -- Update and compile UI"
 .\tool_ui_compile.ps1
 
 "`n-- STEP -- Build and bundle forcing clean"
+mkdir dist
 rm -r dist\*
 python -OO -m PyInstaller -y bundle_isogeo2office.spec --upx-dir .\build\upx-3.95-win64
 

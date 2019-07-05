@@ -10,9 +10,9 @@ py -3 -m venv .venv_tests
 
 "-- STEP -- Install and display dependencies within the virtualenv"
 python -m pip install -U pip
-pip install --upgrade setuptools wheel
-pip install --upgrade -r .\requirements.txt
-pip install --upgrade -r .\tests\requirements_test.txt
+python -m pip install --upgrade setuptools wheel
+python -m pip install --upgrade -r .\requirements.txt
+python -m pip install --upgrade -r .\requirements_dev.txt
 
 "-- STEP -- Fixturing"
 python .\tests\fixturing.py
