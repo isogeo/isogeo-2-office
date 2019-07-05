@@ -9,15 +9,24 @@
 #   It's higly recomended to use it within a virtualenv.
 #
 
+# art of code
 black
+pylint
+
+# tests
 codecov
 coverage
-pylint
-pypiwin32
-pyqt5-tools==5.12.1.1.5rc4 ; sys_platform == 'win32'
 pytest
 pytest-cov
+
+# PyQt
+pypiwin32
+pyqt5-tools==5.12.1.1.5rc4 ; sys_platform == 'win32'
 sip
+
+# tests and coverage
+codecov
+coverage
 
 # packaging
 pyinstaller==3.4.*
