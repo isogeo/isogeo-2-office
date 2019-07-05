@@ -52,8 +52,8 @@ if not Path("_auth/client_secrets.json").exists():
     # fake dict
     auth_dict = {
         "web": {
-            "client_id": environ.get("ISOGEO_API_CLIENT_ID"),
-            "client_secret": environ.get("ISOGEO_API_CLIENT_SECRET"),
+            "client_id": API_OAUTH_ID,
+            "client_secret": API_OAUTH_SECRET,
             "auth_uri": "{}/oauth/authorize".format(environ.get("ISOGEO_ID_URL")),
             "token_uri": "{}/oauth/token".format(environ.get("ISOGEO_ID_URL")),
         }
@@ -66,8 +66,9 @@ if not Path("_auth/client_secrets.json").exists():
 
 # instanciating the class
 isogeo = Isogeo(
-    client_id=environ.get("ISOGEO_API_CLIENT_ID"),
-    client_secret=environ.get("ISOGEO_API_CLIENT_SECRET"),
+    client_id=API_OAUTH_ID,
+    client_secret=API_OAUTH_SECRET,
+    platform=API_PLATFORM
 )
 isogeo.connect()
 
