@@ -1,31 +1,61 @@
+# -*- coding: UTF-8 -*-
+#! python3
+
+"""
+    Retrieve fixtures for unit testing    
+"""
+
+# #############################################################################
+# ########## Libraries #############
+# ##################################
+
 # Standard library
 import json
 import logging
 from os import environ, mkdir, path
+from pathlib import Path
+
+# 3rd party
+from dotenv import load_dotenv
 
 # Isogeo
 from isogeo_pysdk import Isogeo
 
-# -- FIXTURES -----------------------------------------------------------------
-share_id = environ.get("ISOGEO_API_DEV_ID")
-share_token = environ.get("ISOGEO_API_DEV_SECRET")
+# #############################################################################
+# ######## Globals #################
+# ##################################
+
+# env vars
+load_dotenv("dev.env", override=True)
+
+# log
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+# API access
+API_OAUTH_ID = environ.get("ISOGEO_API_CLIENT_ID")
+API_OAUTH_SECRET = environ.get("ISOGEO_API_CLIENT_SECRET")
+API_PLATFORM = environ.get("ISOGEO_PLATFORM", "qa")
+METADATA_TEST_FIXTURE_UUID = environ.get("ISOGEO_FIXTURES_METADATA_COMPLETE")
+WORKGROUP_TEST_FIXTURE_UUID = environ.get("ISOGEO_WORKGROUP_TEST_UUID")
+
+# #############################################################################
+# ########## Fixturing ###############
+# ####################################
 
 # required dirs
-if not path.exists("_logs"):
-    mkdir(r"_logs")
-
-if not path.exists("_auth"):
-    mkdir(r"_auth")
+Path("_logs/").mkdir(exist_ok=True)
+Path("_auth/").mkdir(exist_ok=True)
 
 # auth fixture
-if not path.exists("_auth/client_secrets.json"):
+if not Path("_auth/client_secrets.json").exists():
     # fake dict
     auth_dict = {
         "web": {
-            "client_id": share_id,
-            "client_secret": share_token,
-            "auth_uri": "https://id.api.isogeo.com/oauth/authorize",
-            "token_uri": "https://id.api.isogeo.com/oauth/token",
+            "client_id": environ.get("ISOGEO_API_CLIENT_ID"),
+            "client_secret": environ.get("ISOGEO_API_CLIENT_SECRET"),
+            "auth_uri": "{}/oauth/authorize".format(environ.get("ISOGEO_ID_URL")),
+            "token_uri": "{}/oauth/token".format(environ.get("ISOGEO_ID_URL")),
         }
     }
 
@@ -35,8 +65,11 @@ if not path.exists("_auth/client_secrets.json"):
 
 
 # instanciating the class
-isogeo = Isogeo(client_id=share_id, client_secret=share_token)
-token = isogeo.connect()
+isogeo = Isogeo(
+    client_id=environ.get("ISOGEO_API_CLIENT_ID"),
+    client_secret=environ.get("ISOGEO_API_CLIENT_SECRET"),
+)
+isogeo.connect()
 
 # Downloading directly from Isogeo API
 BASE_DIR = path.dirname(path.abspath(__file__))
@@ -47,8 +80,7 @@ out_search_complete_tests = path.join(
 )
 if not path.isfile(out_search_complete_tests):
     request = isogeo.search(
-        token,
-        query="owner:32f7e95ec4e94ca3bc1afda960003882",
+        query="owner:{}".format(WORKGROUP_TEST_FIXTURE_UUID),
         whole_share=1,
         include="all",
         augment=1,
@@ -61,7 +93,7 @@ else:
 # complete search
 out_search_complete = path.join(BASE_DIR, "fixtures", "api_search_complete.json")
 if not path.isfile(out_search_complete):
-    request = isogeo.search(token, whole_share=1, include="all", augment=1)
+    request = isogeo.search(whole_share=1, include="all", augment=1)
     with open(
         path.join(BASE_DIR, "fixtures", "api_search_complete.json"), "w"
     ) as json_basic:
