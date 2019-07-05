@@ -1,5 +1,7 @@
 {
-    "python.pythonPath": "${workspaceFolder}\\env3\\Scripts\\python.exe",
+    "python.pythonPath": "${workspaceFolder}\\.venv_tests\\Scripts\\python.exe",
+    "python.envFile": "${workspaceFolder}/dev.env",
+    "python.linting.enabled": true,
     "python.formatting.provider": "black",
     "python.formatting.blackArgs": [
         "--line-length",
@@ -15,8 +17,10 @@
     "python.testing.pytestEnabled": false,
     "python.testing.nosetestsEnabled": false,
     "python.testing.unittestEnabled": true,
-    "pyqt-integration.qtdesigner.path": "C:\\Users\\julien.moura\\Documents\\GitHub\\Isogeo\\isogeo-2-office\\env3/Lib/site-packages/pyqt5_tools/designer.exe",
-    "python.venvPath": "${workspaceFolder}/env3",
-    "pyqt-integration.linguist.cmd": "C:\\Users\\julien.moura\\Documents\\GitHub\\Isogeo\\isogeo-2-office\\env3\\Lib\\site-packages\\pyqt5_tools\\linguist.exe",
-    "python.linting.enabled": true,
+    "pyqt-integration.qtdesigner.path": "designer",
+    "pyqt-integration.linguist.cmd": "linguist",
+    "pyqt-integration.pylupdate.cmd": "pylupdate5",
+    "pyqt-integration.pylupdate.compile.addOptions": "-noobsolete -verbose",
+    "pyqt-integration.pyrcc.cmd": "pyrcc5",
+    "pyqt-integration.pyuic.cmd": "pyuic5"
 }
