@@ -30,7 +30,7 @@ load_dotenv("dev.env", override=True)
 
 # log
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 # API access
 API_OAUTH_ID = environ.get("ISOGEO_API_CLIENT_ID")
@@ -63,6 +63,7 @@ if not Path("_auth/client_secrets.json").exists():
     with open("_auth/client_secrets.json", "w") as json_auth:
         json.dump(auth_dict, json_auth)
 
+print(API_PLATFORM)
 
 # instanciating the class
 isogeo = Isogeo(
