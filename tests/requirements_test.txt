@@ -20,6 +20,9 @@ codecov
 coverage
 
 # art of code
-autopep8
+black
 pylint
-pycodestyle
+python-dateutil
+python-dotenv
+pytest
+pytest-cov
