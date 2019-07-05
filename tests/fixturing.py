@@ -63,7 +63,7 @@ if not Path("_auth/client_secrets.json").exists():
     with open("_auth/client_secrets.json", "w") as json_auth:
         json.dump(auth_dict, json_auth)
 
-print(API_PLATFORM)
+print(API_PLATFORM, len(ISOGEO_API_CLIENT_SECRET))
 
 # instanciating the class
 isogeo = Isogeo(
