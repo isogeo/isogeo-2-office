@@ -9,11 +9,10 @@
 #   It's higly recomended to use it within a virtualenv.
 #
 
-# code art
 black
-codecov==2.*
-coverage==4.5.*
-pylint==2.1.*
+codecov
+coverage
+pylint
 pypiwin32
 pyqt5-tools==5.12.1.1.5rc4 ; sys_platform == 'win32'
 pytest
