@@ -12,10 +12,7 @@ from tempfile import mkstemp
 import unittest
 
 # 3rd party
-from isogeo_pysdk import Isogeo, IsogeoTranslator
 from openpyxl import Workbook
-from openpyxl.utils import get_column_letter
-from openpyxl.styles import NamedStyle, Alignment
 
 # target
 from modules import Isogeo2xlsx

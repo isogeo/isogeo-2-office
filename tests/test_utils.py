@@ -56,10 +56,10 @@ class TestIsogeo2officeUtils(unittest.TestCase):
         pass
 
     #  -- Openers ------------------------------------------------------------
-    def test_url_opener(self):
-        """Test URL opener"""
-        self.utils.open_urls(["https://example.com"])
-        self.utils.open_urls(["https://example.com", "https://example.org"])
+    # def test_url_opener(self):
+    #     """Test URL opener"""
+    #     self.utils.open_urls(["https://example.com"])
+    #     self.utils.open_urls(["https://example.com", "https://example.org"])
 
     def test_dirfile_opener_ok(self):
         """Test file/folder opener"""

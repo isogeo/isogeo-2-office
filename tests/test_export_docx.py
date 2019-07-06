@@ -20,13 +20,10 @@ from tempfile import mkstemp
 import unittest
 
 # 3rd party
-from isogeo_pysdk import Isogeo, IsogeoTranslator
 from docxtpl import DocxTemplate
 
 # target
 from modules import Isogeo2docx
-from modules import IsogeoFormatter
-from modules import IsogeoStats
 
 # #############################################################################
 # ######## Globals #################
