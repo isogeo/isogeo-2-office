@@ -291,3 +291,7 @@ _auth/
 
 # logs
 _logs/
+
+# tests
+.pytest_cache
+junit
