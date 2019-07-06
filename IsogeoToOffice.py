@@ -29,16 +29,28 @@ from dotenv import load_dotenv
 from isogeo_pysdk import __version__ as pysdk_version
 
 # PyQt
-from PyQt5.QtCore import (
-    QLocale, QSettings, QThread, QTranslator, pyqtSignal, pyqtSlot)
+from PyQt5.QtCore import QLocale, QSettings, QThread, QTranslator, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QCloseEvent, QIcon
 from PyQt5.QtWidgets import (
-    QApplication, QComboBox, QMainWindow, QMessageBox, QStyleFactory)
+    QApplication,
+    QComboBox,
+    QMainWindow,
+    QMessageBox,
+    QStyleFactory,
+)
 
 # submodules - functional
-from modules import (IsogeoApiMngr, ThreadAppProperties, ThreadExportExcel,
-                     ThreadExportWord, ThreadExportXml, ThreadSearch,
-                     ThreadThumbnails, isogeo2office_utils)
+from modules import (
+    IsogeoApiMngr,
+    ThreadAppProperties,
+    ThreadExportExcel,
+    ThreadExportWord,
+    ThreadExportXml,
+    ThreadSearch,
+    ThreadThumbnails,
+    isogeo2office_utils,
+)
+
 # submodules - UI
 from modules.ui.auth.auth_dlg import Auth
 from modules.ui.credits.credits_dlg import Credits
