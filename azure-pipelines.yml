@@ -49,11 +49,13 @@ jobs:
   - script: |
       python -m pip install -U pip setuptools wheel
       python -m pip install -U -r ./requirements.txt
-      python -m pip install -U pytest-cov
+      python -m pip install -U pytest-cov pytest-qt
     displayName: 'Install dependencies'
 
   - script: |
         python .\tests\fixturing.py
+        coverage run -m unittest tests.test_export_docx
+        coverage run -m unittest tests.test_export_xlsx
     env:
       # platform
       ISOGEO_PLATFORM: $(ISOGEO_PLATFORM)
