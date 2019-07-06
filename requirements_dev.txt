@@ -11,6 +11,7 @@
 
 # art of code
 black
+flake8
 pylint
 
 # tests
@@ -18,6 +19,7 @@ codecov
 coverage
 pytest
 pytest-cov
+pytest-qt 
 
 # PyQt
 pypiwin32
