@@ -1,26 +1,26 @@
 {
+    "editor.rulers": [88],
+    "editor.wordWrapColumn": 88,
     "python.pythonPath": "${workspaceFolder}\\.venv_tests\\Scripts\\python.exe",
     "python.envFile": "${workspaceFolder}/dev.env",
-    "python.linting.enabled": true,
     "python.formatting.provider": "black",
     "python.formatting.blackArgs": [
-        "--line-length",
-        "100"
+        "--target-version=py36",
     ],
-    "python.testing.unittestArgs": [
-        "-v",
-        "-s",
-        "./tests",
-        "-p",
-        "test_*.py"
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--ignore=E24,E501,W504",
+        "--verbose"
     ],
-    "python.testing.pytestEnabled": false,
+    "python.testing.pytestEnabled": true,
     "python.testing.nosetestsEnabled": false,
-    "python.testing.unittestEnabled": true,
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestArgs": [],
     "pyqt-integration.qtdesigner.path": "designer",
     "pyqt-integration.linguist.cmd": "linguist",
     "pyqt-integration.pylupdate.cmd": "pylupdate5",
     "pyqt-integration.pylupdate.compile.addOptions": "-noobsolete -verbose",
     "pyqt-integration.pyrcc.cmd": "pyrcc5",
-    "pyqt-integration.pyuic.cmd": "pyuic5"
+    "pyqt-integration.pyuic.cmd": "pyuic5",
 }
