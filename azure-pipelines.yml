@@ -54,8 +54,7 @@ jobs:
 
   - script: |
         python .\tests\fixturing.py
-        coverage run -m unittest tests.test_export_docx
-        coverage run -m unittest tests.test_export_xlsx
+        python -m pytest --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html --cov-append tests
     env:
       # platform
       ISOGEO_PLATFORM: $(ISOGEO_PLATFORM)
