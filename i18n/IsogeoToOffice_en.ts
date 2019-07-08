@@ -3,135 +3,135 @@
 <context>
     <name>IsogeoToOffice_Main</name>
     <message>
-        <location filename="../IsogeoToOffice.py" line="217"/>
+        <location filename="../IsogeoToOffice.py" line="229"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="271"/>
+        <location filename="../IsogeoToOffice.py" line="283"/>
         <source>Authentication - Credentials missing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="909"/>
+        <location filename="../IsogeoToOffice.py" line="921"/>
         <source>Export {} metadata</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="487"/>
+        <location filename="../IsogeoToOffice.py" line="499"/>
         <source>Export option is missing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="487"/>
+        <location filename="../IsogeoToOffice.py" line="499"/>
         <source>At least one export option required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="271"/>
+        <location filename="../IsogeoToOffice.py" line="283"/>
         <source>Authentication to Isogeo API has failed. Credentials seem to be missing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="865"/>
+        <location filename="../IsogeoToOffice.py" line="877"/>
         <source>Application information has been retrieved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="459"/>
+        <location filename="../IsogeoToOffice.py" line="471"/>
         <source>Waiting for Isogeo API</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="957"/>
+        <location filename="../IsogeoToOffice.py" line="969"/>
         <source>Search form updated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="643"/>
+        <location filename="../IsogeoToOffice.py" line="655"/>
         <source>Thumbnails - Table structure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="643"/>
+        <location filename="../IsogeoToOffice.py" line="655"/>
         <source>The thumbnails matching table {} is not compliant with the expected structure.{}{} {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="662"/>
+        <location filename="../IsogeoToOffice.py" line="674"/>
         <source>Thumbnails - Unknown error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="662"/>
+        <location filename="../IsogeoToOffice.py" line="674"/>
         <source>An unknown error occurred reading thethumbnails matching table {}. Please report it.{}{} {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="662"/>
+        <location filename="../IsogeoToOffice.py" line="674"/>
         <source>
 A new table will be created but previous data will be lost.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="662"/>
+        <location filename="../IsogeoToOffice.py" line="674"/>
         <source>
 Error message:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="821"/>
+        <location filename="../IsogeoToOffice.py" line="833"/>
         <source>Settings - Reset to factory defaults</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="821"/>
+        <location filename="../IsogeoToOffice.py" line="833"/>
         <source>Settings will be reinitialized (not authentication credentials).
 application will be closed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="128"/>
+        <location filename="../IsogeoToOffice.py" line="140"/>
         <source>https://pipedrivewebforms.com/form/b5bdbdb9b34c3c61202cd8414accbbe252944</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="570"/>
+        <location filename="../IsogeoToOffice.py" line="582"/>
         <source>Word - Error: no template.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="626"/>
+        <location filename="../IsogeoToOffice.py" line="638"/>
         <source>Thumbnails - Table already opened</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="626"/>
+        <location filename="../IsogeoToOffice.py" line="638"/>
         <source>The thumbnails matching table {} is already opened. Close it please before to try again.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="635"/>
+        <location filename="../IsogeoToOffice.py" line="647"/>
         <source>Error - Thumbnails table is opened. Close it before contiinue.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="859"/>
+        <location filename="../IsogeoToOffice.py" line="871"/>
         <source>Application information has been retrieved.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="849"/>
+        <location filename="../IsogeoToOffice.py" line="861"/>
         <source>New version available.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="853"/>
+        <location filename="../IsogeoToOffice.py" line="865"/>
         <source>Version is up-to-date.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="974"/>
+        <location filename="../IsogeoToOffice.py" line="986"/>
         <source>Export operations are over.</source>
         <translation type="unfinished"></translation>
     </message>
