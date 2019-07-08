@@ -6,6 +6,8 @@
     
     ```python
     python -m unittest tests.test_utils
+    # or specific test
+    python -m unittest tests.test_utils.TestIsogeo2officeUtils.test_thumbnails_loader_complete
     ```
 """
 
@@ -14,8 +16,6 @@
 # ##################################
 
 # Standard library
-from collections import namedtuple
-import logging
 from os import environ, path
 from six import string_types as str
 from sys import exit
