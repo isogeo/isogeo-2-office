@@ -2,20 +2,24 @@
 #! python3
 
 # Standard library
-from functools import partial
 import json
 import logging
-from os import path, rename
-from pathlib import Path  # TO DO: replace os.path by pathlib
 import time
+from functools import partial
+from os import environ, path, rename
+from pathlib import Path  # TO DO: replace os.path by pathlib
+from urllib.request import getproxies
 
-# PyQT
-from PyQt5.QtWidgets import QDialog, QErrorMessage
-from PyQt5.QtCore import QLocale, QSettings
+# 3rd party
+from dotenv import load_dotenv
 
 # Isogeo
-from isogeo_pysdk import Isogeo, IsogeoChecker
+from isogeo_pysdk import Isogeo
 from isogeo_pysdk import __version__ as pysdk_version
+
+# PyQT
+from PyQt5.QtCore import QLocale, QSettings
+from PyQt5.QtWidgets import QDialog, QErrorMessage
 
 # submodules
 from .utils import isogeo2office_utils
@@ -24,6 +28,7 @@ from .utils import isogeo2office_utils
 # ########## Globals ###############
 # ##################################
 
+load_dotenv(".env")
 app_utils = isogeo2office_utils()
 current_locale = QLocale()
 logger = logging.getLogger("isogeo2office")
@@ -77,20 +82,40 @@ class IsogeoApiMngr(object):
         # update class attributes from credentials found
         if self.credentials_storage.get("QSettings"):
             self.credentials_update("QSettings")
+            logger.debug("Credentials used: QSettings")
         elif self.credentials_storage.get("oAuth2_file"):
             self.credentials_update("oAuth2_file")
+            logger.debug("Credentials used: client_secrets file")
         else:
-            logger.info("No credentials found. ")
+            logger.info("No credentials found. Opening the authentication form...")
             self.display_auth_form()
             return False
 
         # start api wrapper
         try:
             logger.debug("Start connection attempts")
+            # proxy
+            if getproxies():
+                logger.debug("Proxies settings found in the OS.")
+                proxy_settings = getproxies()
+            elif environ.get("HTTP_PROXY") or environ.get("HTTPS_PROXY"):
+                logger.debug(
+                    "Proxies settings found in environment vars (loaded from .env file)."
+                )
+                proxy_settings = {
+                    "http": environ.get("HTTP_PROXY"),
+                    "https": environ.get("HTTPS_PROXY"),
+                }
+            else:
+                logger.debug("No proxy settings found.")
+                proxy_settings = None
+
+            # client connexion
             self.isogeo = Isogeo(
                 client_id=self.api_app_id,
                 client_secret=self.api_app_secret,
                 lang=current_locale.name()[:2],
+                proxy=proxy_settings,
             )
             self.token = self.isogeo.connect()
             logger.debug("Connection succeeded")
@@ -98,6 +123,8 @@ class IsogeoApiMngr(object):
         except ValueError as e:
             logger.error(e)
             self.display_auth_form()
+        except EnvironmentError as e:
+            logger.error(e)
         except Exception as e:
             logger.error(e)
             self.display_auth_form()

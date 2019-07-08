@@ -31,7 +31,7 @@ VSVersionInfo(
         u'040904E4',
         [StringStruct(u'CompanyName', u'Isogeo'),
         StringStruct(u'ProductName', u'Isogeo to Office'),
-        StringStruct(u'ProductVersion', u'2,0,0,0'),
+        StringStruct(u'ProductVersion', u'2,0,1,0'),
         StringStruct(u'InternalName', u'isogeo2office'),
         StringStruct(u'OriginalFilename', u'isogeo2office.exe'),
         StringStruct(u'FileVersion', u'1.0.0'),

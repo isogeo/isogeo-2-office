@@ -9,12 +9,21 @@
 #   It's higly recomended to use it within a virtualenv.
 #
 
-# code art
+# art of code
 black
-codecov==2.*
-coverage==4.5.*
-pylint==2.1.*
-pyqt5-tools~=5.11 ; sys_platform == 'win32'
+flake8
+pylint
+
+# tests
+codecov
+coverage
+pytest
+pytest-cov
+pytest-qt 
+
+# PyQt
+pypiwin32
+pyqt5-tools==5.12.1.1.5rc4 ; sys_platform == 'win32'
 sip
 
 # packaging

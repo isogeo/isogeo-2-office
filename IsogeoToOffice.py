@@ -15,16 +15,20 @@
 
 # standard library
 import logging
+import pathlib  # TO DO: replace os.path by pathlib
 import platform
 from datetime import datetime
 from functools import partial
 from logging.handlers import RotatingFileHandler
 from os import listdir, path
-import pathlib  # TO DO: replace os.path by pathlib
 
 # 3rd party
 import qdarkstyle
+import semver
+from dotenv import load_dotenv
 from isogeo_pysdk import __version__ as pysdk_version
+
+# PyQt
 from PyQt5.QtCore import QLocale, QSettings, QThread, QTranslator, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QCloseEvent, QIcon
 from PyQt5.QtWidgets import (
@@ -34,8 +38,6 @@ from PyQt5.QtWidgets import (
     QMessageBox,
     QStyleFactory,
 )
-
-import semver
 
 # submodules - functional
 from modules import (
@@ -59,6 +61,9 @@ from modules.ui.systray.ui_systraymenu import SystrayMenu
 # ########## Globals ###############
 # ##################################
 
+# load specific enviroment vars
+load_dotenv(".env")
+
 # required subfolders
 pathlib.Path("_auth/").mkdir(exist_ok=True)
 pathlib.Path("_logs/").mkdir(exist_ok=True)
@@ -78,7 +83,7 @@ current_locale = QLocale()
 api_mngr = IsogeoApiMngr()
 
 # VERSION
-__version__ = "2.0.1"
+__version__ = "2.1.0-beta1"
 
 # LOG FILE #
 # log level depends on version

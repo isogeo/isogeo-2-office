@@ -294,7 +294,7 @@ class isogeo2office_utils(IsogeoUtils):
             raise KeyError("Thumbnails - Bad worksheet headers")
 
         # parse worksheet and populate final dict
-        for row in ws.iter_rows(row_offset=1):
+        for row in ws.iter_rows(min_row=1):
             if len(row) == 3 and row[0].value:
                 thumbnails_dict[row[0].value] = (row[1].value, row[2].value)
             else:
@@ -389,4 +389,3 @@ if __name__ == "__main__":
     utils = isogeo2office_utils()
 
     utils.clean_credentials_files(r"_auth")
-

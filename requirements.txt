@@ -14,14 +14,14 @@ setuptools
 wheel
 
 # utils
-arrow==0.12.*
-future==0.16.* ; python_version < '3.0'
-progressbar2==3.38.*
+arrow==0.14.*
+python-dotenv
+progressbar2==3.42.*
 
 # isogeo to office
-docxtpl==0.5.*
+docxtpl==0.6.*
 isogeo-pysdk==2.21.*
 openpyxl==2.6.*
-PyQt5==5.11.*
-QDarkStyle==2.6.*
+PyQt5==5.12.1
+QDarkStyle==2.7.*
 semver

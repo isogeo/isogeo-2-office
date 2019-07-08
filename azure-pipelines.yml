@@ -3,18 +3,100 @@
 # Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/python
 
+trigger:
+- master
+
+pr:
+- master
+
 jobs:
 
-- job: 'Install'
+# LINT AND FORMATTING CODE
+- job: 'Lint'
   pool:
-    vmImage: 'vs2017-win2016'
+    vmImage: "windows-2019"
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.7'
+      architecture: 'x64'
+      addToPath: true
+
+  - script: |
+      python -m pip install -U pip
+      python -m pip install -U black
+    displayName: 'Install black dependencies'
+
+  - script: |
+      python -m black --target-version=py37 .\modules
+      python -m black --target-version=py37 .\IsogeoToOffice.py
+    displayName: 'Apply black code formatting'
+
+# LINT AND FORMATTING CODE
+- job: 'Test'
+  dependsOn: 'Lint'
+  pool:
+    vmImage: "windows-2019"
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.7'
+      architecture: 'x64'
+      addToPath: true
+
+  - script: |
+      python -m pip install -U pip setuptools wheel
+      python -m pip install -U -r ./requirements.txt
+      python -m pip install -U pytest-cov pytest-qt
+    displayName: 'Install dependencies'
+
+  - script: |
+        python .\tests\fixturing.py
+        coverage run -m unittest tests.test_export_docx
+        coverage run -m unittest tests.test_export_xlsx
+    env:
+      # platform
+      ISOGEO_PLATFORM: $(ISOGEO_PLATFORM)
+      OAUTHLIB_INSECURE_TRANSPORT: $(OAUTHLIB_INSECURE_TRANSPORT)
+      # URLs
+      ISOGEO_API_URL: $(ISOGEO_API_URL)
+      ISOGEO_ID_URL: $(ISOGEO_ID_URL)
+      # oAuth2 Client Credentials Grant
+      ISOGEO_API_CLIENT_ID: $(ISOGEO_API_CLIENT_ID)
+      ISOGEO_API_CLIENT_SECRET: $(ISOGEO_API_CLIENT_SECRET)
+      # static fixtures
+      ISOGEO_FIXTURES_METADATA_COMPLETE: $(ISOGEO_FIXTURES_METADATA_COMPLETE)
+      ISOGEO_WORKGROUP_TEST_UUID: $(ISOGEO_WORKGROUP_TEST_UUID)
+    displayName: 'Unit tests'
+
+  - task: PublishTestResults@2
+    displayName: "Publish unit test results"
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFiles: '**/test-*.xml'
+      testRunTitle: 'Publish test results for Python $(python.version)'
+
+  - task: PublishCodeCoverageResults@1
+    displayName: "Publish coverage results to Azure Pipelines"
+    inputs:
+      codeCoverageTool: Cobertura
+      summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
+      reportDirectory: '$(System.DefaultWorkingDirectory)/**/htmlcov'
+
+# BUILD
+- job: 'Build'
+  dependsOn: 'Test'
+  pool:
+    vmImage: 'windows-2019'
   strategy:
     matrix:
-      Python36_VS17_64bits:
-        python.version: '3.6'
+      Python37_VS17_64bits:
+        python.version: '3.7'
         python.arch: 'x64'
-      Python36_VS17_32bits:
-        python.version: '3.6'
+      Python37_VS17_32bits:
+        python.version: '3.7'
         python.arch: 'x86'
     maxParallel: 2
 
@@ -23,8 +105,12 @@ jobs:
     inputs:
       versionSpec: '$(python.version)'
       architecture: '$(python.arch)'
+      addToPath: True
 
-  - script: python -m pip install -U pip && pip install -U -r requirements.txt && pip install -U -r requirements_dev.txt
+  - script: |
+      python -m pip install -U pip
+      python -m pip install -U -r ./requirements.txt
+      python -m pip install -U -r ./requirements_dev.txt
     displayName: 'Install dependencies'
 
   - script: |
@@ -36,7 +122,7 @@ jobs:
     displayName: 'PyQt processing'
 
   - script: pyinstaller.exe -y bundle_isogeo2office.spec
-    displayName: 'Building the executable'
+    displayName: 'Building the executable with PyInstaller'
 
   # Archive Files
   - task: ArchiveFiles@2
@@ -58,26 +144,3 @@ jobs:
     inputs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)\ArtifactsToBePublished'
       ArtifactName: IsogeoToOffice
-
-# LINT AND FORMATTING CODE
-- job: 'Lint'
-  dependsOn: 'Install'
-  pool:
-    vmImage: "vs2017-win2016"
-
-  steps:
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: '3.6'
-      architecture: 'x64'
-      addToPath: true
-
-  - script: |
-      python -m pip install -U pip
-      pip install -U black
-    displayName: 'Install black dependencies'
-
-  - script: |
-      python -m black --target-version=py36 .\modules
-      python -m black --target-version=py36 .\IsogeoToOffice.py
-    displayName: 'Apply black code formatting'

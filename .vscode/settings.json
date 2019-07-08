@@ -1,22 +1,26 @@
 {
-    "python.pythonPath": "${workspaceFolder}\\env3\\Scripts\\python.exe",
+    "editor.rulers": [88],
+    "editor.wordWrapColumn": 88,
+    "python.pythonPath": "${workspaceFolder}\\.venv_tests\\Scripts\\python.exe",
+    "python.envFile": "${workspaceFolder}/dev.env",
     "python.formatting.provider": "black",
     "python.formatting.blackArgs": [
-        "--line-length",
-        "100"
+        "--target-version=py36",
     ],
-    "python.testing.unittestArgs": [
-        "-v",
-        "-s",
-        "./tests",
-        "-p",
-        "test_*.py"
-    ],
-    "python.testing.pyTestEnabled": false,
-    "python.testing.nosetestsEnabled": false,
-    "python.testing.unittestEnabled": true,
-    "pyqt-integration.qtdesigner.path": "C:\\Users\\julien.moura\\Documents\\GitHub\\Isogeo\\isogeo-2-office\\env3/Lib/site-packages/pyqt5_tools/designer.exe",
-    "python.venvPath": "${workspaceFolder}/env3",
-    "pyqt-integration.linguist.cmd": "C:\\Users\\julien.moura\\Documents\\GitHub\\Isogeo\\isogeo-2-office\\env3\\Lib\\site-packages\\pyqt5_tools\\linguist.exe",
     "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--ignore=E24,E501,W504",
+        "--verbose"
+    ],
+    "python.testing.pytestEnabled": true,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestArgs": [],
+    "pyqt-integration.qtdesigner.path": "designer",
+    "pyqt-integration.linguist.cmd": "linguist",
+    "pyqt-integration.pylupdate.cmd": "pylupdate5",
+    "pyqt-integration.pylupdate.compile.addOptions": "-noobsolete -verbose",
+    "pyqt-integration.pyrcc.cmd": "pyrcc5",
+    "pyqt-integration.pyuic.cmd": "pyuic5",
 }
