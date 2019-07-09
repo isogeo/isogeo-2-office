@@ -54,8 +54,7 @@ jobs:
 
   - script: |
         python .\tests\fixturing.py
-        coverage run -m unittest tests.test_export_docx
-        coverage run -m unittest tests.test_export_xlsx
+        python -m pytest --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html --cov-append tests
     env:
       # platform
       ISOGEO_PLATFORM: $(ISOGEO_PLATFORM)
@@ -115,6 +114,7 @@ jobs:
 
   - script: |
       pylupdate5 -noobsolete -verbose isogeo2office.pro
+      lrelease .\i18n\IsogeoToOffice_fr.ts
       pyrcc5 resources.qrc -o resources_rc.py
       pyuic5 -x modules\\ui\\auth\\ui_authentication.ui -o modules\\ui\\auth\\ui_authentication.py"
       pyuic5 -x modules\\ui\\credits\\ui_credits.ui -o modules\\ui\\credits\\ui_credits.py

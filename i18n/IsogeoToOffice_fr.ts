@@ -3,138 +3,138 @@
 <context>
     <name>IsogeoToOffice_Main</name>
     <message>
-        <location filename="../IsogeoToOffice.py" line="217"/>
+        <location filename="../IsogeoToOffice.py" line="229"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation>TITRE DU PROBLEME</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="271"/>
+        <location filename="../IsogeoToOffice.py" line="283"/>
         <source>Authentication - Credentials missing</source>
         <translation>Authentification - Paramètres absents</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="909"/>
+        <location filename="../IsogeoToOffice.py" line="921"/>
         <source>Export {} metadata</source>
         <translation>Exporter {} métadonnées</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="487"/>
+        <location filename="../IsogeoToOffice.py" line="499"/>
         <source>Export option is missing</source>
         <translation>Aucune option d&apos;export</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="487"/>
+        <location filename="../IsogeoToOffice.py" line="499"/>
         <source>At least one export option required.</source>
         <translation>Au moins un format d&apos;export requis.</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="271"/>
+        <location filename="../IsogeoToOffice.py" line="283"/>
         <source>Authentication to Isogeo API has failed. Credentials seem to be missing.</source>
         <translation>L&apos;authentification à l&apos;API Isogeo a échoué. Les paramètres d&apos;authentification semblent absents.</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="865"/>
+        <location filename="../IsogeoToOffice.py" line="877"/>
         <source>Application information has been retrieved</source>
         <translation>Les informations de l&apos;application ont été récupérées</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="459"/>
+        <location filename="../IsogeoToOffice.py" line="471"/>
         <source>Waiting for Isogeo API</source>
         <translation>En attente de l&apos;API Isogeo</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="957"/>
+        <location filename="../IsogeoToOffice.py" line="969"/>
         <source>Search form updated</source>
         <translation>Formulaire de recherche mis à jour</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="643"/>
+        <location filename="../IsogeoToOffice.py" line="655"/>
         <source>Thumbnails - Table structure</source>
         <translation>Vignettes - Structure de la table de correspondance</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="643"/>
+        <location filename="../IsogeoToOffice.py" line="655"/>
         <source>The thumbnails matching table {} is not compliant with the expected structure.{}{} {}</source>
         <translation>La table des vignettes ({}) n&apos;est pas conforme avec la structure attendue. {}{} {}</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="662"/>
+        <location filename="../IsogeoToOffice.py" line="674"/>
         <source>Thumbnails - Unknown error</source>
         <translation>Vignettes - Erreur inconnue</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="662"/>
+        <location filename="../IsogeoToOffice.py" line="674"/>
         <source>An unknown error occurred reading thethumbnails matching table {}. Please report it.{}{} {}</source>
         <translation>Un erreur inconnue est survenue lors de la lecture de la table des vignettes {}. Merci de reporter le problème. {}{} {}</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="662"/>
+        <location filename="../IsogeoToOffice.py" line="674"/>
         <source>
 A new table will be created but previous data will be lost.</source>
         <translation>
 Une nouvelle table de correspondance sera créée mais les données existantes seront perdues.</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="662"/>
+        <location filename="../IsogeoToOffice.py" line="674"/>
         <source>
 Error message:</source>
         <translation>
 Message d&apos;erreur :</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="821"/>
+        <location filename="../IsogeoToOffice.py" line="833"/>
         <source>Settings - Reset to factory defaults</source>
         <translation>Paramètres - Remise à zéro</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="821"/>
+        <location filename="../IsogeoToOffice.py" line="833"/>
         <source>Settings will be reinitialized (not authentication credentials).
 application will be closed.</source>
         <translation>Les préférences vont être réinitialisées à leurs valeurs par défaut (pas les paramètres d&apos;authentification).
 L&apos;application va se fermer.</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="128"/>
+        <location filename="../IsogeoToOffice.py" line="140"/>
         <source>https://pipedrivewebforms.com/form/b5bdbdb9b34c3c61202cd8414accbbe252944</source>
         <translation>https://pipedrivewebforms.com/form/427397f21f1417e5b937b673dfa12c9052944</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="570"/>
+        <location filename="../IsogeoToOffice.py" line="582"/>
         <source>Word - Error: no template.</source>
         <translation>Word - Erreur : aucun modèle.</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="626"/>
+        <location filename="../IsogeoToOffice.py" line="638"/>
         <source>Thumbnails - Table already opened</source>
         <translation>Vignettes - Table de correspondance ouverte</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="626"/>
+        <location filename="../IsogeoToOffice.py" line="638"/>
         <source>The thumbnails matching table {} is already opened. Close it please before to try again.</source>
         <translation>La table des correspondances {} est ouvert. Merci de le fermer et de réessayer.</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="635"/>
+        <location filename="../IsogeoToOffice.py" line="647"/>
         <source>Error - Thumbnails table is opened. Close it before contiinue.</source>
         <translation>Erreur - Table des vignettes ouverte. Fermer le fichier avant de continuer.</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="859"/>
+        <location filename="../IsogeoToOffice.py" line="871"/>
         <source>Application information has been retrieved.</source>
         <translation>Application connectée à Isogeo.</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="849"/>
+        <location filename="../IsogeoToOffice.py" line="861"/>
         <source>New version available.</source>
         <translation>Nouvelle version disponible.</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="853"/>
+        <location filename="../IsogeoToOffice.py" line="865"/>
         <source>Version is up-to-date.</source>
         <translation>Version à jour.</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="974"/>
+        <location filename="../IsogeoToOffice.py" line="986"/>
         <source>Export operations are over.</source>
         <translation>Les exports sont terminés.</translation>
     </message>
@@ -363,7 +363,19 @@ L&apos;application va se fermer.</translation>
 &lt;/body&gt;
 &lt;/html&gt;
 </source>
-        <translation></translation>
+        <translation>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+
+&lt;ul&gt;
+<byte value="x9"/>&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
+<byte value="x9"/>&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
+<byte value="x9"/>&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
+&lt;/ul&gt; 
+
+&lt;/body&gt;
+&lt;/html&gt;
+</translation>
     </message>
 </context>
 <context>

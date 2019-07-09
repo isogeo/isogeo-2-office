@@ -1,20 +1,33 @@
 # -*- coding: UTF-8 -*-
-#!/usr/bin/env python
-from __future__ import absolute_import, print_function, unicode_literals
+#! python3
+
+"""
+    Usage from the repo root folder:
+
+    ```python
+    # for whole test
+    python -m unittest tests.test_formatter
+    # for specific
+    python -m unittest tests.test_formatter.TestFormatter.test_cgus
+    ```
+"""
 
 # #############################################################################
 # ########## Libraries #############
 # ##################################
-
 # Standard library
-from os import environ
 import logging
-from random import randint
-from sys import exit
 import unittest
+import urllib3
+from os import environ
+from pathlib import Path
+from socket import gethostname
+from sys import exit, _getframe
+from time import gmtime, strftime
 
 # 3rd party
-from isogeo_pysdk import Isogeo, __version__ as pysdk_version
+from dotenv import load_dotenv
+from isogeo_pysdk import Isogeo
 
 # target
 from modules import IsogeoFormatter
@@ -23,9 +36,22 @@ from modules import IsogeoFormatter
 # ######## Globals #################
 # ##################################
 
-# API access
-app_id = environ.get("ISOGEO_API_DEV_ID")
-app_secret = environ.get("ISOGEO_API_DEV_SECRET")
+
+if Path("dev.env").exists():
+    load_dotenv("dev.env", override=True)
+
+# host machine name - used as discriminator
+hostname = gethostname()
+
+# #############################################################################
+# ########## Helpers ###############
+# ##################################
+
+
+def get_test_marker():
+    """Returns the function name"""
+    return "TEST_UNIT_PythonSDK - {}".format(_getframe(1).f_code.co_name)
+
 
 # #############################################################################
 # ########## Classes ###############
@@ -35,36 +61,62 @@ app_secret = environ.get("ISOGEO_API_DEV_SECRET")
 class TestFormatter(unittest.TestCase):
     """Test formatter of Isogeo API results."""
 
-    if not app_id or not app_secret:
-        logging.critical("No API credentials set as env variables.")
-        exit()
-    else:
-        pass
-    logging.debug("Isogeo PySDK version: {0}".format(pysdk_version))
+    # -- Standard methods --------------------------------------------------------
+    @classmethod
+    def setUpClass(cls):
+        """Executed when module is loaded before any test."""
+        # checks
+        if not environ.get("ISOGEO_API_CLIENT_ID") or not environ.get(
+            "ISOGEO_API_CLIENT_SECRET"
+        ):
+            logging.critical("No API credentials set as env variables.")
+            exit()
+        else:
+            pass
 
-    # standard methods
+        # ignore warnings related to the QA self-signed cert
+        if environ.get("ISOGEO_PLATFORM").lower() == "qa":
+            urllib3.disable_warnings()
+
+        # API connection
+        cls.isogeo = Isogeo(
+            client_id=environ.get("ISOGEO_API_CLIENT_ID"),
+            client_secret=environ.get("ISOGEO_API_CLIENT_SECRET"),
+            platform=environ.get("ISOGEO_PLATFORM", "qa"),
+        )
+        # getting a token
+        cls.isogeo.connect()
+
+        # module to test
+        cls.fmt = IsogeoFormatter()
+
     def setUp(self):
         """Executed before each test."""
-        self.isogeo = Isogeo(client_id=app_id, client_secret=app_secret, platform="qa")
-        self.bearer = self.isogeo.connect()
-        self.fmt = IsogeoFormatter()
+        # tests stuff
+        self.discriminator = "{}_{}".format(
+            hostname, strftime("%Y-%m-%d_%H%M%S", gmtime())
+        )
 
     def tearDown(self):
         """Executed after each test."""
         pass
 
+    @classmethod
+    def tearDownClass(cls):
+        """Executed after the last test."""
+        # close sessions
+        cls.isogeo.close()
+
+    # -- TESTS ---------------------------------------------------------
+
     # formatter
     def test_cgus(self):
         """CGU formatter."""
-        search = self.isogeo.search(self.bearer, page_size=0, whole_share=0)
+        search = self.isogeo.search(page_size=0, whole_share=0)
         licenses = [t for t in search.get("tags") if t.startswith("license:")]
         # filtered search
         md_cgu = self.isogeo.search(
-            self.bearer,
-            query=licenses[0],
-            include=["conditions"],
-            page_size=1,
-            whole_share=0,
+            query=licenses[0], include=["conditions"], page_size=1, whole_share=0
         )
         # get conditions reformatted
         cgus_in = md_cgu.get("results")[0].get("conditions", [])
@@ -76,7 +128,7 @@ class TestFormatter(unittest.TestCase):
 
     def test_limitations(self):
         """Limitations formatter."""
-        search = self.isogeo.search(self.bearer, whole_share=1, include=["limitations"])
+        search = self.isogeo.search(whole_share=1, include=["limitations"])
         # filtered search
         for md in search.get("results"):
             if md.get("limitations"):
@@ -93,9 +145,7 @@ class TestFormatter(unittest.TestCase):
 
     def test_specifications(self):
         """Limitations formatter."""
-        search = self.isogeo.search(
-            self.bearer, whole_share=1, include=["specifications"]
-        )
+        search = self.isogeo.search(whole_share=1, include=["specifications"])
         # filtered search
         for md in search.get("results"):
             if md.get("specifications"):

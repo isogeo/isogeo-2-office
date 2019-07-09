@@ -65,9 +65,7 @@ if not Path("_auth/client_secrets.json").exists():
 
 # instanciating the class
 isogeo = Isogeo(
-    client_id=API_OAUTH_ID,
-    client_secret=API_OAUTH_SECRET,
-    platform=API_PLATFORM
+    client_id=API_OAUTH_ID, client_secret=API_OAUTH_SECRET, platform=API_PLATFORM
 )
 isogeo.connect()
 

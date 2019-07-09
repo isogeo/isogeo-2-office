@@ -22,8 +22,11 @@ python -m pip install --upgrade -r ./requirements_dev.txt
 .\tool_ui_compile.ps1
 
 "`n-- STEP -- Build and bundle forcing clean"
-mkdir dist
-rm -r dist\*
+# mkdir dist
+New-Item -Name "dist" -ItemType "directory" -Force
+# rm -r dist\*
+Get-ChildItem -Path ".\dist\" -Recurse | Remove-Item -force -recurse
+
 python -OO -m PyInstaller -y bundle_isogeo2office.spec --upx-dir .\build\upx-3.95-win64
 
 "`n-- STEP -- Zipping"
