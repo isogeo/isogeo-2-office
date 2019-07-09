@@ -13,23 +13,6 @@ Desktop toolbox using Isogeo REST API to export metadatas into Microsoft Office 
 * [French : documentation utilisateur](http://help.isogeo.com/isogeo2office/fr/) ;
 * [English: user documentation](http://help.isogeo.com/isogeo2office/en/).
 
-## Continuous integration
+## Development documentation
 
-Application is built using AppVeyor and Azure DevOps.
-
-## Build locally
-
-### Requirements
-
-First of all, install requirements:
-
-* Windows 10+
-* Python 3.6+
-
-### Visual Studio Code
-
-With Visual Studio Code, using defined tasks.
-
-### Manually
-
-Run `build.ps1` script from repository root folder.
+[See the wiki (French)](https://github.com/isogeo/isogeo-2-office/wiki).
