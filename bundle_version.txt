@@ -31,12 +31,12 @@ VSVersionInfo(
         u'040904E4',
         [StringStruct(u'CompanyName', u'Isogeo'),
         StringStruct(u'ProductName', u'Isogeo to Office'),
-        StringStruct(u'ProductVersion', u'2,0,1,0'),
+        StringStruct(u'ProductVersion', u'2,1,0,b1'),
         StringStruct(u'InternalName', u'isogeo2office'),
         StringStruct(u'OriginalFilename', u'isogeo2office.exe'),
         StringStruct(u'FileVersion', u'1.0.0'),
         StringStruct(u'FileDescription', u'Isogeo to Office'),
-        StringStruct(u'LegalCopyright', u'Copyright © 2009-2018 Isogeo'),
+        StringStruct(u'LegalCopyright', u'Copyright © 2009-2019 Isogeo'),
         StringStruct(u'LegalTrademarks', u'Isogeo')])
       ]), 
     VarFileInfo([VarStruct(u'Translation', [1033, 1252])])
