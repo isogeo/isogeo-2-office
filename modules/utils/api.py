@@ -192,12 +192,8 @@ class IsogeoApiMngr(object):
         if credentials_source == "QSettings":
             self.api_app_id = qsettings.value("auth/app_id", "")
             self.api_app_secret = qsettings.value("auth/app_secret", "")
-            self.api_app_type = qsettings.value(
-                "auth/app_type", "group"
-            )
-            self.api_platform = qsettings.value(
-                "auth/platform", "prod"
-            )
+            self.api_app_type = qsettings.value("auth/app_type", "group")
+            self.api_platform = qsettings.value("auth/platform", "prod")
             self.api_url_base = qsettings.value(
                 "auth/url_base", "https://v1.api.isogeo.com/"
             )
@@ -228,7 +224,7 @@ class IsogeoApiMngr(object):
             elif "api.qa.isogeo.com" in self.api_url_base:
                 self.api_platform = "qa"
             else:
-                self.api_platform = "custom"    # on-premises
+                self.api_platform = "custom"  # on-premises
         else:
             pass
 

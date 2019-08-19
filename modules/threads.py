@@ -20,7 +20,7 @@ from zipfile import ZipFile
 
 # 3rd party library
 from docxtpl import DocxTemplate
-from isogeo_pysdk.models import MetadataSearch
+from isogeo_pysdk.models import Metadata, MetadataSearch
 from openpyxl import Workbook
 from openpyxl.comments import Comment
 from openpyxl.cell import WriteOnlyCell
@@ -135,8 +135,17 @@ class ThreadSearch(QThread):
         """Get application and informations
         """
         logger.debug("Search started.")
-        search = self.api_mngr.isogeo.search(**self.search_params)
-        logger.debug("Search finished. Transmitted to slot: {}".format(dir(self.sig_finished)))
+        search = self.api_mngr.isogeo.search(
+            query=self.search_params.get("query", None),
+            share=self.search_params.get("share", None),
+            page_size=self.search_params.get("page_size", 0),
+            include=self.search_params.get("include", ()),
+            whole_results=self.search_params.get("whole_results", 0),
+            augment=self.search_params.get("augment", 0),
+            check=self.search_params.get("check", 0),
+            tags_as_dicts=self.search_params.get("tags_as_dicts", 0),
+        )
+        logger.debug("Search finished. Transmitted to slot.")
         # Search request finished
         self.sig_finished.emit(search)
 
@@ -144,7 +153,7 @@ class ThreadSearch(QThread):
 # EXPORTS ---------------------------------------------------------------------
 class ThreadExportExcel(QThread):
     # signals
-    sig_step = pyqtSignal(int, str)
+    sig_step = pyqtSignal(int, str, name="ExportExcel")
 
     def __init__(
         self,
@@ -172,7 +181,7 @@ class ThreadExportExcel(QThread):
         # workbook
         wb = Isogeo2xlsx(lang=language, url_base="https://open.isogeo.com")
         wb.set_worksheets(
-            auto=self.search.get("tags").keys(),
+            auto=self.search.tags.keys(),
             dashboard=self.opt_dasboard,
             attributes=self.opt_attributes,
             fillfull=self.opt_fillfull,
@@ -180,19 +189,25 @@ class ThreadExportExcel(QThread):
         )
 
         # parsing metadata
-        for md in self.search.get("results"):
+        for md in self.search.results:
+            # clean invalid attributes
+            md["coordinateSystem"] = md.pop("coordinate-system", [])
+            md["featureAttributes"] = md.pop("feature-attributes", [])
+            # load metadata
+            metadata = Metadata(**md)
             # show progression
-            md_title = md.get("title", "No title")
-            self.sig_step.emit(1, self.tr("Processing Excel: {}").format(md_title))
-            # add edit link
-            md["link_edit"] = app_utils.get_edit_url(
-                md_id=md.get("_id"),
-                md_type=md.get("type"),
-                owner_id=md.get("_creator").get("_id"),
+            self.sig_step.emit(
+                1, self.tr("Processing Excel: {}").format(metadata.title_or_name())
             )
+            # add edit link
+            # md["link_edit"] = app_utils.get_edit_url(
+            #     md_id=metadata._id,
+            #     md_type=metadata.type,
+            #     owner_id=metadata._creator.get("_id"),
+            # )
 
             # store metadata
-            wb.store_metadatas(md)
+            wb.store_metadatas(metadata)
 
         # tunning full worksheet
         wb.tunning_worksheets()
@@ -220,7 +235,7 @@ class ThreadExportExcel(QThread):
 
 class ThreadExportWord(QThread):
     # signals
-    sig_step = pyqtSignal(int, str)
+    sig_step = pyqtSignal(int, str, name="ExportWord")
 
     def __init__(
         self,
@@ -251,7 +266,7 @@ class ThreadExportWord(QThread):
         to_docx = Isogeo2docx()
 
         # parsing metadata
-        for md in self.search.get("results"):
+        for md in self.search.results:
             # progression
             md_title = md.get("title", "No title")
             self.sig_step.emit(1, self.tr("Processing Word: {}").format(md_title))
@@ -301,7 +316,7 @@ class ThreadExportWord(QThread):
 
 class ThreadExportXml(QThread):
     # signals
-    sig_step = pyqtSignal(int, str)
+    sig_step = pyqtSignal(int, str, name="ExportXML")
 
     def __init__(
         self,
@@ -335,7 +350,7 @@ class ThreadExportXml(QThread):
             out_dir = path.realpath(self.output_xml_path)
 
         # parsing metadata
-        for md in self.search.get("results"):
+        for md in self.search.results:
             # progression
             md_title = md.get("title", "No title")
             self.sig_step.emit(1, self.tr("Processing XML: {}").format(md_title))
@@ -430,7 +445,7 @@ class ThreadThumbnails(QThread):
 
         # parsing metadata
         li_exported_md = []
-        for md in self.search.get("results"):
+        for md in self.search.results:
             # show progression
             md_title = md.get("title", "No title")
             self.sig_step.emit(

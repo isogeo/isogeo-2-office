@@ -1,5 +1,16 @@
 # -*- coding: UTF-8 -*-
-#!/usr/bin/env python
+#! python3
+
+"""
+    Usage from the repo root folder:
+
+    ```python
+    # for whole test
+    python -m unittest tests.test_export_xlsx
+    # for specific
+    python -m unittest tests.test_export_xlsx.TestExportXLSX.test_metadata_export
+    ```
+"""
 
 # #############################################################################
 # ########## Libraries #############
@@ -12,6 +23,7 @@ from tempfile import mkstemp
 import unittest
 
 # 3rd party
+from isogeo_pysdk import Metadata
 from openpyxl import Workbook
 
 # target
@@ -220,7 +232,12 @@ class TestExportXLSX(unittest.TestCase):
         self.out_wb.set_worksheets(auto=search.get("tags").keys())
         # run
         for md in search.get("results"):
-            self.out_wb.store_metadatas(md)
+            # clean invalid attributes
+            md["coordinateSystem"] = md.pop("coordinate-system", list)
+            md["featureAttributes"] = md.pop("feature-attributes", list)
+            # load metadata
+            metadata = Metadata(**md)
+            self.out_wb.store_metadatas(metadata)
         # save
         self.out_wb.save(out_xlsx[1] + ".xlsx")
 
