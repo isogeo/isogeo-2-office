@@ -1,0 +1,53 @@
+# -*- coding: UTF-8 -*-
+#! python3
+
+"""
+    Matching table between Isogeo metadata model and Excle columns for Isogeo to Office.
+"""
+
+VECTOR_COLUMNS = {
+    "_created": "AO",
+    "_creator": "E",
+    "_id": "AN",
+    "_modified": "AP",
+    "abtract": "C",
+    "collectionContext": "I",
+    "collectionMethod": "J",
+    "conditions": "AD",
+    "contacts": "",
+    "coordinateSystem": "",
+    "created": "",
+    "distance": "",
+    "editionProfile": "",
+    "encoding": "",
+    "envelope": "",
+    "events": "",
+    "featureAttributes": "",
+    "features": "Y",
+    "format": "",
+    "formatVersion": "",
+    "geometry": "",
+    "keywords": "F",
+    "language": "AQ",
+    "layers": "",
+    "limitations": "AE",
+    "links": "",
+    "modified": "",
+    "name": "B",
+    "operations": "",
+    "path": "",
+    "precision": "",
+    "published": "",
+    "scale": "X",
+    "series": "",
+    "serviceLayers": "",
+    "specifications": "AB",
+    "tags": "",
+    "title": "A",
+    "topologicalConsistency": "AC",
+    "type": "",
+    "updateFrequency": "",
+    "validFrom": "",
+    "validTo": "",
+    "validityComment": "",
+}
