@@ -17,7 +17,6 @@
 import logging
 import pathlib  # TO DO: replace os.path by pathlib
 import platform
-from datetime import datetime
 from functools import partial
 from logging.handlers import RotatingFileHandler
 from os import listdir, path
@@ -388,7 +387,7 @@ class IsogeoToOffice_Main(QMainWindow):
         if search_type == "reset":
             self.thread_search.search_params = {
                 "page_size": 0,
-                "whole_share": 0,
+                "whole_results": 0,
                 "augment": 1,
                 "tags_as_dicts": 1,
             }
@@ -400,7 +399,7 @@ class IsogeoToOffice_Main(QMainWindow):
                 "query": search_terms,
                 "share": share_id,
                 "page_size": 0,
-                "whole_share": 0,
+                "whole_results": 0,
                 "augment": 1,
                 "tags_as_dicts": 1,
             }
@@ -433,7 +432,7 @@ class IsogeoToOffice_Main(QMainWindow):
                 "query": search_terms,
                 "share": share_id,
                 "page_size": 100,
-                "whole_share": 1,
+                "whole_results": 1,
                 "include": includes,
                 "check": 0,
             }
@@ -452,7 +451,7 @@ class IsogeoToOffice_Main(QMainWindow):
                 "query": search_terms,
                 "share": share_id,
                 "page_size": 100,
-                "whole_share": 1,
+                "whole_results": 1,
                 "check": 0,
             }
             self.thread_search.sig_finished.disconnect()
