@@ -25,7 +25,7 @@ from os import listdir, path
 import qdarkstyle
 import semver
 from dotenv import load_dotenv
-from isogeo_pysdk import __version__ as pysdk_version
+from isogeo_pysdk import __version__ as pysdk_version, MetadataSearch
 
 # PyQt
 from PyQt5.QtCore import QLocale, QSettings, QThread, QTranslator, pyqtSignal, pyqtSlot
@@ -884,12 +884,12 @@ class IsogeoToOffice_Main(QMainWindow):
         self.thread_app_props.start()
         self.search(search_type="reset")
 
-    @pyqtSlot(dict)
-    def update_search_form(self, search: dict):
+    @pyqtSlot(MetadataSearch)
+    def update_search_form(self, search: MetadataSearch):
         """Update search form with tags.
         """
         # get available search tags
-        search_tags = search.get("tags")
+        search_tags = search.tags
         logger.debug("Search tags keys: {}".format(list(search_tags)))
 
         # -- FILL FILTERS COMBOBOXES ------------------------------------------
@@ -916,12 +916,12 @@ class IsogeoToOffice_Main(QMainWindow):
 
         # export button
         self.ui.btn_launch_export.setText(
-            self.tr("Export {} metadata").format(search.get("total"))
+            self.tr("Export {} metadata").format(search.total)
         )
 
         # -- RESTORE PREVIOUS SELECTED FILTERS -------------------------------
         if self.search_type != "reset":
-            query_tags = search.get("query").get("_tags")
+            query_tags = search.query.get("_tags")
             logger.debug("Previous query: {}".format(query_tags))
             # keywords
             if query_tags.get("keywords"):
@@ -962,7 +962,7 @@ class IsogeoToOffice_Main(QMainWindow):
             pass
 
         # stop progress bar and enable search form
-        self.processing("end", progbar_max=search.get("total"))
+        self.processing("end", progbar_max=search.total)
         self.update_status_bar(prog_step=0, status_msg=self.tr("Search form updated"))
 
     @pyqtSlot(int, str)

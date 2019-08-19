@@ -20,6 +20,7 @@ from zipfile import ZipFile
 
 # 3rd party library
 from docxtpl import DocxTemplate
+from isogeo_pysdk.models import MetadataSearch
 from openpyxl import Workbook
 from openpyxl.comments import Comment
 from openpyxl.cell import WriteOnlyCell
@@ -122,7 +123,7 @@ class ThreadAppProperties(QThread):
 
 class ThreadSearch(QThread):
     # signals
-    sig_finished = pyqtSignal(dict)
+    sig_finished = pyqtSignal(MetadataSearch, name="IsogeoSearch")
 
     def __init__(self, api_manager: object):
         QThread.__init__(self)
@@ -135,7 +136,7 @@ class ThreadSearch(QThread):
         """
         logger.debug("Search started.")
         search = self.api_mngr.isogeo.search(**self.search_params)
-        logger.debug("Search finished.")
+        logger.debug("Search finished. Transmitted to slot: {}".format(dir(self.sig_finished)))
         # Search request finished
         self.sig_finished.emit(search)
 
@@ -503,7 +504,7 @@ class ThreadExportHtmlReport(QThread):
 
         # output template
         out_html_file = self.html_tpl.render(
-            varTitle="Isogeo To Office - Report", varLblChartTypes="Metadta by types"
+            varTitle="Isogeo To Office - Report", varLblChartTypes="Metadata by types"
         )
 
         with open("test_out_html_templated.html", "w") as fh:
