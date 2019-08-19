@@ -414,26 +414,11 @@ class IsogeoToOffice_Main(QMainWindow):
 
             # prepare search and launch export process
             share_id, search_terms = self.get_selected_filters()
-            includes = [
-                "conditions",
-                "contacts",
-                "coordinate-system",
-                "events",
-                "feature-attributes",
-                "keywords",
-                "layers",
-                "limitations",
-                "links",
-                "operations",
-                "serviceLayers",
-                "specifications",
-            ]
             self.thread_search.search_params = {
                 "query": search_terms,
                 "share": share_id,
-                "page_size": 100,
                 "whole_results": 1,
-                "include": includes,
+                "include": "all",
                 "check": 0,
             }
             self.thread_search.sig_finished.disconnect()
@@ -478,7 +463,6 @@ class IsogeoToOffice_Main(QMainWindow):
             else:
                 search_terms += cbb.itemData(cbb.currentIndex()) + " "
 
-        logger.debug("Selected share UUID: {}".format(share_id))
         return share_id, search_terms.strip()
 
     # -- EXPORT ---------------------------------------------------------------
@@ -514,7 +498,7 @@ class IsogeoToOffice_Main(QMainWindow):
         if self.ui.chb_systray_minimize.isChecked():
             self.tray_icon.act_hide.trigger()
         # prepare progress bar
-        progbar_max = sum(self.li_opts) * search_to_be_exported.get("total")
+        progbar_max = sum(self.li_opts) * search_to_be_exported.total
         self.ui.pgb_exports.setRange(1, progbar_max)
         self.ui.pgb_exports.reset()
 
@@ -621,7 +605,7 @@ class IsogeoToOffice_Main(QMainWindow):
         :param dict search_to_be_exported: Isogeo search response to export
         """
         # prepare progress bar
-        progbar_max = sum(self.li_opts) * search_to_be_exported.get("total")
+        progbar_max = sum(self.li_opts) * search_to_be_exported.total
         self.ui.pgb_exports.setRange(1, progbar_max)
         self.ui.pgb_exports.reset()
 
