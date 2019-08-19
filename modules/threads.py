@@ -4,7 +4,7 @@
 """
     Isogeo To Office - Threads used to subprocess some tasks
 
-    Author: Julien Moura (@geojulien)
+    Author: Julien Moura (@geojulien) for Isogeo
     Python: 3.6.x
 """
 
@@ -55,7 +55,8 @@ class ThreadAppProperties(QThread):
         """Get application and informations
         """
         # get application properties
-        shares = self.api_mngr.isogeo.shares(token=self.api_mngr.token)
+        shares = self.api_mngr.isogeo.share.listing()
+        logger.debug("{} shares are feeding the app.".format(len(shares)))
         # insert text
         text = "<html>"  # opening html content
         # Isogeo application authenticated in the plugin
