@@ -23,7 +23,7 @@ pytest-qt
 
 # PyQt
 pypiwin32
-pyqt5-tools==5.12.1.1.5rc4 ; sys_platform == 'win32'
+pyqt5-tools==5.13.* ; sys_platform == 'win32'
 sip
 
 # packaging
