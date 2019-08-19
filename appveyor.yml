@@ -8,13 +8,13 @@ image:
 
 environment:
   matrix:
-    - PYTHON: C:\\Python36-x64
-      PYTHON_VERSION: 3.6
+    - PYTHON: C:\\Python37-x64
+      PYTHON_VERSION: 3.7
       PYTHON_ARCH: 64
       PYTHONOPTIMIZE: 2
 
-    - PYTHON: C:\\Python36
-      PYTHON_VERSION: 3.6
+    - PYTHON: C:\\Python37
+      PYTHON_VERSION: 3.7
       PYTHON_ARCH: 32
       PYTHONOPTIMIZE: 2
 
