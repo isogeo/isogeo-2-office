@@ -112,11 +112,11 @@ class TestFormatter(unittest.TestCase):
     # formatter
     def test_cgus(self):
         """CGU formatter."""
-        search = self.isogeo.search(page_size=0, whole_share=0)
+        search = self.isogeo.search(page_size=0, whole_results=0)
         licenses = [t for t in search.get("tags") if t.startswith("license:")]
         # filtered search
         md_cgu = self.isogeo.search(
-            query=licenses[0], include=["conditions"], page_size=1, whole_share=0
+            query=licenses[0], include=["conditions"], page_size=1, whole_results=0
         )
         # get conditions reformatted
         cgus_in = md_cgu.get("results")[0].get("conditions", [])
@@ -128,7 +128,7 @@ class TestFormatter(unittest.TestCase):
 
     def test_limitations(self):
         """Limitations formatter."""
-        search = self.isogeo.search(whole_share=1, include=["limitations"])
+        search = self.isogeo.search(whole_results=1, include=["limitations"])
         # filtered search
         for md in search.get("results"):
             if md.get("limitations"):
@@ -145,7 +145,7 @@ class TestFormatter(unittest.TestCase):
 
     def test_specifications(self):
         """Limitations formatter."""
-        search = self.isogeo.search(whole_share=1, include=["specifications"])
+        search = self.isogeo.search(whole_results=1, include=["specifications"])
         # filtered search
         for md in search.get("results"):
             if md.get("specifications"):

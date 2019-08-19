@@ -79,7 +79,7 @@ out_search_complete_tests = path.join(
 if not path.isfile(out_search_complete_tests):
     request = isogeo.search(
         query="owner:{}".format(WORKGROUP_TEST_FIXTURE_UUID),
-        whole_share=1,
+        whole_results=1,
         include="all",
         augment=1,
     )
@@ -91,7 +91,7 @@ else:
 # complete search
 out_search_complete = path.join(BASE_DIR, "fixtures", "api_search_complete.json")
 if not path.isfile(out_search_complete):
-    request = isogeo.search(whole_share=1, include="all", augment=1)
+    request = isogeo.search(whole_results=1, include="all", augment=1)
     with open(
         path.join(BASE_DIR, "fixtures", "api_search_complete.json"), "w"
     ) as json_basic:
