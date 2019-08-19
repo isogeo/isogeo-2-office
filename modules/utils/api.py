@@ -117,7 +117,7 @@ class IsogeoApiMngr(object):
                 lang=current_locale.name()[:2],
                 proxy=proxy_settings,
             )
-            self.token = self.isogeo.connect()
+            self.isogeo.connect()
             logger.debug("Connection succeeded")
             return True
         except ValueError as e:

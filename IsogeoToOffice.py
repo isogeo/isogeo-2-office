@@ -387,7 +387,6 @@ class IsogeoToOffice_Main(QMainWindow):
         # depending on search type
         if search_type == "reset":
             self.thread_search.search_params = {
-                "token": api_mngr.token,
                 "page_size": 0,
                 "whole_share": 0,
                 "augment": 1,
@@ -398,7 +397,6 @@ class IsogeoToOffice_Main(QMainWindow):
         elif search_type == "update":
             share_id, search_terms = self.get_selected_filters()
             self.thread_search.search_params = {
-                "token": api_mngr.token,
                 "query": search_terms,
                 "share": share_id,
                 "page_size": 0,
@@ -432,7 +430,6 @@ class IsogeoToOffice_Main(QMainWindow):
                 "specifications",
             ]
             self.thread_search.search_params = {
-                "token": api_mngr.token,
                 "query": search_terms,
                 "share": share_id,
                 "page_size": 100,
@@ -452,7 +449,6 @@ class IsogeoToOffice_Main(QMainWindow):
             # prepare search and launch export process
             share_id, search_terms = self.get_selected_filters()
             self.thread_search.search_params = {
-                "token": api_mngr.token,
                 "query": search_terms,
                 "share": share_id,
                 "page_size": 100,
