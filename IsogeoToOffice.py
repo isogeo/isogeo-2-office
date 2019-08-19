@@ -714,6 +714,8 @@ class IsogeoToOffice_Main(QMainWindow):
             # API
             self.app_settings.setValue("auth/app_id", api_mngr.api_app_id)
             self.app_settings.setValue("auth/app_secret", api_mngr.api_app_secret)
+            self.app_settings.setValue("auth/app_type", api_mngr.api_app_type)
+            self.app_settings.setValue("auth/platform", api_mngr.api_platform)
             self.app_settings.setValue("auth/url_base", api_mngr.api_url_base)
             self.app_settings.setValue("auth/url_auth", api_mngr.api_url_auth)
             self.app_settings.setValue("auth/url_token", api_mngr.api_url_token)

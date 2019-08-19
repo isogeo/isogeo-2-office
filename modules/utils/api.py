@@ -2,7 +2,6 @@
 #! python3
 
 # Standard library
-import json
 import logging
 import time
 from functools import partial
@@ -12,6 +11,7 @@ from urllib.request import getproxies
 
 # 3rd party
 from dotenv import load_dotenv
+import urllib3
 
 # Isogeo
 from isogeo_pysdk import Isogeo
@@ -51,6 +51,8 @@ class IsogeoApiMngr(object):
     # api parameters
     api_app_id = ""
     api_app_secret = ""
+    api_platform = "prod"
+    api_app_type = "group"
     api_url_base = "https://v1.api.isogeo.com/"
     api_url_auth = "https://id.api.isogeo.com/oauth/authorize"
     api_url_token = "https://id.api.isogeo.com/oauth/token"
@@ -91,6 +93,10 @@ class IsogeoApiMngr(object):
             self.display_auth_form()
             return False
 
+        # ignore warnings related to the QA self-signed cert
+        if self.api_platform == "qa":
+            urllib3.disable_warnings()
+
         # start api wrapper
         try:
             logger.debug("Start connection attempts")
@@ -112,8 +118,10 @@ class IsogeoApiMngr(object):
 
             # client connexion
             self.isogeo = Isogeo(
+                auth_mode="group",
                 client_id=self.api_app_id,
                 client_secret=self.api_app_secret,
+                auto_refresh_url=self.api_url_token,
                 lang=current_locale.name()[:2],
                 proxy=proxy_settings,
             )
@@ -168,6 +176,8 @@ class IsogeoApiMngr(object):
         if store_location == "QSettings":
             qsettings.setValue("auth/app_id", self.api_app_id)
             qsettings.setValue("auth/app_secret", self.api_app_secret)
+            qsettings.setValue("auth/app_type", self.api_app_type)
+            qsettings.setValue("auth/platform", self.api_platform)
             qsettings.setValue("auth/url_base", self.api_url_base)
             qsettings.setValue("auth/url_auth", self.api_url_auth)
             qsettings.setValue("auth/url_token", self.api_url_token)
@@ -182,6 +192,12 @@ class IsogeoApiMngr(object):
         if credentials_source == "QSettings":
             self.api_app_id = qsettings.value("auth/app_id", "")
             self.api_app_secret = qsettings.value("auth/app_secret", "")
+            self.api_app_type = qsettings.value(
+                "auth/app_type", "group"
+            )
+            self.api_platform = qsettings.value(
+                "auth/platform", "prod"
+            )
             self.api_url_base = qsettings.value(
                 "auth/url_base", "https://v1.api.isogeo.com/"
             )
@@ -200,10 +216,19 @@ class IsogeoApiMngr(object):
             )
             self.api_app_id = creds.get("client_id")
             self.api_app_secret = creds.get("client_secret")
+            self.api_app_type = creds.get("type", "group")
             self.api_url_base = creds.get("uri_base")
             self.api_url_auth = creds.get("uri_auth")
             self.api_url_token = creds.get("uri_token")
             self.api_url_redirect = creds.get("uri_redirect")
+
+            # guess platform
+            if "api.isogeo.com" in self.api_url_base:
+                self.api_platform = "prod"
+            elif "api.qa.isogeo.com" in self.api_url_base:
+                self.api_platform = "qa"
+            else:
+                self.api_platform = "custom"    # on-premises
         else:
             pass
 
