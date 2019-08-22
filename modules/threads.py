@@ -26,6 +26,7 @@ from openpyxl.comments import Comment
 from openpyxl.cell import WriteOnlyCell
 from PyQt5.QtCore import QDate, QLocale, QThread, pyqtSignal
 import requests
+import urllib3
 
 # submodules - export
 from . import Isogeo2docx, Isogeo2xlsx, isogeo2office_utils
@@ -33,6 +34,7 @@ from . import Isogeo2docx, Isogeo2xlsx, isogeo2office_utils
 # #############################################################################
 # ########## Globals ###############
 # ##################################
+
 app_utils = isogeo2office_utils()
 current_locale = QLocale()
 logger = logging.getLogger("isogeo2office")
@@ -135,17 +137,12 @@ class ThreadSearch(QThread):
         """Get application and informations
         """
         logger.debug("Search started.")
-        search = self.api_mngr.isogeo.search(
-            query=self.search_params.get("query", None),
-            share=self.search_params.get("share", None),
-            page_size=self.search_params.get("page_size", 0),
-            include=self.search_params.get("include", ()),
-            whole_results=self.search_params.get("whole_results", 0),
-            augment=self.search_params.get("augment", 0),
-            check=self.search_params.get("check", 0),
-            tags_as_dicts=self.search_params.get("tags_as_dicts", 0),
+        search = self.api_mngr.isogeo.search(**self.search_params)
+        logger.debug(
+            "Search finished: {} results on {} total. Transmitting to slot...".format(
+                len(search.results), search.total
+            )
         )
-        logger.debug("Search finished. Transmitted to slot.")
         # Search request finished
         self.sig_finished.emit(search)
 
@@ -190,11 +187,8 @@ class ThreadExportExcel(QThread):
 
         # parsing metadata
         for md in self.search.results:
-            # clean invalid attributes
-            md["coordinateSystem"] = md.pop("coordinate-system", [])
-            md["featureAttributes"] = md.pop("feature-attributes", [])
             # load metadata
-            metadata = Metadata(**md)
+            metadata = Metadata.clean_attributes(md)
             # show progression
             self.sig_step.emit(
                 1, self.tr("Processing Excel: {}").format(metadata.title_or_name())
