@@ -9,7 +9,7 @@
 #
 # Author:       Isogeo
 #
-# Python:       3.6
+# Python:       3.7+
 # ------------------------------------------------------------------------------
 
 # ##############################################################################
@@ -33,8 +33,8 @@ from openpyxl.utils import get_column_letter
 # custom submodules
 from .formatter import IsogeoFormatter
 from .isogeo_stats import IsogeoStats
-from .xlsx_model_columns_vector import VECTOR_COLUMNS
-
+from . import RASTER_COLUMNS, RESOURCE_COLUMNS, SERVICE_COLUMNS, VECTOR_COLUMNS
+from modules.utils import isogeo2office_utils
 
 # ##############################################################################
 # ############ Globals ############
