@@ -126,18 +126,16 @@ class Isogeo2xlsx(Workbook):
         "Cohérence topologique",  # Y
         "Conditions",  # Z
         "Limitations",  # AA
-        "# Contacts",  # AB
-        "Points de contact",  # AC
-        "Autres contacts",  # AD
-        "Téléchargeable",  # AE
-        "Visualisable",  # AF
-        "Autres",  # AG
-        "Editer",  # AH
-        "Consulter",  # AI
-        "MD - ID",  # AJ
-        "MD - Création",  # AK
-        "MD - Modification",  # AL
-        "MD - Langue",  # AM
+        "Contacts",  # AB
+        "Téléchargeable",  # AC
+        "Visualisable",  # AD
+        "Autres",  # AE
+        "Editer",  # AF
+        "Consulter",  # AG
+        "MD - ID",  # AH
+        "MD - Création",  # AI
+        "MD - Modification",  # AJ
+        "MD - Langue",  # AK
     ]
 
     cols_s = [
@@ -184,18 +182,16 @@ class Isogeo2xlsx(Workbook):
         "Format (version)",  # J
         "Conditions",  # K
         "Limitations",  # L
-        "# Contacts",  # M
-        "Points de contact",  # N
-        "Autres contacts",  # O
-        "Téléchargeable",  # P
-        "Visualisable",  # Q
-        "Autres",  # R
-        "Editer",  # S
-        "Consulter",  # T
-        "MD - ID",  # U
-        "MD - Création",  # V
-        "MD - Modification",  # W
-        "MD - Langue",  # X
+        "Contacts",  # M
+        "Téléchargeable",  # N
+        "Visualisable",  # O
+        "Autres",  # P
+        "Editer",  # Q
+        "Consulter",  # R
+        "MD - ID",  # S
+        "MD - Création",  # T
+        "MD - Modification",  # U
+        "MD - Langue",  # V
     ]
 
     cols_fa = ["Nom", "Occurrences"]  # A  # B
@@ -443,17 +439,17 @@ class Isogeo2xlsx(Workbook):
             self.store_md_service(metadata, self.ws_s, self.idx_s)
         elif metadata.type == "resource":
             self.idx_rz += 1
+            self.store_md_generic(metadata, self.ws_rz, self.idx_rz)
             self.stats.md_types_repartition["resource"] += 1
             self.store_md_resource(metadata, self.ws_rz, self.idx_rz)
         else:
             logger.error(
                 "Type of metadata is not recognized/handled: {}".format(metadata.type)
             )
-        # method ending
-        return
 
     def store_md_generic(self, md: Metadata, ws: Worksheet, idx: int):
-        """ TO DOCUMENT
+        """Exports genreic metadata attributes into Excel worksheet with some dynamic
+        adaptations based on metadata type.
 
         :param Metadata md: metadata object to export
         :param Worksheet ws: Excel worksheet to store the exported info
@@ -470,22 +466,34 @@ class Isogeo2xlsx(Workbook):
         else:
             raise TypeError("Unknown metadata type: {}".format(md.type))
 
+        logger.debug(
+            "Start storing metadata {} ({}) using the matching reference columns for type of {} ...".format(
+                md.title_or_name(slugged=1), md._id, md.type
+            )
+        )
+
         # -- IDENTIFICATION ------------------------------------------------------------
-        ws["{}{}".format(colsref.get("title"), idx)] = md.title
-        ws["{}{}".format(colsref.get("name"), idx)] = md.name
-        ws["{}{}".format(colsref.get("abstract"), idx)] = md.abstract
+        if md.title:
+            ws["{}{}".format(colsref.get("title"), idx)] = md.title
+        if md.name:
+            ws["{}{}".format(colsref.get("name"), idx)] = md.name
+        if md.abstract:
+            ws["{}{}".format(colsref.get("abstract"), idx)] = md.abstract
 
         # path to source
-        src_path = Path(str(md.path))
-        if src_path.is_file():
-            link_path = r'=HYPERLINK("{0}","{1}")'.format(
-                src_path.parent, src_path.resolve()
-            )
-            ws["{}{}".format(colsref.get("path"), idx)] = link_path
-            logger.debug("Path reachable: {}".format(src_path))
-        else:
-            ws["{}{}".format(colsref.get("path"), idx)] = str(src_path.resolve())
-            logger.debug("Path not recognized nor reachable: {}".format(str(src_path)))
+        if md.path:
+            src_path = Path(str(md.path))
+            if src_path.is_file():
+                link_path = r'=HYPERLINK("{0}","{1}")'.format(
+                    src_path.parent, src_path.resolve()
+                )
+                ws["{}{}".format(colsref.get("path"), idx)] = link_path
+                logger.debug("Path reachable: {}".format(src_path))
+            else:
+                ws["{}{}".format(colsref.get("path"), idx)] = str(src_path.resolve())
+                logger.debug(
+                    "Path not recognized nor reachable: {}".format(str(src_path))
+                )
 
         # -- TAGS ----------------------------------------------------------------------
         keywords = []
@@ -499,12 +507,14 @@ class Isogeo2xlsx(Workbook):
                 else:
                     logger.info("Unknown keyword type: " + k.get("_tag"))
                     continue
-            ws["{}{}".format(colsref.get("keywords"), idx)] = " ;\n".join(
-                sorted(keywords)
-            )
-            ws["{}{}".format(colsref.get("inspireThemes"), idx)] = " ;\n".join(
-                sorted(inspire)
-            )
+            if keywords:
+                ws["{}{}".format(colsref.get("keywords"), idx)] = " ;\n".join(
+                    sorted(keywords)
+                )
+            if inspire:
+                ws["{}{}".format(colsref.get("inspireThemes"), idx)] = " ;\n".join(
+                    sorted(inspire)
+                )
         else:
             self.stats.md_empty_fields[md._id].append("keywords")
             logger.info("Vector dataset without any keyword or INSPIRE theme")
@@ -520,8 +530,14 @@ class Isogeo2xlsx(Workbook):
         )
 
         # -- HISTORY -------------------------------------------------------------------
-        ws["{}{}".format(colsref.get("collectionContext"), idx)] = md.collectionContext
-        ws["{}{}".format(colsref.get("collectionMethod"), idx)] = md.collectionMethod
+        if md.collectionContext:
+            ws[
+                "{}{}".format(colsref.get("collectionContext"), idx)
+            ] = md.collectionContext
+        if md.collectionMethod:
+            ws[
+                "{}{}".format(colsref.get("collectionMethod"), idx)
+            ] = md.collectionMethod
 
         # validity
         if md.validFrom:
@@ -536,8 +552,10 @@ class Isogeo2xlsx(Workbook):
             ] = utils.hlpr_date_as_datetime(md.validTo)
             ws["{}{}".format(colsref.get("validTo"), idx)].style = "date"
 
-        ws["{}{}".format(colsref.get("collectionContext"), idx)] = md.updateFrequency
-        ws["{}{}".format(colsref.get("collectionContext"), idx)] = md.validityComment
+        if md.updateFrequency:
+            ws["{}{}".format(colsref.get("updateFrequency"), idx)] = md.updateFrequency
+        if md.validityComment:
+            ws["{}{}".format(colsref.get("validityComment"), idx)] = md.validityComment
 
         # -- EVENTS --------------------------------------------------------------------
         # data creation date
@@ -560,11 +578,17 @@ class Isogeo2xlsx(Workbook):
 
         # -- TECHNICAL -----------------------------------------------------------------
         # format
-        if md.format:
+        if md.format and md.type != "resource":
             format_lbl = next(v for k, v in md.tags.items() if "format:" in k)
             ws["{}{}".format(colsref.get("format"), idx)] = "{0} ({1} - {2})".format(
                 format_lbl, md.formatVersion, md.encoding
             )
+        elif md.format and md.type == "resource":
+            ws["{}{}".format(colsref.get("format"), idx)] = "{0} {1}".format(
+                md.format, md.formatVersion
+            )
+        else:
+            pass
 
         # SRS
         if len(md.coordinateSystem):
@@ -590,16 +614,20 @@ class Isogeo2xlsx(Workbook):
             ws["{}{}".format(colsref.get("envelope"), idx)] = bbox
 
         # geometry
-        ws["{}{}".format(colsref.get("geometry"), idx)] = md.geometry
+        if md.geometry:
+            ws["{}{}".format(colsref.get("geometry"), idx)] = md.geometry
 
         # resolution
-        ws["{}{}".format(colsref.get("distance"), idx)] = md.distance
+        if md.distance:
+            ws["{}{}".format(colsref.get("distance"), idx)] = md.distance
 
         # scale
-        ws["{}{}".format(colsref.get("scale"), idx)] = md.scale
+        if md.scale:
+            ws["{}{}".format(colsref.get("scale"), idx)] = md.scale
 
         # features objects
-        ws["{}{}".format(colsref.get("features"), idx)] = md.features
+        if md.features:
+            ws["{}{}".format(colsref.get("features"), idx)] = md.features
 
         # -- QUALITY -------------------------------------------------------------------
         if md.specifications:
@@ -608,7 +636,8 @@ class Isogeo2xlsx(Workbook):
             )
 
         # topology
-        ws["AC{}".format(idx)] = md.topologicalConsistency
+        if md.topologicalConsistency:
+            ws["AC{}".format(idx)] = md.topologicalConsistency
 
         # -- FEATURE ATTRIBUTES --------------------------------------------------------
         if md.type == "vectorDataset" and isinstance(md.featureAttributes, list):
@@ -693,19 +722,6 @@ class Isogeo2xlsx(Workbook):
         """ TO DOCUMENT
         """
 
-        # LINKS
-        # ws["AL{}".format(idx)] = self.fmt.url_edit(
-        #     input_link=md.get("link_edit"), output_type="xlsx"
-        # )
-        # ws["AL{}".format(idx)].style = "Hyperlink"
-
-        # link_visu = r'=HYPERLINK("{0}","{1}")'.format(
-        #     self.url_base + "/m/" + md._id, "Version en ligne"
-        # )
-
-        # ws["AM{}".format(idx)] = link_visu
-        # ws["AM{}".format(idx)].style = "Hyperlink"
-
         # STYLING
         ws.row_dimensions[idx].height = 35  # line height - see #52
         ws["C{}".format(idx)].style = "wrap"
@@ -731,220 +747,9 @@ class Isogeo2xlsx(Workbook):
             )
         )
 
-        # end of method
-        return
-
     def store_md_raster(self, md: Metadata, ws: Worksheet, idx: int):
         """ TO DOCUMENT
         """
-        # variables
-        tags = md.tags
-
-        ws["A{}".format(idx)] = md.title
-        ws["B{}".format(idx)] = md.name
-        ws["C{}".format(idx)] = md.abstract
-
-        # path to source
-        src_path = Path(str(md.path))
-        if src_path.is_file():
-            link_path = r'=HYPERLINK("{0}","{1}")'.format(src_path.parent, src_path)
-            ws["D{}".format(idx)] = link_path
-            logger.info("Path reachable: {}".format(src_path))
-        else:
-            ws["D{}".format(idx)] = str(src_path)
-            logger.info("Path not recognized nor reachable: {}".format(str(src_path)))
-
-        # owner
-        ws["E{}".format(idx)] = next(v for k, v in tags.items() if "owner:" in k)
-        # KEYWORDS & INSPIRE THEMES
-        keywords = []
-        inspire = []
-        if md.keywords:
-            for k in md.keywords:
-                if k.get("_tag").startswith("keyword:is"):
-                    keywords.append(k.get("text"))
-                elif k.get("_tag").startswith("keyword:in"):
-                    inspire.append(k.get("text"))
-                else:
-                    logger.info("Unknown keyword type: " + k.get("_tag"))
-                    continue
-            ws["F{}".format(idx)] = " ;\n".join(sorted(keywords))
-            ws["G{}".format(idx)] = " ;\n".join(sorted(inspire))
-        else:
-            self.stats.md_empty_fields[md._id].append("keyword")
-            logger.info("Vector dataset without any keyword or INSPIRE theme")
-
-        # conformity
-        ws["H{}".format(idx)] = "conformity:inspire" in tags
-
-        # # HISTORY
-        # ws["I{}".format(idx)] = md.get("collectionContext", "")
-        # ws["J{}".format(idx)] = md.get("collectionMethod", "")
-
-        # validity
-        if md.get("validFrom"):
-            valid_start = arrow.get(md.get("validFrom"))
-            valid_start = "{0}".format(valid_start.format("DD/MM/YYYY", "fr_FR"))
-        else:
-            valid_start = ""
-        ws["K{}".format(idx)] = valid_start
-
-        if md.get("validTo"):
-            valid_end = arrow.get(md.get("validTo"))
-            valid_end = "{0}".format(valid_end.format("DD/MM/YYYY", "fr_FR"))
-        else:
-            valid_end = ""
-        ws["L{}".format(idx)] = valid_end
-
-        ws["M{}".format(idx)] = md.get("updateFrequency", "")
-        ws["N{}".format(idx)] = md.get("validComment", "")
-
-        # EVENTS
-        # data creation date
-        if md.created:
-            data_created = arrow.get(md.created)
-            data_created = "{0} ({1})".format(
-                data_created.format("DD/MM/YYYY", "fr_FR"),
-                data_created.humanize(locale="fr_FR"),
-            )
-        else:
-            data_created = ""
-        ws["O{}".format(idx)] = data_created
-
-        # events count
-        ws["P{}".format(idx)] = len(md.get("events", ""))
-
-        # data last update
-        if md.modified:
-            data_updated = arrow.get(md.modified)
-            data_updated = "{0} ({1})".format(
-                data_updated.format("DD/MM/YYYY", "fr_FR"),
-                data_updated.humanize(locale="fr_FR"),
-            )
-        else:
-            data_updated = ""
-        ws["Q{}".format(idx)] = data_updated
-
-        # TECHNICAL
-        # format
-        if "format" in md.keys():
-            format_lbl = next(v for k, v in tags.items() if "format:" in k)
-        else:
-            format_lbl = "NR"
-        ws["S{}".format(idx)] = "{0} ({1} - {2})".format(
-            format_lbl, md.get("formatVersion", "NR"), md.get("encoding", "NR")
-        )
-
-        # SRS
-        srs = md.setdefault("coordinate-system", {"name": "NR", "code": "NR"})
-        ws["T{}".format(idx)] = "{0} ({1})".format(
-            srs.get("name", "NR"), srs.get("code", "NR")
-        )
-
-        # bounding box
-        bbox = md.get("envelope", None)
-        if bbox:
-            coords = bbox.get("coordinates")
-            if bbox.get("type") == "Polygon":
-                bbox = "{}\n{}".format(coords[0][0], coords[0][-2])
-            elif bbox.get("type") == "Point":
-                bbox = "Centroïde : {}{}".format(coords[0], coords[1])
-            else:
-                bbox = "Unknown envelope type (no point nor polygon): " + bbox.get(
-                    "type"
-                )
-        else:
-            logger.info("Vector dataset without envelope.")
-            pass
-        ws["U{}".format(idx)] = bbox
-
-        # resolution
-        ws["V{}".format(idx)] = md.get("distance")
-
-        # scale
-        ws["W{}".format(idx)] = md.get("scale")
-
-        # ---- SPECIFICATIONS # -----------------------------------------------
-        specs_in = md.get("specifications", [])
-        ws["X{}".format(idx)] = " ;\n".join(self.fmt.specifications(specs_in))
-
-        # topology
-        ws["Y{}".format(idx)] = md.get("topologicalConsistency", "")
-
-        # ---- CGUs # --------------------------------------------------------
-        cgus_in = md.get("conditions", [])
-        ws["Z{}".format(idx)] = " ;\n".join(self.fmt.conditions(cgus_in))
-
-        # ---- LIMITATIONS # -------------------------------------------------
-        lims_in = md.get("limitations", [])
-        ws["AA{}".format(idx)] = " ;\n".join(self.fmt.limitations(lims_in))
-
-        # CONTACTS
-        contacts = md.get("contacts")
-        if len(contacts):
-            contacts_pt_cct = [
-                "{0} ({1})".format(
-                    contact.get("contact").get("name"),
-                    contact.get("contact").get("email"),
-                )
-                for contact in contacts
-                if contact.get("role") == "pointOfContact"
-            ]
-            contacts_other_cct = [
-                "{0} ({1})".format(
-                    contact.get("contact").get("name"),
-                    contact.get("contact").get("email"),
-                )
-                for contact in contacts
-                if contact.get("role") != "pointOfContact"
-            ]
-            ws["AB{}".format(idx)] = len(contacts)
-            ws["AC{}".format(idx)] = " ;\n".join(contacts_pt_cct)
-            ws["AD{}".format(idx)] = " ;\n".join(contacts_other_cct)
-        else:
-            ws["AB{}".format(idx)] = 0
-            self.stats.md_empty_fields[md._id].append("contact")
-            logger.info("Vector dataset without any contact")
-
-        # ACTIONS
-        ws["AE{}".format(idx)] = "action:download" in tags
-        ws["AF{}".format(idx)] = "action:view" in tags
-        ws["AG{}".format(idx)] = "action:other" in tags
-
-        # LINKS
-        ws["AH{}".format(idx)] = self.fmt.url_edit(
-            input_link=md.get("link_edit"), output_type="xlsx"
-        )
-        ws["AH{}".format(idx)].style = "Hyperlink"
-
-        link_visu = r'=HYPERLINK("{0}","{1}")'.format(
-            self.url_base + "/m/" + md._id, "Version en ligne"
-        )
-
-        ws["AI{}".format(idx)] = link_visu
-        ws["AI{}".format(idx)].style = "Hyperlink"
-        # METADATA
-        # id
-        ws["AJ{}".format(idx)] = md._id
-
-        # creation
-        md_created = arrow.get(md.get("_created")[:19])
-        md_created = "{0} ({1})".format(
-            md_created.format("DD/MM/YYYY", "fr_FR"),
-            md_created.humanize(locale="fr_FR"),
-        )
-        ws["AK{}".format(idx)] = md_created
-
-        # last update
-        md_updated = arrow.get(md.get("_modified")[:19])
-        md_updated = "{0} ({1})".format(
-            md_updated.format("DD/MM/YYYY", "fr_FR"),
-            md_updated.humanize(locale="fr_FR"),
-        )
-        ws["AL{}".format(idx)] = md_updated
-
-        # lang
-        ws["AM{}".format(idx)] = md.get("language")
 
         # STYLING
         ws.row_dimensions[idx].height = 35  # line height - see #52
@@ -1159,137 +964,6 @@ class Isogeo2xlsx(Workbook):
     def store_md_resource(self, md: Metadata, ws: Worksheet, idx: int):
         """ TO DOCUMENT
         """
-        # variables
-        tags = md.tags
-
-        ws["A{}".format(idx)] = md.get("title", "NR")
-        ws["B{}".format(idx)] = md.get("abstract", "")
-        ws["C{}".format(idx)] = md.path
-        ws["D{}".format(idx)] = md.get("owner")
-
-        # KEYWORDS
-        if md.keywords:
-            keywords = [
-                k.get("text")
-                for k in md.keywords
-                if k.get("_tag").startswith("keyword:is")
-            ]
-            ws["E{}".format(idx)] = " ;\n".join(sorted(keywords))
-        else:
-            self.stats.md_empty_fields[md._id].append("keyword")
-            logger.info("Service without any keyword")
-
-        # EVENTS
-        # data creation date
-        if md.created:
-            data_created = arrow.get(md.created)
-            data_created = "{0} ({1})".format(
-                data_created.format("DD/MM/YYYY", "fr_FR"),
-                data_created.humanize(locale="fr_FR"),
-            )
-        else:
-            data_created = ""
-        ws["F{}".format(idx)] = data_created
-
-        # events count
-        ws["G{}".format(idx)] = len(md.get("events", ""))
-
-        # data last update
-        if md.modified:
-            data_updated = arrow.get(md.created)
-            data_updated = "{0} ({1})".format(
-                data_updated.format("DD/MM/YYYY", "fr_FR"),
-                data_updated.humanize(locale="fr_FR"),
-            )
-        else:
-            data_updated = ""
-        ws["H{}".format(idx)] = data_updated
-
-        # TECHNICAL
-        # format
-        if "format:" in tags.keys():
-            format_lbl = next(v for k, v in tags.items() if "format:" in k)
-        else:
-            format_lbl = "NR"
-        ws["J{}".format(idx)] = "{0} ({1} - {2})".format(
-            format_lbl, md.get("formatVersion", "NR"), md.get("encoding", "NR")
-        )
-
-        # ---- CGUs # --------------------------------------------------------
-        cgus_in = md.get("conditions", [])
-        ws["K{}".format(idx)] = " ;\n".join(self.fmt.conditions(cgus_in))
-
-        # ---- LIMITATIONS # -------------------------------------------------
-        lims_in = md.get("limitations", [])
-        ws["L{}".format(idx)] = " ;\n".join(self.fmt.limitations(lims_in))
-
-        # CONTACTS
-        contacts = md.get("contacts")
-        if len(contacts):
-            contacts_pt_cct = [
-                "{0} ({1})".format(
-                    contact.get("contact").get("name"),
-                    contact.get("contact").get("email"),
-                )
-                for contact in contacts
-                if contact.get("role") == "pointOfContact"
-            ]
-            contacts_other_cct = [
-                "{0} ({1})".format(
-                    contact.get("contact").get("name"),
-                    contact.get("contact").get("email"),
-                )
-                for contact in contacts
-                if contact.get("role") != "pointOfContact"
-            ]
-            ws["M{}".format(idx)] = len(contacts)
-            ws["N{}".format(idx)] = " ;\n".join(contacts_pt_cct)
-            ws["O{}".format(idx)] = " ;\n".join(contacts_other_cct)
-        else:
-            ws["M{}".format(idx)] = 0
-            self.stats.md_empty_fields[md._id].append("contact")
-            logger.info("Service without any contact")
-
-        # ACTIONS
-        ws["P{}".format(idx)] = "action:download" in tags
-        ws["Q{}".format(idx)] = "action:view" in tags
-        ws["R{}".format(idx)] = "action:other" in tags
-
-        # LINKS
-        ws["S{}".format(idx)] = self.fmt.url_edit(
-            input_link=md.get("link_edit"), output_type="xlsx"
-        )
-        ws["S{}".format(idx)].style = "Hyperlink"
-
-        link_visu = r'=HYPERLINK("{0}","{1}")'.format(
-            self.url_base + "/m/" + md._id, "Version en ligne"
-        )
-
-        ws["T{}".format(idx)] = link_visu
-        ws["T{}".format(idx)].style = "Hyperlink"
-
-        # METADATA
-        # id
-        ws["U{}".format(idx)] = md._id
-
-        # creation
-        md_created = arrow.get(md.get("_created")[:19])
-        md_created = "{0} ({1})".format(
-            md_created.format("DD/MM/YYYY", "fr_FR"),
-            md_created.humanize(locale="fr_FR"),
-        )
-        ws["V{}".format(idx)] = md_created
-
-        # last update
-        md_updated = arrow.get(md.get("_modified")[:19])
-        md_updated = "{0} ({1})".format(
-            md_updated.format("DD/MM/YYYY", "fr_FR"),
-            md_updated.humanize(locale="fr_FR"),
-        )
-        ws["W{}".format(idx)] = md_updated
-
-        # lang
-        ws["X{}".format(idx)] = md.get("language")
 
         # STYLING
         ws.row_dimensions[idx].height = 35  # line height - see #52
