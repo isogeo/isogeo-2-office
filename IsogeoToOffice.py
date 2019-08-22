@@ -104,6 +104,13 @@ logfile = RotatingFileHandler(
 )
 logfile.setLevel(log_level)
 logfile.setFormatter(log_form)
+
+# info to the console
+log_console_handler = logging.StreamHandler()
+log_console_handler.setLevel(logging.INFO)
+log_console_handler.setFormatter(log_form)
+
+logger.addHandler(log_console_handler)
 logger.addHandler(logfile)
 logger.info("================ Isogeo to office ===============")
 
@@ -324,7 +331,7 @@ class IsogeoToOffice_Main(QMainWindow):
         )
 
         self.ui.txt_output_fileprefix.setText(
-            self.app_settings.value("settings/out_prefix")
+            self.app_settings.value("settings/out_prefix", "Isogeo_")
         )
         self.ui.int_md_uuid.setValue(
             self.app_settings.value("settings/uuid_length", 5, type=int)
@@ -345,11 +352,11 @@ class IsogeoToOffice_Main(QMainWindow):
         self.ui.cbb_word_tpl.setCurrentIndex(tpl_index)
 
         # timestamps
-        if self.app_settings.value("settings/timestamps") == "no":
+        if self.app_settings.value("settings/timestamps", type=str) == "no":
             self.ui.rdb_timestamp_no.setChecked(1)
-        elif self.app_settings.value("settings/timestamps") == "day":
+        elif self.app_settings.value("settings/timestamps", type=str) == "day":
             self.ui.rdb_timestamp_day.setChecked(1)
-        elif self.app_settings.value("settings/timestamps") == "datetime":
+        elif self.app_settings.value("settings/timestamps", type=str) == "datetime":
             self.ui.rdb_timestamp_datetime.setChecked(1)
         else:
             logger.warning(
@@ -687,6 +694,7 @@ class IsogeoToOffice_Main(QMainWindow):
 
         :param QCloseEvent event_sent: event sent when the main UI is close
         """
+        logger.debug("Closing application...")
         # force remove UI elements
         self.tray_icon.hide()
         self.tray_icon.deleteLater()
@@ -716,7 +724,7 @@ class IsogeoToOffice_Main(QMainWindow):
             )
 
             # location and naming rules
-            # output folder is defined by itso own method 'set_output_folder'
+            # output folder is defined by its own method 'set_output_folder'
             self.app_settings.setValue(
                 "settings/out_prefix", self.ui.txt_output_fileprefix.text()
             )
@@ -751,6 +759,7 @@ class IsogeoToOffice_Main(QMainWindow):
             self.app_settings.setValue("settings/windowState", self.saveState())
 
         # accept the close
+        logger.debug("See you!")
         event_sent.accept()
 
     def displayer(self, ui_class):
