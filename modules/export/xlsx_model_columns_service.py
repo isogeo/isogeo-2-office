@@ -5,12 +5,12 @@
     Matching table between Isogeo metadata model and Excle columns for Isogeo to Office.
 """
 
-VECTOR_COLUMNS = {
+SERVICE_COLUMNS = {
     "_created": "AO",
     "_creator": "E",
     "_id": "AN",
     "_modified": "AP",
-    "abtract": "C",
+    "abstract": "C",
     "collectionContext": "I",
     "collectionMethod": "J",
     "conditions": "AD",
@@ -35,7 +35,7 @@ VECTOR_COLUMNS = {
     "modified": "",
     "name": "B",
     "operations": "",
-    "path": "",
+    "path": "D",
     "precision": "",
     "published": "",
     "scale": "X",
