@@ -23,7 +23,7 @@ from collections.abc import KeysView
 from pathlib import Path
 
 # 3rd party library
-from isogeo_pysdk import IsogeoTranslator, Metadata
+from isogeo_pysdk import CoordinateSystem, IsogeoTranslator, Metadata
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.styles import Alignment, NamedStyle
@@ -594,7 +594,7 @@ class Isogeo2xlsx(Workbook):
             pass
 
         # SRS
-        if len(md.coordinateSystem):
+        if isinstance(md.coordinateSystem, dict):
             ws[
                 "{}{}".format(colsref.get("coordinateSystem"), idx)
             ] = "{0} ({1})".format(
