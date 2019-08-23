@@ -345,29 +345,24 @@ class ThreadExportXml(QThread):
 
         # parsing metadata
         for md in self.search.results:
+            # load metadata
+            metadata = Metadata.clean_attributes(md)
             # progression
-            md_title = md.get("title", "No title")
-            self.sig_step.emit(1, self.tr("Processing XML: {}").format(md_title))
+            self.sig_step.emit(1, self.tr("Processing XML: {}").format(metadata.title_or_name()))
 
             # filename
-            md_name = app_utils.clean_filename(
-                md.get("title", md.get("name", "No name"))
-            ).split(" -")[0]
-            if "." in md_name:
-                md_name = md_name.split(".")[1]
-            else:
-                pass
+            md_name = metadata.title_or_name(slugged=1)
             uuid = "{}".format(md.get("_id")[: self.length_uuid])
 
+            # compressed or raw
             if self.opt_zip:
                 out_xml_path = path.join(out_dir, "{}_{}.xml".format(md_name, uuid))
             else:
                 out_xml_path = out_dir + "_{}_{}.xml".format(md_name, uuid)
             logger.debug("XML - Output path: {}".format(out_xml_path))
+
             # export
-            xml_stream = self.api_mngr.isogeo.xml19139(
-                self.api_mngr.token, md.get("_id")
-            )
+            xml_stream = self.api_mngr.isogeo.metadata.download_xml(metadata)
             with open(path.realpath(out_xml_path), "wb") as out_md:
                 for block in xml_stream.iter_content(1024):
                     out_md.write(block)
