@@ -27,18 +27,19 @@ from xml.sax.saxutils import escape  # '<' -> '&lt;'
 # 3rd party library
 import arrow
 from docxtpl import DocxTemplate, etree, InlineImage
-from docx.shared import Mm
-from isogeo_pysdk import Isogeo
+from isogeo_pysdk import Isogeo, Metadata
 from isogeo_pysdk import IsogeoTranslator
 
 # custom submodules
 from .formatter import IsogeoFormatter
+from modules.utils import isogeo2office_utils
 
 # ##############################################################################
 # ############ Globals ############
 # #################################
 
 logger = logging.getLogger("isogeo2office")
+utils = isogeo2office_utils()
 
 # ##############################################################################
 # ########## Classes ###############
@@ -88,14 +89,17 @@ class Isogeo2docx(object):
         # FORMATTER
         self.fmt = IsogeoFormatter(output_type="Word")
 
-    def md2docx(self, docx_template, md, url_base):
-        """Parse Isogeo metadatas and replace docx template."""
+    def md2docx(self, docx_template, md: Metadata, url_base: str):
+        """Parse Isogeo metadatas and replace docx template.
+        
+        
+        """
         # optional: print resource id (useful in debug mode)
-        md_id = md.get("_id")
+        md_id = md._id
 
         # TAGS #
         # extracting & parsing tags
-        tags = md.get("tags")
+        tags = md.tags
         li_motscles = []
         li_theminspire = []
         srs = ""
@@ -155,250 +159,156 @@ class Isogeo2docx(object):
         )
 
         # ---- CONTACTS # ----------------------------------------------------
-        contacts_in = md.get("contacts", [])
-        contacts_out = []
-        # formatting contacts
-        for ct_in in contacts_in:
-            ct = {}
-            # translate contact role
-            ct["role"] = self.isogeo_tr("roles", ct_in.get("role"))
-            # ensure other contacts fields
-            ct["name"] = ct_in.get("contact").get("name", "NR")
-            ct["organization"] = ct_in.get("contact").get("organization", "")
-            ct["email"] = ct_in.get("contact").get("email", "")
-            ct["phone"] = ct_in.get("contact").get("phone", "")
-            ct["fax"] = ct_in.get("contact").get("fax", "")
-            ct["addressLine1"] = ct_in.get("contact").get("addressLine1", "")
-            ct["addressLine2"] = ct_in.get("contact").get("addressLine2", "")
-            ct["zipCode"] = ct_in.get("contact").get("zipCode", "")
-            ct["city"] = ct_in.get("contact").get("city", "")
-            ct["countryCode"] = ct_in.get("contact").get("countryCode", "")
-            # store into the final list
-            contacts_out.append(ct)
+        if md.contacts:
+            contacts_out = []
+            # formatting contacts
+            for ct_in in md.contacts:
+                ct = {}
+                # translate contact role
+                ct["role"] = self.isogeo_tr("roles", ct_in.get("role"))
+                # ensure other contacts fields
+                ct["name"] = ct_in.get("contact").get("name", "NR")
+                ct["organization"] = ct_in.get("contact").get("organization", "")
+                ct["email"] = ct_in.get("contact").get("email", "")
+                ct["phone"] = ct_in.get("contact").get("phone", "")
+                ct["fax"] = ct_in.get("contact").get("fax", "")
+                ct["addressLine1"] = ct_in.get("contact").get("addressLine1", "")
+                ct["addressLine2"] = ct_in.get("contact").get("addressLine2", "")
+                ct["zipCode"] = ct_in.get("contact").get("zipCode", "")
+                ct["city"] = ct_in.get("contact").get("city", "")
+                ct["countryCode"] = ct_in.get("contact").get("countryCode", "")
+                # store into the final list
+                contacts_out.append(ct)
 
-        # ---- ATTRIBUTES # --------------------------------------------------
-        # formatting feature attributes
-        fields_in = md.get("feature-attributes", [])
-        fields_out = []
-        for f_in in fields_in:
-            field = {}
-            # ensure other fields
-            field["name"] = self.clean_xml(f_in.get("name", ""))
-            field["alias"] = self.clean_xml(f_in.get("alias", ""))
-            field["description"] = self.clean_xml(f_in.get("description", ""))
-            field["dataType"] = f_in.get("dataType", "")
-            field["language"] = f_in.get("language", "")
-            # store into the final list
-            fields_out.append(field)
+        # ---- ATTRIBUTES --------------------------------------------------
+        if md.type == "vectorDataset" and isinstance(md.featureAttributes, list):
+            fields_out = []
+            for f_in in md.featureAttributes:
+                field = {}
+                # ensure other fields
+                field["name"] = self.clean_xml(f_in.get("name", ""))
+                field["alias"] = self.clean_xml(f_in.get("alias", ""))
+                field["description"] = self.clean_xml(f_in.get("description", ""))
+                field["dataType"] = f_in.get("dataType", "")
+                field["language"] = f_in.get("language", "")
+                # store into the final list
+                fields_out.append(field)
 
-        # ---- EVENTS # ------------------------------------------------------
-        # formatting feature attributes
-        events = md.get("events", "")
-        for e in events:
-            # pop creation events (already in the export document)
-            if e.get("kind") == "creation":
-                events.remove(e)
-                continue
-            else:
-                pass
-            # prevent invalid character for XML formatting in description
-            e["description"] = self.clean_xml(
-                e.get("description", " "), mode="strict", substitute=""
-            )
-            # make data human readable
-            evt_date = arrow.get(e.get("date")[:19])
-            evt_date = "{0} ({1})".format(
-                evt_date.format(self.dates_fmt, self.locale_fmt),
-                evt_date.humanize(locale=self.locale_fmt),
-            )
-            e["date"] = evt_date
-            # translate event kind
-            e["kind"] = self.isogeo_tr("events", e.get("kind"))
+        # ---- EVENTS ------------------------------------------------------
+        if md.events:
+            for e in md.events:
+                # pop creation events (already in the export document)
+                if e.get("kind") == "creation":
+                    md.events.remove(e)
+                    continue
+                else:
+                    pass
+                # prevent invalid character for XML formatting in description
+                e["description"] = self.clean_xml(
+                    e.get("description", " "), mode="strict", substitute=""
+                )
+                # make data human readable
+                evt_date = arrow.get(e.get("date")[:19])
+                evt_date = "{0} ({1})".format(
+                    evt_date.format(self.dates_fmt, self.locale_fmt),
+                    evt_date.humanize(locale=self.locale_fmt),
+                )
+                e["date"] = evt_date
+                # translate event kind
+                e["kind"] = self.isogeo_tr("events", e.get("kind"))
 
         # ---- IDENTIFICATION # ----------------------------------------------
         # Resource type
-        resource_type = md.get("type", self.missing_values())
-        resource_type = self.isogeo_tr("formatTypes", resource_type)
+        resource_type = self.isogeo_tr("formatTypes", md.type)
 
         # Format
-        format_version = "{0} ({1} - {2})".format(
-            format_lbl,
-            md.get("formatVersion", self.missing_values()),
-            md.get("encoding", self.missing_values()),
-        )
+        if md.format and md.type in ("rasterDataset", "vectorDataset"):
+            format_version = "{0} {1} ({2})".format(
+                format_lbl,
+                md.formatVersion,
+                md.encoding,
+            )
 
         # path to the resource
-        localplace = md.get("path", self.missing_values()).replace("&", "&amp;")
+        localplace = md.path
 
         # ---- HISTORY # -----------------------------------------------------
         # data events
-        if md.get("created"):
-            data_created = arrow.get(md.get("created")[:19])
-            data_created = "{0} ({1})".format(
-                data_created.format(self.dates_fmt, self.locale_fmt),
-                data_created.humanize(locale=self.locale_fmt),
-            )
-            # data_created = arrow.get(md.get("created", self.missing_values(1))).format("dddd D MMMM YYYY")
+        if md.created:
+            data_created = utils.hlpr_datetimes(md.created).strftime(self.dates_fmt)
         else:
-            data_created = "NR"
-        if md.get("modified"):
-            data_updated = arrow.get(md.get("modified")[:19])
-            data_updated = "{0} ({1})".format(
-                data_updated.format(self.dates_fmt, self.locale_fmt),
-                data_updated.humanize(locale=self.locale_fmt),
-            )
+            data_created = ""
+        if md.modified:
+            data_updated = utils.hlpr_datetimes(md.modified).strftime(self.dates_fmt)
         else:
-            data_updated = "NR"
-        if md.get("published"):
-            data_published = arrow.get(md.get("published")[:19])
-            data_published = "{0} ({1})".format(
-                data_published.format(self.dates_fmt, self.locale_fmt),
-                data_published.humanize(locale=self.locale_fmt),
-            )
+            data_updated = ""
+        if md.published:
+            data_published = utils.hlpr_datetimes(md.published).strftime(self.dates_fmt)
         else:
-            data_published = "NR"
+            data_published = ""
 
         # validity
-        # for date manipulation: https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior
-        # could be independant from dateutil: datetime.datetime.strptime("2008-08-12T12:20:30.656234Z", "%Y-%m-%dT%H:%M:%S.Z")
-        if md.get("validFrom"):
-            valid_start = arrow.get(md.get("validFrom"))
-            valid_start = "{0}".format(
-                valid_start.format(self.dates_fmt, self.locale_fmt)
-            )
+        if md.validFrom:
+            validFrom = utils.hlpr_datetimes(md.validFrom).strftime(self.dates_fmt)
         else:
-            valid_start = "NR"
+            validFrom = "NR"
         # end validity date
-        if md.get("validTo"):
-            valid_end = arrow.get(md.get("validTo"))
-            valid_end = "{0}".format(valid_end.format(self.dates_fmt, self.locale_fmt))
+        if md.validTo:
+            validTo = utils.hlpr_datetimes(md.validTo).strftime(self.dates_fmt)
         else:
-            valid_end = "NR"
-        # validity comment
-        valid_com = md.get("validityComment", self.missing_values())
+            validTo = "NR"
 
         # ---- SPECIFICATIONS # -----------------------------------------------
-        specs_in = md.get("specifications", [])
-        # specs_out = []
-        # for s_in in specs_in:
-        #     spec = {}
-        #     # translate specification conformity
-        #     if s_in.get("conformant"):
-        #         spec["conformity"] = self.isogeo_tr("quality", "isConform")
-        #     else:
-        #         spec["conformity"] = self.isogeo_tr("quality", "isNotConform")
-        #     # ensure other fields
-        #     spec["name"] = s_in.get("specification").get("name")
-        #     spec["link"] = s_in.get("specification").get("link")
-        #     # make data human readable
-        #     spec_date = arrow.get(s_in.get("specification").get("published")[:19])
-        #     spec_date = "{0}".format(spec_date.format(self.dates_fmt,
-        #                                               self.locale_fmt))
-        #     spec["date"] = spec_date
-        #     # store into the final list
-        #     specs_out.append(spec)
-        specs_in = md.get("specifications", [])
-        specs_out = self.fmt.specifications(specs_in)
+        if md.specifications:
+            specs_out = self.fmt.specifications(md.specifications)
 
         # ---- CGUs # --------------------------------------------------------
-        cgus_in = md.get("conditions", [])
-        cgus_out = []
-        for c_in in cgus_in:
-            cgu = {}
-            # ensure other fields
-            cgu["description"] = self.clean_xml(c_in.get("description", ""))
-            if "license" in c_in.keys():
-                cgu["name"] = self.clean_xml(c_in.get("license").get("name", "NR"))
-                cgu["link"] = c_in.get("license").get("link", "")
-                cgu["content"] = self.clean_xml(c_in.get("license").get("content", ""))
-            else:
-                cgu["name"] = self.isogeo_tr("conditions", "noLicense")
-
-            # store into the final list
-            cgus_out.append(cgu)
+        if md.conditions:
+            cgus_out = self.fmt.conditions(md.conditions)
 
         # ---- LIMITATIONS # -------------------------------------------------
-        lims_in = md.get("limitations", [])
-        lims_out = []
-        for l_in in lims_in:
-            limitation = {}
-            # ensure other fields
-            limitation["description"] = self.clean_xml(l_in.get("description", ""))
-            limitation["type"] = self.isogeo_tr("limitations", l_in.get("type"))
-            # legal type
-            if l_in.get("type") == "legal":
-                limitation["restriction"] = self.isogeo_tr(
-                    "restrictions", l_in.get("restriction")
-                )
-            else:
-                pass
-            # INSPIRE precision
-            if "directive" in l_in.keys():
-                limitation["inspire"] = self.clean_xml(
-                    l_in.get("directive").get("name")
-                )
-                limitation["content"] = self.clean_xml(
-                    l_in.get("directive").get("description")
-                )
-            else:
-                pass
-
-            # store into the final list
-            lims_out.append(limitation)
+        if md.limitations:
+            lims_out = self.fmt.limitations(md.limitations)
 
         # ---- METADATA # ----------------------------------------------------
-        md_created = arrow.get(md.get("_created")[:19])
-        md_created = "{0} ({1})".format(
-            md_created.format(self.dates_fmt, self.locale_fmt),
-            md_created.humanize(locale=self.locale_fmt),
-        )
-        md_updated = arrow.get(md.get("_modified")[:19])
-        md_updated = "{0} ({1})".format(
-            md_updated.format(self.dates_fmt, self.locale_fmt),
-            md_updated.humanize(locale=self.locale_fmt),
-        )
+        md_created = utils.hlpr_datetimes(md._created).strftime(self.dates_fmt)
+        md_updated = utils.hlpr_datetimes(md._modified).strftime(self.dates_fmt)
 
         # FILLFULLING THE TEMPLATE #
         context = {
-            "varThumbnail": InlineImage(docx_template, md.get("thumbnail_local", None)),
-            "varTitle": self.clean_xml(md.get("title", self.missing_values())),
-            "varAbstract": self.clean_xml(md.get("abstract", self.missing_values())),
-            "varNameTech": md.get("name", self.missing_values()),
-            "varCollectContext": self.clean_xml(
-                md.get("collectionContext", self.missing_values())
-            ),
-            "varCollectMethod": self.clean_xml(
-                md.get("collectionMethod", self.missing_values())
-            ),
+            # "varThumbnail": InlineImage(docx_template, md.thumbnail),
+            "varTitle": self.clean_xml(md.title),
+            "varAbstract": self.clean_xml(md.abstract),
+            "varNameTech": md.name,
+            "varCollectContext": self.clean_xml(md.collectionContext),
+            "varCollectMethod": self.clean_xml(md.collectionMethod),
             "varDataDtCrea": data_created,
             "varDataDtUpda": data_updated,
             "varDataDtPubl": data_published,
-            "varValidityStart": valid_start,
-            "varValidityEnd": valid_end,
-            "validityComment": self.clean_xml(valid_com),
+            "varValidityStart": validFrom,
+            "varValidityEnd": validTo,
+            "validityComment": self.clean_xml(md.validityComment),
             "varFormat": format_version,
-            "varGeometry": md.get("geometry", self.missing_values()),
-            "varObjectsCount": md.get("features", self.missing_values()),
+            "varGeometry": md.geometry,
+            "varObjectsCount": md.features,
             "varKeywords": " ; ".join(li_motscles),
             "varKeywordsCount": len(li_motscles),
             "varType": resource_type,
             "varOwner": owner,
-            "varScale": md.get("scale", self.missing_values()),
-            "varTopologyInfo": self.clean_xml(
-                md.get("topologicalConsistency", self.missing_values())
-            ),
+            "varScale": md.scale,
+            "varTopologyInfo": self.clean_xml(md.topologicalConsistency),
             "varInspireTheme": " ; ".join(li_theminspire),
             "varInspireConformity": inspire_valid,
             "varLimitations": lims_out,
-            "varCGUS": self.fmt.conditions(cgus_in),
+            "varCGUS": self.fmt.conditions(cgus_out),
             "varSpecifications": specs_out,
-            "varContactsCount": len(contacts_in),
+            "varContactsCount": len(md.contacts),
             "varContactsDetails": contacts_out,
             "varSRS": srs,
             "varPath": localplace,
             "varFieldsCount": len(fields),
             "varFields": fields_out,
-            "varEventsCount": len(events),
+            "varEventsCount": len(md.events),
             "varEvents": events,
             "varMdDtCrea": md_created,
             "varMdDtUpda": md_updated,
@@ -411,7 +321,7 @@ class Isogeo2docx(object):
         try:
             docx_template.render(context)
             logger.info(
-                "Vector metadata stored: {} ({})".format(md.get("name"), md.get("_id"))
+                "Vector metadata stored: {} ({})".format(md.title_or_name(slugged=1), md.get("_id"))
             )
         except etree.XMLSyntaxError as e:
             logger.error(
@@ -442,18 +352,19 @@ class Isogeo2docx(object):
         # end of method
         return rpl_value
 
-    def remove_accents(self, input_str, substitute=""):
         """Clean string from special characters.
 
         source: http://stackoverflow.com/a/5843560
         """
         return unicode(substitute).join(char for char in input_str if char.isalnum())
 
-    def clean_xml(self, invalid_xml, mode="soft", substitute="_"):
+    def clean_xml(self, invalid_xml: str, mode="soft", substitute="_"):
         """Clean string of XML invalid characters.
 
         source: http://stackoverflow.com/a/13322581/2556577
         """
+        if invalid_xml is None:
+            return ""
         # assumptions:
         #   doc = *( start_tag / end_tag / text )
         #   start_tag = '<' name *attr [ '/' ] '>'
