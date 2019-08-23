@@ -544,15 +544,15 @@ class Isogeo2xlsx(Workbook):
 
         # validity
         if md.validFrom:
-            ws[
-                "{}{}".format(colsref.get("validFrom"), idx)
-            ] = utils.hlpr_date_as_datetime(md.validFrom)
+            ws["{}{}".format(colsref.get("validFrom"), idx)] = utils.hlpr_datetimes(
+                md.validFrom
+            )
             ws["{}{}".format(colsref.get("validFrom"), idx)].style = "date"
 
         if md.validTo:
-            ws[
-                "{}{}".format(colsref.get("validTo"), idx)
-            ] = utils.hlpr_date_as_datetime(md.validTo)
+            ws["{}{}".format(colsref.get("validTo"), idx)] = utils.hlpr_datetimes(
+                md.validTo
+            )
             ws["{}{}".format(colsref.get("validTo"), idx)].style = "date"
 
         if md.updateFrequency:
@@ -563,9 +563,9 @@ class Isogeo2xlsx(Workbook):
         # -- EVENTS --------------------------------------------------------------------
         # data creation date
         if md.created:
-            ws[
-                "{}{}".format(colsref.get("created"), idx)
-            ] = utils.hlpr_date_as_datetime(md.created)
+            ws["{}{}".format(colsref.get("created"), idx)] = utils.hlpr_datetimes(
+                md.created
+            )
             ws["{}{}".format(colsref.get("created"), idx)].style = "date"
 
         # events count
@@ -574,9 +574,9 @@ class Isogeo2xlsx(Workbook):
 
         # data last update
         if md.modified:
-            ws[
-                "{}{}".format(colsref.get("modified"), idx)
-            ] = utils.hlpr_date_as_datetime(md.modified)
+            ws["{}{}".format(colsref.get("modified"), idx)] = utils.hlpr_datetimes(
+                md.modified
+            )
             ws["{}{}".format(colsref.get("modified"), idx)].style = "date"
 
         # -- TECHNICAL -----------------------------------------------------------------
@@ -706,16 +706,16 @@ class Isogeo2xlsx(Workbook):
 
         # creation
         if md._created:
-            ws[
-                "{}{}".format(colsref.get("_created"), idx)
-            ] = utils.hlpr_date_as_datetime(md._created)
+            ws["{}{}".format(colsref.get("_created"), idx)] = utils.hlpr_datetimes(
+                md._created
+            )
             ws["{}{}".format(colsref.get("_created"), idx)].style = "date"
 
         # last update
         if md._modified:
-            ws[
-                "{}{}".format(colsref.get("_modified"), idx)
-            ] = utils.hlpr_date_as_datetime(md._modified)
+            ws["{}{}".format(colsref.get("_modified"), idx)] = utils.hlpr_datetimes(
+                md._modified
+            )
             ws["{}{}".format(colsref.get("_modified"), idx)].style = "date"
 
         # lang
