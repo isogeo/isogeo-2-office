@@ -4,7 +4,7 @@
 """
     Name:         Isogeo to Office utilitaries
     Author:       Isogeo
-    Python:       3.6.x
+    Python:       3.7.x
 """
 
 # ############################################################################
@@ -358,7 +358,7 @@ class isogeo2office_utils(IsogeoUtils):
         else:
             return re.sub(r"[^A-Za-z0-9]+", substitute, input_str)
 
-    def clean_xml(self, invalid_xml, mode: str = "soft", substitute: str = "_"):
+    def clean_xml(self, invalid_xml: str, mode: str = "soft", substitute: str = "_"):
         """Clean string of XML invalid characters.
 
         source: https://stackoverflow.com/a/13322581/2556577
@@ -370,6 +370,8 @@ class isogeo2office_utils(IsogeoUtils):
           * soft [default]: remove chars which are not accepted in XML
           * strict: remove additional chars
         """
+        if invalid_xml is None:
+            return ""
         # assumptions:
         #   doc = *( start_tag / end_tag / text )
         #   start_tag = '<' name *attr [ '/' ] '>'
