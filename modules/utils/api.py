@@ -48,6 +48,7 @@ class IsogeoApiMngr(object):
     # ui reference - authentication form
     ui_auth_form = QDialog
     auth_form_request_url = "https://www.isogeo.com"
+
     # api parameters
     api_app_id = ""
     api_app_secret = ""
@@ -57,6 +58,8 @@ class IsogeoApiMngr(object):
     api_url_auth = "https://id.api.isogeo.com/oauth/authorize"
     api_url_token = "https://id.api.isogeo.com/oauth/token"
     api_url_redirect = "http://localhost:5000/callback"
+
+    proxies = app_utils.proxy_settings()
 
     # plugin credentials storage parameters
     credentials_storage = {"QSettings": 0, "oAuth2_file": 0}
@@ -100,22 +103,6 @@ class IsogeoApiMngr(object):
         # start api wrapper
         try:
             logger.debug("Start connection attempts")
-            # proxy
-            if getproxies():
-                logger.debug("Proxies settings found in the OS.")
-                proxy_settings = getproxies()
-            elif environ.get("HTTP_PROXY") or environ.get("HTTPS_PROXY"):
-                logger.debug(
-                    "Proxies settings found in environment vars (loaded from .env file)."
-                )
-                proxy_settings = {
-                    "http": environ.get("HTTP_PROXY"),
-                    "https": environ.get("HTTPS_PROXY"),
-                }
-            else:
-                logger.debug("No proxy settings found.")
-                proxy_settings = None
-
             # client connexion
             self.isogeo = Isogeo(
                 auth_mode="group",

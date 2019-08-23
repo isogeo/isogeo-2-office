@@ -348,7 +348,9 @@ class ThreadExportXml(QThread):
             # load metadata
             metadata = Metadata.clean_attributes(md)
             # progression
-            self.sig_step.emit(1, self.tr("Processing XML: {}").format(metadata.title_or_name()))
+            self.sig_step.emit(
+                1, self.tr("Processing XML: {}").format(metadata.title_or_name())
+            )
 
             # filename
             md_name = metadata.title_or_name(slugged=1)
