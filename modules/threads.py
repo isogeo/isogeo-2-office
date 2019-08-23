@@ -5,7 +5,7 @@
     Isogeo To Office - Threads used to subprocess some tasks
 
     Author: Julien Moura (@geojulien) for Isogeo
-    Python: 3.6.x
+    Python: 3.7.x
 """
 
 # #############################################################################
@@ -15,6 +15,7 @@
 # standard library
 import logging
 from os import path, walk
+from pathlib import Path
 from tempfile import mkdtemp
 from zipfile import ZipFile
 
@@ -26,7 +27,6 @@ from openpyxl.comments import Comment
 from openpyxl.cell import WriteOnlyCell
 from PyQt5.QtCore import QDate, QLocale, QThread, pyqtSignal
 import requests
-import urllib3
 
 # submodules - export
 from . import Isogeo2docx, Isogeo2xlsx, isogeo2office_utils
@@ -261,30 +261,28 @@ class ThreadExportWord(QThread):
 
         # parsing metadata
         for md in self.search.results:
+            # load metadata
+            metadata = Metadata.clean_attributes(md)
+
             # progression
-            md_title = md.get("title", "No title")
-            self.sig_step.emit(1, self.tr("Processing Word: {}").format(md_title))
+            self.sig_step.emit(1, self.tr("Processing Word: {}").format(metadata.title_or_name()))
+
             # thumbnails
-            thumbnail_abs_path = self.thumbnails.get(md.get("_id"), thumbnail_default)[
-                1
-            ]
+            thumbnail_abs_path = self.thumbnails.get(metadata._id, thumbnail_default)[1]
             if not thumbnail_abs_path or not path.isfile(thumbnail_abs_path):
                 thumbnail_abs_path = path.realpath(r"resources/favicon.png")
             logger.debug("Thumbnail used: {}".format(thumbnail_abs_path))
-            md["thumbnail_local"] = thumbnail_abs_path
+            md.thumbnail = thumbnail_abs_path
+
             # templating
             tpl = DocxTemplate(self.tpl_path)
             # fill template
             to_docx.md2docx(
-                docx_template=tpl, md=md, url_base="https://open.isogeo.com"
+                docx_template=tpl, md=metadata, url_base="https://open.isogeo.com"
             )
             # filename
-            md_name = app_utils.clean_filename(md.get("name", md.get("title", "NR")))
-            if "." in md_name:
-                md_name = md_name.split(".")[1]
-            else:
-                pass
-            uuid = "{}".format(md.get("_id")[: self.length_uuid])
+            md_name = metadata.title_or_name(slugged=1)
+            uuid = "{}".format(metadata._id[: self.length_uuid])
 
             out_docx_filename = "{}_{}_{}.docx".format(
                 self.output_docx_folder, md_name, uuid
