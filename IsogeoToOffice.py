@@ -874,8 +874,7 @@ class IsogeoToOffice_Main(QMainWindow):
         """Executed after credentials have been updated.
         """
         api_mngr.manage_api_initialization()
-        self.thread_app_props.start()
-        self.search(search_type="reset")
+        self.init_api_connection()
 
     @pyqtSlot(MetadataSearch)
     def update_search_form(self, search: MetadataSearch):
