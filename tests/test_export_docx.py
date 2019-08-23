@@ -21,6 +21,7 @@ import unittest
 
 # 3rd party
 from docxtpl import DocxTemplate
+from isogeo_pysdk import Metadata
 
 # target
 from modules import Isogeo2docx
@@ -70,12 +71,13 @@ class TestExportDocx(unittest.TestCase):
         url_oc = "https://open.isogeo.com/"
         # run
         for md in search.get("results")[:20]:
+            metadata = Metadata.clean_attributes(md)
             # output path
             out_docx = mkstemp(prefix="i2o_test_docx_")
             out_docx_path = out_docx[1] + ".docx"
             # templating
             tpl = DocxTemplate(self.word_template)
-            self.to_docx.md2docx(tpl, md, url_oc)
+            self.to_docx.md2docx(tpl, metadata, url_oc)
             # save
             tpl.save(out_docx_path)
             del tpl
