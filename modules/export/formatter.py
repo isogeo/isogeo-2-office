@@ -19,14 +19,10 @@
 
 # Standard library
 import logging
-import re
-from itertools import zip_longest
 from urllib.parse import urlparse
-from xml.sax.saxutils import escape
 
 # 3rd party library
-import arrow
-from isogeo_pysdk import IsogeoTranslator, License, Limitation, Specification
+from isogeo_pysdk import IsogeoTranslator, Condition, License, Limitation, Specification
 
 # custom submodules
 from modules.utils import isogeo2office_utils
@@ -77,39 +73,41 @@ class IsogeoFormatter(object):
         self.isogeo_tr = IsogeoTranslator(lang).tr
 
     # ------------ Metadata sections formatter --------------------------------
-    def conditions(self, md_cgus: dict):
+    def conditions(self, md_cgus: list) -> list:
         """Render input metadata CGUs as a new list.
 
         :param dict md_cgus: input dictionary extracted from an Isogeo metadata
         """
         cgus_out = []
         for c_in in md_cgus:
-            cgu = {}
-            # ensure other fields
-            if isinstance(c_in, str):
-                print(c_in)
-            cgu["description"] = utils.clean_xml(c_in.get("description", ""))
-            if "license" in c_in:
-                lic = License(**c_in.get("license"))
-                cgu["name"] = utils.clean_xml(lic.name)
-                cgu["link"] = lic.link
-                cgu["content"] = utils.clean_xml(lic.content)
+            if not isinstance(c_in, dict):
+                logger.error("Condition expects a dict, not '{}'".format(type(c_in)))
+                continue
+            cgu_out = {}
+            # load condition object
+            condition_in = Condition(**c_in)
+            cgu_out["description"] = utils.clean_xml(condition_in.description, "")
+            if isinstance(condition_in.license, License):
+                lic = condition_in.license
+                cgu_out["name"] = utils.clean_xml(lic.name)
+                cgu_out["link"] = lic.link
+                cgu_out["content"] = utils.clean_xml(lic.content)
             else:
-                cgu["name"] = self.isogeo_tr("conditions", "noLicense")
+                cgu_out["name"] = self.isogeo_tr("conditions", "noLicense")
 
             # store into the final list
             cgus_out.append(
                 "{} {}. {} {}".format(
-                    cgu.get("name"),
-                    cgu.get("description", ""),
-                    cgu.get("content", ""),
-                    cgu.get("link", ""),
+                    cgu_out.get("name"),
+                    cgu_out.get("description", ""),
+                    cgu_out.get("content", ""),
+                    cgu_out.get("link", ""),
                 )
             )
         # return formatted result
         return cgus_out
 
-    def limitations(self, md_limitations: dict):
+    def limitations(self, md_limitations: list) -> list:
         """Render input metadata limitations as a new list.
 
         :param dict md_limitations: input dictionary extracted from an Isogeo metadata
@@ -151,7 +149,7 @@ class IsogeoFormatter(object):
         # return formatted result
         return lims_out
 
-    def specifications(self, md_specifications: dict):
+    def specifications(self, md_specifications: list) -> list:
         """Render input metadata specifications as a new list.
 
         :param dict md_specifications: input dictionary extracted from an Isogeo metadata
@@ -170,9 +168,15 @@ class IsogeoFormatter(object):
             spec_out["link"] = spec_in.link
             # make data human readable
             if spec_in.published:
-                spec_date = utils.hlpr_datetimes(spec_in.published).strftime(self.dates_fmt)
+                spec_date = utils.hlpr_datetimes(spec_in.published).strftime(
+                    self.dates_fmt
+                )
             else:
-                logger.warning("Publication date is missing in the specification '{} ({})'".format(spec_in.name, spec_in._tag))
+                logger.warning(
+                    "Publication date is missing in the specification '{} ({})'".format(
+                        spec_in.name, spec_in._tag
+                    )
+                )
                 spec_date = ""
             spec_out["date"] = spec_date
             # store into the final list
