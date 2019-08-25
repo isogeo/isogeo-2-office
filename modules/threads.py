@@ -265,14 +265,16 @@ class ThreadExportWord(QThread):
             metadata = Metadata.clean_attributes(md)
 
             # progression
-            self.sig_step.emit(1, self.tr("Processing Word: {}").format(metadata.title_or_name()))
+            self.sig_step.emit(
+                1, self.tr("Processing Word: {}").format(metadata.title_or_name())
+            )
 
             # thumbnails
             thumbnail_abs_path = self.thumbnails.get(metadata._id, thumbnail_default)[1]
             if not thumbnail_abs_path or not path.isfile(thumbnail_abs_path):
                 thumbnail_abs_path = path.realpath(r"resources/favicon.png")
             logger.debug("Thumbnail used: {}".format(thumbnail_abs_path))
-            md.thumbnail = thumbnail_abs_path
+            metadata.thumbnail = thumbnail_abs_path
 
             # templating
             tpl = DocxTemplate(self.tpl_path)
