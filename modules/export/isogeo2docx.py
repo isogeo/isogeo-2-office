@@ -19,15 +19,12 @@
 
 # Standard library
 from datetime import datetime
-from itertools import zip_longest
 import logging
-import re
-from xml.sax.saxutils import escape  # '<' -> '&lt;'
 
 # 3rd party library
 import arrow
 from docxtpl import DocxTemplate, etree, InlineImage
-from isogeo_pysdk import Isogeo, Metadata
+from isogeo_pysdk import Isogeo, Event, Metadata
 from isogeo_pysdk import IsogeoTranslator
 
 # custom submodules
@@ -94,12 +91,14 @@ class Isogeo2docx(object):
         
         
         """
-        # optional: print resource id (useful in debug mode)
-        md_id = md._id
+        logger.debug(
+            "Starting the export into Word .docx of {} ({})".format(
+                md.title_or_name(slugged=1), md._id
+            )
+        )
 
         # TAGS #
         # extracting & parsing tags
-        tags = md.tags
         li_motscles = []
         li_theminspire = []
         srs = ""
@@ -109,35 +108,35 @@ class Isogeo2docx(object):
         fields = ["NR"]
 
         # looping on tags
-        for tag in tags.keys():
+        for tag in md.tags.keys():
             # free keywords
             if tag.startswith("keyword:isogeo"):
-                li_motscles.append(tags.get(tag))
+                li_motscles.append(md.tags.get(tag))
                 continue
             else:
                 pass
             # INSPIRE themes
             if tag.startswith("keyword:inspire-theme"):
-                li_theminspire.append(tags.get(tag))
+                li_theminspire.append(md.tags.get(tag))
                 continue
             else:
                 pass
             # workgroup which owns the metadata
             if tag.startswith("owner"):
-                owner = tags.get(tag)
+                owner = md.tags.get(tag)
                 owner_id = tag[6:]
                 continue
             else:
                 pass
             # coordinate system
             if tag.startswith("coordinate-system"):
-                srs = tags.get(tag)
+                srs = md.tags.get(tag)
                 continue
             else:
                 pass
             # format pretty print
             if tag.startswith("format"):
-                format_lbl = tags.get(tag, self.missing_values())
+                format_lbl = md.tags.get(tag, self.missing_values())
                 continue
             else:
                 pass
@@ -149,18 +148,13 @@ class Isogeo2docx(object):
                 pass
 
         # formatting links to visualize on OpenCatalog and edit on APP
-        link_visu = url_base + "/m/" + md_id
-        link_edit = "https://app.isogeo.com/groups/{}/resources/{}".format(
-            owner_id, md_id
-        )
+        link_visu = url_base + "/m/" + md._id
 
-        link_edit = "https://app.isogeo.com/groups/{}/resources/{}".format(
-            owner_id, md_id
-        )
+        link_edit = utils.get_edit_url(md_id=md._id, md_type=md.type, owner_id=owner_id)
 
         # ---- CONTACTS # ----------------------------------------------------
+        contacts_out = []
         if md.contacts:
-            contacts_out = []
             # formatting contacts
             for ct_in in md.contacts:
                 ct = {}
@@ -181,52 +175,45 @@ class Isogeo2docx(object):
                 contacts_out.append(ct)
 
         # ---- ATTRIBUTES --------------------------------------------------
+        fields_out = []
         if md.type == "vectorDataset" and isinstance(md.featureAttributes, list):
-            fields_out = []
             for f_in in md.featureAttributes:
                 field = {}
                 # ensure other fields
-                field["name"] = self.clean_xml(f_in.get("name", ""))
-                field["alias"] = self.clean_xml(f_in.get("alias", ""))
-                field["description"] = self.clean_xml(f_in.get("description", ""))
+                field["name"] = utils.clean_xml(f_in.get("name", ""))
+                field["alias"] = utils.clean_xml(f_in.get("alias", ""))
+                field["description"] = utils.clean_xml(f_in.get("description", ""))
                 field["dataType"] = f_in.get("dataType", "")
                 field["language"] = f_in.get("language", "")
                 # store into the final list
                 fields_out.append(field)
 
         # ---- EVENTS ------------------------------------------------------
+        events_out = []
         if md.events:
             for e in md.events:
+                evt = Event(**e)
                 # pop creation events (already in the export document)
-                if e.get("kind") == "creation":
-                    md.events.remove(e)
+                if evt.kind == "creation":
                     continue
-                else:
-                    pass
                 # prevent invalid character for XML formatting in description
-                e["description"] = self.clean_xml(
-                    e.get("description", " "), mode="strict", substitute=""
-                )
+                evt.description = utils.clean_xml(evt.description)
                 # make data human readable
-                evt_date = arrow.get(e.get("date")[:19])
-                evt_date = "{0} ({1})".format(
-                    evt_date.format(self.dates_fmt, self.locale_fmt),
-                    evt_date.humanize(locale=self.locale_fmt),
-                )
-                e["date"] = evt_date
+                evt.date = utils.hlpr_datetimes(evt.date).strftime(self.dates_fmt)
                 # translate event kind
-                e["kind"] = self.isogeo_tr("events", e.get("kind"))
+                # evt.kind = self.isogeo_tr("events", evt.kind)
+                # append
+                events_out.append(evt.to_dict())
 
         # ---- IDENTIFICATION # ----------------------------------------------
         # Resource type
         resource_type = self.isogeo_tr("formatTypes", md.type)
 
         # Format
+        format_version = ""
         if md.format and md.type in ("rasterDataset", "vectorDataset"):
             format_version = "{0} {1} ({2})".format(
-                format_lbl,
-                md.formatVersion,
-                md.encoding,
+                format_lbl, md.formatVersion, md.encoding
             )
 
         # path to the resource
@@ -251,24 +238,30 @@ class Isogeo2docx(object):
         if md.validFrom:
             validFrom = utils.hlpr_datetimes(md.validFrom).strftime(self.dates_fmt)
         else:
-            validFrom = "NR"
+            validFrom = ""
         # end validity date
         if md.validTo:
             validTo = utils.hlpr_datetimes(md.validTo).strftime(self.dates_fmt)
         else:
-            validTo = "NR"
+            validTo = ""
 
         # ---- SPECIFICATIONS # -----------------------------------------------
         if md.specifications:
-            specs_out = self.fmt.specifications(md.specifications)
+            specs_out = self.fmt.specifications(md_specifications=md.specifications)
+        else:
+            specs_out = ""
 
         # ---- CGUs # --------------------------------------------------------
         if md.conditions:
-            cgus_out = self.fmt.conditions(md.conditions)
+            cgus_out = self.fmt.conditions(md_cgus=md.conditions)
+        else:
+            cgus_out = ""
 
         # ---- LIMITATIONS # -------------------------------------------------
         if md.limitations:
-            lims_out = self.fmt.limitations(md.limitations)
+            lims_out = self.fmt.limitations(md_limitations=md.limitations)
+        else:
+            lims_out = ""
 
         # ---- METADATA # ----------------------------------------------------
         md_created = utils.hlpr_datetimes(md._created).strftime(self.dates_fmt)
@@ -277,18 +270,18 @@ class Isogeo2docx(object):
         # FILLFULLING THE TEMPLATE #
         context = {
             # "varThumbnail": InlineImage(docx_template, md.thumbnail),
-            "varTitle": self.clean_xml(md.title),
-            "varAbstract": self.clean_xml(md.abstract),
+            "varTitle": utils.clean_xml(md.title),
+            "varAbstract": utils.clean_xml(md.abstract),
             "varNameTech": md.name,
-            "varCollectContext": self.clean_xml(md.collectionContext),
-            "varCollectMethod": self.clean_xml(md.collectionMethod),
+            "varCollectContext": utils.clean_xml(md.collectionContext),
+            "varCollectMethod": utils.clean_xml(md.collectionMethod),
             "varDataDtCrea": data_created,
             "varDataDtUpda": data_updated,
             "varDataDtPubl": data_published,
             "varValidityStart": validFrom,
             "varValidityEnd": validTo,
-            "validityComment": self.clean_xml(md.validityComment),
-            "varFormat": format_version,
+            "validityComment": utils.clean_xml(md.validityComment),
+            "varFormat": md.format,
             "varGeometry": md.geometry,
             "varObjectsCount": md.features,
             "varKeywords": " ; ".join(li_motscles),
@@ -296,11 +289,11 @@ class Isogeo2docx(object):
             "varType": resource_type,
             "varOwner": owner,
             "varScale": md.scale,
-            "varTopologyInfo": self.clean_xml(md.topologicalConsistency),
+            "varTopologyInfo": utils.clean_xml(md.topologicalConsistency),
             "varInspireTheme": " ; ".join(li_theminspire),
             "varInspireConformity": inspire_valid,
             "varLimitations": lims_out,
-            "varCGUS": self.fmt.conditions(cgus_out),
+            "varCGUS": cgus_out,
             "varSpecifications": specs_out,
             "varContactsCount": len(md.contacts),
             "varContactsDetails": contacts_out,
@@ -309,7 +302,7 @@ class Isogeo2docx(object):
             "varFieldsCount": len(fields),
             "varFields": fields_out,
             "varEventsCount": len(md.events),
-            "varEvents": events,
+            "varEvents": events_out,
             "varMdDtCrea": md_created,
             "varMdDtUpda": md_updated,
             "varMdDtExp": datetime.now().strftime("%a %d %B %Y (%Hh%M)"),
@@ -321,7 +314,9 @@ class Isogeo2docx(object):
         try:
             docx_template.render(context)
             logger.info(
-                "Vector metadata stored: {} ({})".format(md.title_or_name(slugged=1), md.get("_id"))
+                "Vector metadata stored: {} ({})".format(
+                    md.title_or_name(slugged=1), md._id
+                )
             )
         except etree.XMLSyntaxError as e:
             logger.error(
@@ -352,48 +347,6 @@ class Isogeo2docx(object):
         # end of method
         return rpl_value
 
-        """Clean string from special characters.
-
-        source: http://stackoverflow.com/a/5843560
-        """
-        return unicode(substitute).join(char for char in input_str if char.isalnum())
-
-    def clean_xml(self, invalid_xml: str, mode="soft", substitute="_"):
-        """Clean string of XML invalid characters.
-
-        source: http://stackoverflow.com/a/13322581/2556577
-        """
-        if invalid_xml is None:
-            return ""
-        # assumptions:
-        #   doc = *( start_tag / end_tag / text )
-        #   start_tag = '<' name *attr [ '/' ] '>'
-        #   end_tag = '<' '/' name '>'
-        ws = r"[ \t\r\n]*"  # allow ws between any token
-        name = "[a-zA-Z]+"  # note: expand if necessary but the stricter the better
-        attr = '{name} {ws} = {ws} "[^"]*"'  # note: fragile against missing '"'; no "'"
-        start_tag = "< {ws} {name} {ws} (?:{attr} {ws})* /? {ws} >"
-        end_tag = "{ws}".join(["<", "/", "{name}", ">"])
-        tag = "{start_tag} | {end_tag}"
-
-        assert "{{" not in tag
-        while "{" in tag:  # unwrap definitions
-            tag = tag.format(**vars())
-
-        tag_regex = re.compile("(%s)" % tag, flags=re.VERBOSE)
-
-        # escape &, <, > in the text
-        iters = [iter(tag_regex.split(invalid_xml))] * 2
-        pairs = zip_longest(*iters, fillvalue="")  # iterate 2 items at a time
-
-        # get the clean version
-        clean_version = "".join(escape(text) + tag for text, tag in pairs)
-        if mode == "strict":
-            clean_version = re.sub(r"<.*?>", substitute, clean_version)
-        else:
-            pass
-        return clean_version
-
 
 # ###############################################################################
 # ###### Stand alone program ########
@@ -403,52 +356,42 @@ if __name__ == "__main__":
         Standalone execution and tests
     """
     # ------------ Specific imports ---------------------
-    from ConfigParser import SafeConfigParser  # to manage options.ini
-    from os import path
+    from dotenv import load_dotenv
+    from os import environ, path
+    import urllib3
 
-    # ------------ Settings from ini file ----------------
-    if not path.isfile(path.realpath(r"..\settings_dev.ini")):
-        logger.error(
-            "To execute this script as standalone,"
-            " you need to store your Isogeo application settings"
-            " in a isogeo_params.ini file. You can use the template"
-            " to set your own."
-        )
-        raise ValueError("settings.ini file missing.")
-    else:
-        pass
+    # get user ID as environment variables
+    load_dotenv("dev.env")
 
-    config = SafeConfigParser()
-    config.read(r"..\settings_dev.ini")
-
-    settings = {s: dict(config.items(s)) for s in config.sections()}
-    app_id = settings.get("auth").get("app_id")
-    app_secret = settings.get("auth").get("app_secret")
-    client_lang = settings.get("basics").get("def_codelang")
+    # ignore warnings related to the QA self-signed cert
+    if environ.get("ISOGEO_PLATFORM").lower() == "qa":
+        urllib3.disable_warnings()
 
     # ------------ Connecting to Isogeo API ----------------
     # instanciating the class
-    isogeo = Isogeo(client_id=app_id, client_secret=app_secret, lang="fr")
-
-    token = isogeo.connect()
+    isogeo = Isogeo(
+        auth_mode="group",
+        client_id=environ.get("ISOGEO_API_GROUP_CLIENT_ID"),
+        client_secret=environ.get("ISOGEO_API_GROUP_CLIENT_SECRET"),
+        auto_refresh_url="{}/oauth/token".format(environ.get("ISOGEO_ID_URL")),
+        platform=environ.get("ISOGEO_PLATFORM", "qa"),
+    )
+    isogeo.connect()
 
     # ------------ Isogeo search --------------------------
-    search_results = isogeo.search(token, sub_resources=isogeo.sub_resources_available)
+    search_results = isogeo.search(include="all")
 
     # ------------ REAL START ----------------------------
-    url_oc = "https://open.isogeo.com/s/c502e8f7c9da4c3aacdf3d905672d54c/Q4SvPfiIIslbdwkbWRFJLk7XWo4G0/"
+    url_oc = "https://open.isogeo.com/s/"
     toDocx = Isogeo2docx()
 
     for md in search_results.get("results"):
+        # load metadata as object
+        metadata = Metadata.clean_attributes(md)
+        # prepare the template
         tpl = DocxTemplate(path.realpath(r"..\templates\template_Isogeo.docx"))
         toDocx.md2docx(tpl, md, url_oc)
         dstamp = datetime.now()
-        if not md.get("name"):
-            md_name = "NR"
-        elif "." in md.get("name"):
-            md_name = md.get("name").split(".")[1]
-        else:
-            md_name = md.get("name")
         tpl.save(
             r"..\output\{0}_{8}_{7}_{1}{2}{3}{4}{5}{6}.docx".format(
                 "TestDemoDev",
@@ -458,8 +401,8 @@ if __name__ == "__main__":
                 dstamp.hour,
                 dstamp.minute,
                 dstamp.second,
-                md.get("_id")[:5],
-                md_name,
+                metadata._id[:5],
+                metadata.title_or_name(slugged=1),
             )
         )
         del tpl
