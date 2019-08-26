@@ -131,14 +131,15 @@ class isogeo2office_utils(IsogeoUtils):
             open_new_tab(url)
             x += 1
 
-    def open_dir_file(self, target):
+    def open_dir_file(self, target: str):
         """Open a file or a directory in the explorer of the operating system.
 
         :param str target: path of the folder or file to open
         """
+        target_dir = Path(target)
         # check if the file or the directory exists
-        if not path.exists(target):
-            raise IOError("No such file: {0}".format(target))
+        if not target_dir.exists():
+            raise IOError("No such file/folder: {0}".format(target))
 
         # check the read permission
         if not access(target, R_OK):
@@ -146,16 +147,16 @@ class isogeo2office_utils(IsogeoUtils):
 
         # open the directory or the file according to the os
         if opersys == "win32":  # Windows
-            proc = startfile(path.realpath(target))
+            proc = startfile(target_dir.resolve())
 
         elif opersys.startswith("linux"):  # Linux:
             proc = subprocess.Popen(
-                ["xdg-open", target], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                ["xdg-open", target_dir.resolve()], stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
 
         elif opersys == "darwin":  # Mac:
             proc = subprocess.Popen(
-                ["open", "--", target], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                ["open", "--", target_dir.resolve()], stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
 
         else:
