@@ -820,7 +820,7 @@ class IsogeoToOffice_Main(QMainWindow):
         """Reset settings to factiry defaults. Do not not remove authentication
         credentials. See #41
         """
-        QMessageBox.information(
+        reset_msgbox = QMessageBox.question(
             self,
             self.tr("Settings - Reset to factory defaults"),
             self.tr(
@@ -828,12 +828,16 @@ class IsogeoToOffice_Main(QMainWindow):
                 " authentication credentials).\n"
                 "application will be closed."
             ),
+            QMessageBox.Yes | QMessageBox.No
         )
-        logger.info("Settings - Reset to factory defaults.")
-        self.app_settings.remove("formats")
-        self.app_settings.remove("settings")
-        self.settings_noSave = 1
-        self.close()
+
+        # close only if the user clicked yes
+        if reset_msgbox == QMessageBox.Yes:
+            logger.info("Settings - Reset to factory defaults.")
+            self.app_settings.remove("formats")
+            self.app_settings.remove("settings")
+            self.settings_noSave = 1
+            self.close()
 
     # -- UI Slots -------------------------------------------------------------
     @pyqtSlot(str, str)
