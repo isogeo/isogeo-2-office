@@ -181,13 +181,16 @@ class isogeo2office_utils(IsogeoUtils):
         :param str file_type: credentials | thumbnails | folder
         :param str from_dir: path to the start directory. Default value: "downloads"
         """
-        if from_dir == "downloads":
+        # check the folder to open from
+        if from_dir.lower() == "downloads":
             # get user download directory
-            start_dir = path.realpath(path.join(path.expanduser("~"), "Downloads"))
+            start_dir = Path.home() / "Downloads"
         else:
-            start_dir = path.realpath(from_dir)
-        if not path.exists(start_dir):
-            start_dir = path.expanduser("~")
+            start_dir = Path(from_dir)
+        # check if folder exists
+        if not start_dir.exists():
+            start_dir = Path.home()
+
         # set options
         options = QFileDialog.Options()
         # options |= QFileDialog.DontUseNativeDialog
@@ -202,7 +205,7 @@ class isogeo2office_utils(IsogeoUtils):
             return QFileDialog.getOpenFileName(
                 parent=None,
                 caption=dlg_title,
-                directory=start_dir,
+                directory=str(start_dir.resolve()),
                 filter=file_filters,
                 options=options,
             )
@@ -214,7 +217,7 @@ class isogeo2office_utils(IsogeoUtils):
             return QFileDialog.getOpenFileName(
                 parent=None,
                 caption=dlg_title,
-                directory=start_dir,
+                directory=str(start_dir.resolve()),
                 filter=file_filters,
                 options=options,
             )
@@ -222,7 +225,10 @@ class isogeo2office_utils(IsogeoUtils):
             options |= QFileDialog.ShowDirsOnly
             dlg_title = parent.tr("Select folder")
             return QFileDialog.getExistingDirectory(
-                parent=None, caption=dlg_title, directory=start_dir, options=options
+                parent=None,
+                caption=dlg_title,
+                directory=str(start_dir.resolve()),
+                options=options,
             )
         else:
             file_filters = "All Files (*)"
@@ -230,7 +236,7 @@ class isogeo2office_utils(IsogeoUtils):
             return QFileDialog.getOpenFileName(
                 parent=None,
                 caption=dlg_title,
-                directory=start_dir,
+                directory=str(start_dir.resolve()),
                 filter=file_filters,
                 options=options,
             )
