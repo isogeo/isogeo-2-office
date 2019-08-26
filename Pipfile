@@ -8,7 +8,7 @@ black = "==19.3b0"
 flake8 = "*"
 pyqt5-tools = {version = "==5.13.0.1.5",sys_platform = "== 'win32'"}
 pip = "*"
-pyinstaller = "==3.4.*"
+pyinstaller = {editable = true,git = "https://github.com/pyinstaller/pyinstaller.git",ref = "46286a1f455d8e0837f7c2b9e1bbdff1ef858f0f"}
 pylint = "*"
 pypiwin32 = "*"
 pytest= "*"
