@@ -6,7 +6,7 @@
 
     Purpose:     Load an HTML template and replace tags values.
     Author:      Isogeo
-    Python:      3.6.x
+    Python:      3.7.x
 """
 
 # #############################################################################

@@ -20,7 +20,7 @@ Application is built using AppVeyor ([see configuration in appveyor.yml]()).
 First of all, install requirements:
 
 * Windows 10+
-* Python 3.6.x
+* Python 3.7.x
 
 ### Visual Studio Code
 

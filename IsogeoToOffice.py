@@ -6,7 +6,7 @@
 
     Purpose:     Get metadatas from Isogeo and export to desktop formats
     Author:      Isogeo
-    Python:      3.6.x
+    Python:      3.7.x
 """
 
 # #############################################################################
