@@ -151,12 +151,16 @@ class isogeo2office_utils(IsogeoUtils):
 
         elif opersys.startswith("linux"):  # Linux:
             proc = subprocess.Popen(
-                ["xdg-open", target_dir.resolve()], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                ["xdg-open", target_dir.resolve()],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
             )
 
         elif opersys == "darwin":  # Mac:
             proc = subprocess.Popen(
-                ["open", "--", target_dir.resolve()], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                ["open", "--", target_dir.resolve()],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
             )
 
         else:
