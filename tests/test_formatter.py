@@ -125,7 +125,10 @@ class TestFormatter(unittest.TestCase):
         licenses = [t for t in self.search.tags if t.startswith("license:")]
         # filtered search
         md_cgu = self.isogeo.search(
-            query=sample(licenses, 1)[0], include=("conditions",), page_size=1, whole_results=0
+            query=sample(licenses, 1)[0],
+            include=("conditions",),
+            page_size=1,
+            whole_results=0,
         )
         # get conditions reformatted
         cgus_in = sample(md_cgu.results, 1)[0].get("conditions", [])

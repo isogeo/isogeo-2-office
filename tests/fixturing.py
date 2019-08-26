@@ -74,7 +74,7 @@ isogeo = Isogeo(
     client_id=API_OAUTH_ID,
     client_secret=API_OAUTH_SECRET,
     auto_refresh_url="{}/oauth/token".format(environ.get("ISOGEO_ID_URL")),
-    platform=API_PLATFORM
+    platform=API_PLATFORM,
 )
 isogeo.connect()
 
