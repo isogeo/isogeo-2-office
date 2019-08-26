@@ -3,135 +3,135 @@
 <context>
     <name>IsogeoToOffice_Main</name>
     <message>
-        <location filename="../IsogeoToOffice.py" line="229"/>
+        <location filename="../IsogeoToOffice.py" line="228"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="283"/>
+        <location filename="../IsogeoToOffice.py" line="282"/>
         <source>Authentication - Credentials missing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="921"/>
+        <location filename="../IsogeoToOffice.py" line="918"/>
         <source>Export {} metadata</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="499"/>
+        <location filename="../IsogeoToOffice.py" line="494"/>
         <source>Export option is missing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="499"/>
+        <location filename="../IsogeoToOffice.py" line="494"/>
         <source>At least one export option required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="283"/>
+        <location filename="../IsogeoToOffice.py" line="282"/>
         <source>Authentication to Isogeo API has failed. Credentials seem to be missing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="877"/>
+        <location filename="../IsogeoToOffice.py" line="874"/>
         <source>Application information has been retrieved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="471"/>
+        <location filename="../IsogeoToOffice.py" line="466"/>
         <source>Waiting for Isogeo API</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="969"/>
+        <location filename="../IsogeoToOffice.py" line="966"/>
         <source>Search form updated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="655"/>
+        <location filename="../IsogeoToOffice.py" line="650"/>
         <source>Thumbnails - Table structure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="655"/>
+        <location filename="../IsogeoToOffice.py" line="650"/>
         <source>The thumbnails matching table {} is not compliant with the expected structure.{}{} {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="674"/>
+        <location filename="../IsogeoToOffice.py" line="669"/>
         <source>Thumbnails - Unknown error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="674"/>
+        <location filename="../IsogeoToOffice.py" line="669"/>
         <source>An unknown error occurred reading thethumbnails matching table {}. Please report it.{}{} {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="674"/>
+        <location filename="../IsogeoToOffice.py" line="669"/>
         <source>
 A new table will be created but previous data will be lost.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="674"/>
+        <location filename="../IsogeoToOffice.py" line="669"/>
         <source>
 Error message:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="833"/>
+        <location filename="../IsogeoToOffice.py" line="830"/>
         <source>Settings - Reset to factory defaults</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="833"/>
+        <location filename="../IsogeoToOffice.py" line="830"/>
         <source>Settings will be reinitialized (not authentication credentials).
 application will be closed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="140"/>
+        <location filename="../IsogeoToOffice.py" line="139"/>
         <source>https://pipedrivewebforms.com/form/b5bdbdb9b34c3c61202cd8414accbbe252944</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="582"/>
+        <location filename="../IsogeoToOffice.py" line="577"/>
         <source>Word - Error: no template.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="638"/>
+        <location filename="../IsogeoToOffice.py" line="633"/>
         <source>Thumbnails - Table already opened</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="638"/>
+        <location filename="../IsogeoToOffice.py" line="633"/>
         <source>The thumbnails matching table {} is already opened. Close it please before to try again.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="647"/>
+        <location filename="../IsogeoToOffice.py" line="642"/>
         <source>Error - Thumbnails table is opened. Close it before contiinue.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="871"/>
+        <location filename="../IsogeoToOffice.py" line="868"/>
         <source>Application information has been retrieved.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="861"/>
+        <location filename="../IsogeoToOffice.py" line="858"/>
         <source>New version available.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="865"/>
+        <location filename="../IsogeoToOffice.py" line="862"/>
         <source>Version is up-to-date.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="986"/>
+        <location filename="../IsogeoToOffice.py" line="983"/>
         <source>Export operations are over.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -157,32 +157,32 @@ application will be closed.</source>
 <context>
     <name>ThreadAppProperties</name>
     <message>
-        <location filename="../modules/threads.py" line="63"/>
+        <location filename="../modules/threads.py" line="65"/>
         <source>This application is authenticated as </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="74"/>
+        <location filename="../modules/threads.py" line="76"/>
         <source> and powered by </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="70"/>
+        <location filename="../modules/threads.py" line="72"/>
         <source>share:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="74"/>
+        <location filename="../modules/threads.py" line="76"/>
         <source>shares:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="90"/>
+        <location filename="../modules/threads.py" line="92"/>
         <source>Updated:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="95"/>
+        <location filename="../modules/threads.py" line="97"/>
         <source>Contact:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -190,12 +190,12 @@ application will be closed.</source>
 <context>
     <name>ThreadExportExcel</name>
     <message>
-        <location filename="../modules/threads.py" line="184"/>
+        <location filename="../modules/threads.py" line="186"/>
         <source>Processing Excel: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="215"/>
+        <location filename="../modules/threads.py" line="217"/>
         <source>Excel finished</source>
         <translation type="unfinished"></translation>
     </message>
@@ -203,17 +203,17 @@ application will be closed.</source>
 <context>
     <name>ThreadExportWord</name>
     <message>
-        <location filename="../modules/threads.py" line="255"/>
+        <location filename="../modules/threads.py" line="257"/>
         <source>Processing Word: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="287"/>
+        <location filename="../modules/threads.py" line="289"/>
         <source>Word: error occurred during saving step. Check the log.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="296"/>
+        <location filename="../modules/threads.py" line="298"/>
         <source>Word finished</source>
         <translation type="unfinished"></translation>
     </message>
@@ -221,7 +221,7 @@ application will be closed.</source>
 <context>
     <name>ThreadExportXml</name>
     <message>
-        <location filename="../modules/threads.py" line="339"/>
+        <location filename="../modules/threads.py" line="341"/>
         <source>Processing XML: {}</source>
         <translation type="unfinished"></translation>
     </message>
@@ -229,12 +229,12 @@ application will be closed.</source>
 <context>
     <name>ThreadThumbnails</name>
     <message>
-        <location filename="../modules/threads.py" line="434"/>
+        <location filename="../modules/threads.py" line="436"/>
         <source>Preparing thumbnail table for: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="471"/>
+        <location filename="../modules/threads.py" line="473"/>
         <source>Thumbnail table finished</source>
         <translation type="unfinished"></translation>
     </message>
@@ -371,6 +371,11 @@ application will be closed.</source>
     <message>
         <location filename="../modules/ui/credits/ui_credits.py" line="143"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/isogeo/isogeo-2-office&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Code hosted on Github&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/credits/ui_credits.ui" line="153"/>
+        <source>Dependencies</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -716,6 +721,11 @@ application will be closed.</source>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/ui/main/ui_win_IsogeoToOffice.ui" line="1258"/>
+        <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

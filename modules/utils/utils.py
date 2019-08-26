@@ -4,7 +4,7 @@
 """
     Name:         Isogeo to Office utilitaries
     Author:       Isogeo
-    Python:       3.6.x
+    Python:       3.7.x
 """
 
 # ############################################################################
@@ -12,22 +12,21 @@
 # ##################################
 
 # Standard library
-from collections import OrderedDict
-from configparser import ConfigParser
-from datetime import datetime, timedelta
-from tkinter.messagebox import showerror as avert
-from itertools import zip_longest
 import logging
-from os import access, path, R_OK
-from pathlib import Path  # TO DO: replace os.path by pathlib
 import re
 import subprocess
+from datetime import datetime, timedelta
+from itertools import zip_longest
+from os import R_OK, access, environ, path
+from pathlib import Path  # TO DO: replace os.path by pathlib
 from sys import platform as opersys
 from time import sleep
+from urllib.request import getproxies
 from webbrowser import open_new_tab
 from xml.sax.saxutils import escape  # '<' -> '&lt;'
 
 # 3rd party
+from dotenv import load_dotenv
 from isogeo_pysdk import IsogeoUtils
 from openpyxl import load_workbook
 from PyQt5.QtCore import QUrl
@@ -44,6 +43,8 @@ else:
 # ############ Globals ############
 # #################################
 
+if Path(".env").exists():
+    load_dotenv(".env")
 logger = logging.getLogger("isogeo2office")  # LOG
 
 # ############################################################################
@@ -91,6 +92,26 @@ class isogeo2office_utils(IsogeoUtils):
         else:
             raise TypeError
 
+    def proxy_settings(self):
+        """Retrieves network proxy settings from OS or an environment file."""
+        if getproxies():
+            proxy_settings = getproxies()
+            logger.debug("Proxies settings found in the OS.")
+        elif environ.get("HTTP_PROXY") or environ.get("HTTPS_PROXY"):
+            proxy_settings = {
+                "http": environ.get("HTTP_PROXY"),
+                "https": environ.get("HTTPS_PROXY"),
+            }
+            logger.debug(
+                "Proxies settings found in environment vars (loaded from .env file)."
+            )
+        else:
+            logger.debug("No proxy settings found.")
+            proxy_settings = None
+
+        return proxy_settings
+
+    # -- OPENERS -----------------------------------------------------------------------
     def open_urls(self, li_url):
         """Open URLs in new tabs in the default brower.
 
@@ -337,7 +358,7 @@ class isogeo2office_utils(IsogeoUtils):
         else:
             return re.sub(r"[^A-Za-z0-9]+", substitute, input_str)
 
-    def clean_xml(self, invalid_xml, mode: str = "soft", substitute: str = "_"):
+    def clean_xml(self, invalid_xml: str, mode: str = "soft", substitute: str = "_"):
         """Clean string of XML invalid characters.
 
         source: https://stackoverflow.com/a/13322581/2556577
@@ -349,6 +370,8 @@ class isogeo2office_utils(IsogeoUtils):
           * soft [default]: remove chars which are not accepted in XML
           * strict: remove additional chars
         """
+        if invalid_xml is None:
+            return ""
         # assumptions:
         #   doc = *( start_tag / end_tag / text )
         #   start_tag = '<' name *attr [ '/' ] '>'

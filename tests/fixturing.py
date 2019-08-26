@@ -17,6 +17,7 @@ from pathlib import Path
 
 # 3rd party
 from dotenv import load_dotenv
+import urllib3
 
 # Isogeo
 from isogeo_pysdk import Isogeo
@@ -38,6 +39,10 @@ API_OAUTH_SECRET = environ.get("ISOGEO_API_CLIENT_SECRET")
 API_PLATFORM = environ.get("ISOGEO_PLATFORM", "qa")
 METADATA_TEST_FIXTURE_UUID = environ.get("ISOGEO_FIXTURES_METADATA_COMPLETE")
 WORKGROUP_TEST_FIXTURE_UUID = environ.get("ISOGEO_WORKGROUP_TEST_UUID")
+
+# ignore warnings related to the QA self-signed cert
+if API_PLATFORM.lower() == "qa":
+    urllib3.disable_warnings()
 
 # #############################################################################
 # ########## Fixturing ###############
@@ -65,7 +70,11 @@ if not Path("_auth/client_secrets.json").exists():
 
 # instanciating the class
 isogeo = Isogeo(
-    client_id=API_OAUTH_ID, client_secret=API_OAUTH_SECRET, platform=API_PLATFORM
+    auth_mode="group",
+    client_id=API_OAUTH_ID,
+    client_secret=API_OAUTH_SECRET,
+    auto_refresh_url="{}/oauth/token".format(environ.get("ISOGEO_ID_URL")),
+    platform=API_PLATFORM
 )
 isogeo.connect()
 
@@ -79,7 +88,7 @@ out_search_complete_tests = path.join(
 if not path.isfile(out_search_complete_tests):
     request = isogeo.search(
         query="owner:{}".format(WORKGROUP_TEST_FIXTURE_UUID),
-        whole_share=1,
+        whole_results=1,
         include="all",
         augment=1,
     )
@@ -91,10 +100,10 @@ else:
 # complete search
 out_search_complete = path.join(BASE_DIR, "fixtures", "api_search_complete.json")
 if not path.isfile(out_search_complete):
-    request = isogeo.search(whole_share=1, include="all", augment=1)
+    request = isogeo.search(whole_results=1, include="all", augment=1)
     with open(
         path.join(BASE_DIR, "fixtures", "api_search_complete.json"), "w"
     ) as json_basic:
-        json.dump(request, json_basic, sort_keys=True)
+        json.dump(request.to_dict(), json_basic, sort_keys=True)
 else:
     logging.info("JSON already exists. If you want to update it, delete it first.")

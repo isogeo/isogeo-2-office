@@ -64,7 +64,7 @@
             "args": [
                 "-m",
                 "black",
-                "--target-version=py36",
+                "--target-version=py37",
                 "./modules"
             ],
             "group": "build",
@@ -77,7 +77,7 @@
             "args": [
                 "-m",
                 "black",
-                "--target-version=py36",
+                "--target-version=py37",
                 "./tests"
             ],
             "group": "build",

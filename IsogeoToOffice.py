@@ -6,7 +6,7 @@
 
     Purpose:     Get metadatas from Isogeo and export to desktop formats
     Author:      Isogeo
-    Python:      3.6.x
+    Python:      3.7.x
 """
 
 # #############################################################################
@@ -17,7 +17,6 @@
 import logging
 import pathlib  # TO DO: replace os.path by pathlib
 import platform
-from datetime import datetime
 from functools import partial
 from logging.handlers import RotatingFileHandler
 from os import listdir, path
@@ -26,7 +25,7 @@ from os import listdir, path
 import qdarkstyle
 import semver
 from dotenv import load_dotenv
-from isogeo_pysdk import __version__ as pysdk_version
+from isogeo_pysdk import __version__ as pysdk_version, MetadataSearch
 
 # PyQt
 from PyQt5.QtCore import QLocale, QSettings, QThread, QTranslator, pyqtSignal, pyqtSlot
@@ -105,6 +104,13 @@ logfile = RotatingFileHandler(
 )
 logfile.setLevel(log_level)
 logfile.setFormatter(log_form)
+
+# info to the console
+log_console_handler = logging.StreamHandler()
+log_console_handler.setLevel(logging.INFO)
+log_console_handler.setFormatter(log_form)
+
+logger.addHandler(log_console_handler)
 logger.addHandler(logfile)
 logger.info("================ Isogeo to office ===============")
 
@@ -325,7 +331,7 @@ class IsogeoToOffice_Main(QMainWindow):
         )
 
         self.ui.txt_output_fileprefix.setText(
-            self.app_settings.value("settings/out_prefix")
+            self.app_settings.value("settings/out_prefix", "Isogeo_")
         )
         self.ui.int_md_uuid.setValue(
             self.app_settings.value("settings/uuid_length", 5, type=int)
@@ -346,11 +352,11 @@ class IsogeoToOffice_Main(QMainWindow):
         self.ui.cbb_word_tpl.setCurrentIndex(tpl_index)
 
         # timestamps
-        if self.app_settings.value("settings/timestamps") == "no":
+        if self.app_settings.value("settings/timestamps", type=str) == "no":
             self.ui.rdb_timestamp_no.setChecked(1)
-        elif self.app_settings.value("settings/timestamps") == "day":
+        elif self.app_settings.value("settings/timestamps", type=str) == "day":
             self.ui.rdb_timestamp_day.setChecked(1)
-        elif self.app_settings.value("settings/timestamps") == "datetime":
+        elif self.app_settings.value("settings/timestamps", type=str) == "datetime":
             self.ui.rdb_timestamp_datetime.setChecked(1)
         else:
             logger.warning(
@@ -387,9 +393,8 @@ class IsogeoToOffice_Main(QMainWindow):
         # depending on search type
         if search_type == "reset":
             self.thread_search.search_params = {
-                "token": api_mngr.token,
                 "page_size": 0,
-                "whole_share": 0,
+                "whole_results": 0,
                 "augment": 1,
                 "tags_as_dicts": 1,
             }
@@ -398,11 +403,10 @@ class IsogeoToOffice_Main(QMainWindow):
         elif search_type == "update":
             share_id, search_terms = self.get_selected_filters()
             self.thread_search.search_params = {
-                "token": api_mngr.token,
                 "query": search_terms,
                 "share": share_id,
                 "page_size": 0,
-                "whole_share": 0,
+                "whole_results": 0,
                 "augment": 1,
                 "tags_as_dicts": 1,
             }
@@ -417,27 +421,11 @@ class IsogeoToOffice_Main(QMainWindow):
 
             # prepare search and launch export process
             share_id, search_terms = self.get_selected_filters()
-            includes = [
-                "conditions",
-                "contacts",
-                "coordinate-system",
-                "events",
-                "feature-attributes",
-                "keywords",
-                "layers",
-                "limitations",
-                "links",
-                "operations",
-                "serviceLayers",
-                "specifications",
-            ]
             self.thread_search.search_params = {
-                "token": api_mngr.token,
                 "query": search_terms,
                 "share": share_id,
-                "page_size": 100,
-                "whole_share": 1,
-                "include": includes,
+                "whole_results": 1,
+                "include": "all",
                 "check": 0,
             }
             self.thread_search.sig_finished.disconnect()
@@ -452,11 +440,10 @@ class IsogeoToOffice_Main(QMainWindow):
             # prepare search and launch export process
             share_id, search_terms = self.get_selected_filters()
             self.thread_search.search_params = {
-                "token": api_mngr.token,
                 "query": search_terms,
                 "share": share_id,
                 "page_size": 100,
-                "whole_share": 1,
+                "whole_results": 1,
                 "check": 0,
             }
             self.thread_search.sig_finished.disconnect()
@@ -483,7 +470,6 @@ class IsogeoToOffice_Main(QMainWindow):
             else:
                 search_terms += cbb.itemData(cbb.currentIndex()) + " "
 
-        logger.debug("Selected share UUID: {}".format(share_id))
         return share_id, search_terms.strip()
 
     # -- EXPORT ---------------------------------------------------------------
@@ -519,7 +505,7 @@ class IsogeoToOffice_Main(QMainWindow):
         if self.ui.chb_systray_minimize.isChecked():
             self.tray_icon.act_hide.trigger()
         # prepare progress bar
-        progbar_max = sum(self.li_opts) * search_to_be_exported.get("total")
+        progbar_max = sum(self.li_opts) * search_to_be_exported.total
         self.ui.pgb_exports.setRange(1, progbar_max)
         self.ui.pgb_exports.reset()
 
@@ -626,7 +612,7 @@ class IsogeoToOffice_Main(QMainWindow):
         :param dict search_to_be_exported: Isogeo search response to export
         """
         # prepare progress bar
-        progbar_max = sum(self.li_opts) * search_to_be_exported.get("total")
+        progbar_max = sum(self.li_opts) * search_to_be_exported.total
         self.ui.pgb_exports.setRange(1, progbar_max)
         self.ui.pgb_exports.reset()
 
@@ -708,6 +694,7 @@ class IsogeoToOffice_Main(QMainWindow):
 
         :param QCloseEvent event_sent: event sent when the main UI is close
         """
+        logger.debug("Closing application...")
         # force remove UI elements
         self.tray_icon.hide()
         self.tray_icon.deleteLater()
@@ -718,6 +705,8 @@ class IsogeoToOffice_Main(QMainWindow):
             # API
             self.app_settings.setValue("auth/app_id", api_mngr.api_app_id)
             self.app_settings.setValue("auth/app_secret", api_mngr.api_app_secret)
+            self.app_settings.setValue("auth/app_type", api_mngr.api_app_type)
+            self.app_settings.setValue("auth/platform", api_mngr.api_platform)
             self.app_settings.setValue("auth/url_base", api_mngr.api_url_base)
             self.app_settings.setValue("auth/url_auth", api_mngr.api_url_auth)
             self.app_settings.setValue("auth/url_token", api_mngr.api_url_token)
@@ -735,7 +724,7 @@ class IsogeoToOffice_Main(QMainWindow):
             )
 
             # location and naming rules
-            # output folder is defined by itso own method 'set_output_folder'
+            # output folder is defined by its own method 'set_output_folder'
             self.app_settings.setValue(
                 "settings/out_prefix", self.ui.txt_output_fileprefix.text()
             )
@@ -770,6 +759,7 @@ class IsogeoToOffice_Main(QMainWindow):
             self.app_settings.setValue("settings/windowState", self.saveState())
 
         # accept the close
+        logger.debug("See you!")
         event_sent.accept()
 
     def displayer(self, ui_class):
@@ -884,15 +874,14 @@ class IsogeoToOffice_Main(QMainWindow):
         """Executed after credentials have been updated.
         """
         api_mngr.manage_api_initialization()
-        self.thread_app_props.start()
-        self.search(search_type="reset")
+        self.init_api_connection()
 
-    @pyqtSlot(dict)
-    def update_search_form(self, search: dict):
+    @pyqtSlot(MetadataSearch)
+    def update_search_form(self, search: MetadataSearch):
         """Update search form with tags.
         """
         # get available search tags
-        search_tags = search.get("tags")
+        search_tags = search.tags
         logger.debug("Search tags keys: {}".format(list(search_tags)))
 
         # -- FILL FILTERS COMBOBOXES ------------------------------------------
@@ -919,12 +908,12 @@ class IsogeoToOffice_Main(QMainWindow):
 
         # export button
         self.ui.btn_launch_export.setText(
-            self.tr("Export {} metadata").format(search.get("total"))
+            self.tr("Export {} metadata").format(search.total)
         )
 
         # -- RESTORE PREVIOUS SELECTED FILTERS -------------------------------
         if self.search_type != "reset":
-            query_tags = search.get("query").get("_tags")
+            query_tags = search.query.get("_tags")
             logger.debug("Previous query: {}".format(query_tags))
             # keywords
             if query_tags.get("keywords"):
@@ -965,7 +954,7 @@ class IsogeoToOffice_Main(QMainWindow):
             pass
 
         # stop progress bar and enable search form
-        self.processing("end", progbar_max=search.get("total"))
+        self.processing("end", progbar_max=search.total)
         self.update_status_bar(prog_step=0, status_msg=self.tr("Search form updated"))
 
     @pyqtSlot(int, str)

@@ -16,18 +16,20 @@
 # ########## Libraries #############
 # ##################################
 # Standard library
+import json
 import logging
 import unittest
 import urllib3
 from os import environ
 from pathlib import Path
+from random import sample
 from socket import gethostname
 from sys import exit, _getframe
 from time import gmtime, strftime
 
 # 3rd party
 from dotenv import load_dotenv
-from isogeo_pysdk import Isogeo
+from isogeo_pysdk import Isogeo, MetadataSearch
 
 # target
 from modules import IsogeoFormatter
@@ -80,12 +82,20 @@ class TestFormatter(unittest.TestCase):
 
         # API connection
         cls.isogeo = Isogeo(
+            auth_mode="group",
             client_id=environ.get("ISOGEO_API_CLIENT_ID"),
             client_secret=environ.get("ISOGEO_API_CLIENT_SECRET"),
+            auto_refresh_url="{}/oauth/token".format(environ.get("ISOGEO_ID_URL")),
             platform=environ.get("ISOGEO_PLATFORM", "qa"),
         )
         # getting a token
         cls.isogeo.connect()
+
+        # load fixture search
+        search_all_includes = Path("tests/fixtures/api_search_complete.json")
+        with search_all_includes.open("r") as f:
+            search = json.loads(f.read())
+        cls.search = MetadataSearch(**search)
 
         # module to test
         cls.fmt = IsogeoFormatter()
@@ -112,14 +122,13 @@ class TestFormatter(unittest.TestCase):
     # formatter
     def test_cgus(self):
         """CGU formatter."""
-        search = self.isogeo.search(page_size=0, whole_share=0)
-        licenses = [t for t in search.get("tags") if t.startswith("license:")]
+        licenses = [t for t in self.search.tags if t.startswith("license:")]
         # filtered search
         md_cgu = self.isogeo.search(
-            query=licenses[0], include=["conditions"], page_size=1, whole_share=0
+            query=sample(licenses, 1)[0], include=("conditions",), page_size=1, whole_results=0
         )
         # get conditions reformatted
-        cgus_in = md_cgu.get("results")[0].get("conditions", [])
+        cgus_in = sample(md_cgu.results, 1)[0].get("conditions", [])
         cgus_out = self.fmt.conditions(cgus_in)
         cgus_no = self.fmt.conditions([])
         # test
@@ -128,9 +137,8 @@ class TestFormatter(unittest.TestCase):
 
     def test_limitations(self):
         """Limitations formatter."""
-        search = self.isogeo.search(whole_share=1, include=["limitations"])
         # filtered search
-        for md in search.get("results"):
+        for md in self.search.results:
             if md.get("limitations"):
                 md_lims = md
                 break
@@ -145,9 +153,8 @@ class TestFormatter(unittest.TestCase):
 
     def test_specifications(self):
         """Limitations formatter."""
-        search = self.isogeo.search(whole_share=1, include=["specifications"])
         # filtered search
-        for md in search.get("results"):
+        for md in self.search.results:
             if md.get("specifications"):
                 md_specs = md
                 break

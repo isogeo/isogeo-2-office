@@ -154,7 +154,7 @@ if __name__ == "__main__":
     bearer = isogeo.connect()
 
     # search
-    search = isogeo.search(bearer, whole_share=0, include=["keywords"])
+    search = isogeo.search(bearer, whole_results=0, include=["keywords"])
 
     # workbook
     wb = Workbook()

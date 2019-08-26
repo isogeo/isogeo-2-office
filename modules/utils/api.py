@@ -2,7 +2,6 @@
 #! python3
 
 # Standard library
-import json
 import logging
 import time
 from functools import partial
@@ -12,6 +11,7 @@ from urllib.request import getproxies
 
 # 3rd party
 from dotenv import load_dotenv
+import urllib3
 
 # Isogeo
 from isogeo_pysdk import Isogeo
@@ -48,13 +48,18 @@ class IsogeoApiMngr(object):
     # ui reference - authentication form
     ui_auth_form = QDialog
     auth_form_request_url = "https://www.isogeo.com"
+
     # api parameters
     api_app_id = ""
     api_app_secret = ""
+    api_platform = "prod"
+    api_app_type = "group"
     api_url_base = "https://v1.api.isogeo.com/"
     api_url_auth = "https://id.api.isogeo.com/oauth/authorize"
     api_url_token = "https://id.api.isogeo.com/oauth/token"
     api_url_redirect = "http://localhost:5000/callback"
+
+    proxies = app_utils.proxy_settings()
 
     # plugin credentials storage parameters
     credentials_storage = {"QSettings": 0, "oAuth2_file": 0}
@@ -91,34 +96,25 @@ class IsogeoApiMngr(object):
             self.display_auth_form()
             return False
 
+        # ignore warnings related to the QA self-signed cert
+        if self.api_platform == "qa":
+            urllib3.disable_warnings()
+
         # start api wrapper
         try:
             logger.debug("Start connection attempts")
-            # proxy
-            if getproxies():
-                logger.debug("Proxies settings found in the OS.")
-                proxy_settings = getproxies()
-            elif environ.get("HTTP_PROXY") or environ.get("HTTPS_PROXY"):
-                logger.debug(
-                    "Proxies settings found in environment vars (loaded from .env file)."
-                )
-                proxy_settings = {
-                    "http": environ.get("HTTP_PROXY"),
-                    "https": environ.get("HTTPS_PROXY"),
-                }
-            else:
-                logger.debug("No proxy settings found.")
-                proxy_settings = None
-
             # client connexion
             self.isogeo = Isogeo(
+                auth_mode="group",
                 client_id=self.api_app_id,
                 client_secret=self.api_app_secret,
+                auto_refresh_url=self.api_url_token,
                 lang=current_locale.name()[:2],
-                proxy=proxy_settings,
+                platform=self.api_platform,
+                proxy=app_utils.proxy_settings(),
             )
-            self.token = self.isogeo.connect()
-            logger.debug("Connection succeeded")
+            self.isogeo.connect()
+            logger.debug("Authentication succeeded")
             return True
         except ValueError as e:
             logger.error(e)
@@ -168,6 +164,8 @@ class IsogeoApiMngr(object):
         if store_location == "QSettings":
             qsettings.setValue("auth/app_id", self.api_app_id)
             qsettings.setValue("auth/app_secret", self.api_app_secret)
+            qsettings.setValue("auth/app_type", self.api_app_type)
+            qsettings.setValue("auth/platform", self.api_platform)
             qsettings.setValue("auth/url_base", self.api_url_base)
             qsettings.setValue("auth/url_auth", self.api_url_auth)
             qsettings.setValue("auth/url_token", self.api_url_token)
@@ -182,6 +180,8 @@ class IsogeoApiMngr(object):
         if credentials_source == "QSettings":
             self.api_app_id = qsettings.value("auth/app_id", "")
             self.api_app_secret = qsettings.value("auth/app_secret", "")
+            self.api_app_type = qsettings.value("auth/app_type", "group")
+            self.api_platform = qsettings.value("auth/platform", "prod")
             self.api_url_base = qsettings.value(
                 "auth/url_base", "https://v1.api.isogeo.com/"
             )
@@ -200,6 +200,8 @@ class IsogeoApiMngr(object):
             )
             self.api_app_id = creds.get("client_id")
             self.api_app_secret = creds.get("client_secret")
+            self.api_app_type = creds.get("type", "group")
+            self.api_platform = creds.get("platform", "prod")
             self.api_url_base = creds.get("uri_base")
             self.api_url_auth = creds.get("uri_auth")
             self.api_url_token = creds.get("uri_token")
@@ -208,8 +210,8 @@ class IsogeoApiMngr(object):
             pass
 
         logger.debug(
-            "Credentials updated from: {}. Application ID used: {}".format(
-                credentials_source, self.api_app_id
+            "Credentials updated from: {}. Application connected to the platform '{}' using CLIENT_ID: {}".format(
+                credentials_source, self.api_platform, self.api_app_id
             )
         )
 
@@ -244,50 +246,63 @@ class IsogeoApiMngr(object):
     def credentials_uploader(self):
         """Get file selected by the user and loads API credentials into plugin.
         If the selected is compliant, credentials are loaded from then it's
-        moved inside plugin/_auth subfolder.
+        moved inside ./_auth subfolder.
         """
         selected_file = app_utils.open_FileNameDialog(self.ui_auth_form)
         logger.debug(
             "Credentials file picker (QFileDialog) returned: {}".format(selected_file)
         )
-        # test file structure
-        if not path.exists(selected_file[0]):
-            logger.error("No file selected")
-            return False
-        else:
-            logger.debug("Selected file exists.")
+        # test file path
         try:
-            selected_file = path.normpath(selected_file[0])
-            api_credentials = app_utils.credentials_loader(selected_file)
+            in_creds_path = Path(selected_file[0])
+            assert in_creds_path.exists()
+        except FileExistsError:
+            logger.error(
+                FileExistsError(
+                    "No auth file selected or path is incorrect: {}".format(
+                        selected_file[0]
+                    )
+                )
+            )
+            return False
+        except Exception as e:
+            logger.error(e)
+            return False
+
+        # test file structure
+        try:
+            api_credentials = app_utils.credentials_loader(in_creds_path.resolve())
         except Exception as e:
             logger.error("Selected file is bad formatted: {}".format(e))
             return False
 
-        # move credentials file into the plugin file structure
-        if path.isfile(path.join(self.auth_folder, "client_secrets.json")):
-            rename(
-                path.join(self.auth_folder, "client_secrets.json"),
-                path.join(
-                    self.auth_folder,
-                    "old_client_secrets_{}.json".format(int(time.time())),
-                ),
-            )
+        # rename previous credentials file
+        creds_dest_path = Path(self.auth_folder) / "client_secrets.json"
+        if creds_dest_path.is_file():
+            creds_dest_path_renamed = Path(
+                self.auth_folder
+            ) / "old_client_secrets_{}.json".format(int(time.time()))
+            rename(creds_dest_path.resolve(), creds_dest_path_renamed.resolve())
             logger.debug(
-                "client_secrets.json already existed. "
-                "Previous file has been renamed."
+                "`./_auth/client_secrets.json already existed`. Previous file has been renamed."
             )
         else:
             pass
-        rename(selected_file, path.join(self.auth_folder, "client_secrets.json"))
+        # move new credentials file into ./_auth dir
+        rename(in_creds_path.resolve(), creds_dest_path.resolve())
         logger.debug(
-            "Selected credentials file has been moved into plugin" "_auth subfolder"
+            "Selected credentials file has been moved into plugin './_auth' subfolder"
         )
 
         # check validity
         try:
             self.isogeo = Isogeo(
+                auth_mode="group",
                 client_id=api_credentials.get("client_id"),
                 client_secret=api_credentials.get("client_secret"),
+                auto_refresh_url=api_credentials.get("uri_token"),
+                platform=api_credentials.get("platform"),
+                proxy=app_utils.proxy_settings(),
             )
         except Exception as e:
             logger.debug(e)
@@ -305,7 +320,7 @@ class IsogeoApiMngr(object):
         # store into QSettings if existing
         self.credentials_storer(store_location="QSettings")
 
-        # connect "Apply" button to manage
+        # connect "Apply" button
         # self.ui_auth_form.btn_ok_cancel.pressed.connect(self.manage_api_initialization)
 
 
