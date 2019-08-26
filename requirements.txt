@@ -14,7 +14,6 @@ setuptools
 wheel
 
 # utils
-arrow==0.14.*
 python-dotenv
 progressbar2==3.42.*
 

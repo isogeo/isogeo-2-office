@@ -22,7 +22,6 @@ from datetime import datetime
 import logging
 
 # 3rd party library
-import arrow
 from docxtpl import DocxTemplate, etree, InlineImage
 from isogeo_pysdk import Isogeo, Event, Metadata
 from isogeo_pysdk import IsogeoTranslator

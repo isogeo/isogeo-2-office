@@ -19,7 +19,6 @@ sip = "*"
 wheel = "*"
 
 [packages]
-arrow = "*"
 docxtpl = "*"
 isogeo-pysdk = ">=3.1.*"
 openpyxl = "==2.6.*"
