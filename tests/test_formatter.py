@@ -131,7 +131,7 @@ class TestFormatter(unittest.TestCase):
 
     def test_limitations(self):
         """Limitations formatter."""
-        search = self.isogeo.search(whole_results=1, include=("limitations",))
+        search = self.isogeo.search(whole_results=1, include=("limitations", "specifications",))
         # filtered search
         for md in search.results:
             if md.get("limitations"):
@@ -148,7 +148,7 @@ class TestFormatter(unittest.TestCase):
 
     def test_specifications(self):
         """Limitations formatter."""
-        search = self.isogeo.search(whole_results=1, include=("specifications",))
+        search = self.isogeo.search(whole_results=1, include=("limitations", "specifications",))
         # filtered search
         for md in search.results:
             if md.get("specifications"):
