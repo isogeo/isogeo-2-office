@@ -21,6 +21,7 @@ import unittest
 import urllib3
 from os import environ
 from pathlib import Path
+from random import sample
 from socket import gethostname
 from sys import exit, _getframe
 from time import gmtime, strftime
@@ -80,8 +81,10 @@ class TestFormatter(unittest.TestCase):
 
         # API connection
         cls.isogeo = Isogeo(
+            auth_mode="group",
             client_id=environ.get("ISOGEO_API_CLIENT_ID"),
             client_secret=environ.get("ISOGEO_API_CLIENT_SECRET"),
+            auto_refresh_url="{}/oauth/token".format(environ.get("ISOGEO_ID_URL")),
             platform=environ.get("ISOGEO_PLATFORM", "qa"),
         )
         # getting a token
@@ -113,13 +116,13 @@ class TestFormatter(unittest.TestCase):
     def test_cgus(self):
         """CGU formatter."""
         search = self.isogeo.search(page_size=0, whole_results=0)
-        licenses = [t for t in search.get("tags") if t.startswith("license:")]
+        licenses = [t for t in search.tags if t.startswith("license:")]
         # filtered search
         md_cgu = self.isogeo.search(
-            query=licenses[0], include=["conditions"], page_size=1, whole_results=0
+            query=sample(licenses, 1)[0], include=("conditions",), page_size=1, whole_results=0
         )
         # get conditions reformatted
-        cgus_in = md_cgu.get("results")[0].get("conditions", [])
+        cgus_in = sample(md_cgu.results, 1)[0].get("conditions", [])
         cgus_out = self.fmt.conditions(cgus_in)
         cgus_no = self.fmt.conditions([])
         # test
@@ -128,9 +131,9 @@ class TestFormatter(unittest.TestCase):
 
     def test_limitations(self):
         """Limitations formatter."""
-        search = self.isogeo.search(whole_results=1, include=["limitations"])
+        search = self.isogeo.search(whole_results=1, include=("limitations",))
         # filtered search
-        for md in search.get("results"):
+        for md in search.results:
             if md.get("limitations"):
                 md_lims = md
                 break
@@ -145,9 +148,9 @@ class TestFormatter(unittest.TestCase):
 
     def test_specifications(self):
         """Limitations formatter."""
-        search = self.isogeo.search(whole_results=1, include=["specifications"])
+        search = self.isogeo.search(whole_results=1, include=("specifications",))
         # filtered search
-        for md in search.get("results"):
+        for md in search.results:
             if md.get("specifications"):
                 md_specs = md
                 break
