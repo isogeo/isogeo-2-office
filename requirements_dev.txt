@@ -27,4 +27,4 @@ pyqt5-tools==5.13.* ; sys_platform == 'win32'
 sip
 
 # packaging
-pyinstaller==3.4.*
+PyInstaller==4.0.dev0+46286a1f4
