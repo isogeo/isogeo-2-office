@@ -884,6 +884,14 @@ class IsogeoToOffice_Main(QMainWindow):
     def update_search_form(self, search: MetadataSearch):
         """Update search form with tags.
         """
+        # check if search returned some results
+        if not search.total:
+            logger.debug("The search returned no results. Please try other filters.")
+            self.ui.pgb_exports.stop()
+            # stop progress bar and enable search form
+            self.processing("end", progbar_max=search.total)
+            self.update_status_bar(prog_step=1, status_msg=self.tr("No results found. Try other filters."))
+
         # get available search tags
         search_tags = search.tags
         logger.debug("Search tags keys: {}".format(list(search_tags)))
