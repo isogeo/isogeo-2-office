@@ -768,9 +768,10 @@ class IsogeoToOffice_Main(QMainWindow):
 
     def processing(self, step: str = "start", progbar_max: int = 0):
         """Manage UI during a process: progress bar start/end, disable/enable
-        widgets...
+        widgets.
 
         :param str step: step of processing (start, end or progress)
+        :param int progbar_max: maximum range for the progress bar
         """
         if step == "start":
             logger.debug("Start processing. Freezing search form.")
