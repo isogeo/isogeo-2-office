@@ -782,6 +782,7 @@ class IsogeoToOffice_Main(QMainWindow):
             logger.debug("End of process. Back to normal.")
             self.ui.pgb_exports.setRange(0, progbar_max)
             self.ui.tab_export.setEnabled(True)
+            self.ui.btn_launch_export.setEnabled(True)
         elif step == "progress":
             logger.debug("Progress")
         else:
@@ -895,10 +896,17 @@ class IsogeoToOffice_Main(QMainWindow):
         # check if search returned some results
         if not search.total:
             logger.debug("The search returned no results. Please try other filters.")
-            self.ui.pgb_exports.stop()
             # stop progress bar and enable search form
-            self.processing("end", progbar_max=search.total)
-            self.update_status_bar(prog_step=1, status_msg=self.tr("No results found. Try other filters."))
+            self.processing("end")
+            self.ui.pgb_exports.setRange(0, 1)
+            # inform user
+            self.update_status_bar(prog_step=0, status_msg=self.tr("No results found. Please, try other filters."))
+            # export button
+            self.ui.btn_launch_export.setText(
+                self.tr("Export {} metadata").format(search.total)
+                )
+            self.ui.btn_launch_export.setEnabled(False)
+            return
 
         # get available search tags
         search_tags = search.tags
