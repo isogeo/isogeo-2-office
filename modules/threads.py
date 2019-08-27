@@ -21,11 +21,11 @@ from zipfile import ZipFile
 
 # 3rd party library
 from docxtpl import DocxTemplate
-from isogeo_pysdk.models import Metadata, MetadataSearch
+from isogeo_pysdk.models import Metadata, MetadataSearch, Share
 from openpyxl import Workbook
 from openpyxl.comments import Comment
 from openpyxl.cell import WriteOnlyCell
-from PyQt5.QtCore import QDate, QLocale, QThread, pyqtSignal
+from PyQt5.QtCore import QDateTime, QLocale, QThread, pyqtSignal
 import requests
 
 # submodules - export
@@ -55,49 +55,47 @@ class ThreadAppProperties(QThread):
 
     # run method gets called when we start the thread
     def run(self):
-        """Get application and informations
+        """Get application informations and build the text
         """
         # get application properties
-        shares = self.api_mngr.isogeo.share.listing()
-        logger.debug("{} shares are feeding the app.".format(len(shares)))
         # insert text
         text = "<html>"  # opening html content
         # Isogeo application authenticated in the plugin
-        app = shares[0].get("applications")[0]
+        app = self.api_mngr.isogeo.app_properties
         text += "<p>{}<a href='{}' style='color: CornflowerBlue;'>{}</a> ".format(
             self.tr("This application is authenticated as "),
-            app.get("url", "http://help.isogeo.com/isogeo2office/"),
-            app.get("name", "Isogeo to Office"),
+            app.url or "http://help.isogeo.com/isogeo2office/",
+            app.name or "Isogeo to Office",
         )
         # shares feeding the application
-        if len(shares) == 1:
+        if len(self.api_mngr.isogeo._shares) == 1:
             text += "{}{} {}</p></br>".format(
                 self.tr(" and powered by "), "1", self.tr("share:")
             )
         else:
             text += "{}{} {}</p></br>".format(
-                self.tr(" and powered by "), len(shares), self.tr("shares:")
+                self.tr(" and powered by "),
+                len(self.api_mngr.isogeo._shares),
+                self.tr("shares:"),
             )
         # shares details
-        for share in shares:
+        for s in self.api_mngr.isogeo._shares:
+            share = Share(**s)
             # share variables
-            creator_name = share.get("_creator").get("contact").get("name")
-            creator_email = share.get("_creator").get("contact").get("email")
-            creator_id = share.get("_creator").get("_tag")[6:]
-            share_url = "https://app.isogeo.com/groups/{}/admin/shares/{}".format(
-                creator_id, share.get("_id")
-            )
+            creator_name = share._creator.get("contact").get("name", "")
+            creator_email = share._creator.get("contact").get("email", "")
+
             # formatting text
             text += "<p><a href='{}' style='color: CornflowerBlue;'><b>{}</b></a></p>".format(
-                share_url, share.get("name")
+                share.admin_url(self.api_mngr.isogeo.app_url), share.name
             )
             text += "<p>{} {}</p>".format(
                 self.tr("Updated:"),
-                QDate.fromString(share.get("_modified")[:10], "yyyy-MM-dd").toString(),
+                QDateTime(app_utils.hlpr_datetimes(share._modified)).toString(),
             )
 
-            text += "<p>{} {} - {}</p>".format(
-                self.tr("Contact:"), creator_name, creator_email
+            text += "<p>{} <a href='mailto:{}'>{}</a></p>".format(
+                self.tr("Contact:"), creator_email, creator_name
             )
             text += "<p><hr></p>"
         text += "</html>"
@@ -111,8 +109,8 @@ class ThreadAppProperties(QThread):
                 proxies=proxies,
             ).json()[0]
             online_version = latest_v.get("tag_name")
-        except Exception:
-            logger.error("Unable to ")
+        except Exception as e:
+            logger.error("Unable to get the latest application version from Github: ".format(e))
             online_version = "0.0.0"
 
         # handle version label starting with a non digit char
