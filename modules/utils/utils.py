@@ -176,7 +176,8 @@ class isogeo2office_utils(IsogeoUtils):
         :param str file_type: credentials | thumbnails | folder
         :param str from_dir: path to the start directory. Default value: "downloads"
         """
-        if from_dir == "downloads":
+        # check the folder to open from
+        if isinstance(from_dir, str) and from_dir.lower() == "downloads":
             # get user download directory
             start_dir = path.realpath(path.join(path.expanduser("~"), "Downloads"))
         else:
