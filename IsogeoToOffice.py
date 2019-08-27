@@ -791,7 +791,7 @@ class IsogeoToOffice_Main(QMainWindow):
         selected_folder = self.app_utils.open_FileNameDialog(
             self,
             file_type="folder",
-            from_dir=self.app_settings.value("settings/out_folder_path"),
+            from_dir=self.app_settings.value("settings/out_folder_path", app_outdir),
         )
         # test selected folder
         if not path.exists(selected_folder):

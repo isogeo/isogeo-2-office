@@ -131,14 +131,15 @@ class isogeo2office_utils(IsogeoUtils):
             open_new_tab(url)
             x += 1
 
-    def open_dir_file(self, target):
+    def open_dir_file(self, target: str):
         """Open a file or a directory in the explorer of the operating system.
 
         :param str target: path of the folder or file to open
         """
+        target_dir = Path(target)
         # check if the file or the directory exists
-        if not path.exists(target):
-            raise IOError("No such file: {0}".format(target))
+        if not target_dir.exists():
+            raise IOError("No such file/folder: {0}".format(target))
 
         # check the read permission
         if not access(target, R_OK):
@@ -146,16 +147,20 @@ class isogeo2office_utils(IsogeoUtils):
 
         # open the directory or the file according to the os
         if opersys == "win32":  # Windows
-            proc = startfile(path.realpath(target))
+            proc = startfile(target_dir.resolve())
 
         elif opersys.startswith("linux"):  # Linux:
             proc = subprocess.Popen(
-                ["xdg-open", target], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                ["xdg-open", target_dir.resolve()],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
             )
 
         elif opersys == "darwin":  # Mac:
             proc = subprocess.Popen(
-                ["open", "--", target], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                ["open", "--", target_dir.resolve()],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
             )
 
         else:
@@ -176,13 +181,16 @@ class isogeo2office_utils(IsogeoUtils):
         :param str file_type: credentials | thumbnails | folder
         :param str from_dir: path to the start directory. Default value: "downloads"
         """
-        if from_dir == "downloads":
+        # check the folder to open from
+        if from_dir.lower() == "downloads":
             # get user download directory
-            start_dir = path.realpath(path.join(path.expanduser("~"), "Downloads"))
+            start_dir = Path.home() / "Downloads"
         else:
-            start_dir = path.realpath(from_dir)
-        if not path.exists(start_dir):
-            start_dir = path.expanduser("~")
+            start_dir = Path(from_dir)
+        # check if folder exists
+        if not start_dir.exists():
+            start_dir = Path.home()
+
         # set options
         options = QFileDialog.Options()
         # options |= QFileDialog.DontUseNativeDialog
@@ -197,7 +205,7 @@ class isogeo2office_utils(IsogeoUtils):
             return QFileDialog.getOpenFileName(
                 parent=None,
                 caption=dlg_title,
-                directory=start_dir,
+                directory=str(start_dir.resolve()),
                 filter=file_filters,
                 options=options,
             )
@@ -209,7 +217,7 @@ class isogeo2office_utils(IsogeoUtils):
             return QFileDialog.getOpenFileName(
                 parent=None,
                 caption=dlg_title,
-                directory=start_dir,
+                directory=str(start_dir.resolve()),
                 filter=file_filters,
                 options=options,
             )
@@ -217,7 +225,10 @@ class isogeo2office_utils(IsogeoUtils):
             options |= QFileDialog.ShowDirsOnly
             dlg_title = parent.tr("Select folder")
             return QFileDialog.getExistingDirectory(
-                parent=None, caption=dlg_title, directory=start_dir, options=options
+                parent=None,
+                caption=dlg_title,
+                directory=str(start_dir.resolve()),
+                options=options,
             )
         else:
             file_filters = "All Files (*)"
@@ -225,7 +236,7 @@ class isogeo2office_utils(IsogeoUtils):
             return QFileDialog.getOpenFileName(
                 parent=None,
                 caption=dlg_title,
-                directory=start_dir,
+                directory=str(start_dir.resolve()),
                 filter=file_filters,
                 options=options,
             )
