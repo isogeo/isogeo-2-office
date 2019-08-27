@@ -384,7 +384,7 @@ class IsogeoToOffice_Main(QMainWindow):
     def search(self, search_type: str = "update"):
         """Get filters and make search.
 
-        :param str search_type: can be update, reset or export
+        :param str search_type: can be update, reset or export. Defaults to 'update'.
         """
         # configure thread search
         self.ui.pgb_exports.setRange(0, 0)
@@ -459,8 +459,10 @@ class IsogeoToOffice_Main(QMainWindow):
             prog_step=0, status_msg=self.tr("Waiting for Isogeo API")
         )
 
-    def get_selected_filters(self):
+    def get_selected_filters(self) -> tuple:
         """Retrieve selected filters from the search form.
+
+        :rtype: tuple
         """
         share_id = ""
         search_terms = ""
@@ -473,7 +475,7 @@ class IsogeoToOffice_Main(QMainWindow):
         return share_id, search_terms.strip()
 
     # -- EXPORT ---------------------------------------------------------------
-    def export_check(self):
+    def export_check(self) -> bool:
         """Performs checks before export."""
         # check export options
         self.li_opts = [
@@ -495,11 +497,11 @@ class IsogeoToOffice_Main(QMainWindow):
             )
             return True
 
-    @pyqtSlot(dict)
-    def export_process(self, search_to_be_exported: dict):
+    @pyqtSlot(MetadataSearch)
+    def export_process(self, search_to_be_exported: MetadataSearch):
         """Export each metadata in checked output formats.
 
-        :param dict search_to_be_exported: Isogeo search response to export
+        :param MetadataSearch search_to_be_exported: Isogeo search response to export
         """
         # minimize application during process if asked. See #22
         if self.ui.chb_systray_minimize.isChecked():
@@ -605,11 +607,11 @@ class IsogeoToOffice_Main(QMainWindow):
         else:
             pass
 
-    @pyqtSlot(dict)
-    def thumbnails_generation(self, search_to_be_exported: dict):
+    @pyqtSlot(MetadataSearch)
+    def thumbnails_generation(self, search_to_be_exported: MetadataSearch):
         """Process thumbnails table generation.
 
-        :param dict search_to_be_exported: Isogeo search response to export
+        :param MetadataSearch search_to_be_exported: Isogeo search response to export
         """
         # prepare progress bar
         progbar_max = sum(self.li_opts) * search_to_be_exported.total
@@ -771,6 +773,7 @@ class IsogeoToOffice_Main(QMainWindow):
         widgets...
 
         :param str step: step of processing (start, end or progress)
+        :param int progbar_max: maximum range for the progress bar.
         """
         if step == "start":
             logger.debug("Start processing. Freezing search form.")
@@ -779,6 +782,7 @@ class IsogeoToOffice_Main(QMainWindow):
             logger.debug("End of process. Back to normal.")
             self.ui.pgb_exports.setRange(0, progbar_max)
             self.ui.tab_export.setEnabled(True)
+            self.ui.btn_launch_export.setEnabled(True)
         elif step == "progress":
             logger.debug("Progress")
         else:
@@ -845,6 +849,9 @@ class IsogeoToOffice_Main(QMainWindow):
         self, app_infos_retrieved: str = "", latest_online_version: str = ""
     ):
         """Get app properties and fillfull the share frame in settings tab.
+
+        :param str app_infos_retrieved: application information to display into the settings tabs
+        :param str latest_online_version: latest version retrieved from GitHub to compare with the actual
         """
         # fill settings tab text
         self.ui.txt_shares.setText(app_infos_retrieved)
@@ -883,7 +890,24 @@ class IsogeoToOffice_Main(QMainWindow):
     @pyqtSlot(MetadataSearch)
     def update_search_form(self, search: MetadataSearch):
         """Update search form with tags.
+
+        :param MetadataSearch search: search returned with tags as dicts to update the search form.
         """
+        # check if search returned some results
+        if not search.total:
+            logger.debug("The search returned no results. Please try other filters.")
+            # stop progress bar and enable search form
+            self.processing("end")
+            self.ui.pgb_exports.setRange(0, 1)
+            # inform user
+            self.update_status_bar(prog_step=0, status_msg=self.tr("No results found. Please, try other filters."))
+            # export button
+            self.ui.btn_launch_export.setText(
+                self.tr("Export {} metadata").format(search.total)
+                )
+            self.ui.btn_launch_export.setEnabled(False)
+            return
+
         # get available search tags
         search_tags = search.tags
         logger.debug("Search tags keys: {}".format(list(search_tags)))
@@ -963,7 +987,10 @@ class IsogeoToOffice_Main(QMainWindow):
 
     @pyqtSlot(int, str)
     def update_status_bar(self, prog_step: int = 1, status_msg: str = ""):
-        """Display message into status bar
+        """Display message into status bar.
+
+        :param int prog_step: step to increase the progress bar. Defaults to 1.
+        :param str status_msg: message to display into the status bar
         """
         # status bar and systray
         self.ui.lbl_statusbar.showMessage(status_msg)
