@@ -49,8 +49,11 @@ utils = isogeo2office_utils()
 
 
 class Isogeo2xlsx(Workbook):
-    """
-        Used to store Isogeo API results into an Excel worksheet (.xlsx)
+    """Used to store Isogeo API results into an Excel worksheet (.xlsx)
+
+    :param str lang: selected language for output
+    :param str url_base_edit: base url to format edit links (basically app.isogeo.com)
+    :param str url_base_view: base url to format view links (basically open.isogeo.com)
     """
 
     cols_v = [
@@ -194,14 +197,12 @@ class Isogeo2xlsx(Workbook):
     cols_fa = ["Nom", "Occurrences"]  # A  # B
 
     def __init__(
-        self, lang: str = "FR", url_base_edit: str = "", url_base_view: str = ""
+        self,
+        lang: str = "FR",
+        url_base_edit: str = "https://app.Isogeo.com",
+        url_base_view: str = "https://open.isogeo.com",
     ):
-        """Instanciating the output workbook.
-
-        :param str lang: selected language for output
-        :param str url_base_edit: base url to format edit links (basically app.isogeo.com)
-        :param str url_base_view: base url to format view links (basically open.isogeo.com)
-        """
+        """Instanciating the output workbook."""
         super(Isogeo2xlsx, self).__init__()
         # super(Isogeo2xlsx, self).__init__(write_only=True)
 

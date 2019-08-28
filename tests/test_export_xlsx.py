@@ -70,7 +70,10 @@ class TestExportXLSX(unittest.TestCase):
         )
 
         # target class instanciation
-        self.out_wb = Isogeo2xlsx(lang="FR", url_base="https://open.isogeo.com/s")
+        self.out_wb = Isogeo2xlsx(
+            lang="FR",
+            url_base_edit="https://app.isogeo.com"
+        )
 
     def tearDown(self):
         """Executed after each test."""
@@ -90,7 +93,6 @@ class TestExportXLSX(unittest.TestCase):
         self.assertTrue(hasattr(self.out_wb, "cols_s"))
         self.assertTrue(hasattr(self.out_wb, "cols_rz"))
         self.assertTrue(hasattr(self.out_wb, "cols_fa"))
-        self.assertTrue(hasattr(self.out_wb, "url_base"))
         self.assertTrue(hasattr(self.out_wb, "dates_fmt"))
         self.assertTrue(hasattr(self.out_wb, "locale_fmt"))
         self.assertTrue(hasattr(self.out_wb, "stats"))
@@ -98,16 +100,15 @@ class TestExportXLSX(unittest.TestCase):
         self.assertTrue(hasattr(self.out_wb, "fmt"))
 
         # values
-        self.assertEqual(self.out_wb.url_base, "https://open.isogeo.com/s")
         self.assertIsInstance(self.out_wb.fmt, IsogeoFormatter)
         self.assertIsInstance(self.out_wb.stats, IsogeoStats)
 
         # languages variations
-        out_wb_fr = Isogeo2xlsx(lang="FR", url_base="https://open.isogeo.com/s")
+        out_wb_fr = Isogeo2xlsx(lang="FR", url_base_edit="https://app.isogeo.com")
         self.assertEqual(out_wb_fr.dates_fmt, "DD/MM/YYYY")
         self.assertEqual(out_wb_fr.locale_fmt, "fr_FR")
 
-        out_wb_en = Isogeo2xlsx(lang="EN", url_base="https://open.isogeo.com/s")
+        out_wb_en = Isogeo2xlsx(lang="EN", url_base_edit="https://app.isogeo.com")
         self.assertEqual(out_wb_en.dates_fmt, "YYYY/MM/DD")
         self.assertEqual(out_wb_en.locale_fmt, "uk_UK")
 
