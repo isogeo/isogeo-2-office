@@ -192,23 +192,6 @@ class IsogeoFormatter(object):
         # return formatted result
         return specs_out
 
-    # ------------ Hyperlinks -------------------------------------------------
-    def url_edit(self, input_link: str, output_type: str = "xlsx"):
-        """
-        """
-        if output_type == "xlsx":
-            try:
-                urlparse(input_link)
-                link_edit = input_link
-            except Exception as e:
-                logger.error(e)
-                link_edit = ""
-            out_hyperlink = r'=HYPERLINK("{0}","{1}")'.format(link_edit, "Editer")
-        else:
-            return None
-
-        return out_hyperlink
-
 
 # ###############################################################################
 # ###### Stand alone program ########
