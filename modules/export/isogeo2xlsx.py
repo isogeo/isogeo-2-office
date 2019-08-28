@@ -193,18 +193,23 @@ class Isogeo2xlsx(Workbook):
 
     cols_fa = ["Nom", "Occurrences"]  # A  # B
 
-    def __init__(self, lang: str = "FR", url_base: str = ""):
+    def __init__(
+        self, lang: str = "FR", url_base_edit: str = "", url_base_view: str = ""
+    ):
         """Instanciating the output workbook.
 
         :param str lang: selected language for output
-        :param str url_base: base url to format edit and view links
+        :param str url_base_edit: base url to format edit links (basically app.isogeo.com)
+        :param str url_base_view: base url to format view links (basically open.isogeo.com)
         """
         super(Isogeo2xlsx, self).__init__()
         # super(Isogeo2xlsx, self).__init__(write_only=True)
 
         self.stats = IsogeoStats()
+        # APP url
+        utils.app_url = url_base_edit
         # OpenCatalog url
-        self.url_base = url_base
+        utils.oc_url = url_base_view
 
         # styles
         s_date = NamedStyle(name="date")
@@ -717,6 +722,10 @@ class Isogeo2xlsx(Workbook):
                 md._modified
             )
             ws["{}{}".format(colsref.get("_modified"), idx)].style = "date"
+
+        # edit
+        # ws["{}{}".format(colsref.get("linkEdit"), idx)] = md.admin_url(self.url_base_edit) + "identification"
+        ws["{}{}".format(colsref.get("linkEdit"), idx)] = utils.get_edit_url(md)
 
         # lang
         ws["{}{}".format(colsref.get("language"), idx)] = md.language

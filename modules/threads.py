@@ -174,6 +174,7 @@ class ThreadExportExcel(QThread):
         self,
         search_to_export: dict = {},
         output_path: str = r"output/",
+        url_base_edit: str = "https://app.isogeo.com/",
         opt_attributes: int = 0,
         opt_dasboard: int = 0,
         opt_fillfull: int = 0,
@@ -183,6 +184,7 @@ class ThreadExportExcel(QThread):
         # export settings
         self.search = search_to_export
         self.output_xlsx_path = output_path
+        self.url_base_edit = url_base_edit
         self.opt_attributes = opt_attributes
         self.opt_dasboard = opt_dasboard
         self.opt_fillfull = opt_fillfull
@@ -194,7 +196,8 @@ class ThreadExportExcel(QThread):
         """
         language = current_locale.name()[:2]
         # workbook
-        wb = Isogeo2xlsx(lang=language, url_base="https://open.isogeo.com")
+        wb = Isogeo2xlsx(lang=language, url_base_edit=self.url_base_edit)
+        # worksheets
         wb.set_worksheets(
             auto=self.search.tags.keys(),
             dashboard=self.opt_dasboard,

@@ -542,6 +542,7 @@ class IsogeoToOffice_Main(QMainWindow):
             self.thread_export_xlsx = ThreadExportExcel(
                 search_to_be_exported,
                 output_xlsx_filepath,
+                url_base_edit=api_mngr.isogeo.app_url,
                 opt_attributes=self.ui.chb_xls_attributes.isChecked(),
                 opt_dasboard=self.ui.chb_xls_stats.isChecked(),
                 opt_fillfull=0,
