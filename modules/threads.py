@@ -55,20 +55,18 @@ class ThreadAppProperties(QThread):
 
     # run method gets called when we start the thread
     def run(self):
-        """Get application and informations
+        """Get application informations and build the text to display into the settings tab.
         """
-        # get application properties
-        shares = self.api_mngr.isogeo.share.listing()
-        logger.debug("{} shares are feeding the app.".format(len(shares)))
         # insert text
         text = "<html>"  # opening html content
-        # Isogeo application authenticated in the plugin
-        app = shares[0].get("applications")[0]
+        # properties of the authenticated application
+        app = self.api_mngr.isogeo.app_properties
         text += "<p>{}<a href='{}' style='color: CornflowerBlue;'>{}</a> ".format(
             self.tr("This application is authenticated as "),
             app.get("url", "http://help.isogeo.com/isogeo2office/"),
             app.get("name", "Isogeo to Office"),
         )
+        logger.info("Application authenticated: {}".format(app.name))
         # shares feeding the application
         if len(shares) == 1:
             text += "{}{} {}</p></br>".format(
@@ -78,26 +76,38 @@ class ThreadAppProperties(QThread):
             text += "{}{} {}</p></br>".format(
                 self.tr(" and powered by "), len(shares), self.tr("shares:")
             )
-        # shares details
-        for share in shares:
+        # shares details and check opencatalog
+        for s in self.api_mngr.isogeo._shares:
+            share = Share(**s)
             # share variables
-            creator_name = share.get("_creator").get("contact").get("name")
-            creator_email = share.get("_creator").get("contact").get("email")
-            creator_id = share.get("_creator").get("_tag")[6:]
-            share_url = "https://app.isogeo.com/groups/{}/admin/shares/{}".format(
-                creator_id, share.get("_id")
-            )
-            # formatting text
+            creator_name = share._creator.get("contact").get("name", "")
+            creator_email = share._creator.get("contact").get("email", "")
+
+            # share administration URL
             text += "<p><a href='{}' style='color: CornflowerBlue;'><b>{}</b></a></p>".format(
                 share_url, share.get("name")
             )
+
+            # OpenCatalog status - ref: https://github.com/isogeo/isogeo-2-office/issues/54
+            opencatalog_url = share.opencatalog_url(self.api_mngr.isogeo.oc_url)
+            if self.api_mngr.isogeo.head(opencatalog_url):
+                text += "<p>{} <a href='{}' style='color: CornflowerBlue;'><b>{}</b></a></p>".format(
+                    self.tr("OpenCatalog status:"), opencatalog_url, self.tr("enabled")
+                )
+            else:
+                text += "<p>{} <span style='color: red;'>{}</span</p>".format(
+                    self.tr("OpenCatalog status:"), self.tr("disabled")
+                )
+
+            # last modification (share renamed, changes in catalogs or applications, etc.)
             text += "<p>{} {}</p>".format(
                 self.tr("Updated:"),
                 QDate.fromString(share.get("_modified")[:10], "yyyy-MM-dd").toString(),
             )
 
-            text += "<p>{} {} - {}</p>".format(
-                self.tr("Contact:"), creator_name, creator_email
+            # workgroup contact owner of the share
+            text += "<p>{} <a href='mailto:{}'>{}</a></p>".format(
+                self.tr("Contact:"), creator_email, creator_name
             )
             text += "<p><hr></p>"
         text += "</html>"
