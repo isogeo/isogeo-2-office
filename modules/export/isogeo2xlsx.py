@@ -207,10 +207,10 @@ class Isogeo2xlsx(Workbook):
         # super(Isogeo2xlsx, self).__init__(write_only=True)
 
         self.stats = IsogeoStats()
-        # APP url
-        utils.app_url = url_base_edit
-        # OpenCatalog url
-        utils.oc_url = url_base_view
+
+        # URLS
+        utils.app_url = url_base_edit  # APP
+        utils.oc_url = url_base_view  # OpenCatalog url
 
         # styles
         s_date = NamedStyle(name="date")
