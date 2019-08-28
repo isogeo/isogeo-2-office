@@ -47,7 +47,7 @@ logger = logging.getLogger("isogeo2office")
 # API REQUESTS ----------------------------------------------------------------
 class ThreadAppProperties(QThread):
     # signals
-    sig_finished = pyqtSignal(str, str)
+    sig_finished = pyqtSignal(str, str, bool)
 
     def __init__(self, api_manager: object):
         QThread.__init__(self)
@@ -55,18 +55,21 @@ class ThreadAppProperties(QThread):
 
     # run method gets called when we start the thread
     def run(self):
-        """Get application informations and build the text
+        """Get application informations and build the text to display into the settings tab.
         """
-        # get application properties
+        # local vers
+        opencatalog_warning = 0
+
         # insert text
         text = "<html>"  # opening html content
-        # Isogeo application authenticated in the plugin
+        # properties of the authenticated application
         app = self.api_mngr.isogeo.app_properties
         text += "<p>{}<a href='{}' style='color: CornflowerBlue;'>{}</a> ".format(
             self.tr("This application is authenticated as "),
             app.url or "http://help.isogeo.com/isogeo2office/",
             app.name or "Isogeo to Office",
         )
+        logger.info("Application authenticated: {}".format(app.name))
         # shares feeding the application
         if len(self.api_mngr.isogeo._shares) == 1:
             text += "{}{} {}</p></br>".format(
@@ -85,15 +88,30 @@ class ThreadAppProperties(QThread):
             creator_name = share._creator.get("contact").get("name", "")
             creator_email = share._creator.get("contact").get("email", "")
 
-            # formatting text
+            # share administration URL
             text += "<p><a href='{}' style='color: CornflowerBlue;'><b>{}</b></a></p>".format(
                 share.admin_url(self.api_mngr.isogeo.app_url), share.name
             )
+
+            # OpenCatalog status - ref: https://github.com/isogeo/isogeo-2-office/issues/54
+            opencatalog_url = share.opencatalog_url(self.api_mngr.isogeo.oc_url)
+            if self.api_mngr.isogeo.head(opencatalog_url):
+                text += "<p>{} <a href='{}' style='color: CornflowerBlue;'><b>{}</b></a></p>".format(
+                    self.tr("OpenCatalog status:"), opencatalog_url, self.tr("enabled")
+                )
+            else:
+                text += "<p>{} <span style='color: red;'>{}</span</p>".format(
+                    self.tr("OpenCatalog status:"), self.tr("disabled")
+                )
+                opencatalog_warning = 1
+
+            # last modification (share renamed, changes in catalogs or applications, etc.)
             text += "<p>{} {}</p>".format(
                 self.tr("Updated:"),
                 QDateTime(app_utils.hlpr_datetimes(share._modified)).toString(),
             )
 
+            # workgroup contact owner of the share
             text += "<p>{} <a href='mailto:{}'>{}</a></p>".format(
                 self.tr("Contact:"), creator_email, creator_name
             )
@@ -110,7 +128,9 @@ class ThreadAppProperties(QThread):
             ).json()[0]
             online_version = latest_v.get("tag_name")
         except Exception as e:
-            logger.error("Unable to get the latest application version from Github: ".format(e))
+            logger.error(
+                "Unable to get the latest application version from Github: ".format(e)
+            )
             online_version = "0.0.0"
 
         # handle version label starting with a non digit char
@@ -118,7 +138,7 @@ class ThreadAppProperties(QThread):
             online_version = online_version[1:]
 
         # Now inform the main thread with the output (fill_app_props)
-        self.sig_finished.emit(text, online_version)
+        self.sig_finished.emit(text, online_version, opencatalog_warning)
 
 
 class ThreadSearch(QThread):

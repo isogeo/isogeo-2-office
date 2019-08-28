@@ -14,7 +14,7 @@
         <translation>Authentification - Paramètres absents</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="938"/>
+        <location filename="../IsogeoToOffice.py" line="953"/>
         <source>Export {} metadata</source>
         <translation>Exporter {} métadonnées</translation>
     </message>
@@ -44,7 +44,7 @@
         <translation>En attente de l&apos;API Isogeo</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="986"/>
+        <location filename="../IsogeoToOffice.py" line="1001"/>
         <source>Search form updated</source>
         <translation>Formulaire de recherche mis à jour</translation>
     </message>
@@ -125,24 +125,29 @@ L&apos;application va se fermer.</translation>
         <translation>Application connectée à Isogeo.</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="862"/>
-        <source>New version available.</source>
-        <translation>Nouvelle version disponible.</translation>
-    </message>
-    <message>
         <location filename="../IsogeoToOffice.py" line="866"/>
         <source>Version is up-to-date.</source>
         <translation>Version à jour.</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="1006"/>
+        <location filename="../IsogeoToOffice.py" line="1028"/>
         <source>Export operations are over.</source>
         <translation>Les exports sont terminés.</translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="903"/>
+        <location filename="../IsogeoToOffice.py" line="918"/>
         <source>No results found. Please, try other filters.</source>
         <translation>Aucun résultat avec cette combinaison de filtres. Merci d&apos;essayer d&apos;autres critères.</translation>
+    </message>
+    <message>
+        <location filename="../IsogeoToOffice.py" line="862"/>
+        <source>New version available. You can download it here: </source>
+        <translation>Nouvelle version disponible. Téléchargez la : </translation>
+    </message>
+    <message>
+        <location filename="../IsogeoToOffice.py" line="885"/>
+        <source>OpenCatalog is missing in one share at least. Check the settings tab to identify which one and fix it.</source>
+        <translation>OpenCatalog n&apos;est pas activé dans au moins un partage. Regarder dans l&apos;onglet &apos;Paramètres&apos; pour corriger.</translation>
     </message>
 </context>
 <context>
@@ -171,40 +176,55 @@ L&apos;application va se fermer.</translation>
         <translation>Cette application est authentifiée en tant que </translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="78"/>
+        <location filename="../modules/threads.py" line="79"/>
         <source> and powered by </source>
         <translation> et alimentée par </translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="74"/>
+        <location filename="../modules/threads.py" line="75"/>
         <source>share:</source>
         <translation>partage :</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="78"/>
+        <location filename="../modules/threads.py" line="79"/>
         <source>shares:</source>
         <translation>partages :</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="94"/>
+        <location filename="../modules/threads.py" line="109"/>
         <source>Updated:</source>
         <translation>Dernière modification :</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="99"/>
+        <location filename="../modules/threads.py" line="115"/>
         <source>Contact:</source>
         <translation>Contact :</translation>
+    </message>
+    <message>
+        <location filename="../modules/threads.py" line="103"/>
+        <source>OpenCatalog status:</source>
+        <translation>OpenCatalog :</translation>
+    </message>
+    <message>
+        <location filename="../modules/threads.py" line="99"/>
+        <source>enabled</source>
+        <translation>présent</translation>
+    </message>
+    <message>
+        <location filename="../modules/threads.py" line="103"/>
+        <source>disabled</source>
+        <translation>absent</translation>
     </message>
 </context>
 <context>
     <name>ThreadExportExcel</name>
     <message>
-        <location filename="../modules/threads.py" line="193"/>
+        <location filename="../modules/threads.py" line="211"/>
         <source>Processing Excel: {}</source>
         <translation>Export Excel : {}</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="226"/>
+        <location filename="../modules/threads.py" line="244"/>
         <source>Excel finished</source>
         <translation>Export Excel terminé</translation>
     </message>
@@ -212,17 +232,17 @@ L&apos;application va se fermer.</translation>
 <context>
     <name>ThreadExportWord</name>
     <message>
-        <location filename="../modules/threads.py" line="268"/>
+        <location filename="../modules/threads.py" line="286"/>
         <source>Processing Word: {}</source>
         <translation>Export Word : {}</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="298"/>
+        <location filename="../modules/threads.py" line="316"/>
         <source>Word: error occurred during saving step. Check the log.</source>
         <translation>Word : une erreur est survenue durant l&apos;enregistrement d&apos;un fichier. Consulter le fichier journal.</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="307"/>
+        <location filename="../modules/threads.py" line="325"/>
         <source>Word finished</source>
         <translation>Export Word terminé</translation>
     </message>
@@ -230,7 +250,7 @@ L&apos;application va se fermer.</translation>
 <context>
     <name>ThreadExportXml</name>
     <message>
-        <location filename="../modules/threads.py" line="351"/>
+        <location filename="../modules/threads.py" line="369"/>
         <source>Processing XML: {}</source>
         <translation>Export XML : {}</translation>
     </message>
@@ -238,12 +258,12 @@ L&apos;application va se fermer.</translation>
 <context>
     <name>ThreadThumbnails</name>
     <message>
-        <location filename="../modules/threads.py" line="442"/>
+        <location filename="../modules/threads.py" line="460"/>
         <source>Preparing thumbnail table for: {}</source>
         <translation>Table des vignettes : {}</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="479"/>
+        <location filename="../modules/threads.py" line="497"/>
         <source>Thumbnail table finished</source>
         <translation>Table des vignettes terminée</translation>
     </message>

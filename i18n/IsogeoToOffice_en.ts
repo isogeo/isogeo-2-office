@@ -13,7 +13,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="938"/>
+        <location filename="../IsogeoToOffice.py" line="953"/>
         <source>Export {} metadata</source>
         <translation type="unfinished"></translation>
     </message>
@@ -43,7 +43,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="986"/>
+        <location filename="../IsogeoToOffice.py" line="1001"/>
         <source>Search form updated</source>
         <translation type="unfinished"></translation>
     </message>
@@ -121,23 +121,28 @@ application will be closed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="862"/>
-        <source>New version available.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../IsogeoToOffice.py" line="866"/>
         <source>Version is up-to-date.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="1006"/>
+        <location filename="../IsogeoToOffice.py" line="1028"/>
         <source>Export operations are over.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="903"/>
+        <location filename="../IsogeoToOffice.py" line="918"/>
         <source>No results found. Please, try other filters.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../IsogeoToOffice.py" line="862"/>
+        <source>New version available. You can download it here: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../IsogeoToOffice.py" line="885"/>
+        <source>OpenCatalog is missing in one share at least. Check the settings tab to identify which one and fix it.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -167,40 +172,55 @@ application will be closed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="78"/>
+        <location filename="../modules/threads.py" line="79"/>
         <source> and powered by </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="74"/>
+        <location filename="../modules/threads.py" line="75"/>
         <source>share:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="78"/>
+        <location filename="../modules/threads.py" line="79"/>
         <source>shares:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="94"/>
+        <location filename="../modules/threads.py" line="109"/>
         <source>Updated:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="99"/>
+        <location filename="../modules/threads.py" line="115"/>
         <source>Contact:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/threads.py" line="103"/>
+        <source>OpenCatalog status:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/threads.py" line="99"/>
+        <source>enabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/threads.py" line="103"/>
+        <source>disabled</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>ThreadExportExcel</name>
     <message>
-        <location filename="../modules/threads.py" line="193"/>
+        <location filename="../modules/threads.py" line="211"/>
         <source>Processing Excel: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="226"/>
+        <location filename="../modules/threads.py" line="244"/>
         <source>Excel finished</source>
         <translation type="unfinished"></translation>
     </message>
@@ -208,17 +228,17 @@ application will be closed.</source>
 <context>
     <name>ThreadExportWord</name>
     <message>
-        <location filename="../modules/threads.py" line="268"/>
+        <location filename="../modules/threads.py" line="286"/>
         <source>Processing Word: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="298"/>
+        <location filename="../modules/threads.py" line="316"/>
         <source>Word: error occurred during saving step. Check the log.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="307"/>
+        <location filename="../modules/threads.py" line="325"/>
         <source>Word finished</source>
         <translation type="unfinished"></translation>
     </message>
@@ -226,7 +246,7 @@ application will be closed.</source>
 <context>
     <name>ThreadExportXml</name>
     <message>
-        <location filename="../modules/threads.py" line="351"/>
+        <location filename="../modules/threads.py" line="369"/>
         <source>Processing XML: {}</source>
         <translation type="unfinished"></translation>
     </message>
@@ -234,12 +254,12 @@ application will be closed.</source>
 <context>
     <name>ThreadThumbnails</name>
     <message>
-        <location filename="../modules/threads.py" line="442"/>
+        <location filename="../modules/threads.py" line="460"/>
         <source>Preparing thumbnail table for: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="479"/>
+        <location filename="../modules/threads.py" line="497"/>
         <source>Thumbnail table finished</source>
         <translation type="unfinished"></translation>
     </message>
