@@ -581,6 +581,7 @@ class IsogeoToOffice_Main(QMainWindow):
                 search_to_be_exported,
                 output_docx_filepath,
                 tpl_path=template_path,
+                url_base_edit=api_mngr.isogeo.app_url,
                 thumbnails=thumbnails_loaded,
                 timestamp=horodatage,
                 length_uuid=opt_md_uuid,
