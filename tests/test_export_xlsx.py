@@ -70,10 +70,7 @@ class TestExportXLSX(unittest.TestCase):
         )
 
         # target class instanciation
-        self.out_wb = Isogeo2xlsx(
-            lang="FR",
-            url_base_edit="https://app.isogeo.com"
-        )
+        self.out_wb = Isogeo2xlsx(lang="FR", url_base_edit="https://app.isogeo.com")
 
     def tearDown(self):
         """Executed after each test."""
