@@ -22,8 +22,8 @@ from datetime import datetime
 import logging
 
 # 3rd party library
-from docxtpl import DocxTemplate, etree, InlineImage
-from isogeo_pysdk import Isogeo, Event, Metadata
+from docxtpl import DocxTemplate, etree, InlineImage, RichText
+from isogeo_pysdk import Isogeo, Event, Metadata, Share
 from isogeo_pysdk import IsogeoTranslator
 
 # custom submodules
@@ -45,6 +45,7 @@ utils = isogeo2office_utils()
 class Isogeo2docx(object):
     """IsogeoToDocx class.
 
+    :param str lang: selected language for output
     :param str url_base_edit: base url to format edit links (basically app.isogeo.com)
     :param str url_base_view: base url to format view links (basically open.isogeo.com)
     """
@@ -101,10 +102,12 @@ class Isogeo2docx(object):
         utils.app_url = url_base_edit  # APP
         utils.oc_url = url_base_view  # OpenCatalog url
 
-    def md2docx(self, docx_template, md: Metadata):
+    def md2docx(self, docx_template: DocxTemplate, md: Metadata, share: Share = None):
         """Dump Isogeo metadata into a docx template.
-        
-        :param str lang: selected language for output
+
+        :param DocxTemplate docx_template: Word template to fill
+        :param Metadata metadata: metadata to dumpinto the template
+        :param Share share: share in which the metadata is. Used to build the view URL.
         """
         logger.debug(
             "Starting the export into Word .docx of {} ({})".format(
@@ -138,8 +141,7 @@ class Isogeo2docx(object):
                 pass
             # workgroup which owns the metadata
             if tag.startswith("owner"):
-                owner = md.tags.get(tag)
-                owner_id = tag[6:]
+                owner_name = md.tags.get(tag)
                 continue
             else:
                 pass
@@ -163,8 +165,17 @@ class Isogeo2docx(object):
                 pass
 
         # formatting links to visualize on OpenCatalog and edit on APP
-        link_visu = utils.get_view_url(md_id=md._id, share_id="", share_token="")
-
+        if share is not None:
+            link_visu = utils.get_view_url(
+                md_id=md._id, share_id=share._id, share_token=share.urlToken
+            )
+        else:
+            logger.warning(
+                "Unable to build the OpenCatalog URL for this metadata: {} ({})".format(
+                    md.title_or_name(), md._id
+                )
+            )
+            link_visu = ""
         link_edit = utils.get_edit_url(md)
 
         # ---- CONTACTS # ----------------------------------------------------
@@ -302,7 +313,7 @@ class Isogeo2docx(object):
             "varKeywords": " ; ".join(li_motscles),
             "varKeywordsCount": len(li_motscles),
             "varType": resource_type,
-            "varOwner": owner,
+            "varOwner": owner_name,
             "varScale": md.scale,
             "varTopologyInfo": utils.clean_xml(md.topologicalConsistency),
             "varInspireTheme": " ; ".join(li_theminspire),

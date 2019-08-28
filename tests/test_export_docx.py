@@ -30,9 +30,6 @@ from modules import Isogeo2docx
 # ######## Globals #################
 # ##################################
 
-# API access
-app_id = environ.get("ISOGEO_API_DEV_ID")
-app_secret = environ.get("ISOGEO_API_DEV_SECRET")
 
 # #############################################################################
 # ########## Classes ###############
@@ -68,7 +65,6 @@ class TestExportDocx(unittest.TestCase):
             search = json.loads(f.read())
         # load template
         tpl = DocxTemplate(self.word_template)
-        url_oc = "https://open.isogeo.com/"
         # run
         for md in search.get("results")[:20]:
             metadata = Metadata.clean_attributes(md)
