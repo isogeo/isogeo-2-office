@@ -47,7 +47,7 @@ logger = logging.getLogger("isogeo2office")
 # API REQUESTS ----------------------------------------------------------------
 class ThreadAppProperties(QThread):
     # signals
-    sig_finished = pyqtSignal(str, str)
+    sig_finished = pyqtSignal(str, str, bool)
 
     def __init__(self, api_manager: object):
         QThread.__init__(self)
@@ -57,6 +57,9 @@ class ThreadAppProperties(QThread):
     def run(self):
         """Get application informations and build the text to display into the settings tab.
         """
+        # local vers
+        opencatalog_warning = 0
+
         # insert text
         text = "<html>"  # opening html content
         # properties of the authenticated application
@@ -100,6 +103,7 @@ class ThreadAppProperties(QThread):
                 text += "<p>{} <span style='color: red;'>{}</span</p>".format(
                     self.tr("OpenCatalog status:"), self.tr("disabled")
                 )
+                opencatalog_warning = 1
 
             # last modification (share renamed, changes in catalogs or applications, etc.)
             text += "<p>{} {}</p>".format(
@@ -124,7 +128,9 @@ class ThreadAppProperties(QThread):
             ).json()[0]
             online_version = latest_v.get("tag_name")
         except Exception as e:
-            logger.error("Unable to get the latest application version from Github: ".format(e))
+            logger.error(
+                "Unable to get the latest application version from Github: ".format(e)
+            )
             online_version = "0.0.0"
 
         # handle version label starting with a non digit char
@@ -132,7 +138,7 @@ class ThreadAppProperties(QThread):
             online_version = online_version[1:]
 
         # Now inform the main thread with the output (fill_app_props)
-        self.sig_finished.emit(text, online_version)
+        self.sig_finished.emit(text, online_version, opencatalog_warning)
 
 
 class ThreadSearch(QThread):
