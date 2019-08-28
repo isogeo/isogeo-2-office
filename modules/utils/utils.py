@@ -182,7 +182,7 @@ class isogeo2office_utils(IsogeoUtils):
         :param str from_dir: path to the start directory. Default value: "downloads"
         """
         # check the folder to open from
-        if from_dir.lower() == "downloads":
+        if isinstance(from_dir, str) and from_dir.lower() == "downloads":
             # get user download directory
             start_dir = Path.home() / "Downloads"
         else:

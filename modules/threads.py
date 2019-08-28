@@ -21,11 +21,11 @@ from zipfile import ZipFile
 
 # 3rd party library
 from docxtpl import DocxTemplate
-from isogeo_pysdk.models import Metadata, MetadataSearch
+from isogeo_pysdk.models import Metadata, MetadataSearch, Share
 from openpyxl import Workbook
 from openpyxl.comments import Comment
 from openpyxl.cell import WriteOnlyCell
-from PyQt5.QtCore import QDate, QLocale, QThread, pyqtSignal
+from PyQt5.QtCore import QDateTime, QLocale, QThread, pyqtSignal
 import requests
 
 # submodules - export
@@ -63,20 +63,22 @@ class ThreadAppProperties(QThread):
         app = self.api_mngr.isogeo.app_properties
         text += "<p>{}<a href='{}' style='color: CornflowerBlue;'>{}</a> ".format(
             self.tr("This application is authenticated as "),
-            app.get("url", "http://help.isogeo.com/isogeo2office/"),
-            app.get("name", "Isogeo to Office"),
+            app.url or "http://help.isogeo.com/isogeo2office/",
+            app.name or "Isogeo to Office",
         )
         logger.info("Application authenticated: {}".format(app.name))
         # shares feeding the application
-        if len(shares) == 1:
+        if len(self.api_mngr.isogeo._shares) == 1:
             text += "{}{} {}</p></br>".format(
                 self.tr(" and powered by "), "1", self.tr("share:")
             )
         else:
             text += "{}{} {}</p></br>".format(
-                self.tr(" and powered by "), len(shares), self.tr("shares:")
+                self.tr(" and powered by "),
+                len(self.api_mngr.isogeo._shares),
+                self.tr("shares:"),
             )
-        # shares details and check opencatalog
+        # shares details
         for s in self.api_mngr.isogeo._shares:
             share = Share(**s)
             # share variables
@@ -85,7 +87,7 @@ class ThreadAppProperties(QThread):
 
             # share administration URL
             text += "<p><a href='{}' style='color: CornflowerBlue;'><b>{}</b></a></p>".format(
-                share_url, share.get("name")
+                share.admin_url(self.api_mngr.isogeo.app_url), share.name
             )
 
             # OpenCatalog status - ref: https://github.com/isogeo/isogeo-2-office/issues/54
@@ -102,7 +104,7 @@ class ThreadAppProperties(QThread):
             # last modification (share renamed, changes in catalogs or applications, etc.)
             text += "<p>{} {}</p>".format(
                 self.tr("Updated:"),
-                QDate.fromString(share.get("_modified")[:10], "yyyy-MM-dd").toString(),
+                QDateTime(app_utils.hlpr_datetimes(share._modified)).toString(),
             )
 
             # workgroup contact owner of the share
@@ -121,8 +123,8 @@ class ThreadAppProperties(QThread):
                 proxies=proxies,
             ).json()[0]
             online_version = latest_v.get("tag_name")
-        except Exception:
-            logger.error("Unable to ")
+        except Exception as e:
+            logger.error("Unable to get the latest application version from Github: ".format(e))
             online_version = "0.0.0"
 
         # handle version label starting with a non digit char
