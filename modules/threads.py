@@ -172,7 +172,7 @@ class ThreadExportExcel(QThread):
 
     def __init__(
         self,
-        search_to_export: dict = {},
+        search_to_export: MetadataSearch,
         output_path: str = r"output/",
         url_base_edit: str = "https://app.isogeo.com/",
         opt_attributes: int = 0,
@@ -257,6 +257,7 @@ class ThreadExportWord(QThread):
         search_to_export: dict = {},
         output_path: str = r"output/",
         tpl_path: str = r"templates/template_Isogeo.docx",
+        url_base_edit: str = "https://app.isogeo.com/",
         thumbnails: dict = {},
         timestamp: str = "",
         length_uuid: int = 0,
@@ -265,6 +266,7 @@ class ThreadExportWord(QThread):
         # export settings
         self.search = search_to_export
         self.output_docx_folder = output_path
+        self.url_base_edit = url_base_edit
         self.tpl_path = path.realpath(tpl_path)
         self.thumbnails = thumbnails
         self.timestamp = timestamp
@@ -275,10 +277,11 @@ class ThreadExportWord(QThread):
         """Export each metadata into a Word document
         """
         # vars
+        language = current_locale.name()[:2]
         thumbnail_default = ("", path.realpath(r"resources/favicon.png"))
 
         # word generator
-        to_docx = Isogeo2docx()
+        to_docx = Isogeo2docx(lang=language, url_base_edit=self.url_base_edit)
 
         # parsing metadata
         for md in self.search.results:
@@ -300,9 +303,7 @@ class ThreadExportWord(QThread):
             # templating
             tpl = DocxTemplate(self.tpl_path)
             # fill template
-            to_docx.md2docx(
-                docx_template=tpl, md=metadata, url_base="https://open.isogeo.com"
-            )
+            to_docx.md2docx(docx_template=tpl, md=metadata)
             # filename
             md_name = metadata.title_or_name(slugged=1)
             uuid = "{}".format(metadata._id[: self.length_uuid])
