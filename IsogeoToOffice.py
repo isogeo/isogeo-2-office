@@ -986,14 +986,21 @@ class IsogeoToOffice_Main(QMainWindow):
         self.update_status_bar(prog_step=0, status_msg=self.tr("Search form updated"))
 
     @pyqtSlot(int, str)
-    def update_status_bar(self, prog_step: int = 1, status_msg: str = ""):
+    def update_status_bar(self, prog_step: int = 1, status_msg: str = "", duration: int = 0, color: str = None):
         """Display message into status bar.
 
         :param int prog_step: step to increase the progress bar. Defaults to 1.
         :param str status_msg: message to display into the status bar
+        :param int duration: duration of the message in milliseconds.
+        :param str color: color to apply to the message
         """
+        # custom message foreground color
+        if color is not None:
+            self.ui.lbl_statusbar.setStyleSheet("color: {}".format(color))
+        else:
+            self.ui.lbl_statusbar.setStyleSheet("")
         # status bar and systray
-        self.ui.lbl_statusbar.showMessage(status_msg)
+        self.ui.lbl_statusbar.showMessage(status_msg, msecs=duration)
         self.tray_icon.setToolTip(status_msg)
         # progressbar
         prog_val = self.ui.pgb_exports.value() + prog_step
