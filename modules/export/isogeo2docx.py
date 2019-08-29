@@ -86,10 +86,12 @@ class Isogeo2docx(object):
 
         # LOCALE
         if lang.lower() == "fr":
-            self.dates_fmt = "DD/MM/YYYY"
+            self.dates_fmt = "%d/%m/%Y"
+            self.datetimes_fmt = "%A %d %B %Y (%Hh%M)"
             self.locale_fmt = "fr_FR"
         else:
-            self.dates_fmt = "YYYY/MM/DD"
+            self.dates_fmt = "%d/%m/%Y"
+            self.datetimes_fmt = "%a %d %B %Y (%Hh%M)"
             self.locale_fmt = "uk_UK"
 
         # TRANSLATIONS
@@ -290,8 +292,8 @@ class Isogeo2docx(object):
             lims_out = ""
 
         # ---- METADATA # ----------------------------------------------------
-        md_created = utils.hlpr_datetimes(md._created).strftime(self.dates_fmt)
-        md_updated = utils.hlpr_datetimes(md._modified).strftime(self.dates_fmt)
+        md_created = utils.hlpr_datetimes(md._created).strftime(self.datetimes_fmt)
+        md_updated = utils.hlpr_datetimes(md._modified).strftime(self.datetimes_fmt)
 
         # FILLFULLING THE TEMPLATE #
         context = {
@@ -331,14 +333,14 @@ class Isogeo2docx(object):
             "varEvents": events_out,
             "varMdDtCrea": md_created,
             "varMdDtUpda": md_updated,
-            "varMdDtExp": datetime.now().strftime("%a %d %B %Y (%Hh%M)"),
+            "varMdDtExp": datetime.now().strftime(self.datetimes_fmt),
             "varViewOC": link_visu,
             "varEditAPP": link_edit,
         }
 
         # fillfull file
         try:
-            docx_template.render(context)
+            docx_template.render(context, autoescape=True)
             logger.info(
                 "Vector metadata stored: {} ({})".format(
                     md.title_or_name(slugged=1), md._id
