@@ -122,7 +122,6 @@ class Isogeo2docx(object):
         li_motscles = []
         li_theminspire = []
         srs = ""
-        owner = ""
         inspire_valid = "Non"
         format_lbl = ""
         fields = ["NR"]
@@ -138,12 +137,6 @@ class Isogeo2docx(object):
             # INSPIRE themes
             if tag.startswith("keyword:inspire-theme"):
                 li_theminspire.append(md.tags.get(tag))
-                continue
-            else:
-                pass
-            # workgroup which owns the metadata
-            if tag.startswith("owner"):
-                owner_name = md.tags.get(tag)
                 continue
             else:
                 pass
@@ -315,7 +308,7 @@ class Isogeo2docx(object):
             "varKeywords": " ; ".join(li_motscles),
             "varKeywordsCount": len(li_motscles),
             "varType": resource_type,
-            "varOwner": owner_name,
+            "varOwner": md.groupName,
             "varScale": md.scale,
             "varTopologyInfo": utils.clean_xml(md.topologicalConsistency),
             "varInspireTheme": " ; ".join(li_theminspire),
