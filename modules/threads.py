@@ -175,6 +175,8 @@ class ThreadExportExcel(QThread):
         search_to_export: MetadataSearch,
         output_path: str = r"output/",
         url_base_edit: str = "https://app.isogeo.com/",
+        url_base_view: str = "https://open.isogeo.com/",
+        shares: list = [],
         opt_attributes: int = 0,
         opt_dasboard: int = 0,
         opt_fillfull: int = 0,
@@ -185,6 +187,8 @@ class ThreadExportExcel(QThread):
         self.search = search_to_export
         self.output_xlsx_path = output_path
         self.url_base_edit = url_base_edit
+        self.url_base_view = url_base_view
+        self.shares = shares
         self.opt_attributes = opt_attributes
         self.opt_dasboard = opt_dasboard
         self.opt_fillfull = opt_fillfull
@@ -196,7 +200,11 @@ class ThreadExportExcel(QThread):
         """
         language = current_locale.name()[:2]
         # workbook
-        wb = Isogeo2xlsx(lang=language, url_base_edit=self.url_base_edit)
+        wb = Isogeo2xlsx(
+            lang=language,
+            url_base_edit=self.url_base_edit,
+            url_base_view=self.url_base_view,
+        )
         # worksheets
         wb.set_worksheets(
             auto=self.search.tags.keys(),
@@ -215,8 +223,13 @@ class ThreadExportExcel(QThread):
                 1, self.tr("Processing Excel: {}").format(metadata.title_or_name())
             )
 
+            # opencatalog url - get the matching share
+            matching_share = app_utils.get_matching_share(
+                metadata=metadata, shares=self.shares
+            )
+
             # store metadata
-            wb.store_metadatas(metadata)
+            wb.store_metadatas(metadata, share=matching_share)
 
         # tunning full worksheet
         wb.tunning_worksheets()
@@ -244,7 +257,6 @@ class ThreadExportExcel(QThread):
 
 class ThreadExportWord(QThread):
     """QThread used to export an Isogeo search into metadata.
-    
 
     :param MetadataSearch search_to_export: metadata to dumpinto the template
     :param str output_path: path to the output folder to store the generated Word
@@ -308,22 +320,10 @@ class ThreadExportWord(QThread):
                 1, self.tr("Processing Word: {}").format(metadata.title_or_name())
             )
 
-            # opencatalog
-            matching_share = [
-                share
-                for share in self.shares
-                if share.get("_creator").get("contact").get("_id")
-                == metadata._creator.get("contact").get("_id")
-            ]
-            if len(matching_share):
-                matching_share = Share(**matching_share[0])
-            else:
-                logger.warning(
-                    "No matching share found for {} ({}). The OpenCatalog URL will not be build.".format(
-                        metadata.title_or_name(), metadata._id
-                    )
-                )
-                matching_share = None
+            # opencatalog url - get the matching share
+            matching_share = app_utils.get_matching_share(
+                metadata=metadata, shares=self.shares
+            )
 
             # thumbnails
             thumbnail_abs_path = self.thumbnails.get(metadata._id, thumbnail_default)[1]

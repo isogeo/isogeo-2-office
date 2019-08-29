@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "0661aed98b4db2dbf56ce538528de7385856f9daaad7a7e51ad34166c421df94"
+            "sha256": "a4b97c3a80dd1a7025fb666803986040dfe1163d5a90b80cba32b3f95cd71b53"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -67,11 +67,11 @@
         },
         "isogeo-pysdk": {
             "hashes": [
-                "sha256:7e3da125cd8a7405617d71ed69d9f5de6d4226b1eef1fb4b9381c41e7dbd1c52",
-                "sha256:caa599b8bf3085414dcf715afe227646525150cf308b33398016fad8aee2e50e"
+                "sha256:6fd780b697e483c710d5d1deb39a94dc9d7ff82a6e48ee4102cd630556b9b4c4",
+                "sha256:e45a02aa2b2acc8bc3d9a4846f6d299cfdeec4d298b4b02a14f468b0ac94b070"
             ],
             "index": "pypi",
-            "version": "==3.1.0"
+            "version": "==3.2.2"
         },
         "jdcal": {
             "hashes": [
@@ -448,13 +448,6 @@
             ],
             "version": "==1.4.2"
         },
-        "macholib": {
-            "hashes": [
-                "sha256:ac02d29898cf66f27510d8f39e9112ae00590adb4a48ec57b25028d6962b1ae1",
-                "sha256:c4180ffc6f909bf8db6cd81cff4b6f601d575568f4d5dee148c830e9851eb9db"
-            ],
-            "version": "==1.11"
-        },
         "mccabe": {
             "hashes": [
                 "sha256:ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42",
@@ -512,10 +505,10 @@
         },
         "pyinstaller": {
             "hashes": [
-                "sha256:a5a6e04a66abfcf8761e89a2ebad937919c6be33a7b8963e1a961b55cb35986b"
+                "sha256:ee7504022d1332a3324250faf2135ea56ac71fdb6309cff8cd235de26b1d0a96"
             ],
             "index": "pypi",
-            "version": "==3.4"
+            "version": "==3.5"
         },
         "pylint": {
             "hashes": [
