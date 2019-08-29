@@ -27,7 +27,7 @@ from xml.sax.saxutils import escape  # '<' -> '&lt;'
 
 # 3rd party
 from dotenv import load_dotenv
-from isogeo_pysdk import IsogeoUtils
+from isogeo_pysdk import IsogeoUtils, Metadata, Share
 from openpyxl import load_workbook
 from PyQt5.QtCore import QUrl
 from PyQt5.QtWidgets import QFileDialog
@@ -266,6 +266,36 @@ class isogeo2office_utils(IsogeoUtils):
         return timestamps.get(timestamp_opt).strip()
 
     # ISOGEO -----------------------------------------------------------------
+    @classmethod
+    def get_matching_share(
+        self, metadata: Metadata, shares: list, mode: str = "simple"
+    ) -> Share:
+        """[summary]
+
+        :param Metadata metadata: metadata object to use for the matching
+        :param list shares: list of shares to use for the matching
+        :param str mode: simple mode is based only on the UID 
+        """
+        if mode != "simple":
+            raise NotImplementedError
+
+        matching_share = [
+            share
+            for share in shares
+            if share.get("_creator").get("_id") == metadata.groupId
+        ]
+        if len(matching_share):
+            matching_share = Share(**matching_share[0])
+        else:
+            logger.warning(
+                "No matching share found for {} ({}). The OpenCatalog URL will not be build.".format(
+                    metadata.title_or_name(), metadata._id
+                )
+            )
+            matching_share = None
+
+        return matching_share
+
     def thumbnails_mngr(
         self, in_xlsx_table: str = "thumbnails/thumbnails.xlsx"
     ) -> dict:

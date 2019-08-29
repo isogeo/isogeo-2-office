@@ -244,7 +244,6 @@ class ThreadExportExcel(QThread):
 
 class ThreadExportWord(QThread):
     """QThread used to export an Isogeo search into metadata.
-    
 
     :param MetadataSearch search_to_export: metadata to dumpinto the template
     :param str output_path: path to the output folder to store the generated Word
@@ -308,22 +307,10 @@ class ThreadExportWord(QThread):
                 1, self.tr("Processing Word: {}").format(metadata.title_or_name())
             )
 
-            # opencatalog
-            matching_share = [
-                share
-                for share in self.shares
-                if share.get("_creator").get("contact").get("_id")
-                == metadata._creator.get("contact").get("_id")
-            ]
-            if len(matching_share):
-                matching_share = Share(**matching_share[0])
-            else:
-                logger.warning(
-                    "No matching share found for {} ({}). The OpenCatalog URL will not be build.".format(
-                        metadata.title_or_name(), metadata._id
-                    )
-                )
-                matching_share = None
+            # opencatalog url - get the matching share
+            matching_share = app_utils.get_matching_share(
+                metadata=metadata, shares=self.shares
+            )
 
             # thumbnails
             thumbnail_abs_path = self.thumbnails.get(metadata._id, thumbnail_default)[1]
