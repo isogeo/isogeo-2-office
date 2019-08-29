@@ -581,6 +581,9 @@ class IsogeoToOffice_Main(QMainWindow):
                 search_to_be_exported,
                 output_docx_filepath,
                 tpl_path=template_path,
+                url_base_edit=api_mngr.isogeo.app_url,
+                url_base_view=api_mngr.isogeo.oc_url,
+                shares=api_mngr.isogeo._shares,
                 thumbnails=thumbnails_loaded,
                 timestamp=horodatage,
                 length_uuid=opt_md_uuid,
@@ -845,9 +848,9 @@ class IsogeoToOffice_Main(QMainWindow):
             self.close()
 
     # -- UI Slots -------------------------------------------------------------
-    @pyqtSlot(str, str)
+    @pyqtSlot(str, str, bool)
     def fill_app_props(
-        self, app_infos_retrieved: str = "", latest_online_version: str = ""
+        self, app_infos_retrieved: str = "", latest_online_version: str = "", opencatalog_warning: bool = 0
     ):
         """Get app properties and fillfull the share frame in settings tab.
 
@@ -860,7 +863,7 @@ class IsogeoToOffice_Main(QMainWindow):
         try:
             if semver.compare(__version__, latest_online_version) < 0:
                 logger.info("A newer version is available.")
-                version_msg = self.tr("New version available.")
+                version_msg = self.tr("New version available. You can download it here: ") + "https://github.com/isogeo/isogeo-2-office/releases/latest"
                 self.setWindowTitle(self.windowTitle() + " ! " + version_msg)
             else:
                 logger.debug("Used version is up-to-date")
@@ -880,6 +883,21 @@ class IsogeoToOffice_Main(QMainWindow):
             prog_step=0,
             status_msg=self.tr("Application information has been retrieved"),
         )
+
+        # if needed, inform the user about a missing OpenCatalog
+        if opencatalog_warning:
+            oc_msg = self.tr("OpenCatalog is missing in one share at least. Check the settings tab to identify which one and fix it.")
+            self.tray_icon.showMessage(
+                "Isogeo to Office",
+                oc_msg,
+                QIcon("resources/favicon.png"),
+            )
+            self.update_status_bar(
+                prog_step=0,
+                status_msg=oc_msg,
+                color="orange"
+                )
+
 
     @pyqtSlot()
     def update_credentials(self):
@@ -987,14 +1005,21 @@ class IsogeoToOffice_Main(QMainWindow):
         self.update_status_bar(prog_step=0, status_msg=self.tr("Search form updated"))
 
     @pyqtSlot(int, str)
-    def update_status_bar(self, prog_step: int = 1, status_msg: str = ""):
+    def update_status_bar(self, prog_step: int = 1, status_msg: str = "", duration: int = 0, color: str = None):
         """Display message into status bar.
 
         :param int prog_step: step to increase the progress bar. Defaults to 1.
         :param str status_msg: message to display into the status bar
+        :param int duration: duration of the message in milliseconds.
+        :param str color: color to apply to the message
         """
+        # custom message foreground color
+        if color is not None:
+            self.ui.lbl_statusbar.setStyleSheet("color: {}".format(color))
+        else:
+            self.ui.lbl_statusbar.setStyleSheet("")
         # status bar and systray
-        self.ui.lbl_statusbar.showMessage(status_msg)
+        self.ui.lbl_statusbar.showMessage(status_msg, msecs=duration)
         self.tray_icon.setToolTip(status_msg)
         # progressbar
         prog_val = self.ui.pgb_exports.value() + prog_step

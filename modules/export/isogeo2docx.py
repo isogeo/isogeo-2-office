@@ -22,8 +22,8 @@ from datetime import datetime
 import logging
 
 # 3rd party library
-from docxtpl import DocxTemplate, etree, InlineImage
-from isogeo_pysdk import Isogeo, Event, Metadata
+from docxtpl import DocxTemplate, etree, InlineImage, RichText
+from isogeo_pysdk import Isogeo, Event, Metadata, Share
 from isogeo_pysdk import IsogeoTranslator
 
 # custom submodules
@@ -43,9 +43,20 @@ utils = isogeo2office_utils()
 
 
 class Isogeo2docx(object):
-    """IsogeoToDocx class."""
+    """IsogeoToDocx class.
 
-    def __init__(self, lang="FR", default_values=("NR", "1970-01-01T00:00:00+00:00")):
+    :param str lang: selected language for output
+    :param str url_base_edit: base url to format edit links (basically app.isogeo.com)
+    :param str url_base_view: base url to format view links (basically open.isogeo.com)
+    """
+
+    def __init__(
+        self,
+        lang="FR",
+        default_values=("NR", "1970-01-01T00:00:00+00:00"),
+        url_base_edit: str = "https://app.Isogeo.com",
+        url_base_view: str = "https://open.isogeo.com",
+    ):
         """Common variables for Word processing.
 
         default_values (optional) -- values used to replace missing values.
@@ -54,6 +65,8 @@ class Isogeo2docx(object):
         str_for_missing_strings_and_integers,
         str_for_missing_dates
         )
+
+
         """
         super(Isogeo2docx, self).__init__()
 
@@ -85,10 +98,16 @@ class Isogeo2docx(object):
         # FORMATTER
         self.fmt = IsogeoFormatter(output_type="Word")
 
-    def md2docx(self, docx_template, md: Metadata, url_base: str):
-        """Parse Isogeo metadatas and replace docx template.
-        
-        
+        # URLS
+        utils.app_url = url_base_edit  # APP
+        utils.oc_url = url_base_view  # OpenCatalog url
+
+    def md2docx(self, docx_template: DocxTemplate, md: Metadata, share: Share = None):
+        """Dump Isogeo metadata into a docx template.
+
+        :param DocxTemplate docx_template: Word template to fill
+        :param Metadata metadata: metadata to dumpinto the template
+        :param Share share: share in which the metadata is. Used to build the view URL.
         """
         logger.debug(
             "Starting the export into Word .docx of {} ({})".format(
@@ -122,8 +141,7 @@ class Isogeo2docx(object):
                 pass
             # workgroup which owns the metadata
             if tag.startswith("owner"):
-                owner = md.tags.get(tag)
-                owner_id = tag[6:]
+                owner_name = md.tags.get(tag)
                 continue
             else:
                 pass
@@ -147,9 +165,18 @@ class Isogeo2docx(object):
                 pass
 
         # formatting links to visualize on OpenCatalog and edit on APP
-        link_visu = url_base + "/m/" + md._id
-
-        link_edit = utils.get_edit_url(md_id=md._id, md_type=md.type, owner_id=owner_id)
+        if share is not None:
+            link_visu = utils.get_view_url(
+                md_id=md._id, share_id=share._id, share_token=share.urlToken
+            )
+        else:
+            logger.warning(
+                "Unable to build the OpenCatalog URL for this metadata: {} ({})".format(
+                    md.title_or_name(), md._id
+                )
+            )
+            link_visu = ""
+        link_edit = utils.get_edit_url(md)
 
         # ---- CONTACTS # ----------------------------------------------------
         contacts_out = []
@@ -286,7 +313,7 @@ class Isogeo2docx(object):
             "varKeywords": " ; ".join(li_motscles),
             "varKeywordsCount": len(li_motscles),
             "varType": resource_type,
-            "varOwner": owner,
+            "varOwner": owner_name,
             "varScale": md.scale,
             "varTopologyInfo": utils.clean_xml(md.topologicalConsistency),
             "varInspireTheme": " ; ".join(li_theminspire),

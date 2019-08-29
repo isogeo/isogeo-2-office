@@ -1,9 +1,9 @@
 # -*- coding: UTF-8 -*-
-#!/usr/bin/env python
+#! python3
 
 """
     Usage from the repo root folder:
-    
+
     ```python
     python -m unittest tests.test_export_docx
     ```
@@ -30,9 +30,6 @@ from modules import Isogeo2docx
 # ######## Globals #################
 # ##################################
 
-# API access
-app_id = environ.get("ISOGEO_API_DEV_ID")
-app_secret = environ.get("ISOGEO_API_DEV_SECRET")
 
 # #############################################################################
 # ########## Classes ###############
@@ -68,7 +65,6 @@ class TestExportDocx(unittest.TestCase):
             search = json.loads(f.read())
         # load template
         tpl = DocxTemplate(self.word_template)
-        url_oc = "https://open.isogeo.com/"
         # run
         for md in search.get("results")[:20]:
             metadata = Metadata.clean_attributes(md)
@@ -77,7 +73,7 @@ class TestExportDocx(unittest.TestCase):
             out_docx_path = out_docx[1] + ".docx"
             # templating
             tpl = DocxTemplate(self.word_template)
-            self.to_docx.md2docx(tpl, metadata, url_oc)
+            self.to_docx.md2docx(tpl, metadata)
             # save
             tpl.save(out_docx_path)
             del tpl
