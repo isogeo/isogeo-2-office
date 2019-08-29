@@ -543,6 +543,8 @@ class IsogeoToOffice_Main(QMainWindow):
                 search_to_be_exported,
                 output_xlsx_filepath,
                 url_base_edit=api_mngr.isogeo.app_url,
+                url_base_view=api_mngr.isogeo.oc_url,
+                shares=api_mngr.isogeo._shares,
                 opt_attributes=self.ui.chb_xls_attributes.isChecked(),
                 opt_dasboard=self.ui.chb_xls_stats.isChecked(),
                 opt_fillfull=0,
