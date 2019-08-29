@@ -23,7 +23,7 @@ from collections.abc import KeysView
 from pathlib import Path
 
 # 3rd party library
-from isogeo_pysdk import CoordinateSystem, IsogeoTranslator, Metadata
+from isogeo_pysdk import IsogeoTranslator, Metadata, Share
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.styles import Alignment, NamedStyle
@@ -418,7 +418,7 @@ class Isogeo2xlsx(Workbook):
             pass
 
     # ------------ Writing metadata ---------------------
-    def store_metadatas(self, metadata: Metadata):
+    def store_metadatas(self, metadata: Metadata, share: Share = None):
         """Write metadata into the worksheet.
 
         :param Metadata metadata: metadata object to write
@@ -427,6 +427,7 @@ class Isogeo2xlsx(Workbook):
         if not isinstance(metadata, Metadata):
             raise TypeError("Export expects a Metadata object.")
         # generic export
+        self.share = share
         # store depending on metadata type
         if metadata.type == "vectorDataset":
             self.idx_v += 1
@@ -729,6 +730,11 @@ class Isogeo2xlsx(Workbook):
         # edit
         # ws["{}{}".format(colsref.get("linkEdit"), idx)] = md.admin_url(self.url_base_edit) + "identification"
         ws["{}{}".format(colsref.get("linkEdit"), idx)] = utils.get_edit_url(md)
+        if self.share is not None:
+            link_visu = utils.get_view_url(
+                md_id=md._id, share_id=self.share._id, share_token=self.share.urlToken
+            )
+            ws["{}{}".format(colsref.get("linkView"), idx)] = link_visu
 
         # lang
         ws["{}{}".format(colsref.get("language"), idx)] = md.language
