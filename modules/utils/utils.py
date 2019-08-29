@@ -266,17 +266,6 @@ class isogeo2office_utils(IsogeoUtils):
         return timestamps.get(timestamp_opt).strip()
 
     # ISOGEO -----------------------------------------------------------------
-    def get_url_base(self, url_input):
-        """Get OpenCatalog base URL to add resource ID easily."""
-        # get the OpenCatalog URL given
-        if not url_input[-1] == "/":
-            url_input = url_input + "/"
-        else:
-            pass
-
-        # get the clean url
-        return url_input[0 : url_input.index(url_input.rsplit("/")[6])]
-
     def thumbnails_mngr(
         self, in_xlsx_table: str = "thumbnails/thumbnails.xlsx"
     ) -> dict:
