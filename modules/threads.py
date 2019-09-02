@@ -22,6 +22,7 @@ from zipfile import ZipFile
 # 3rd party library
 from docxtpl import DocxTemplate
 from isogeo_pysdk.models import Metadata, MetadataSearch, Share
+from isogeopyxl import Isogeo2xlsx
 from openpyxl import Workbook
 from openpyxl.comments import Comment
 from openpyxl.cell import WriteOnlyCell
@@ -29,7 +30,7 @@ from PyQt5.QtCore import QDateTime, QLocale, QThread, pyqtSignal
 import requests
 
 # submodules - export
-from . import Isogeo2docx, Isogeo2xlsx, isogeo2office_utils
+from . import Isogeo2docx, isogeo2office_utils
 
 # #############################################################################
 # ########## Globals ###############
