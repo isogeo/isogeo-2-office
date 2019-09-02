@@ -6,7 +6,6 @@ SOURCES = ./IsogeoToOffice.py \
 		  ./modules/threads.py \
 		  ./modules/export/formatter.py \
 		  ./modules/export/isogeo2docx.py \
-		  ./modules/export/isogeo2xlsx.py \
 		  ./modules/export/isogeo_stats.py \
 		  ./modules/utils/api.py \
 		  ./modules/utils/utils.py \
