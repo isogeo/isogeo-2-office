@@ -1344,8 +1344,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>424</width>
-                <height>35</height>
+                <width>586</width>
+                <height>197</height>
                </rect>
               </property>
               <attribute name="icon">
@@ -1359,7 +1359,7 @@
                <item row="0" column="0">
                 <widget class="QCheckBox" name="chb_xls_attributes">
                  <property name="enabled">
-                  <bool>false</bool>
+                  <bool>true</bool>
                  </property>
                  <property name="minimumSize">
                   <size>
@@ -1378,7 +1378,7 @@
                <item row="0" column="1">
                 <widget class="QCheckBox" name="chb_xls_stats">
                  <property name="enabled">
-                  <bool>false</bool>
+                  <bool>true</bool>
                  </property>
                  <property name="minimumSize">
                   <size>
@@ -1401,8 +1401,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>363</width>
-                <height>76</height>
+                <width>586</width>
+                <height>197</height>
                </rect>
               </property>
               <attribute name="icon">
@@ -1592,8 +1592,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>360</width>
-                <height>66</height>
+                <width>586</width>
+                <height>197</height>
                </rect>
               </property>
               <attribute name="icon">
