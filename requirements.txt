@@ -19,7 +19,7 @@ progressbar2==3.42.*
 
 # isogeo to office
 docxtpl==0.6.*
-isogeo-export-xl==1.0.*
+isogeo-export-xl==1.2.*
 isogeo-pysdk>=3.2.*
 openpyxl==2.6.*
 PyQt5==5.13.*

@@ -60,18 +60,18 @@
         },
         "importlib-metadata": {
             "hashes": [
-                "sha256:23d3d873e008a513952355379d93cbcab874c58f4f034ff657c7a87422fa64e8",
-                "sha256:80d2de76188eabfbfcf27e6a37342c2827801e59c4cc14b0371c56fed43820e3"
+                "sha256:9ff1b1c5a354142de080b8a4e9803e5d0d59283c93aed808617c787d16768375",
+                "sha256:b7143592e374e50584564794fcb8aaf00a23025f9db866627f89a21491847a8d"
             ],
-            "version": "==0.19"
+            "version": "==0.20"
         },
         "isogeo-export-xl": {
             "hashes": [
-                "sha256:300bfb1b374df59a7c14ba7bd7bfc28fc5a8144e7d7ffb88080b298c1d41775a",
-                "sha256:85bd2c714007bb2b256a474f1dd7347e3d1dc1e637dc7bfce04cb583f673f1fc"
+                "sha256:69b5ba0de12a387a40e742479e91fa3fae215a49bfdc867180090106bd573b06",
+                "sha256:7bf9701f7747839b62b583ef6fdb19e0709c34d41f9e3d36e24cb7ab05f622dc"
             ],
             "index": "pypi",
-            "version": "==1.0.0"
+            "version": "==1.2.0"
         },
         "isogeo-pysdk": {
             "hashes": [
@@ -407,10 +407,10 @@
         },
         "importlib-metadata": {
             "hashes": [
-                "sha256:23d3d873e008a513952355379d93cbcab874c58f4f034ff657c7a87422fa64e8",
-                "sha256:80d2de76188eabfbfcf27e6a37342c2827801e59c4cc14b0371c56fed43820e3"
+                "sha256:9ff1b1c5a354142de080b8a4e9803e5d0d59283c93aed808617c787d16768375",
+                "sha256:b7143592e374e50584564794fcb8aaf00a23025f9db866627f89a21491847a8d"
             ],
-            "version": "==0.19"
+            "version": "==0.20"
         },
         "isort": {
             "hashes": [

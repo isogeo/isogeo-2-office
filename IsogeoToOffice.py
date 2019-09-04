@@ -338,10 +338,10 @@ class IsogeoToOffice_Main(QMainWindow):
         )
         # export options
         self.ui.chb_xls_attributes.setChecked(
-            self.app_settings.value("settings/xls_sheet_attributes", False, type=bool)
+            self.app_settings.value("settings/xls_sheet_attributes", True, type=bool)
         )
         self.ui.chb_xls_stats.setChecked(
-            self.app_settings.value("settings/xls_sheet_dashboard", False, type=bool)
+            self.app_settings.value("settings/xls_sheet_dashboard", True, type=bool)
         )
         self.ui.chb_xml_zip.setChecked(
             self.app_settings.value("settings/xml_zip", False, type=bool)

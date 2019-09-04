@@ -22,7 +22,7 @@ from zipfile import ZipFile
 # 3rd party library
 from docxtpl import DocxTemplate
 from isogeo_pysdk.models import Metadata, MetadataSearch, Share
-from isogeopyxl import Isogeo2xlsx
+from isogeotoxlsx import Isogeo2xlsx
 from openpyxl import Workbook
 from openpyxl.comments import Comment
 from openpyxl.cell import WriteOnlyCell
@@ -232,14 +232,20 @@ class ThreadExportExcel(QThread):
             # store metadata
             wb.store_metadatas(metadata, share=matching_share)
 
-        # tunning full worksheet
-        wb.tunning_worksheets()
+        # complementary analisis
+        self.sig_step.emit(
+            0,
+            self.tr("Processing Excel: {}").format(
+                self.tr("complementary analisis...")
+            ),
+        )
+        wb.launch_analisis()
 
-        # special sheets
-        if self.opt_attributes:
-            wb.analisis_attributes()
-        else:
-            pass
+        # tunning full worksheet
+        self.sig_step.emit(
+            0, self.tr("Processing Excel: {}").format(self.tr("tunning sheets..."))
+        )
+        wb.tunning_worksheets()
 
         # save workbook
         try:
