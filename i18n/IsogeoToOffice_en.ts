@@ -215,30 +215,40 @@ application will be closed.</source>
 <context>
     <name>ThreadExportExcel</name>
     <message>
-        <location filename="../modules/threads.py" line="223"/>
+        <location filename="../modules/threads.py" line="238"/>
         <source>Processing Excel: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="255"/>
+        <location filename="../modules/threads.py" line="252"/>
         <source>Excel finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/threads.py" line="234"/>
+        <source>complementary analisis...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/threads.py" line="238"/>
+        <source>tunning sheets...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>ThreadExportWord</name>
     <message>
-        <location filename="../modules/threads.py" line="320"/>
+        <location filename="../modules/threads.py" line="317"/>
         <source>Processing Word: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="353"/>
+        <location filename="../modules/threads.py" line="350"/>
         <source>Word: error occurred during saving step. Check the log.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="362"/>
+        <location filename="../modules/threads.py" line="359"/>
         <source>Word finished</source>
         <translation type="unfinished"></translation>
     </message>
@@ -246,7 +256,7 @@ application will be closed.</source>
 <context>
     <name>ThreadExportXml</name>
     <message>
-        <location filename="../modules/threads.py" line="406"/>
+        <location filename="../modules/threads.py" line="403"/>
         <source>Processing XML: {}</source>
         <translation type="unfinished"></translation>
     </message>
@@ -254,12 +264,12 @@ application will be closed.</source>
 <context>
     <name>ThreadThumbnails</name>
     <message>
-        <location filename="../modules/threads.py" line="497"/>
+        <location filename="../modules/threads.py" line="494"/>
         <source>Preparing thumbnail table for: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="534"/>
+        <location filename="../modules/threads.py" line="531"/>
         <source>Thumbnail table finished</source>
         <translation type="unfinished"></translation>
     </message>
@@ -362,38 +372,28 @@ application will be closed.</source>
 <context>
     <name>dlg_credits</name>
     <message>
-        <location filename="../modules/ui/credits/ui_credits.py" line="215"/>
+        <location filename="../modules/ui/credits/ui_credits.py" line="258"/>
         <source>Credits</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/credits/ui_credits.py" line="216"/>
+        <location filename="../modules/ui/credits/ui_credits.py" line="259"/>
         <source>Realization</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/credits/ui_credits.py" line="218"/>
+        <location filename="../modules/ui/credits/ui_credits.py" line="261"/>
         <source>Sources and license</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/credits/ui_credits.ui" line="318"/>
+        <location filename="../modules/ui/credits/ui_credits.py" line="262"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/isogeo/isogeo-2-office&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Code hosted on Github&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/credits/ui_credits.py" line="217"/>
+        <location filename="../modules/ui/credits/ui_credits.py" line="260"/>
         <source>Dependencies</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/ui/credits/ui_credits.ui" line="258"/>
-        <source>OpenPyXl</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/ui/credits/ui_credits.ui" line="265"/>
-        <source>2.6+</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

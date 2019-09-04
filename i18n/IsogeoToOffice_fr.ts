@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="fr_FR" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.1" language="fr_FR">
 <context>
     <name>IsogeoToOffice_Main</name>
     <message>
@@ -218,30 +219,40 @@ L&apos;application va se fermer.</translation>
 <context>
     <name>ThreadExportExcel</name>
     <message>
-        <location filename="../modules/threads.py" line="223"/>
+        <location filename="../modules/threads.py" line="238"/>
         <source>Processing Excel: {}</source>
         <translation>Export Excel : {}</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="255"/>
+        <location filename="../modules/threads.py" line="252"/>
         <source>Excel finished</source>
         <translation>Export Excel terminé</translation>
+    </message>
+    <message>
+        <location filename="../modules/threads.py" line="234"/>
+        <source>complementary analisis...</source>
+        <translation>analyses complémentaires...</translation>
+    </message>
+    <message>
+        <location filename="../modules/threads.py" line="238"/>
+        <source>tunning sheets...</source>
+        <translation>mise en forme des onglets...</translation>
     </message>
 </context>
 <context>
     <name>ThreadExportWord</name>
     <message>
-        <location filename="../modules/threads.py" line="320"/>
+        <location filename="../modules/threads.py" line="317"/>
         <source>Processing Word: {}</source>
         <translation>Export Word : {}</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="353"/>
+        <location filename="../modules/threads.py" line="350"/>
         <source>Word: error occurred during saving step. Check the log.</source>
         <translation>Word : une erreur est survenue durant l&apos;enregistrement d&apos;un fichier. Consulter le fichier journal.</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="362"/>
+        <location filename="../modules/threads.py" line="359"/>
         <source>Word finished</source>
         <translation>Export Word terminé</translation>
     </message>
@@ -249,7 +260,7 @@ L&apos;application va se fermer.</translation>
 <context>
     <name>ThreadExportXml</name>
     <message>
-        <location filename="../modules/threads.py" line="406"/>
+        <location filename="../modules/threads.py" line="403"/>
         <source>Processing XML: {}</source>
         <translation>Export XML : {}</translation>
     </message>
@@ -257,12 +268,12 @@ L&apos;application va se fermer.</translation>
 <context>
     <name>ThreadThumbnails</name>
     <message>
-        <location filename="../modules/threads.py" line="497"/>
+        <location filename="../modules/threads.py" line="494"/>
         <source>Preparing thumbnail table for: {}</source>
         <translation>Table des vignettes : {}</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="534"/>
+        <location filename="../modules/threads.py" line="531"/>
         <source>Thumbnail table finished</source>
         <translation>Table des vignettes terminée</translation>
     </message>
@@ -331,9 +342,9 @@ L&apos;application va se fermer.</translation>
 &lt;body&gt;
 
 &lt;ul&gt;
-<byte value="x9"/>&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
+	&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
+	&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
+	&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
 &lt;/ul&gt; 
 
 &lt;/body&gt;
@@ -344,9 +355,9 @@ L&apos;application va se fermer.</translation>
 &lt;body&gt;
 
 &lt;ul&gt;
-<byte value="x9"/>&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
+	&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
+	&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
+	&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
 &lt;/ul&gt; 
 
 &lt;/body&gt;
@@ -377,39 +388,29 @@ L&apos;application va se fermer.</translation>
 <context>
     <name>dlg_credits</name>
     <message>
-        <location filename="../modules/ui/credits/ui_credits.py" line="215"/>
+        <location filename="../modules/ui/credits/ui_credits.py" line="258"/>
         <source>Credits</source>
         <translation>Crédits</translation>
     </message>
     <message>
-        <location filename="../modules/ui/credits/ui_credits.py" line="216"/>
+        <location filename="../modules/ui/credits/ui_credits.py" line="259"/>
         <source>Realization</source>
         <translation>Réalisation</translation>
     </message>
     <message>
-        <location filename="../modules/ui/credits/ui_credits.py" line="218"/>
+        <location filename="../modules/ui/credits/ui_credits.py" line="261"/>
         <source>Sources and license</source>
         <translation>Sources et licence</translation>
     </message>
     <message>
-        <location filename="../modules/ui/credits/ui_credits.ui" line="318"/>
+        <location filename="../modules/ui/credits/ui_credits.py" line="262"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/isogeo/isogeo-2-office&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Code hosted on Github&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>Code hébergé sur Github</translation>
     </message>
     <message>
-        <location filename="../modules/ui/credits/ui_credits.py" line="217"/>
+        <location filename="../modules/ui/credits/ui_credits.py" line="260"/>
         <source>Dependencies</source>
         <translation>Dépendances</translation>
-    </message>
-    <message>
-        <location filename="../modules/ui/credits/ui_credits.ui" line="258"/>
-        <source>OpenPyXl</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/ui/credits/ui_credits.ui" line="265"/>
-        <source>2.6+</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
