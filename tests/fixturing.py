@@ -34,8 +34,8 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 # API access
-API_OAUTH_ID = environ.get("ISOGEO_API_CLIENT_ID")
-API_OAUTH_SECRET = environ.get("ISOGEO_API_CLIENT_SECRET")
+API_OAUTH_ID = environ.get("ISOGEO_API_GROUP_CLIENT_ID")
+API_OAUTH_SECRET = environ.get("ISOGEO_API_GROUP_CLIENT_SECRET")
 API_PLATFORM = environ.get("ISOGEO_PLATFORM", "qa")
 METADATA_TEST_FIXTURE_UUID = environ.get("ISOGEO_FIXTURES_METADATA_COMPLETE")
 WORKGROUP_TEST_FIXTURE_UUID = environ.get("ISOGEO_WORKGROUP_TEST_UUID")
@@ -93,7 +93,7 @@ if not path.isfile(out_search_complete_tests):
         augment=1,
     )
     with open(out_search_complete_tests, "w") as json_basic:
-        json.dump(request, json_basic, sort_keys=True)
+        json.dump(request.to_dict(), json_basic, sort_keys=True)
 else:
     logging.info("JSON already exists. If you want to update it, delete it first.")
 
