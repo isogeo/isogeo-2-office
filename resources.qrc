@@ -25,8 +25,8 @@
     <file>resources/authentication/user.svg</file>
     <file>resources/credits/github.svg</file>
     <file>resources/credits/isogeo.png</file>
-    <file>resources/credits/lgplv3.png</file>
     <file>resources/credits/sponsor_logo_aev.png</file>
+    <file>resources/credits/lgpl.svg</file>
     <file>resources/credits/sponsor_logo_metropole_aix_marseille_provence.png</file>
     <file>resources/export/download.svg</file>
     <file>resources/export/send-o.svg</file>
