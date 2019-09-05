@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "0661aed98b4db2dbf56ce538528de7385856f9daaad7a7e51ad34166c421df94"
+            "sha256": "1f1ead8580e812c9bec37623b6e3511cf03dabc67f426a18500e0962e655a8d5"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -60,18 +60,26 @@
         },
         "importlib-metadata": {
             "hashes": [
-                "sha256:23d3d873e008a513952355379d93cbcab874c58f4f034ff657c7a87422fa64e8",
-                "sha256:80d2de76188eabfbfcf27e6a37342c2827801e59c4cc14b0371c56fed43820e3"
+                "sha256:9ff1b1c5a354142de080b8a4e9803e5d0d59283c93aed808617c787d16768375",
+                "sha256:b7143592e374e50584564794fcb8aaf00a23025f9db866627f89a21491847a8d"
             ],
-            "version": "==0.19"
+            "version": "==0.20"
+        },
+        "isogeo-export-xl": {
+            "hashes": [
+                "sha256:69b5ba0de12a387a40e742479e91fa3fae215a49bfdc867180090106bd573b06",
+                "sha256:7bf9701f7747839b62b583ef6fdb19e0709c34d41f9e3d36e24cb7ab05f622dc"
+            ],
+            "index": "pypi",
+            "version": "==1.2.0"
         },
         "isogeo-pysdk": {
             "hashes": [
-                "sha256:7e3da125cd8a7405617d71ed69d9f5de6d4226b1eef1fb4b9381c41e7dbd1c52",
-                "sha256:caa599b8bf3085414dcf715afe227646525150cf308b33398016fad8aee2e50e"
+                "sha256:6fd780b697e483c710d5d1deb39a94dc9d7ff82a6e48ee4102cd630556b9b4c4",
+                "sha256:e45a02aa2b2acc8bc3d9a4846f6d299cfdeec4d298b4b02a14f468b0ac94b070"
             ],
             "index": "pypi",
-            "version": "==3.1.0"
+            "version": "==3.2.2"
         },
         "jdcal": {
             "hashes": [
@@ -165,7 +173,6 @@
             "hashes": [
                 "sha256:72d1ed243972cad0b3c236230083cac00d9c72804e64a2ae93d7901aec1a8f1c"
             ],
-            "index": "pypi",
             "version": "==2.6.3"
         },
         "progressbar2": {
@@ -295,13 +302,6 @@
         }
     },
     "develop": {
-        "altgraph": {
-            "hashes": [
-                "sha256:d6814989f242b2b43025cba7161fc1b8fb487a62cd49c49245d6fd01c18ac997",
-                "sha256:ddf5320017147ba7b810198e0b6619bd7b5563aa034da388cea8546b877f9b0c"
-            ],
-            "version": "==0.16.1"
-        },
         "appdirs": {
             "hashes": [
                 "sha256:9e5896d1372858f8dd3344faf4e5014d21849c756c8d5701f78f8a103b372d92",
@@ -405,18 +405,12 @@
             "index": "pypi",
             "version": "==3.7.8"
         },
-        "future": {
-            "hashes": [
-                "sha256:67045236dcfd6816dc439556d009594abf643e5eb48992e36beac09c2ca659b8"
-            ],
-            "version": "==0.17.1"
-        },
         "importlib-metadata": {
             "hashes": [
-                "sha256:23d3d873e008a513952355379d93cbcab874c58f4f034ff657c7a87422fa64e8",
-                "sha256:80d2de76188eabfbfcf27e6a37342c2827801e59c4cc14b0371c56fed43820e3"
+                "sha256:9ff1b1c5a354142de080b8a4e9803e5d0d59283c93aed808617c787d16768375",
+                "sha256:b7143592e374e50584564794fcb8aaf00a23025f9db866627f89a21491847a8d"
             ],
-            "version": "==0.19"
+            "version": "==0.20"
         },
         "isort": {
             "hashes": [
@@ -448,13 +442,6 @@
             ],
             "version": "==1.4.2"
         },
-        "macholib": {
-            "hashes": [
-                "sha256:ac02d29898cf66f27510d8f39e9112ae00590adb4a48ec57b25028d6962b1ae1",
-                "sha256:c4180ffc6f909bf8db6cd81cff4b6f601d575568f4d5dee148c830e9851eb9db"
-            ],
-            "version": "==1.11"
-        },
         "mccabe": {
             "hashes": [
                 "sha256:ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42",
@@ -475,12 +462,6 @@
                 "sha256:c491ca87294da7cc01902edbe30a5bc6c4c28172b5138ab4e4aa1b9d7bfaeafe"
             ],
             "version": "==19.1"
-        },
-        "pefile": {
-            "hashes": [
-                "sha256:a5d6e8305c6b210849b47a6174ddf9c452b2888340b8177874b862ba6c207645"
-            ],
-            "version": "==2019.4.18"
         },
         "pluggy": {
             "hashes": [
@@ -512,10 +493,10 @@
         },
         "pyinstaller": {
             "hashes": [
-                "sha256:a5a6e04a66abfcf8761e89a2ebad937919c6be33a7b8963e1a961b55cb35986b"
+                "sha256:8f9f9836ffebe71f9d9ced24001f8b27c0492574ed12a7a97c2c8810fb3fa210"
             ],
             "index": "pypi",
-            "version": "==3.4"
+            "version": "==3"
         },
         "pylint": {
             "hashes": [
@@ -586,11 +567,11 @@
         },
         "pytest": {
             "hashes": [
-                "sha256:95b1f6db806e5b1b5b443efeb58984c24945508f93a866c1719e1a507a957d7c",
-                "sha256:c3d5020755f70c82eceda3feaf556af9a341334414a8eca521a18f463bcead88"
+                "sha256:95d13143cc14174ca1a01ec68e84d76ba5d9d493ac02716fd9706c949a505210",
+                "sha256:b78fe2881323bd44fd9bd76e5317173d4316577e7b1cddebae9136a4495ec865"
             ],
             "index": "pypi",
-            "version": "==5.1.1"
+            "version": "==5.1.2"
         },
         "pytest-cov": {
             "hashes": [
@@ -628,13 +609,6 @@
                 "sha256:9bd07746ce7f2198021a9fa187fa80df7b221ec5e4c234ab6f00ea355a3baf99"
             ],
             "version": "==224"
-        },
-        "pywin32-ctypes": {
-            "hashes": [
-                "sha256:24ffc3b341d457d48e8922352130cf2644024a4ff09762a2261fd34c36ee5942",
-                "sha256:9dc2d991b3479cc2df15930958b674a48a227d5361d413827a4cfd0b5876fc98"
-            ],
-            "version": "==0.2.0"
         },
         "sip": {
             "hashes": [

@@ -338,10 +338,10 @@ class IsogeoToOffice_Main(QMainWindow):
         )
         # export options
         self.ui.chb_xls_attributes.setChecked(
-            self.app_settings.value("settings/xls_sheet_attributes", False, type=bool)
+            self.app_settings.value("settings/xls_sheet_attributes", True, type=bool)
         )
         self.ui.chb_xls_stats.setChecked(
-            self.app_settings.value("settings/xls_sheet_dashboard", False, type=bool)
+            self.app_settings.value("settings/xls_sheet_dashboard", True, type=bool)
         )
         self.ui.chb_xml_zip.setChecked(
             self.app_settings.value("settings/xml_zip", False, type=bool)
@@ -543,6 +543,8 @@ class IsogeoToOffice_Main(QMainWindow):
                 search_to_be_exported,
                 output_xlsx_filepath,
                 url_base_edit=api_mngr.isogeo.app_url,
+                url_base_view=api_mngr.isogeo.oc_url,
+                shares=api_mngr.isogeo._shares,
                 opt_attributes=self.ui.chb_xls_attributes.isChecked(),
                 opt_dasboard=self.ui.chb_xls_stats.isChecked(),
                 opt_fillfull=0,

@@ -13,7 +13,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="953"/>
+        <location filename="../IsogeoToOffice.py" line="959"/>
         <source>Export {} metadata</source>
         <translation type="unfinished"></translation>
     </message>
@@ -33,7 +33,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="878"/>
+        <location filename="../IsogeoToOffice.py" line="884"/>
         <source>Application information has been retrieved</source>
         <translation type="unfinished"></translation>
     </message>
@@ -43,49 +43,49 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="1001"/>
+        <location filename="../IsogeoToOffice.py" line="1007"/>
         <source>Search form updated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="643"/>
+        <location filename="../IsogeoToOffice.py" line="649"/>
         <source>Thumbnails - Table structure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="643"/>
+        <location filename="../IsogeoToOffice.py" line="649"/>
         <source>The thumbnails matching table {} is not compliant with the expected structure.{}{} {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="662"/>
+        <location filename="../IsogeoToOffice.py" line="668"/>
         <source>Thumbnails - Unknown error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="662"/>
+        <location filename="../IsogeoToOffice.py" line="668"/>
         <source>An unknown error occurred reading thethumbnails matching table {}. Please report it.{}{} {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="662"/>
+        <location filename="../IsogeoToOffice.py" line="668"/>
         <source>
 A new table will be created but previous data will be lost.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="662"/>
+        <location filename="../IsogeoToOffice.py" line="668"/>
         <source>
 Error message:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="827"/>
+        <location filename="../IsogeoToOffice.py" line="833"/>
         <source>Settings - Reset to factory defaults</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="827"/>
+        <location filename="../IsogeoToOffice.py" line="833"/>
         <source>Settings will be reinitialized (not authentication credentials).
 application will be closed.</source>
         <translation type="unfinished"></translation>
@@ -96,52 +96,52 @@ application will be closed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="570"/>
+        <location filename="../IsogeoToOffice.py" line="573"/>
         <source>Word - Error: no template.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="626"/>
+        <location filename="../IsogeoToOffice.py" line="632"/>
         <source>Thumbnails - Table already opened</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="626"/>
+        <location filename="../IsogeoToOffice.py" line="632"/>
         <source>The thumbnails matching table {} is already opened. Close it please before to try again.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="635"/>
+        <location filename="../IsogeoToOffice.py" line="641"/>
         <source>Error - Thumbnails table is opened. Close it before contiinue.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="872"/>
+        <location filename="../IsogeoToOffice.py" line="878"/>
         <source>Application information has been retrieved.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="866"/>
+        <location filename="../IsogeoToOffice.py" line="872"/>
         <source>Version is up-to-date.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="1028"/>
+        <location filename="../IsogeoToOffice.py" line="1034"/>
         <source>Export operations are over.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="918"/>
+        <location filename="../IsogeoToOffice.py" line="924"/>
         <source>No results found. Please, try other filters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="862"/>
+        <location filename="../IsogeoToOffice.py" line="868"/>
         <source>New version available. You can download it here: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../IsogeoToOffice.py" line="885"/>
+        <location filename="../IsogeoToOffice.py" line="891"/>
         <source>OpenCatalog is missing in one share at least. Check the settings tab to identify which one and fix it.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -167,47 +167,47 @@ application will be closed.</source>
 <context>
     <name>ThreadAppProperties</name>
     <message>
-        <location filename="../modules/threads.py" line="67"/>
+        <location filename="../modules/threads.py" line="68"/>
         <source>This application is authenticated as </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="79"/>
+        <location filename="../modules/threads.py" line="80"/>
         <source> and powered by </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="75"/>
+        <location filename="../modules/threads.py" line="76"/>
         <source>share:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="79"/>
+        <location filename="../modules/threads.py" line="80"/>
         <source>shares:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="109"/>
+        <location filename="../modules/threads.py" line="110"/>
         <source>Updated:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="115"/>
+        <location filename="../modules/threads.py" line="116"/>
         <source>Contact:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="103"/>
+        <location filename="../modules/threads.py" line="104"/>
         <source>OpenCatalog status:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="99"/>
+        <location filename="../modules/threads.py" line="100"/>
         <source>enabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="103"/>
+        <location filename="../modules/threads.py" line="104"/>
         <source>disabled</source>
         <translation type="unfinished"></translation>
     </message>
@@ -215,30 +215,40 @@ application will be closed.</source>
 <context>
     <name>ThreadExportExcel</name>
     <message>
-        <location filename="../modules/threads.py" line="211"/>
+        <location filename="../modules/threads.py" line="238"/>
         <source>Processing Excel: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="244"/>
+        <location filename="../modules/threads.py" line="252"/>
         <source>Excel finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/threads.py" line="234"/>
+        <source>complementary analisis...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/threads.py" line="238"/>
+        <source>tunning sheets...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>ThreadExportWord</name>
     <message>
-        <location filename="../modules/threads.py" line="286"/>
+        <location filename="../modules/threads.py" line="317"/>
         <source>Processing Word: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="316"/>
+        <location filename="../modules/threads.py" line="350"/>
         <source>Word: error occurred during saving step. Check the log.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="325"/>
+        <location filename="../modules/threads.py" line="359"/>
         <source>Word finished</source>
         <translation type="unfinished"></translation>
     </message>
@@ -246,7 +256,7 @@ application will be closed.</source>
 <context>
     <name>ThreadExportXml</name>
     <message>
-        <location filename="../modules/threads.py" line="369"/>
+        <location filename="../modules/threads.py" line="403"/>
         <source>Processing XML: {}</source>
         <translation type="unfinished"></translation>
     </message>
@@ -254,12 +264,12 @@ application will be closed.</source>
 <context>
     <name>ThreadThumbnails</name>
     <message>
-        <location filename="../modules/threads.py" line="460"/>
+        <location filename="../modules/threads.py" line="494"/>
         <source>Preparing thumbnail table for: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="497"/>
+        <location filename="../modules/threads.py" line="531"/>
         <source>Thumbnail table finished</source>
         <translation type="unfinished"></translation>
     </message>
@@ -362,27 +372,27 @@ application will be closed.</source>
 <context>
     <name>dlg_credits</name>
     <message>
-        <location filename="../modules/ui/credits/ui_credits.py" line="215"/>
+        <location filename="../modules/ui/credits/ui_credits.py" line="258"/>
         <source>Credits</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/credits/ui_credits.py" line="216"/>
+        <location filename="../modules/ui/credits/ui_credits.py" line="259"/>
         <source>Realization</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/credits/ui_credits.py" line="218"/>
+        <location filename="../modules/ui/credits/ui_credits.py" line="261"/>
         <source>Sources and license</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/credits/ui_credits.ui" line="293"/>
+        <location filename="../modules/ui/credits/ui_credits.py" line="262"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/isogeo/isogeo-2-office&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Code hosted on Github&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/ui/credits/ui_credits.py" line="217"/>
+        <location filename="../modules/ui/credits/ui_credits.py" line="260"/>
         <source>Dependencies</source>
         <translation type="unfinished"></translation>
     </message>

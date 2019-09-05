@@ -93,7 +93,7 @@ if not path.isfile(out_search_complete_tests):
         augment=1,
     )
     with open(out_search_complete_tests, "w") as json_basic:
-        json.dump(request, json_basic, sort_keys=True)
+        json.dump(request.to_dict(), json_basic, sort_keys=True)
 else:
     logging.info("JSON already exists. If you want to update it, delete it first.")
 
