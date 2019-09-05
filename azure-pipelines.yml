@@ -38,6 +38,8 @@ jobs:
   dependsOn: 'Lint'
   pool:
     vmImage: "windows-2019"
+  variables:
+    - group: QA
 
   steps:
   - task: UsePythonVersion@0
@@ -63,8 +65,8 @@ jobs:
       ISOGEO_API_URL: $(ISOGEO_API_URL)
       ISOGEO_ID_URL: $(ISOGEO_ID_URL)
       # oAuth2 Client Credentials Grant
-      ISOGEO_API_CLIENT_ID: $(ISOGEO_API_CLIENT_ID)
-      ISOGEO_API_CLIENT_SECRET: $(ISOGEO_API_CLIENT_SECRET)
+      ISOGEO_API_GROUP_CLIENT_ID: $(ISOGEO_API_GROUP_CLIENT_ID)
+      ISOGEO_API_GROUP_CLIENT_SECRET: $(ISOGEO_API_GROUP_CLIENT_SECRET)
       # static fixtures
       ISOGEO_FIXTURES_METADATA_COMPLETE: $(ISOGEO_FIXTURES_METADATA_COMPLETE)
       ISOGEO_WORKGROUP_TEST_UUID: $(ISOGEO_WORKGROUP_TEST_UUID)

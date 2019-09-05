@@ -17,8 +17,6 @@
 from PyQt5.QtCore import *
 
 
-
-
 # standard
 import sys
 from time import sleep
