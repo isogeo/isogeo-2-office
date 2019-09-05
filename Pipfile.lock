@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "1f1ead8580e812c9bec37623b6e3511cf03dabc67f426a18500e0962e655a8d5"
+            "sha256": "e2332ea63613bf7d074eb25bd1116208a90dee8cb60961b30c0b71d07befb687"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -64,6 +64,14 @@
                 "sha256:b7143592e374e50584564794fcb8aaf00a23025f9db866627f89a21491847a8d"
             ],
             "version": "==0.20"
+        },
+        "isogeo-export-docx": {
+            "hashes": [
+                "sha256:1cc89aead4e38d63f2e638b8aa354d22e20abf40ea1289331b2f054c252351ff",
+                "sha256:2ae0d02981b9ee11f6d828b2ac7deb05ae0e5a933e6a64d6f800a0f4a304af6b"
+            ],
+            "index": "pypi",
+            "version": "==1.0.0"
         },
         "isogeo-export-xl": {
             "hashes": [
