@@ -9,13 +9,23 @@
 #   It's higly recomended to use it within a virtualenv.
 #
 
-# code art
-codecov==2.*
-coverage==4.5.*
-pycodestyle==2.4.*
-pylint==2.1.*
-pyqt5-tools==5.9.* ; sys_platform == 'win32'
+# art of code
+black
+flake8
+pylint
+
+# tests
+codecov
+coverage
+pytest
+pytest-cov
+pytest-qt
+
+# PyQt
+pypiwin32
+pyqt5-tools==5.13.* ; sys_platform == 'win32'
 sip
 
 # packaging
-https://github.com/pyinstaller/pyinstaller/tarball/b8c5773bd2c07c65a1f30cd5b9b2e9c4a146c2b6
+# PyInstaller==4.0.dev0+46286a1f4
+-e git+https://github.com/pyinstaller/pyinstaller.git@46286a1f455d8e0837f7c2b9e1bbdff1ef858f0f#egg=pyinstaller

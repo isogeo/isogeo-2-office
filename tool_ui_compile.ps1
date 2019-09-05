@@ -6,10 +6,11 @@
 
 # EXECUTION
 "-- STEP -- Creating temp virtualenv to perform dependencies packaging"
-./env3_packaging/Scripts/activate
+./.venv_packaging/Scripts/activate
 
 "`n-- STEP -- Update UI translations"
 pylupdate5 -noobsolete -verbose .\isogeo2office.pro
+lrelease .\i18n\IsogeoToOffice_fr.ts
 
 "`n-- STEP -- Compile UI resources"
 pyrcc5 ".\resources.qrc" -o ".\resources_rc.py"

@@ -4,29 +4,29 @@ verify_ssl = true
 name = "pypi"
 
 [dev-packages]
-codecov = "*"
-pycodestyle = "*"
-pylint = "*"
-"afcc439" = {file = "https://github.com/pyinstaller/pyinstaller/tarball/b8c5773bd2c07c65a1f30cd5b9b2e9c4a146c2b6"}
-"autopep8" = "*"
-"pyqt5-tools" = {version = "*", sys_platform = "== 'win32'"}
+black = "==19.3b0"
+flake8 = "*"
+pyqt5-tools = {version = "==5.13.0.1.5",sys_platform = "== 'win32'"}
 pip = "*"
+pyinstaller = "==3"
+pylint = "*"
+pypiwin32 = "*"
+pytest= "*"
+pytest-cov="*"
+pytest-qt="*"
 setuptools = "*"
 sip = "*"
+wheel = "*"
 
 [packages]
-arrow = "*"
-pytz = "*"
-requests = "*"
-isogeo-pysdk = ">=2.20.1"
-openpyxl = "*"
-lxml = "*"
 docxtpl = "*"
-future = "*"
-six = "*"
+isogeo-export-xl = "*"
+isogeo-pysdk = ">=3.2.*"
 progressbar2 = "*"
-"pyqt5" = "*"
+"pyqt5" = "==5.13.*"
+python-dotenv = "*"
 qdarkstyle = "*"
+semver = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"

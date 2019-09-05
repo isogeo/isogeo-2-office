@@ -4,8 +4,8 @@
 """
     Isogeo To Office - Threads used to subprocess some tasks
 
-    Author: Julien Moura (@geojulien)
-    Python: 3.6.x
+    Author: Julien Moura (@geojulien) for Isogeo
+    Python: 3.7.x
 """
 
 # #############################################################################
@@ -15,22 +15,27 @@
 # standard library
 import logging
 from os import path, walk
+from pathlib import Path
 from tempfile import mkdtemp
 from zipfile import ZipFile
 
 # 3rd party library
 from docxtpl import DocxTemplate
+from isogeo_pysdk.models import Metadata, MetadataSearch, Share
+from isogeotoxlsx import Isogeo2xlsx
 from openpyxl import Workbook
 from openpyxl.comments import Comment
-from openpyxl.worksheet.write_only import WriteOnlyCell
-from PyQt5.QtCore import QDate, QLocale, QThread, pyqtSignal
+from openpyxl.cell import WriteOnlyCell
+from PyQt5.QtCore import QDateTime, QLocale, QThread, pyqtSignal
+import requests
 
 # submodules - export
-from . import Isogeo2docx, Isogeo2xlsx, isogeo2office_utils
+from . import Isogeo2docx, isogeo2office_utils
 
 # #############################################################################
 # ########## Globals ###############
 # ##################################
+
 app_utils = isogeo2office_utils()
 current_locale = QLocale()
 logger = logging.getLogger("isogeo2office")
@@ -43,7 +48,7 @@ logger = logging.getLogger("isogeo2office")
 # API REQUESTS ----------------------------------------------------------------
 class ThreadAppProperties(QThread):
     # signals
-    sig_finished = pyqtSignal(str)
+    sig_finished = pyqtSignal(str, str, bool)
 
     def __init__(self, api_manager: object):
         QThread.__init__(self)
@@ -51,58 +56,95 @@ class ThreadAppProperties(QThread):
 
     # run method gets called when we start the thread
     def run(self):
-        """Get application and informations
+        """Get application informations and build the text to display into the settings tab.
         """
-        # get application properties
-        shares = self.api_mngr.isogeo.shares(token=self.api_mngr.token)
+        # local vers
+        opencatalog_warning = 0
+
         # insert text
         text = "<html>"  # opening html content
-        # Isogeo application authenticated in the plugin
-        app = shares[0].get("applications")[0]
-        text += "<p>{}<a href='{}' style='color: CornflowerBlue;'>{}</a> "\
-                .format(self.tr("This application is authenticated as "),
-                        app.get("url", "https://isogeo.gitbooks.io/app-isogeo2office/content/"),
-                        app.get("name", "Isogeo to Office"))
+        # properties of the authenticated application
+        app = self.api_mngr.isogeo.app_properties
+        text += "<p>{}<a href='{}' style='color: CornflowerBlue;'>{}</a> ".format(
+            self.tr("This application is authenticated as "),
+            app.url or "http://help.isogeo.com/isogeo2office/",
+            app.name or "Isogeo to Office",
+        )
+        logger.info("Application authenticated: {}".format(app.name))
         # shares feeding the application
-        if len(shares) == 1:
-            text += "{}{} {}</p></br>".format(self.tr(" and powered by "),
-                                              "1",
-                                              self.tr("share:"))
+        if len(self.api_mngr.isogeo._shares) == 1:
+            text += "{}{} {}</p></br>".format(
+                self.tr(" and powered by "), "1", self.tr("share:")
+            )
         else:
-            text += "{}{} {}</p></br>".format(self.tr(" and powered by "),
-                                              len(shares),
-                                              self.tr("shares:"))
+            text += "{}{} {}</p></br>".format(
+                self.tr(" and powered by "),
+                len(self.api_mngr.isogeo._shares),
+                self.tr("shares:"),
+            )
         # shares details
-        for share in shares:
+        for s in self.api_mngr.isogeo._shares:
+            share = Share(**s)
             # share variables
-            creator_name = share.get("_creator").get("contact").get("name")
-            creator_email = share.get("_creator").get("contact").get("email")
-            creator_id = share.get("_creator").get("_tag")[6:]
-            share_url = "https://app.isogeo.com/groups/{}/admin/shares/{}"\
-                        .format(creator_id, share.get("_id"))
-            # formatting text
-            text += "<p><a href='{}' style='color: CornflowerBlue;'><b>{}</b></a></p>"\
-                    .format(share_url,
-                            share.get("name"))
-            text += "<p>{} {}</p>"\
-                    .format(self.tr("Updated:"),
-                            QDate.fromString(share.get("_modified")[:10],
-                                             "yyyy-MM-dd").toString())
+            creator_name = share._creator.get("contact").get("name", "")
+            creator_email = share._creator.get("contact").get("email", "")
 
-            text += "<p>{} {} - {}</p>"\
-                    .format(self.tr("Contact:"),
-                            creator_name,
-                            creator_email)
+            # share administration URL
+            text += "<p><a href='{}' style='color: CornflowerBlue;'><b>{}</b></a></p>".format(
+                share.admin_url(self.api_mngr.isogeo.app_url), share.name
+            )
+
+            # OpenCatalog status - ref: https://github.com/isogeo/isogeo-2-office/issues/54
+            opencatalog_url = share.opencatalog_url(self.api_mngr.isogeo.oc_url)
+            if self.api_mngr.isogeo.head(opencatalog_url):
+                text += "<p>{} <a href='{}' style='color: CornflowerBlue;'><b>{}</b></a></p>".format(
+                    self.tr("OpenCatalog status:"), opencatalog_url, self.tr("enabled")
+                )
+            else:
+                text += "<p>{} <span style='color: red;'>{}</span</p>".format(
+                    self.tr("OpenCatalog status:"), self.tr("disabled")
+                )
+                opencatalog_warning = 1
+
+            # last modification (share renamed, changes in catalogs or applications, etc.)
+            text += "<p>{} {}</p>".format(
+                self.tr("Updated:"),
+                QDateTime(app_utils.hlpr_datetimes(share._modified)).toString(),
+            )
+
+            # workgroup contact owner of the share
+            text += "<p>{} <a href='mailto:{}'>{}</a></p>".format(
+                self.tr("Contact:"), creator_email, creator_name
+            )
             text += "<p><hr></p>"
         text += "</html>"
-        # application and shares informations retrieved.
+
+        # -- Check IsogeoToOffice version ----------------
+        proxies = self.api_mngr.isogeo.proxies
+        # get latest release on Github
+        try:
+            latest_v = requests.get(
+                "https://api.github.com/repos/isogeo/isogeo-2-office/releases?per_page=1",
+                proxies=proxies,
+            ).json()[0]
+            online_version = latest_v.get("tag_name")
+        except Exception as e:
+            logger.error(
+                "Unable to get the latest application version from Github: ".format(e)
+            )
+            online_version = "0.0.0"
+
+        # handle version label starting with a non digit char
+        if not online_version[0].isdigit():
+            online_version = online_version[1:]
+
         # Now inform the main thread with the output (fill_app_props)
-        self.sig_finished.emit(text)
+        self.sig_finished.emit(text, online_version, opencatalog_warning)
 
 
 class ThreadSearch(QThread):
     # signals
-    sig_finished = pyqtSignal(dict)
+    sig_finished = pyqtSignal(MetadataSearch, name="IsogeoSearch")
 
     def __init__(self, api_manager: object):
         QThread.__init__(self)
@@ -115,7 +157,11 @@ class ThreadSearch(QThread):
         """
         logger.debug("Search started.")
         search = self.api_mngr.isogeo.search(**self.search_params)
-        logger.debug("Search finished.")
+        logger.debug(
+            "Search finished: {} results on {} total. Transmitting to slot...".format(
+                len(search.results), search.total
+            )
+        )
         # Search request finished
         self.sig_finished.emit(search)
 
@@ -123,19 +169,27 @@ class ThreadSearch(QThread):
 # EXPORTS ---------------------------------------------------------------------
 class ThreadExportExcel(QThread):
     # signals
-    sig_step = pyqtSignal(int, str)
+    sig_step = pyqtSignal(int, str, name="ExportExcel")
 
-    def __init__(self,
-                 search_to_export: dict = {},
-                 output_path: str = r"output/",
-                 opt_attributes: int = 1,
-                 opt_dasboard: int = 1,
-                 opt_fillfull: int = 1,
-                 opt_inspire: int = 1):
+    def __init__(
+        self,
+        search_to_export: MetadataSearch,
+        output_path: str = r"output/",
+        url_base_edit: str = "https://app.isogeo.com/",
+        url_base_view: str = "https://open.isogeo.com/",
+        shares: list = [],
+        opt_attributes: int = 0,
+        opt_dasboard: int = 0,
+        opt_fillfull: int = 0,
+        opt_inspire: int = 0,
+    ):
         QThread.__init__(self)
         # export settings
         self.search = search_to_export
         self.output_xlsx_path = output_path
+        self.url_base_edit = url_base_edit
+        self.url_base_view = url_base_view
+        self.shares = shares
         self.opt_attributes = opt_attributes
         self.opt_dasboard = opt_dasboard
         self.opt_fillfull = opt_fillfull
@@ -147,35 +201,51 @@ class ThreadExportExcel(QThread):
         """
         language = current_locale.name()[:2]
         # workbook
-        wb = Isogeo2xlsx(lang=language,
-                         url_base="https://open.isogeo.com")
-        wb.set_worksheets(auto=self.search.get('tags').keys(),
-                          dashboard=self.opt_dasboard,
-                          attributes=self.opt_attributes,
-                          fillfull=self.opt_fillfull,
-                          inspire=self.opt_inspire)
+        wb = Isogeo2xlsx(
+            lang=language,
+            url_base_edit=self.url_base_edit,
+            url_base_view=self.url_base_view,
+        )
+        # worksheets
+        wb.set_worksheets(
+            auto=self.search.tags.keys(),
+            dashboard=self.opt_dasboard,
+            attributes=self.opt_attributes,
+            fillfull=self.opt_fillfull,
+            inspire=self.opt_inspire,
+        )
 
         # parsing metadata
-        for md in self.search.get("results"):
+        for md in self.search.results:
+            # load metadata
+            metadata = Metadata.clean_attributes(md)
             # show progression
-            md_title = md.get("title", "No title")
-            self.sig_step.emit(1, self.tr("Processing Excel: {}").format(md_title))
-            # add edit link
-            md["link_edit"] = app_utils.get_edit_url(md_id=md.get("_id"),
-                                                     md_type=md.get("type"),
-                                                     owner_id=md.get("_creator").get("_id"))
+            self.sig_step.emit(
+                1, self.tr("Processing Excel: {}").format(metadata.title_or_name())
+            )
+
+            # opencatalog url - get the matching share
+            matching_share = app_utils.get_matching_share(
+                metadata=metadata, shares=self.shares
+            )
 
             # store metadata
-            wb.store_metadatas(md)
+            wb.store_metadatas(metadata, share=matching_share)
+
+        # complementary analisis
+        self.sig_step.emit(
+            0,
+            self.tr("Processing Excel: {}").format(
+                self.tr("complementary analisis...")
+            ),
+        )
+        wb.launch_analisis()
 
         # tunning full worksheet
+        self.sig_step.emit(
+            0, self.tr("Processing Excel: {}").format(self.tr("tunning sheets..."))
+        )
         wb.tunning_worksheets()
-
-        # special sheets
-        if self.opt_attributes:
-            wb.analisis_attributes()
-        else:
-            pass
 
         # save workbook
         try:
@@ -189,24 +259,45 @@ class ThreadExportExcel(QThread):
         # Now inform the main thread with the output (fill_app_props)
         logger.info("Excel - Export is over")
         self.sig_step.emit(0, self.tr("Excel finished"))
-        self.deleteLater()
+        # self.deleteLater()
 
 
 class ThreadExportWord(QThread):
-    # signals
-    sig_step = pyqtSignal(int, str)
+    """QThread used to export an Isogeo search into metadata.
 
-    def __init__(self,
-                 search_to_export: dict = {},
-                 output_path: str = r"output/",
-                 tpl_path: str = r"templates/template_Isogeo.docx",
-                 thumbnails: dict = {},
-                 timestamp: str = "",
-                 length_uuid: int = 0):
+    :param MetadataSearch search_to_export: metadata to dumpinto the template
+    :param str output_path: path to the output folder to store the generated Word
+    :param str tpl_path: path to the Word template to use
+    :param str url_base_edit: base url to format edit links. Defaults to: https://app.isogeo.com
+    :param str url_base_view: base url to format view links. Defaults to: https://open.isogeo.com
+    :param list shares: list of shares feeding the application
+    :param dict thumbnails: matching table between metadata and image path
+    :param str timestamp: timestamp used to name the output file
+    :param int length_uuid: number of UUID characters to use to name the output file
+    """
+
+    # signals
+    sig_step = pyqtSignal(int, str, name="ExportWord")
+
+    def __init__(
+        self,
+        search_to_export: MetadataSearch = {},
+        output_path: str = r"output/",
+        tpl_path: str = r"templates/template_Isogeo.docx",
+        url_base_edit: str = "https://app.isogeo.com/",
+        url_base_view: str = "https://open.isogeo.com/",
+        shares: list = [],
+        thumbnails: dict = {},
+        timestamp: str = "",
+        length_uuid: int = 0,
+    ):
         QThread.__init__(self)
         # export settings
         self.search = search_to_export
         self.output_docx_folder = output_path
+        self.url_base_edit = url_base_edit
+        self.url_base_view = url_base_view
+        self.shares = shares
         self.tpl_path = path.realpath(tpl_path)
         self.thumbnails = thumbnails
         self.timestamp = timestamp
@@ -214,70 +305,83 @@ class ThreadExportWord(QThread):
 
     # run method gets called when we start the thread
     def run(self):
-        """Export each metadata into a Word document
-        """
+        """Export each metadata from a search results into a Word document."""
         # vars
-        thumbnail_default = ("", path.realpath(r"resources/credits/isogeo.png"))
+        language = current_locale.name()[:2]
+        thumbnail_default = ("", path.realpath(r"resources/favicon.png"))
 
         # word generator
-        to_docx = Isogeo2docx()
+        to_docx = Isogeo2docx(
+            lang=language,
+            url_base_edit=self.url_base_edit,
+            url_base_view=self.url_base_view,
+        )
 
         # parsing metadata
-        for md in self.search.get("results"):
+        for md in self.search.results:
+            # load metadata
+            metadata = Metadata.clean_attributes(md)
+
             # progression
-            md_title = md.get("title", "No title")
-            self.sig_step.emit(1, self.tr("Processing Word: {}").format(md_title))
+            self.sig_step.emit(
+                1, self.tr("Processing Word: {}").format(metadata.title_or_name())
+            )
+
+            # opencatalog url - get the matching share
+            matching_share = app_utils.get_matching_share(
+                metadata=metadata, shares=self.shares
+            )
+
             # thumbnails
-            thumbnail_abs_path = self.thumbnails.get(md.get("_id"),
-                                                     thumbnail_default)[1]
+            thumbnail_abs_path = self.thumbnails.get(metadata._id, thumbnail_default)[1]
+            if not thumbnail_abs_path or not path.isfile(thumbnail_abs_path):
+                thumbnail_abs_path = path.realpath(r"resources/favicon.png")
             logger.debug("Thumbnail used: {}".format(thumbnail_abs_path))
-            md["thumbnail_local"] = thumbnail_abs_path
+            metadata.thumbnail = thumbnail_abs_path
+
             # templating
             tpl = DocxTemplate(self.tpl_path)
             # fill template
-            to_docx.md2docx(docx_template=tpl,
-                            md=md,
-                            url_base="https://open.isogeo.com")
+            to_docx.md2docx(docx_template=tpl, md=metadata, share=matching_share)
             # filename
-            md_name = app_utils.clean_filename(md.get("name",
-                                                      md.get("title", "NR"))
-                                               )
-            if '.' in md_name:
-                md_name = md_name.split(".")[1]
-            else:
-                pass
-            uuid = "{}".format(md.get("_id")[:self.length_uuid])
+            md_name = metadata.title_or_name(slugged=1)
+            uuid = "{}".format(metadata._id[: self.length_uuid])
 
-            out_docx_filename = "{}_{}_{}.docx".format(self.output_docx_folder,
-                                                       md_name,
-                                                       uuid)
+            out_docx_filename = "{}_{}_{}.docx".format(
+                self.output_docx_folder, md_name, uuid
+            )
             # saving
             logger.debug("Saving output Word docx: {}".format(out_docx_filename))
             try:
                 tpl.save(out_docx_filename)
             except Exception as e:
                 logger.error(e)
-                self.sig_step.emit(0, self.tr("Word: error occurred during saving step. Check the log."))
+                self.sig_step.emit(
+                    0,
+                    self.tr("Word: error occurred during saving step. Check the log."),
+                )
             del tpl
 
         # Word export finished
         # Now inform the main thread with the output (fill_app_props)
         logger.info("Word - Export is over")
         self.sig_step.emit(0, self.tr("Word finished"))
-        self.deleteLater()
+        # self.deleteLater()
 
 
 class ThreadExportXml(QThread):
     # signals
-    sig_step = pyqtSignal(int, str)
+    sig_step = pyqtSignal(int, str, name="ExportXML")
 
-    def __init__(self,
-                 search_to_export: dict = {},
-                 isogeo_api_mngr: object = None,
-                 output_path: str = r"output/",
-                 opt_zip: int = 0,
-                 timestamp: str = "",
-                 length_uuid: int = 0):
+    def __init__(
+        self,
+        search_to_export: dict = {},
+        isogeo_api_mngr: object = None,
+        output_path: str = r"output/",
+        opt_zip: int = 0,
+        timestamp: str = "",
+        length_uuid: int = 0,
+    ):
         QThread.__init__(self)
         # export settings
         self.search = search_to_export
@@ -301,30 +405,28 @@ class ThreadExportXml(QThread):
             out_dir = path.realpath(self.output_xml_path)
 
         # parsing metadata
-        for md in self.search.get("results"):
+        for md in self.search.results:
+            # load metadata
+            metadata = Metadata.clean_attributes(md)
             # progression
-            md_title = md.get("title", "No title")
-            self.sig_step.emit(1, self.tr("Processing XML: {}").format(md_title))
+            self.sig_step.emit(
+                1, self.tr("Processing XML: {}").format(metadata.title_or_name())
+            )
 
             # filename
-            md_name = app_utils.clean_filename(md.get("title",
-                                                      md.get("name", "No name"))
-                                               ).split(" -")[0]
-            if '.' in md_name:
-                md_name = md_name.split(".")[1]
-            else:
-                pass
-            uuid = "{}".format(md.get("_id")[:self.length_uuid])
+            md_name = metadata.title_or_name(slugged=1)
+            uuid = "{}".format(md.get("_id")[: self.length_uuid])
 
+            # compressed or raw
             if self.opt_zip:
                 out_xml_path = path.join(out_dir, "{}_{}.xml".format(md_name, uuid))
             else:
                 out_xml_path = out_dir + "_{}_{}.xml".format(md_name, uuid)
             logger.debug("XML - Output path: {}".format(out_xml_path))
+
             # export
-            xml_stream = self.api_mngr.isogeo.xml19139(self.api_mngr.token,
-                                                       md.get("_id"))
-            with open(path.realpath(out_xml_path), 'wb') as out_md:
+            xml_stream = self.api_mngr.isogeo.metadata.download_xml(metadata)
+            with open(path.realpath(out_xml_path), "wb") as out_md:
                 for block in xml_stream.iter_content(1024):
                     out_md.write(block)
 
@@ -344,7 +446,7 @@ class ThreadExportXml(QThread):
         # Now inform the main thread with the output (fill_app_props)
         logger.info("XML - Export is over")
         self.sig_step.emit(0, "XML finished")
-        self.deleteLater()
+        # self.deleteLater()
 
 
 # TO IMPORT LATER -------------------------------------------------------------
@@ -352,11 +454,12 @@ class ThreadThumbnails(QThread):
     # signals
     sig_step = pyqtSignal(int, str)
 
-    def __init__(self,
-                 search_to_export: dict = {},
-                 output_path: str = r"thumbnails/thumbnails.xlsx",
-                 thumbnails: dict = {},
-                 ):
+    def __init__(
+        self,
+        search_to_export: dict = {},
+        output_path: str = r"thumbnails/thumbnails.xlsx",
+        thumbnails: dict = {},
+    ):
         QThread.__init__(self)
         # export settings
         self.search = search_to_export
@@ -383,43 +486,45 @@ class ThreadThumbnails(QThread):
         head_col2 = WriteOnlyCell(ws, value="isogeo_title_slugged")
         head_col3 = WriteOnlyCell(ws, value="img_abs_path")
         # headers comments
-        comment = Comment(text="Do not modify worksheet structure",
-                          author="Isogeo")
+        comment = Comment(text="Do not modify worksheet structure", author="Isogeo")
 
         head_col1.comment = head_col2.comment = head_col3.comment = comment
 
         # headers styling
         head_col1.style = head_col2.style = head_col3.style = "Headline 2"
         # insert headers
-        ws.append((head_col1,
-                   head_col2,
-                   head_col3)
-                  )
+        ws.append((head_col1, head_col2, head_col3))
 
         # parsing metadata
         li_exported_md = []
-        for md in self.search.get("results"):
+        for md in self.search.results:
             # show progression
             md_title = md.get("title", "No title")
-            self.sig_step.emit(0, self.tr("Preparing thumbnail table for: {}")
-                               .format(md_title))
+            self.sig_step.emit(
+                0, self.tr("Preparing thumbnail table for: {}").format(md_title)
+            )
             # thumbnail matching
-            thumbnail_abs_path = self.thumbnails.get(md.get("_id"),
-                                                     "  ")[1]
+            thumbnail_abs_path = self.thumbnails.get(md.get("_id"), "  ")[1]
             # fill with metadata
-            ws.append((md.get("_id"),
-                       app_utils.clean_filename(md.get("title", md.get("name", "NR")),
-                                                mode="strict"),
-                       thumbnail_abs_path))
+            ws.append(
+                (
+                    md.get("_id"),
+                    app_utils.clean_filename(
+                        md.get("title", md.get("name", "NR")), mode="strict"
+                    ),
+                    thumbnail_abs_path,
+                )
+            )
             # list exported metadata to compare with previous
             li_exported_md.append(md.get("_id"))
 
         # insert previous metadata which have not been exported this time
         for thumb, title_path in self.thumbnails.items():
             if thumb not in li_exported_md:
-                ws.append((thumb,
-                           title_path[0],
-                           title_path[1]))
+                try:
+                    ws.append((thumb, title_path[0], title_path[1]))
+                except TypeError as e:
+                    logger.error("Thumbnails table error: {}".format(e))
 
         # save workbook
         try:
@@ -432,8 +537,45 @@ class ThreadThumbnails(QThread):
         # Excel export finished
         # Now inform the main thread with the output (fill_app_props)
         logger.info("Thumbnail - Table creation is over")
-        self.sig_step.emit(0, self.tr("Thmbnail table finished"))
-        self.deleteLater()
+        self.sig_step.emit(0, self.tr("Thumbnail table finished"))
+        # self.deleteLater()
+
+
+class ThreadExportHtmlReport(QThread):
+    # signals
+    sig_step = pyqtSignal(int, str)
+
+    def __init__(
+        self,
+        search_to_export: dict = {},
+        isogeo_api_mngr: object = None,
+        html_template: str = "",
+        output_path: str = r"output/",
+        timestamp: str = "",
+    ):
+        QThread.__init__(self)
+        # export settings
+        self.search = search_to_export
+        self.api_mngr = isogeo_api_mngr
+        self.html_tpl = html_template
+        self.output_path = output_path
+        self.timestamp = timestamp
+
+    # run method gets called when we start the thread
+    def run(self):
+        """Export each metadata into an XML ISO 19139
+        """
+        logger.debug("hohohoho")
+        # ZIP or not ZIP
+        stats_types = [100, 50, 25, 15]
+
+        # output template
+        out_html_file = self.html_tpl.render(
+            varTitle="Isogeo To Office - Report", varLblChartTypes="Metadata by types"
+        )
+
+        with open("test_out_html_templated.html", "w") as fh:
+            fh.write(out_html_file)
 
 
 # #############################################################################

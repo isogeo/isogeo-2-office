@@ -28,7 +28,9 @@ class Worker(QObject):
     Must derive from QObject in order to emit signals, connect slots to other signals, and operate in a QThread.
     """
 
-    sig_step = pyqtSignal(int, str)  # worker id, step description: emitted every step through work() loop
+    sig_step = pyqtSignal(
+        int, str
+    )  # worker id, step description: emitted every step through work() loop
     sig_done = pyqtSignal(int)  # worker id: emitted at end of work()
     sig_msg = pyqtSignal(str)  # message to be shown to user
 
@@ -47,23 +49,29 @@ class Worker(QObject):
         """
         thread_name = QThread.currentThread().objectName()
         thread_id = int(QThread.currentThreadId())  # cast to int() is necessary
-        self.sig_msg.emit('Running worker #{} from thread "{}" (#{})'.format(self.__id, thread_name, thread_id))
+        self.sig_msg.emit(
+            'Running worker #{} from thread "{}" (#{})'.format(
+                self.__id, thread_name, thread_id
+            )
+        )
 
         for step in range(100):
             time.sleep(0.1)
-            self.sig_step.emit(self.__id, 'step ' + str(step))
+            self.sig_step.emit(self.__id, "step " + str(step))
 
             # check if we need to abort the loop; need to process events to receive signals;
             app.processEvents()  # this could cause change to self.__abort
             if self.__abort:
                 # note that "step" value will not necessarily be same for every thread
-                self.sig_msg.emit('Worker #{} aborting work at step {}'.format(self.__id, step))
+                self.sig_msg.emit(
+                    "Worker #{} aborting work at step {}".format(self.__id, step)
+                )
                 break
 
         self.sig_done.emit(self.__id)
 
     def abort(self):
-        self.sig_msg.emit('Worker #{} notified to abort'.format(self.__id))
+        self.sig_msg.emit("Worker #{} notified to abort".format(self.__id))
         self.__abort = True
 
 
@@ -98,12 +106,14 @@ class MyWidget(QWidget):
         self.progress = QTextEdit()
         form_layout.addWidget(self.progress)
 
-        QThread.currentThread().setObjectName('main')  # threads can be named, useful for log output
+        QThread.currentThread().setObjectName(
+            "main"
+        )  # threads can be named, useful for log output
         self.__workers_done = None
         self.__threads = None
 
     def start_threads(self):
-        self.log.append('starting {} threads'.format(self.NUM_THREADS))
+        self.log.append("starting {} threads".format(self.NUM_THREADS))
         self.button_start_threads.setDisabled(True)
         self.button_stop_threads.setEnabled(True)
 
@@ -112,8 +122,10 @@ class MyWidget(QWidget):
         for idx in range(self.NUM_THREADS):
             worker = Worker(idx)
             thread = QThread()
-            thread.setObjectName('thread_' + str(idx))
-            self.__threads.append((thread, worker))  # need to store worker too otherwise will be gc'd
+            thread.setObjectName("thread_" + str(idx))
+            self.__threads.append(
+                (thread, worker)
+            )  # need to store worker too otherwise will be gc'd
             worker.moveToThread(thread)
 
             # get progress messages from worker:
@@ -133,16 +145,16 @@ class MyWidget(QWidget):
 
     @pyqtSlot(int, str)
     def on_worker_step(self, worker_id: int, data: str):
-        self.log.append('Worker #{}: {}'.format(worker_id, data))
-        self.progress.append('{}: {}'.format(worker_id, data))
+        self.log.append("Worker #{}: {}".format(worker_id, data))
+        self.progress.append("{}: {}".format(worker_id, data))
 
     @pyqtSlot(int)
     def on_worker_done(self, worker_id):
-        self.log.append('worker #{} done'.format(worker_id))
-        self.progress.append('-- Worker {} DONE'.format(worker_id))
+        self.log.append("worker #{} done".format(worker_id))
+        self.progress.append("-- Worker {} DONE".format(worker_id))
         self.__workers_done += 1
         if self.__workers_done == self.NUM_THREADS:
-            self.log.append('No more workers active')
+            self.log.append("No more workers active")
             self.button_start_threads.setEnabled(True)
             self.button_stop_threads.setDisabled(True)
             # self.__threads = None
@@ -150,14 +162,17 @@ class MyWidget(QWidget):
     @pyqtSlot()
     def abort_workers(self):
         self.sig_abort_workers.emit()
-        self.log.append('Asking each worker to abort')
-        for thread, worker in self.__threads:  # note nice unpacking by Python, avoids indexing
+        self.log.append("Asking each worker to abort")
+        for (
+            thread,
+            worker,
+        ) in self.__threads:  # note nice unpacking by Python, avoids indexing
             thread.quit()  # this will quit **as soon as thread event loop unblocks**
             thread.wait()  # <- so you need to wait for it to *actually* quit
 
         # even though threads have exited, there may still be messages on the main thread's
         # queue (messages that threads emitted before the abort):
-        self.log.append('All threads exited')
+        self.log.append("All threads exited")
 
 
 if __name__ == "__main__":

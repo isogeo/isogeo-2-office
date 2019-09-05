@@ -2,19 +2,24 @@
 #! python3
 
 # Standard library
-from functools import partial
-import json
 import logging
-from os import path, rename
 import time
+from functools import partial
+from os import environ, path, rename
+from pathlib import Path  # TO DO: replace os.path by pathlib
+from urllib.request import getproxies
 
-# PyQT
-from PyQt5.QtWidgets import QDialog, QErrorMessage
-from PyQt5.QtCore import QLocale, QSettings
+# 3rd party
+from dotenv import load_dotenv
+import urllib3
 
 # Isogeo
-from isogeo_pysdk import Isogeo, IsogeoChecker
+from isogeo_pysdk import Isogeo
 from isogeo_pysdk import __version__ as pysdk_version
+
+# PyQT
+from PyQt5.QtCore import QLocale, QSettings
+from PyQt5.QtWidgets import QDialog, QErrorMessage
 
 # submodules
 from .utils import isogeo2office_utils
@@ -23,10 +28,11 @@ from .utils import isogeo2office_utils
 # ########## Globals ###############
 # ##################################
 
+load_dotenv(".env")
 app_utils = isogeo2office_utils()
 current_locale = QLocale()
 logger = logging.getLogger("isogeo2office")
-qsettings = QSettings('Isogeo', 'IsogeoToOffice')
+qsettings = QSettings("Isogeo", "IsogeoToOffice")
 
 # ############################################################################
 # ########## Classes ###############
@@ -35,28 +41,34 @@ qsettings = QSettings('Isogeo', 'IsogeoToOffice')
 
 class IsogeoApiMngr(object):
     """Isogeo API manager."""
+
     # Isogeo API wrapper
     isogeo = Isogeo
     token = str
     # ui reference - authentication form
     ui_auth_form = QDialog
+    auth_form_request_url = "https://www.isogeo.com"
+
     # api parameters
     api_app_id = ""
     api_app_secret = ""
+    api_platform = "prod"
+    api_app_type = "group"
     api_url_base = "https://v1.api.isogeo.com/"
     api_url_auth = "https://id.api.isogeo.com/oauth/authorize"
     api_url_token = "https://id.api.isogeo.com/oauth/token"
     api_url_redirect = "http://localhost:5000/callback"
 
+    proxies = app_utils.proxy_settings()
+
     # plugin credentials storage parameters
-    credentials_storage = {"QSettings": 0,
-                           "oAuth2_file": 0,
-                           }
+    credentials_storage = {"QSettings": 0, "oAuth2_file": 0}
     auth_folder = ""
 
     # API URLs - Prod
-    platform, api_url, app_url, csw_url,\
-        mng_url, oc_url, ssl = app_utils.set_base_url("prod")
+    platform, api_url, app_url, csw_url, mng_url, oc_url, ssl = app_utils.set_base_url(
+        "prod"
+    )
 
     def __init__(self):
         super(IsogeoApiMngr, self)
@@ -75,23 +87,40 @@ class IsogeoApiMngr(object):
         # update class attributes from credentials found
         if self.credentials_storage.get("QSettings"):
             self.credentials_update("QSettings")
+            logger.debug("Credentials used: QSettings")
         elif self.credentials_storage.get("oAuth2_file"):
             self.credentials_update("oAuth2_file")
+            logger.debug("Credentials used: client_secrets file")
         else:
-            logger.info("No credentials found. ")
+            logger.info("No credentials found. Opening the authentication form...")
             self.display_auth_form()
             return False
 
+        # ignore warnings related to the QA self-signed cert
+        if self.api_platform == "qa":
+            urllib3.disable_warnings()
+
         # start api wrapper
         try:
-            self.isogeo = Isogeo(client_id=self.api_app_id,
-                                 client_secret=self.api_app_secret,
-                                 lang=current_locale.name()[:2])
-            self.token = self.isogeo.connect()
+            logger.debug("Start connection attempts")
+            # client connexion
+            self.isogeo = Isogeo(
+                auth_mode="group",
+                client_id=self.api_app_id,
+                client_secret=self.api_app_secret,
+                auto_refresh_url=self.api_url_token,
+                lang=current_locale.name()[:2],
+                platform=self.api_platform,
+                proxy=app_utils.proxy_settings(),
+            )
+            self.isogeo.connect()
+            logger.debug("Authentication succeeded")
             return True
         except ValueError as e:
             logger.error(e)
             self.display_auth_form()
+        except EnvironmentError as e:
+            logger.error(e)
         except Exception as e:
             logger.error(e)
             self.display_auth_form()
@@ -113,8 +142,7 @@ class IsogeoApiMngr(object):
         credentials_filepath = path.join(self.auth_folder, "client_secrets.json")
         # check if a client_secrets.json fil is stored inside the _auth subfolder
         if not path.isfile(credentials_filepath):
-            logger.debug("No credential files found: {}"
-                         .format(credentials_filepath))
+            logger.debug("No credential files found: {}".format(credentials_filepath))
             return False
         # check file structure
         try:
@@ -136,6 +164,8 @@ class IsogeoApiMngr(object):
         if store_location == "QSettings":
             qsettings.setValue("auth/app_id", self.api_app_id)
             qsettings.setValue("auth/app_secret", self.api_app_secret)
+            qsettings.setValue("auth/app_type", self.api_app_type)
+            qsettings.setValue("auth/platform", self.api_platform)
             qsettings.setValue("auth/url_base", self.api_url_base)
             qsettings.setValue("auth/url_auth", self.api_url_auth)
             qsettings.setValue("auth/url_token", self.api_url_token)
@@ -150,48 +180,64 @@ class IsogeoApiMngr(object):
         if credentials_source == "QSettings":
             self.api_app_id = qsettings.value("auth/app_id", "")
             self.api_app_secret = qsettings.value("auth/app_secret", "")
-            self.api_url_base = qsettings.value("auth/url_base", "https://v1.api.isogeo.com/")
-            self.api_url_auth = qsettings.value("auth/url_auth", "https://id.api.isogeo.com/oauth/authorize")
-            self.api_url_token = qsettings.value("auth/url_token", "https://id.api.isogeo.com/oauth/token")
-            self.api_url_redirect = qsettings.value("auth/url_redirect", "http://localhost:5000/callback")
+            self.api_app_type = qsettings.value("auth/app_type", "group")
+            self.api_platform = qsettings.value("auth/platform", "prod")
+            self.api_url_base = qsettings.value(
+                "auth/url_base", "https://v1.api.isogeo.com/"
+            )
+            self.api_url_auth = qsettings.value(
+                "auth/url_auth", "https://id.api.isogeo.com/oauth/authorize"
+            )
+            self.api_url_token = qsettings.value(
+                "auth/url_token", "https://id.api.isogeo.com/oauth/token"
+            )
+            self.api_url_redirect = qsettings.value(
+                "auth/url_redirect", "http://localhost:5000/callback"
+            )
         elif credentials_source == "oAuth2_file":
-            creds = app_utils.credentials_loader(path.join(self.auth_folder,
-                                                           "client_secrets.json"))
+            creds = app_utils.credentials_loader(
+                path.join(self.auth_folder, "client_secrets.json")
+            )
             self.api_app_id = creds.get("client_id")
             self.api_app_secret = creds.get("client_secret")
+            self.api_app_type = creds.get("type", "group")
+            self.api_platform = creds.get("platform", "prod")
             self.api_url_base = creds.get("uri_base")
             self.api_url_auth = creds.get("uri_auth")
             self.api_url_token = creds.get("uri_token")
             self.api_url_redirect = creds.get("uri_redirect")
-            self.credentials_storer(store_location="QSettings")
         else:
             pass
 
-        logger.debug("Credentials updated from: {}. Application ID used: {}"
-                     .format(credentials_source, self.api_app_id))
+        logger.debug(
+            "Credentials updated from: {}. Application connected to the platform '{}' using CLIENT_ID: {}".format(
+                credentials_source, self.api_platform, self.api_app_id
+            )
+        )
 
     # AUTHENTICATION FORM -----------------------------------------------------
     def display_auth_form(self):
         """Show authentication form with prefilled fields."""
         # connect widgets
-        self.ui_auth_form.btn_browse_credentials.pressed.connect(partial(self.credentials_uploader))
-        self.ui_auth_form.chb_isogeo_editor\
-                         .stateChanged\
-                         .connect(lambda: qsettings.setValue("user/editor",
-                                                             int(self.ui_auth_form.chb_isogeo_editor.isChecked())
-                                                             )
-                                  )
+        self.ui_auth_form.chb_isogeo_editor.stateChanged.connect(
+            lambda: qsettings.setValue(
+                "user/editor", int(self.ui_auth_form.chb_isogeo_editor.isChecked())
+            )
+        )
         self.ui_auth_form.btn_ok_cancel.clicked.connect(self.ui_auth_form.close)
         # button to request an account by email
-        #self.ui_auth_form.btn_account_new.pressed.connect(
-        #    partial(app_utils.mail_to_isogeo, lang=self.lang))
+        self.ui_auth_form.btn_account_new.pressed.connect(
+            partial(app_utils.open_urls, [self.auth_form_request_url])
+        )
 
         # fillfull auth form fields from stored settings
+        self.ui_auth_form.btn_ok_cancel.setEnabled(0)
         self.ui_auth_form.ent_app_id.setText(self.api_app_id)
         self.ui_auth_form.ent_app_secret.setText(self.api_app_secret)
         self.ui_auth_form.lbl_api_url_value.setText(self.api_url_base)
-        self.ui_auth_form.chb_isogeo_editor.setChecked(qsettings
-                                                       .value("user/editor", 0))
+        self.ui_auth_form.chb_isogeo_editor.setChecked(
+            qsettings.value("user/editor", 0)
+        )
         # display
         logger.debug("Authentication form filled and ready to be launched.")
         self.ui_auth_form.show()
@@ -200,42 +246,64 @@ class IsogeoApiMngr(object):
     def credentials_uploader(self):
         """Get file selected by the user and loads API credentials into plugin.
         If the selected is compliant, credentials are loaded from then it's
-        moved inside plugin/_auth subfolder.
+        moved inside ./_auth subfolder.
         """
         selected_file = app_utils.open_FileNameDialog(self.ui_auth_form)
-        logger.debug("QFileDIalog returned: {}".format(selected_file))
-        # test file structure
-        if not path.exists(selected_file[0]):
-            logger.error("No file selected")
-            return False
-        else:
-            logger.debug("Selected file exists.")
+        logger.debug(
+            "Credentials file picker (QFileDialog) returned: {}".format(selected_file)
+        )
+        # test file path
         try:
-            selected_file = path.normpath(selected_file[0])
-            api_credentials = app_utils.credentials_loader(selected_file)
+            in_creds_path = Path(selected_file[0])
+            assert in_creds_path.exists()
+        except FileExistsError:
+            logger.error(
+                FileExistsError(
+                    "No auth file selected or path is incorrect: {}".format(
+                        selected_file[0]
+                    )
+                )
+            )
+            return False
+        except Exception as e:
+            logger.error(e)
+            return False
+
+        # test file structure
+        try:
+            api_credentials = app_utils.credentials_loader(in_creds_path.resolve())
         except Exception as e:
             logger.error("Selected file is bad formatted: {}".format(e))
             return False
-        # move credentials file into the plugin file structure
-        if path.isfile(path.join(self.auth_folder, "client_secrets.json")):
-            rename(path.join(self.auth_folder, "client_secrets.json"),
-                   path.join(self.auth_folder, "old_client_secrets_{}.json"
-                                               .format(int(time.time())))
-                   )
-            logger.debug("client_secrets.json already existed. "
-                         "Previous file has been renamed.")
+
+        # rename previous credentials file
+        creds_dest_path = Path(self.auth_folder) / "client_secrets.json"
+        if creds_dest_path.is_file():
+            creds_dest_path_renamed = Path(
+                self.auth_folder
+            ) / "old_client_secrets_{}.json".format(int(time.time()))
+            rename(creds_dest_path.resolve(), creds_dest_path_renamed.resolve())
+            logger.debug(
+                "`./_auth/client_secrets.json already existed`. Previous file has been renamed."
+            )
         else:
             pass
-        rename(selected_file,
-               path.join(self.auth_folder, "client_secrets.json"))
-        logger.debug("Selected credentials file has been moved into plugin"
-                     "_auth subfolder")
+        # move new credentials file into ./_auth dir
+        rename(in_creds_path.resolve(), creds_dest_path.resolve())
+        logger.debug(
+            "Selected credentials file has been moved into plugin './_auth' subfolder"
+        )
 
         # check validity
         try:
-            self.isogeo = Isogeo(client_id=api_credentials.get("client_id"),
-                                 client_secret=api_credentials.get("client_secret")
-                                 )
+            self.isogeo = Isogeo(
+                auth_mode="group",
+                client_id=api_credentials.get("client_id"),
+                client_secret=api_credentials.get("client_secret"),
+                auto_refresh_url=api_credentials.get("uri_token"),
+                platform=api_credentials.get("platform"),
+                proxy=app_utils.proxy_settings(),
+            )
         except Exception as e:
             logger.debug(e)
             return False
@@ -252,167 +320,12 @@ class IsogeoApiMngr(object):
         # store into QSettings if existing
         self.credentials_storer(store_location="QSettings")
 
-    # REQUEST and RESULTS ----------------------------------------------------
-    def build_request_url(self, params):
-        """Build the request url according to the widgets."""
-        # Base url for a request to Isogeo API
-        url = "{}/resources/search?".format(self.api_url_base)
-        # Build the url according to the params
-        if params.get("text") != "":
-            filters = params.get("text") + " "
-        else:
-            filters = ""
-        # Keywords
-        for keyword in params.get("keys"):
-            filters += keyword + " "
-        # Owner
-        if params.get("owner") is not None:
-            filters += params.get("owner") + " "
-        # SRS
-        if params.get("srs") is not None:
-            filters += params.get("srs") + " "
-        # INSPIRE keywords
-        if params.get("inspire") is not None:
-            filters += params.get("inspire") + " "
-        # Format
-        if params.get("format") is not None:
-            filters += params.get("format") + " "
-        # Data type
-        if params.get("datatype") is not None:
-            filters += params.get("datatype") + " "
-        # Contact
-        if params.get("contact") is not None:
-            filters += params.get("contact") + " "
-        # License
-        if params.get("license") is not None:
-            filters += params.get("license") + " "
-        # Formating the filters
-        if filters != "":
-            filters = "q=" + filters[:-1]
-        # Geographical filter
-        if params.get("geofilter") is not None:
-            if params.get("coord") is not False:
-                filters += "&box={0}&rel={1}".format(params.get("coord"),
-                                                     params.get("operation"))
-            else:
-                pass
-        else:
-            pass
-        # Sorting order and direction
-        if params.get("show"):
-            filters += "&ob={0}&od={1}".format(params.get("ob"),
-                                               params.get("od"))
-            filters += "&_include=serviceLayers,layers"
-            limit = 10
-        else:
-            limit = 0
-        # Limit and offset
-        offset = (params.get("page") - 1) * 10
-        filters += "&_limit={0}&_offset={1}".format(limit, offset)
-        # Language
-        filters += "&_lang={0}".format(params.get("lang"))
-        # BUILDING FINAL URL
-        url += filters
-        # method ending
-        return url
-
-    def get_tags(self, tags):
-        """Return a tag dictionnary from the API answer.
-
-        This parse the tags contained in API_answer[tags] and class them so
-        they are more easy to handle in other function such as
-        update_fields()
-        """
-        # set dicts
-        actions = {}
-        contacts = {}
-        formats = {}
-        inspire = {}
-        keywords = {}
-        licenses = {}
-        md_types = {}
-        owners = {}
-        srs = {}
-        # unused = {}
-        # 0/1 values
-        compliance = 0
-        type_dataset = 0
-        # parsing tags
-        for tag in sorted(tags.keys()):
-            # actions
-            if tag.startswith("action"):
-                actions[tags.get(tag, tag)] = tag
-                continue
-            # compliance INSPIRE
-            elif tag.startswith("conformity"):
-                compliance = 1
-                continue
-            # contacts
-            elif tag.startswith("contact"):
-                contacts[tags.get(tag)] = tag
-                continue
-            # formats
-            elif tag.startswith("format"):
-                formats[tags.get(tag)] = tag
-                continue
-            # INSPIRE themes
-            elif tag.startswith("keyword:in"):
-                inspire[tags.get(tag)] = tag
-                continue
-            # keywords
-            elif tag.startswith("keyword:is"):
-                keywords[tags.get(tag)] = tag
-                continue
-            # licenses
-            elif tag.startswith("license"):
-                licenses[tags.get(tag)] = tag
-                continue
-            # owners
-            elif tag.startswith("owner"):
-                owners[tags.get(tag)] = tag
-                continue
-            # SRS
-            elif tag.startswith("coordinate-system"):
-                srs[tags.get(tag)] = tag
-                continue
-            # types
-            elif tag.startswith("type"):
-                md_types[tags.get(tag)] = tag
-                if tag in ("type:vector-dataset", "type:raster-dataset"):
-                    type_dataset += 1
-                continue
-            # ignored tags
-            else:
-                # unused[tags.get(tag, tag)] = tag
-                continue
-
-        # override API tags to allow all datasets filter - see #
-        if type_dataset == 2:
-            md_types["Dataset"] = "type:dataset"
-        else:
-            pass
-
-        # storing dicts
-        tags_parsed = {"actions": actions,
-                       "compliance": compliance,
-                       "contacts": contacts,
-                       "formats": formats,
-                       "inspire": inspire,
-                       "keywords": keywords,
-                       "licenses": licenses,
-                       "owners": owners,
-                       "srs": srs,
-                       "types": md_types,
-                       # "unused": unused
-                       }
-
-        # method ending
-        logger.info("Tags retrieved")
-        return tags_parsed
+        # connect "Apply" button
+        # self.ui_auth_form.btn_ok_cancel.pressed.connect(self.manage_api_initialization)
 
 
 # #############################################################################
 # ##### Stand alone program ########
 # ##################################
-if __name__ == '__main__':
+if __name__ == "__main__":
     """Standalone execution."""

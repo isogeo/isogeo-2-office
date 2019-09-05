@@ -1,16 +1,146 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+# Python package
+# Create and test a Python package on multiple Python versions.
+# Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/python
 
-pool:
-  vmImage:  vs2017-win2017
+trigger:
+- master
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+pr:
+- master
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+jobs:
+
+# LINT AND FORMATTING CODE
+- job: 'Lint'
+  pool:
+    vmImage: "windows-2019"
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.7'
+      architecture: 'x64'
+      addToPath: true
+
+  - script: |
+      python -m pip install -U pip
+      python -m pip install -U black
+    displayName: 'Install black dependencies'
+
+  - script: |
+      python -m black --target-version=py37 .\modules
+      python -m black --target-version=py37 .\IsogeoToOffice.py
+    displayName: 'Apply black code formatting'
+
+# LINT AND FORMATTING CODE
+- job: 'Test'
+  dependsOn: 'Lint'
+  pool:
+    vmImage: "windows-2019"
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.7'
+      architecture: 'x64'
+      addToPath: true
+
+  - script: |
+      python -m pip install -U pip setuptools wheel
+      python -m pip install -U -r ./requirements.txt
+      python -m pip install -U pytest-cov pytest-qt
+    displayName: 'Install dependencies'
+
+  - script: |
+        python .\tests\fixturing.py
+        python -m pytest --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html --cov-append tests
+    env:
+      # platform
+      ISOGEO_PLATFORM: $(ISOGEO_PLATFORM)
+      OAUTHLIB_INSECURE_TRANSPORT: $(OAUTHLIB_INSECURE_TRANSPORT)
+      # URLs
+      ISOGEO_API_URL: $(ISOGEO_API_URL)
+      ISOGEO_ID_URL: $(ISOGEO_ID_URL)
+      # oAuth2 Client Credentials Grant
+      ISOGEO_API_CLIENT_ID: $(ISOGEO_API_CLIENT_ID)
+      ISOGEO_API_CLIENT_SECRET: $(ISOGEO_API_CLIENT_SECRET)
+      # static fixtures
+      ISOGEO_FIXTURES_METADATA_COMPLETE: $(ISOGEO_FIXTURES_METADATA_COMPLETE)
+      ISOGEO_WORKGROUP_TEST_UUID: $(ISOGEO_WORKGROUP_TEST_UUID)
+    displayName: 'Unit tests'
+
+  - task: PublishTestResults@2
+    displayName: "Publish unit test results"
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFiles: '**/test-*.xml'
+      testRunTitle: 'Publish test results for Python $(python.version)'
+
+  - task: PublishCodeCoverageResults@1
+    displayName: "Publish coverage results to Azure Pipelines"
+    inputs:
+      codeCoverageTool: Cobertura
+      summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
+      reportDirectory: '$(System.DefaultWorkingDirectory)/**/htmlcov'
+
+# BUILD
+- job: 'Build'
+  dependsOn: 'Test'
+  pool:
+    vmImage: 'windows-2019'
+  strategy:
+    matrix:
+      Python37_VS17_64bits:
+        python.version: '3.7'
+        python.arch: 'x64'
+      Python37_VS17_32bits:
+        python.version: '3.7'
+        python.arch: 'x86'
+    maxParallel: 2
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+      architecture: '$(python.arch)'
+      addToPath: True
+
+  - script: |
+      python -m pip install -U pip
+      python -m pip install -U -r ./requirements.txt
+      python -m pip install -U -r ./requirements_dev.txt
+    displayName: 'Install dependencies'
+
+  - script: |
+      pylupdate5 -noobsolete -verbose isogeo2office.pro
+      lrelease .\i18n\IsogeoToOffice_fr.ts
+      pyrcc5 resources.qrc -o resources_rc.py
+      pyuic5 -x modules\\ui\\auth\\ui_authentication.ui -o modules\\ui\\auth\\ui_authentication.py
+      pyuic5 -x modules\\ui\\credits\\ui_credits.ui -o modules\\ui\\credits\\ui_credits.py
+      pyuic5 -x modules\\ui\\main\\ui_win_IsogeoToOffice.ui -o modules\\ui\\main\\ui_win_IsogeoToOffice.py
+    displayName: 'PyQt processing'
+
+  - script: python -OO -m PyInstaller -y bundle_isogeo2office.spec
+    displayName: 'Building the executable with PyInstaller'
+
+  # Archive Files
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: 'dist/isogeo2office'
+      archiveType: 'zip' # Options: zip, 7z, tar, wim
+      archiveFile: '$(Build.ArtifactStagingDirectory)/IsogeoToOffice-$(python.arch)-$(Build.SourceBranchName)-b$(Build.BuildId).zip' 
+      replaceExistingArchive: true 
+
+  - task: CopyFiles@2
+    displayName: 'Copy File to: $(TargetFolder)'
+    inputs:
+      SourceFolder: '$(Build.ArtifactStagingDirectory)'
+      Contents: 'IsogeoToOffice-$(python.arch)-$(Build.SourceBranchName)-b$(Build.BuildId).zip'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)\ArtifactsToBePublished'
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: IsogeoToOffice'
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)\ArtifactsToBePublished'
+      ArtifactName: IsogeoToOffice

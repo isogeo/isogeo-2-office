@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import QApplication
 # ##### Functions ##################
 # ##################################
 
+
 def settings_cleaner(settings_class=QSettings, group_to_remove=""):
     """Clear stored QSettings. By default remove everything.
 
@@ -18,21 +19,19 @@ def settings_cleaner(settings_class=QSettings, group_to_remove=""):
     settings_class.remove(group_to_remove)
 
 
-
 # #############################################################################
 # ##### Main #######################
 # ##################################
 
 app = QApplication(sys.argv)
 
-app.settings = QSettings('Isogeo', 'IsogeoToOffice')
+app.settings = QSettings("Isogeo", "IsogeoToOffice")
 
 print(app.settings.childGroups())
 print(app.settings.allKeys())
 
-settings_cleaner(settings_class=app.settings,
-                 group_to_remove="")
+settings_cleaner(settings_class=app.settings, group_to_remove="")
 
 print(app.settings.childGroups())
 
-#sys.exit(app.exec_())
+# sys.exit(app.exec_())

@@ -1,9 +1,9 @@
 # -*- coding: UTF-8 -*-
-#!/usr/bin/env python
+#! python3
 
 """
     Usage from the repo root folder:
-    
+
     ```python
     python -m unittest tests.test_export_docx
     ```
@@ -20,21 +20,16 @@ from tempfile import mkstemp
 import unittest
 
 # 3rd party
-from isogeo_pysdk import Isogeo, IsogeoTranslator
 from docxtpl import DocxTemplate
+from isogeo_pysdk import Metadata
 
 # target
 from modules import Isogeo2docx
-from modules import IsogeoFormatter
-from modules import IsogeoStats
 
 # #############################################################################
 # ######## Globals #################
 # ##################################
 
-# API access
-app_id = environ.get('ISOGEO_API_DEV_ID')
-app_secret = environ.get('ISOGEO_API_DEV_SECRET')
 
 # #############################################################################
 # ########## Classes ###############
@@ -43,14 +38,15 @@ app_secret = environ.get('ISOGEO_API_DEV_SECRET')
 
 class TestExportDocx(unittest.TestCase):
     """Test export to Microsoft Word DOCX."""
+
     def setUp(self):
         """Executed before each test."""
         # API response samples
         self.search_all_includes = path.normpath(
-            r"tests/fixtures/api_search_complete.json")
+            r"tests/fixtures/api_search_complete.json"
+        )
         # template
-        self.word_template = path.normpath(
-            r"templates/template_Isogeo.docx")
+        self.word_template = path.normpath(r"tests/fixtures/template_Isogeo.docx")
 
         # target class instanciation
         self.to_docx = Isogeo2docx()
@@ -63,21 +59,21 @@ class TestExportDocx(unittest.TestCase):
     def test_metadata_export(self):
         """Test search results export"""
         # temp output file
-        #out_docx = mkstemp(prefix="i2o_test_docx_")
+        # out_docx = mkstemp(prefix="i2o_test_docx_")
         # load tags fixtures
         with open(self.search_all_includes, "r") as f:
             search = json.loads(f.read())
         # load template
         tpl = DocxTemplate(self.word_template)
-        url_oc = "https://open.isogeo.com/"
         # run
-        for md in search.get('results'):
+        for md in search.get("results")[:20]:
+            metadata = Metadata.clean_attributes(md)
             # output path
             out_docx = mkstemp(prefix="i2o_test_docx_")
             out_docx_path = out_docx[1] + ".docx"
             # templating
             tpl = DocxTemplate(self.word_template)
-            self.to_docx.md2docx(tpl, md, url_oc)
+            self.to_docx.md2docx(tpl, metadata)
             # save
             tpl.save(out_docx_path)
             del tpl
@@ -86,5 +82,5 @@ class TestExportDocx(unittest.TestCase):
 # #############################################################################
 # ##### Stand alone program ########
 # ##################################
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

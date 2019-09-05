@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 #!/usr/bin/env python
-from __future__ import (absolute_import, print_function, unicode_literals)
+from __future__ import absolute_import, print_function, unicode_literals
+
 # ----------------------------------------------------------------------------
 # Name:         OpenCatalog to Excel
 # Purpose:      Get metadatas from an Isogeo OpenCatlog and store it into
@@ -23,9 +24,7 @@ import gettext
 import logging
 
 # 3rd party library
-from openpyxl.chart import (BarChart,
-                            PieChart,
-                            Reference)
+from openpyxl.chart import BarChart, PieChart, Reference
 from openpyxl.chart.series import DataPoint
 
 
@@ -67,11 +66,11 @@ class IsogeoStats(object):
     def type_pie(self, sheet, total=20):
         """Return histogram data to represent cataloging activity per week."""
         data = (
-               (_("Type"), _("Count")),
-               (_("Vector"), self.md_types_repartition.get("vector", 0)),
-               (_("Raster"), self.md_types_repartition.get("raster", 0)),
-               (_("Service"), self.md_types_repartition.get("service", 0)),
-               (_("Resource"), self.md_types_repartition.get("resource", 0)),
+            (_("Type"), _("Count")),
+            (_("Vector"), self.md_types_repartition.get("vector", 0)),
+            (_("Raster"), self.md_types_repartition.get("raster", 0)),
+            (_("Service"), self.md_types_repartition.get("service", 0)),
+            (_("Resource"), self.md_types_repartition.get("resource", 0)),
         )
 
         # write data into worksheet
@@ -98,14 +97,24 @@ class IsogeoStats(object):
         li_keywords = []
         li_inspire = []
         for md in results:
-            li_keywords.extend((i.get("text") for i in md.get("keywords", [])
-                                if i.get("_tag").startswith("keyword:is")))
-            li_inspire.extend((i.get("text") for i in md.get("keywords", [])
-                              if i.get("_tag").startswith("keyword:in")))
+            li_keywords.extend(
+                (
+                    i.get("text")
+                    for i in md.get("keywords", [])
+                    if i.get("_tag").startswith("keyword:is")
+                )
+            )
+            li_inspire.extend(
+                (
+                    i.get("text")
+                    for i in md.get("keywords", [])
+                    if i.get("_tag").startswith("keyword:in")
+                )
+            )
         keywords = Counter(li_keywords)
         inspire = Counter(li_inspire)
 
-        data_k = [('Keyword', 'Count'), ]
+        data_k = [("Keyword", "Count")]
         for k, c in keywords.most_common(50):
             data_k.append((k, c))
 
@@ -117,8 +126,8 @@ class IsogeoStats(object):
         bar.type = "bar"
         bar.style = 10
         bar.title = "Keywords by occurrences"
-        bar.y_axis.title = 'Occurences'
-        bar.x_axis.title = 'Keywords'
+        bar.y_axis.title = "Occurences"
+        bar.x_axis.title = "Keywords"
 
         data = Reference(sheet, min_col=2, min_row=1, max_row=50, max_col=3)
         cats = Reference(sheet, min_col=1, min_row=2, max_row=50)
@@ -132,23 +141,20 @@ class IsogeoStats(object):
 # ############################################################################
 # ###### Stand alone program ########
 # ###################################
-if __name__ == '__main__':
+if __name__ == "__main__":
     """Standalone execution and tests."""
     from os import environ
     from isogeo_pysdk import Isogeo, __version__ as pysdk_version
     from openpyxl import Workbook
+
     # API access
-    share_id = environ.get('ISOGEO_API_DEV_ID')
-    share_token = environ.get('ISOGEO_API_DEV_SECRET')
-    isogeo = Isogeo(client_id=share_id,
-                    client_secret=share_token)
+    share_id = environ.get("ISOGEO_API_DEV_ID")
+    share_token = environ.get("ISOGEO_API_DEV_SECRET")
+    isogeo = Isogeo(client_id=share_id, client_secret=share_token)
     bearer = isogeo.connect()
-    print(pysdk_version)
 
     # search
-    search = isogeo.search(bearer,
-                           whole_share=0,
-                           include=["keywords", ])
+    search = isogeo.search(bearer, whole_results=0, include=["keywords"])
 
     # workbook
     wb = Workbook()
