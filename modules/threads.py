@@ -66,6 +66,18 @@ class ThreadAppProperties(QThread):
         text = "<html>"  # opening html content
         # properties of the authenticated application
         app = self.api_mngr.isogeo.app_properties
+
+        # check if the application is not connected to any share
+        if app is None:
+            logger.warning("Application has no shares to retrieve. It can't work.")
+            text += "<p><span style='color: red;'>{}</span></p></html>".format(
+                self.tr("No share is connected to the application. It cannot work.")
+            )
+            online_version = "0.0.0"
+            opencatalog_warning = 1
+            self.sig_finished.emit(text, online_version, opencatalog_warning)
+            return
+
         text += "<p>{}<a href='{}' style='color: CornflowerBlue;'>{}</a> ".format(
             self.tr("This application is authenticated as "),
             app.url or "http://help.isogeo.com/isogeo2office/",
@@ -102,7 +114,7 @@ class ThreadAppProperties(QThread):
                     self.tr("OpenCatalog status:"), opencatalog_url, self.tr("enabled")
                 )
             else:
-                text += "<p>{} <span style='color: red;'>{}</span</p>".format(
+                text += "<p>{} <span style='color: red;'>{}</span></p>".format(
                     self.tr("OpenCatalog status:"), self.tr("disabled")
                 )
                 opencatalog_warning = 1
