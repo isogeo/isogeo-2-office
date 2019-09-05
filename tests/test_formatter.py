@@ -68,8 +68,8 @@ class TestFormatter(unittest.TestCase):
     def setUpClass(cls):
         """Executed when module is loaded before any test."""
         # checks
-        if not environ.get("ISOGEO_API_CLIENT_ID") or not environ.get(
-            "ISOGEO_API_CLIENT_SECRET"
+        if not environ.get("ISOGEO_API_GROUP_CLIENT_ID") or not environ.get(
+            "ISOGEO_API_GROUP_CLIENT_SECRET"
         ):
             logging.critical("No API credentials set as env variables.")
             exit()
@@ -83,8 +83,8 @@ class TestFormatter(unittest.TestCase):
         # API connection
         cls.isogeo = Isogeo(
             auth_mode="group",
-            client_id=environ.get("ISOGEO_API_CLIENT_ID"),
-            client_secret=environ.get("ISOGEO_API_CLIENT_SECRET"),
+            client_id=environ.get("ISOGEO_API_GROUP_CLIENT_ID"),
+            client_secret=environ.get("ISOGEO_API_GROUP_CLIENT_SECRET"),
             auto_refresh_url="{}/oauth/token".format(environ.get("ISOGEO_ID_URL")),
             platform=environ.get("ISOGEO_PLATFORM", "qa"),
         )
