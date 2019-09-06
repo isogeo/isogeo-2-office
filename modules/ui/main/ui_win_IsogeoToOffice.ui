@@ -1344,8 +1344,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>586</width>
-                <height>197</height>
+                <width>424</width>
+                <height>35</height>
                </rect>
               </property>
               <attribute name="icon">
@@ -1606,37 +1606,6 @@
               <layout class="QFormLayout" name="formLayout_2">
                <item row="0" column="0" colspan="2">
                 <layout class="QGridLayout" name="gridLayout_3">
-                 <item row="3" column="1">
-                  <spacer name="horizontalSpacer_7">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="3" column="2">
-                  <widget class="QPushButton" name="btn_xml_from_xlsx">
-                   <property name="text">
-                    <string>Select input table and generate</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="../../../resources.qrc">
-                     <normaloff>:/IsogeoToOffice/resources/settings/sitemap.svg</normaloff>:/IsogeoToOffice/resources/settings/sitemap.svg</iconset>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="0">
-                  <widget class="QLabel" name="lbl_xml_from_xlsx">
-                   <property name="text">
-                    <string>Fillfull XML from an Excel workbook:</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="2" column="0" colspan="2">
                   <widget class="QCheckBox" name="chb_xml_zip">
                    <property name="toolTip">
