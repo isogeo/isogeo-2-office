@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="fr_FR" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.1" language="fr_FR">
 <context>
     <name>IsogeoToOffice_Main</name>
     <message>
@@ -170,52 +171,52 @@ L&apos;application va se fermer.</translation>
 <context>
     <name>ThreadAppProperties</name>
     <message>
-        <location filename="../modules/threads.py" line="81"/>
+        <location filename="../modules/threads/application_properties.py" line="71"/>
         <source>This application is authenticated as </source>
         <translation>Cette application est authentifiée en tant que </translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="93"/>
+        <location filename="../modules/threads/application_properties.py" line="83"/>
         <source> and powered by </source>
         <translation> et alimentée par </translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="89"/>
+        <location filename="../modules/threads/application_properties.py" line="79"/>
         <source>share:</source>
         <translation>partage :</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="93"/>
+        <location filename="../modules/threads/application_properties.py" line="83"/>
         <source>shares:</source>
         <translation>partages :</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="123"/>
+        <location filename="../modules/threads/application_properties.py" line="113"/>
         <source>Updated:</source>
         <translation>Dernière modification :</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="129"/>
+        <location filename="../modules/threads/application_properties.py" line="119"/>
         <source>Contact:</source>
         <translation>Contact :</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="117"/>
+        <location filename="../modules/threads/application_properties.py" line="107"/>
         <source>OpenCatalog status:</source>
         <translation>OpenCatalog :</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="113"/>
+        <location filename="../modules/threads/application_properties.py" line="103"/>
         <source>enabled</source>
         <translation>présent</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="117"/>
+        <location filename="../modules/threads/application_properties.py" line="107"/>
         <source>disabled</source>
         <translation>absent</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="73"/>
+        <location filename="../modules/threads/application_properties.py" line="63"/>
         <source>No share is connected to the application. It cannot work.</source>
         <translation>L&apos;application semble n&apos;être alimentée par aucun partage. Elle ne peut fonctionne ainsi.</translation>
     </message>
@@ -223,22 +224,22 @@ L&apos;application va se fermer.</translation>
 <context>
     <name>ThreadExportExcel</name>
     <message>
-        <location filename="../modules/threads.py" line="258"/>
+        <location filename="../modules/threads/export_excel.py" line="116"/>
         <source>Processing Excel: {}</source>
         <translation>Export Excel : {}</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="274"/>
+        <location filename="../modules/threads/export_excel.py" line="132"/>
         <source>Excel finished</source>
         <translation>Export Excel terminé</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="249"/>
+        <location filename="../modules/threads/export_excel.py" line="107"/>
         <source>complementary analisis...</source>
         <translation>analyses complémentaires...</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="258"/>
+        <location filename="../modules/threads/export_excel.py" line="116"/>
         <source>tunning sheets...</source>
         <translation>mise en forme des onglets...</translation>
     </message>
@@ -246,17 +247,17 @@ L&apos;application va se fermer.</translation>
 <context>
     <name>ThreadExportWord</name>
     <message>
-        <location filename="../modules/threads.py" line="339"/>
+        <location filename="../modules/threads/export_word.py" line="103"/>
         <source>Processing Word: {}</source>
         <translation>Export Word : {}</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="372"/>
+        <location filename="../modules/threads/export_word.py" line="129"/>
         <source>Word: error occurred during saving step. Check the log.</source>
         <translation>Word : une erreur est survenue durant l&apos;enregistrement d&apos;un fichier. Consulter le fichier journal.</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="381"/>
+        <location filename="../modules/threads/export_word.py" line="138"/>
         <source>Word finished</source>
         <translation>Export Word terminé</translation>
     </message>
@@ -264,7 +265,7 @@ L&apos;application va se fermer.</translation>
 <context>
     <name>ThreadExportXml</name>
     <message>
-        <location filename="../modules/threads.py" line="425"/>
+        <location filename="../modules/threads/export_xml.py" line="83"/>
         <source>Processing XML: {}</source>
         <translation>Export XML : {}</translation>
     </message>
@@ -272,14 +273,14 @@ L&apos;application va se fermer.</translation>
 <context>
     <name>ThreadThumbnails</name>
     <message>
-        <location filename="../modules/threads.py" line="526"/>
+        <location filename="../modules/threads/thumbnails.py" line="93"/>
         <source>Preparing thumbnail table for: {}</source>
-        <translation>Table des vignettes : {}</translation>
+        <translation>Préparation du tableau de correspondance des vignettes : {}</translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="563"/>
+        <location filename="../modules/threads/thumbnails.py" line="130"/>
         <source>Thumbnail table finished</source>
-        <translation>Table des vignettes terminée</translation>
+        <translation>Tableau de correspondance des vignettes achevé</translation>
     </message>
 </context>
 <context>
@@ -346,9 +347,9 @@ L&apos;application va se fermer.</translation>
 &lt;body&gt;
 
 &lt;ul&gt;
-<byte value="x9"/>&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
+	&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
+	&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
+	&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
 &lt;/ul&gt; 
 
 &lt;/body&gt;
@@ -359,9 +360,9 @@ L&apos;application va se fermer.</translation>
 &lt;body&gt;
 
 &lt;ul&gt;
-<byte value="x9"/>&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
+	&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
+	&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
+	&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
 &lt;/ul&gt; 
 
 &lt;/body&gt;
@@ -403,7 +404,7 @@ L&apos;application va se fermer.</translation>
 &lt;/body&gt;
 &lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
