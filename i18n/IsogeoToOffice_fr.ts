@@ -271,6 +271,19 @@ L&apos;application va se fermer.</translation>
     </message>
 </context>
 <context>
+    <name>ThreadThumbnails</name>
+    <message>
+        <location filename="../modules/threads/thumbnails.py" line="93"/>
+        <source>Preparing thumbnail table for: {}</source>
+        <translation>Préparation du tableau de correspondance des vignettes : {}</translation>
+    </message>
+    <message>
+        <location filename="../modules/threads/thumbnails.py" line="130"/>
+        <source>Thumbnail table finished</source>
+        <translation>Tableau de correspondance des vignettes achevé</translation>
+    </message>
+</context>
+<context>
     <name>dlg_authentication</name>
     <message>
         <location filename="../modules/ui/auth/ui_authentication.py" line="265"/>

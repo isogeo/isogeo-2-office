@@ -267,6 +267,19 @@ application will be closed.</source>
     </message>
 </context>
 <context>
+    <name>ThreadThumbnails</name>
+    <message>
+        <location filename="../modules/threads/thumbnails.py" line="93"/>
+        <source>Preparing thumbnail table for: {}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/threads/thumbnails.py" line="130"/>
+        <source>Thumbnail table finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>dlg_authentication</name>
     <message>
         <location filename="../modules/ui/auth/ui_authentication.py" line="265"/>
