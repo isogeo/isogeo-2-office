@@ -438,7 +438,17 @@ class ThreadExportXml(QThread):
             logger.debug("XML - Output path: {}".format(out_xml_path))
 
             # export
-            xml_stream = self.api_mngr.isogeo.metadata.download_xml(metadata)
+            try:
+                xml_stream = self.api_mngr.isogeo.metadata.download_xml(metadata)
+            except requests.Timeout as e:
+                logger.error(
+                    "Connection with Isogeo failed, trying to get the XML version of metadata: {} ({})."
+                    " Original error: {}".format(
+                        metadata.title_or_name(slugged=1), metadata._id, e
+                    )
+                )
+                continue
+
             with open(path.realpath(out_xml_path), "wb") as out_md:
                 for block in xml_stream.iter_content(1024):
                     out_md.write(block)
