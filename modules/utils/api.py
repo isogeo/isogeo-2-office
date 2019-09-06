@@ -112,6 +112,7 @@ class IsogeoApiMngr(object):
                 lang=current_locale.name()[:2],
                 platform=self.api_platform,
                 proxy=app_utils.proxy_settings(),
+                timeout=(30, 200),
             )
             self.isogeo.connect()
             logger.debug("Authentication succeeded")
