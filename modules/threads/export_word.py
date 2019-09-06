@@ -85,11 +85,11 @@ class ThreadExportWord(QThread):
         """Export each metadata from a search results into a Word document."""
         # vars
         language = current_locale.name()[:2]
-        thumbnail_default = ("", path.realpath(r"resources/favicon.png"))
 
         # word generator
         to_docx = Isogeo2docx(
             lang=language,
+            thumbnails=self.thumbnails,
             url_base_edit=self.url_base_edit,
             url_base_view=self.url_base_view,
         )
@@ -108,13 +108,6 @@ class ThreadExportWord(QThread):
             matching_share = app_utils.get_matching_share(
                 metadata=metadata, shares=self.shares
             )
-
-            # thumbnails
-            thumbnail_abs_path = self.thumbnails.get(metadata._id, thumbnail_default)[1]
-            if not thumbnail_abs_path or not path.isfile(thumbnail_abs_path):
-                thumbnail_abs_path = path.realpath(r"resources/favicon.png")
-            logger.debug("Thumbnail used: {}".format(thumbnail_abs_path))
-            metadata.thumbnail = thumbnail_abs_path
 
             # templating
             tpl = DocxTemplate(self.tpl_path)

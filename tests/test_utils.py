@@ -130,9 +130,7 @@ class TestIsogeo2officeUtils(unittest.TestCase):
     #  -- Thumbnails ----------------------------------------------------------
     def test_thumbnails_loader_complete(self):
         """Test filenames errors"""
-        expected_dict = {
-            "1234569732454beca1ab3ec1958ffa50": ("title-slugged", "resources/table.svg")
-        }
+        expected_dict = {"1234569732454beca1ab3ec1958ffa50": "resources/table.svg"}
         self.assertDictEqual(
             self.utils.thumbnails_mngr(self.thumbs_complete), expected_dict
         )
