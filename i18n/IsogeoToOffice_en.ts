@@ -167,52 +167,52 @@ application will be closed.</source>
 <context>
     <name>ThreadAppProperties</name>
     <message>
-        <location filename="../modules/threads.py" line="81"/>
+        <location filename="../modules/threads/application_properties.py" line="71"/>
         <source>This application is authenticated as </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="93"/>
+        <location filename="../modules/threads/application_properties.py" line="83"/>
         <source> and powered by </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="89"/>
+        <location filename="../modules/threads/application_properties.py" line="79"/>
         <source>share:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="93"/>
+        <location filename="../modules/threads/application_properties.py" line="83"/>
         <source>shares:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="123"/>
+        <location filename="../modules/threads/application_properties.py" line="113"/>
         <source>Updated:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="129"/>
+        <location filename="../modules/threads/application_properties.py" line="119"/>
         <source>Contact:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="117"/>
+        <location filename="../modules/threads/application_properties.py" line="107"/>
         <source>OpenCatalog status:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="113"/>
+        <location filename="../modules/threads/application_properties.py" line="103"/>
         <source>enabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="117"/>
+        <location filename="../modules/threads/application_properties.py" line="107"/>
         <source>disabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="73"/>
+        <location filename="../modules/threads/application_properties.py" line="63"/>
         <source>No share is connected to the application. It cannot work.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -220,22 +220,22 @@ application will be closed.</source>
 <context>
     <name>ThreadExportExcel</name>
     <message>
-        <location filename="../modules/threads.py" line="258"/>
+        <location filename="../modules/threads/export_excel.py" line="116"/>
         <source>Processing Excel: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="274"/>
+        <location filename="../modules/threads/export_excel.py" line="132"/>
         <source>Excel finished</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="249"/>
+        <location filename="../modules/threads/export_excel.py" line="107"/>
         <source>complementary analisis...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="258"/>
+        <location filename="../modules/threads/export_excel.py" line="116"/>
         <source>tunning sheets...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -243,17 +243,17 @@ application will be closed.</source>
 <context>
     <name>ThreadExportWord</name>
     <message>
-        <location filename="../modules/threads.py" line="339"/>
+        <location filename="../modules/threads/export_word.py" line="103"/>
         <source>Processing Word: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="372"/>
+        <location filename="../modules/threads/export_word.py" line="129"/>
         <source>Word: error occurred during saving step. Check the log.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="381"/>
+        <location filename="../modules/threads/export_word.py" line="138"/>
         <source>Word finished</source>
         <translation type="unfinished"></translation>
     </message>
@@ -261,7 +261,7 @@ application will be closed.</source>
 <context>
     <name>ThreadExportXml</name>
     <message>
-        <location filename="../modules/threads.py" line="425"/>
+        <location filename="../modules/threads/export_xml.py" line="83"/>
         <source>Processing XML: {}</source>
         <translation type="unfinished"></translation>
     </message>
@@ -269,12 +269,12 @@ application will be closed.</source>
 <context>
     <name>ThreadThumbnails</name>
     <message>
-        <location filename="../modules/threads.py" line="526"/>
+        <location filename="../modules/threads/thumbnails.py" line="93"/>
         <source>Preparing thumbnail table for: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/threads.py" line="563"/>
+        <location filename="../modules/threads/thumbnails.py" line="130"/>
         <source>Thumbnail table finished</source>
         <translation type="unfinished"></translation>
     </message>

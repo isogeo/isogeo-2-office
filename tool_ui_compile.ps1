@@ -10,6 +10,7 @@
 
 "`n-- STEP -- Update UI translations"
 pylupdate5 -noobsolete -verbose .\isogeo2office.pro
+lrelease .\i18n\IsogeoToOffice_en.ts
 lrelease .\i18n\IsogeoToOffice_fr.ts
 
 "`n-- STEP -- Compile UI resources"
