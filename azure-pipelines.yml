@@ -3,8 +3,15 @@
 # Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/python
 
+# CONDITIONS WHICH TRIGGER OR NOT THE JOBS
 trigger:
-- master
+  batch: true
+  branches:
+    include:
+    - master
+  tags:
+    include:
+    - "*"
 
 pr:
 - master
@@ -156,6 +163,15 @@ jobs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)\ArtifactsToBePublished'
       ArtifactName: IsogeoToOffice
 
+  - task: AzureFileCopy@3
+    inputs:
+      SourcePath: '$(Build.ArtifactStagingDirectory)/*'
+      azureSubscription: 'Isogeo - MPN (82885610-5841-4749-8d71-46f56b643ad2)'
+      Destination: 'AzureBlob'
+      storage: 'qaisogeohelp'
+      ContainerName: 'apps'
+      BlobPrefix: 'isogeo2office'
+
 - job: 'Publish'
   dependsOn: 'Test'
   pool:
@@ -185,3 +201,12 @@ jobs:
       tagSource: 'gitTag'
       changeLogCompareToRelease: 'lastFullRelease'
       changeLogType: 'commitBased'
+
+  - task: AzureFileCopy@3
+    inputs:
+      SourcePath: '$(System.DefaultWorkingDirectory)/*'
+      azureSubscription: 'Isogeo - MPN (82885610-5841-4749-8d71-46f56b643ad2)'
+      Destination: 'AzureBlob'
+      storage: 'prodisogeohelp'
+      ContainerName: 'apps'
+      BlobPrefix: 'isogeo2office'
