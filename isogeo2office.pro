@@ -3,10 +3,12 @@ FORMS = ./modules/ui/auth/ui_authentication.ui \
     	./modules/ui/main/ui_win_IsogeoToOffice.ui \
 
 SOURCES = ./IsogeoToOffice.py \
-		  ./modules/threads.py \
-		  ./modules/export/formatter.py \
-		  ./modules/export/isogeo2docx.py \
-		  ./modules/export/isogeo_stats.py \
+		  ./modules/threads/application_properties.py \
+		  ./modules/threads/export_excel.py \
+		  ./modules/threads/export_word.py \
+		  ./modules/threads/export_xml.py \
+		  ./modules/threads/search.py \
+		  ./modules/threads/thumbnails.py \
 		  ./modules/utils/api.py \
 		  ./modules/utils/utils.py \
 		  ./modules/ui/auth/ui_authentication.py \

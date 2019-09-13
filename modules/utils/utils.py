@@ -346,8 +346,8 @@ class isogeo2office_utils(IsogeoUtils):
 
         # parse worksheet and populate final dict
         for row in ws.iter_rows(min_row=2):
-            if len(row) == 3 and row[0].value:
-                thumbnails_dict[row[0].value] = (row[1].value, row[2].value)
+            if len(row) == 3 and row[0].value and row[2].value:
+                thumbnails_dict[row[0].value] = row[2].value
             else:
                 logger.debug("Thumbnails reader: empty cell spotted. Quit reading.")
                 break
