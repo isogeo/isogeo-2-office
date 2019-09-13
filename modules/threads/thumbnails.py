@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-#! python3
+#! python3  # noqa: E265
 
 """
     Isogeo To Office - Threads used to subprocess some tasks

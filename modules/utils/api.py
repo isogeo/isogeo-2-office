@@ -1,13 +1,12 @@
-# -*- coding: UTF-8 -*-
-#! python3
+# coding: utf-8
+#! python3  # noqa: E265
 
 # Standard library
 import logging
 import time
 from functools import partial
-from os import environ, path, rename
-from pathlib import Path  # TO DO: replace os.path by pathlib
-from urllib.request import getproxies
+from os import path, rename
+from pathlib import Path  # TODO: replace os.path by pathlib
 
 # 3rd party
 from dotenv import load_dotenv
@@ -15,11 +14,10 @@ import urllib3
 
 # Isogeo
 from isogeo_pysdk import Isogeo
-from isogeo_pysdk import __version__ as pysdk_version
 
 # PyQT
 from PyQt5.QtCore import QLocale, QSettings
-from PyQt5.QtWidgets import QDialog, QErrorMessage
+from PyQt5.QtWidgets import QDialog
 
 # submodules
 from .utils import isogeo2office_utils
