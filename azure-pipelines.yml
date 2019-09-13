@@ -26,7 +26,7 @@ jobs:
   - script: |
       python -m pip install -U pip
       python -m pip install -U black flake8
-    displayName: 'Install black dependencies'
+    displayName: 'Install black and flake8 dependencies'
 
   - script: |
       python -m black --target-version=py37 .\modules
@@ -40,7 +40,7 @@ jobs:
       # exit-zero treats all errors as warnings. Tolerance of line length fixed to 100.
       python -m flake8  ./IsogeoToOffice.py --count --exit-zero --max-complexity=10 --max-line-length=100
       python -m flake8 ./modules --count --exit-zero --max-complexity=10 --max-line-length=100
-    displayName: "Static code analisis: PEP8 conformance, imports... (flake8)"
+    displayName: "Static code analisis (PEP8 conformance, imports...) with flake8"
 
 # LINT AND FORMATTING CODE
 - job: 'Test'

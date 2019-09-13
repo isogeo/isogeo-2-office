@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-#! python3
+#! python3  # noqa: E265
 
 """
     Isogeo To Office - Threads used to subprocess some tasks
@@ -17,7 +17,6 @@ import logging
 from os import path
 
 # 3rd party library
-from isogeo_pysdk.models import Metadata, MetadataSearch, Share
 from openpyxl import Workbook
 from openpyxl.comments import Comment
 from openpyxl.cell import WriteOnlyCell
