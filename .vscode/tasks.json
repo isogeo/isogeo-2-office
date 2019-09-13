@@ -52,13 +52,27 @@
         {
             "label": "Format code and tests",
             "dependsOn": [
-                "Format code",
+                "Format main",
+                "Format modules",
                 "Format tests"
             ],
             "problemMatcher": []
         },
         {
-            "label": "Format code",
+            "label": "Format main",
+            "type": "shell",
+            "command": "${config:python.pythonPath}",
+            "args": [
+                "-m",
+                "black",
+                "--target-version=py37",
+                "./IsogeoToOffice.py"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "Format modules",
             "type": "shell",
             "command": "${config:python.pythonPath}",
             "args": [
