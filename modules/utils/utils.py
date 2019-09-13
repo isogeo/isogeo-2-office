@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-#! python3
+#! python3  # noqa: E265
 
 """
     Name:         Isogeo to Office utilitaries
@@ -270,11 +270,11 @@ class isogeo2office_utils(IsogeoUtils):
     def get_matching_share(
         self, metadata: Metadata, shares: list, mode: str = "simple"
     ) -> Share:
-        """[summary]
+        """Get the first Share which contains the metadata, basing match on workgroup UUID.
 
         :param Metadata metadata: metadata object to use for the matching
         :param list shares: list of shares to use for the matching
-        :param str mode: simple mode is based only on the UID 
+        :param str mode: simple mode is based only on the UID
         """
         if mode != "simple":
             raise NotImplementedError

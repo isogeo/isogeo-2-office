@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-#! python3
+#! python3  # noqa: E265
 
 """
     Isogeo To Office - SystemTray Menu
@@ -17,7 +17,7 @@ import logging
 
 # 3rd party
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QSystemTrayIcon, QMenu, QAction
+from PyQt5.QtWidgets import QSystemTrayIcon, QMenu, QAction
 
 # #############################################################################
 # ########## Classes ###############

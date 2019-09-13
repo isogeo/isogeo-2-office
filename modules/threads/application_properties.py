@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-#! python3
+#! python3  # noqa: E265
 
 """
     Isogeo To Office - Threads used to subprocess some tasks
@@ -133,7 +133,7 @@ class ThreadAppProperties(QThread):
             online_version = latest_v.get("tag_name")
         except Exception as e:
             logger.error(
-                "Unable to get the latest application version from Github: ".format(e)
+                "Unable to get the latest application version from Github: {}".format(e)
             )
             online_version = "0.0.0"
 
