@@ -165,7 +165,7 @@ jobs:
 
   - task: AzureFileCopy@3
     inputs:
-      SourcePath: '$(Build.ArtifactStagingDirectory)/*'
+      SourcePath: '$(Build.ArtifactStagingDirectory)/IsogeoToOffice-$(python.arch)-$(Build.SourceBranchName)-b$(Build.BuildId).zip'
       azureSubscription: 'Isogeo - MPN (82885610-5841-4749-8d71-46f56b643ad2)'
       Destination: 'AzureBlob'
       storage: 'qaisogeohelp'
