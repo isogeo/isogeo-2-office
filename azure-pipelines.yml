@@ -25,13 +25,22 @@ jobs:
 
   - script: |
       python -m pip install -U pip
-      python -m pip install -U black
+      python -m pip install -U black flake8
     displayName: 'Install black dependencies'
 
   - script: |
       python -m black --target-version=py37 .\modules
       python -m black --target-version=py37 .\IsogeoToOffice.py
     displayName: 'Apply black code formatting'
+
+  - script: |
+      # stop the build if there are Python syntax errors or undefined names
+      python -m flake8  ./IsogeoToOffice.py --count --select=E9,F63,F7,F82 --show-source --statistics
+      python -m flake8 ./modules --count --select=E9,F63,F7,F82 --show-source --statistics
+      # exit-zero treats all errors as warnings. Tolerance of line length fixed to 100.
+      python -m flake8  ./IsogeoToOffice.py --count --exit-zero --max-complexity=10 --max-line-length=100
+      python -m flake8 ./modules --count --exit-zero --max-complexity=10 --max-line-length=100
+    displayName: "Static code analisis: PEP8 conformance, imports... (flake8)"
 
 # LINT AND FORMATTING CODE
 - job: 'Test'
