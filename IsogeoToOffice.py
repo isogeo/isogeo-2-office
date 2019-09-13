@@ -855,7 +855,7 @@ class IsogeoToOffice_Main(QMainWindow):
         """Get app properties and fillfull the share frame in settings tab.
 
         :param str app_infos_retrieved: application information to display into the settings tabs
-        :param str latest_online_version: latest version retrieved from GitHub to compare with the actual
+        :param str latest_online_version: latest version from GitHub to compare with the actual
         """
         # fill settings tab text
         self.ui.txt_shares.setText(app_infos_retrieved)
