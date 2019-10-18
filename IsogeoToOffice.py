@@ -76,7 +76,7 @@ current_locale = QLocale()
 api_mngr = IsogeoApiMngr()
 
 # VERSION
-__version__ = "2.5.0"
+__version__ = "2.5.1-beta1"
 
 # LOG FILE #
 # log level depends on version
