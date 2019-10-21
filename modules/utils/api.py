@@ -26,7 +26,7 @@ from .utils import isogeo2office_utils
 # ########## Globals ###############
 # ##################################
 
-load_dotenv(".env")
+load_dotenv(".env", override=True)
 app_utils = isogeo2office_utils()
 current_locale = QLocale()
 logger = logging.getLogger("isogeo2office")

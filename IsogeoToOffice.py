@@ -55,7 +55,7 @@ from modules.ui.systray.ui_systraymenu import SystrayMenu
 # ##################################
 
 # load specific enviroment vars
-load_dotenv(".env")
+load_dotenv(".env", override=True)
 
 # required subfolders
 pathlib.Path("_auth/").mkdir(exist_ok=True)
