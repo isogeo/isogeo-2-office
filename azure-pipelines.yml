@@ -148,7 +148,7 @@ jobs:
     inputs:
       SourceFolder: '$(System.DefaultWorkingDirectory)/'
       Contents: '.env.example'
-      TargetFolder: '$(System.DefaultWorkingDirectory)/dist'
+      TargetFolder: '$(System.DefaultWorkingDirectory)/dist/isogeo2office'
 
   # Archive Files
   - task: ArchiveFiles@2
