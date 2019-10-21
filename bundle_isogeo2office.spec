@@ -5,7 +5,6 @@ block_cipher = None
 # -- Include ------------------------------------------------------------------
 added_files = [('i18n', 'i18n'),
                ('resources', 'resources'),
-               ('.env.example', '.env'),
                ('_templates/template_Isogeo.docx', '_templates'),
                ('_thumbnails/thumbnails.xlsx', '_thumbnails'),
               ]
