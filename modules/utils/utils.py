@@ -97,7 +97,9 @@ class isogeo2office_utils(IsogeoUtils):
         # first check in the system settings
         if getproxies():
             proxy_settings = getproxies()
-            logger.info("Proxies settings found in the system: {}".format(proxy_settings))
+            logger.info(
+                "Proxies settings found in the system: {}".format(proxy_settings)
+            )
         else:
             proxy_settings = None
             logger.info("No proxy detected in the system.")
@@ -109,7 +111,9 @@ class isogeo2office_utils(IsogeoUtils):
                 "https": environ.get("HTTPS_PROXY"),
             }
             logger.info(
-                "Proxies settings found in environment vars (maybe loaded from .env file): {}".format(proxy_settings)
+                "Proxies settings found in environment vars (maybe loaded from .env file): {}".format(
+                    proxy_settings
+                )
             )
         else:
             logger.info("No proxy settings found in the environment vars.")

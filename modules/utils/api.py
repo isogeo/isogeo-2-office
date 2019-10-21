@@ -5,7 +5,7 @@
 import logging
 import time
 from functools import partial
-from os import path, rename
+from os import getenv, path, rename
 from pathlib import Path  # TODO: replace os.path by pathlib
 
 # 3rd party
@@ -94,10 +94,6 @@ class IsogeoApiMngr(object):
             self.display_auth_form()
             return False
 
-        # ignore warnings related to the QA self-signed cert
-        if self.api_platform == "qa":
-            urllib3.disable_warnings()
-
         # start api wrapper
         try:
             logger.debug("Start connection attempts")
@@ -112,6 +108,16 @@ class IsogeoApiMngr(object):
                 proxy=app_utils.proxy_settings(),
                 timeout=(30, 200),
             )
+            # handle forced SSL verification
+            if int(getenv("OAUTHLIB_INSECURE_TRANSPORT", 0)) == 1:
+                logger.info("Forced disabled SSL verification")
+                self.isogeo.ssl = False
+
+            # ignore warnings related to the QA self-signed cert
+            if self.isogeo.ssl is False:
+                urllib3.disable_warnings()
+
+            # start connection
             self.isogeo.connect()
             logger.debug("Authentication succeeded")
             return True
