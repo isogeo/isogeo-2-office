@@ -130,7 +130,7 @@ class isogeo2office_utils(IsogeoUtils):
 
         :param list li_url: list of URLs to open in the default browser
         """
-        if isinstance(li_url, QUrl):
+        if isinstance(li_url, QtCore.QUrl):
             li_url = [li_url.toString()]
         x = 1
         for url in li_url:
