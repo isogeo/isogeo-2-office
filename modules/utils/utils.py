@@ -29,8 +29,8 @@ from xml.sax.saxutils import escape  # '<' -> '&lt;'
 from dotenv import load_dotenv
 from isogeo_pysdk import IsogeoUtils, Metadata, Share
 from openpyxl import load_workbook
-from PyQt5.QtCore import QUrl
-from PyQt5.QtWidgets import QFileDialog
+
+from PyQt5 import QtCore, QtWidgets
 
 # Depending on operating system
 if opersys == "win32":
@@ -202,9 +202,9 @@ class isogeo2office_utils(IsogeoUtils):
             start_dir = Path.home()
 
         # set options
-        options = QFileDialog.Options()
-        # options |= QFileDialog.DontUseNativeDialog
-        options |= QFileDialog.ReadOnly
+        options = QtWidgets.QFileDialog.Options()
+        # options |= QtWidgets.QFileDialog.DontUseNativeDialog
+        options |= QtWidgets.QFileDialog.ReadOnly
 
         # adapt file filters according to file_type option
         if file_type == "credentials":
@@ -212,7 +212,7 @@ class isogeo2office_utils(IsogeoUtils):
                 "Standard credentials file (client_secrets.json);;JSON Files (*.json)"
             )
             dlg_title = parent.tr("Open credentials file")
-            return QFileDialog.getOpenFileName(
+            return QtWidgets.QFileDialog.getOpenFileName(
                 parent=None,
                 caption=dlg_title,
                 directory=str(start_dir.resolve()),
@@ -224,7 +224,7 @@ class isogeo2office_utils(IsogeoUtils):
                 "Standard credentials file (client_secrets.json);;JSON Files (*.json)"
             )
             dlg_title = parent.tr("Select thumbnails file")
-            return QFileDialog.getOpenFileName(
+            return QtWidgets.QFileDialog.getOpenFileName(
                 parent=None,
                 caption=dlg_title,
                 directory=str(start_dir.resolve()),
@@ -232,9 +232,9 @@ class isogeo2office_utils(IsogeoUtils):
                 options=options,
             )
         elif file_type == "folder":
-            options |= QFileDialog.ShowDirsOnly
+            options |= QtWidgets.QFileDialog.ShowDirsOnly
             dlg_title = parent.tr("Select folder")
-            return QFileDialog.getExistingDirectory(
+            return QtWidgets.QFileDialog.getExistingDirectory(
                 parent=None,
                 caption=dlg_title,
                 directory=str(start_dir.resolve()),
@@ -243,7 +243,7 @@ class isogeo2office_utils(IsogeoUtils):
         else:
             file_filters = "All Files (*)"
             dlg_title = parent.tr("Pick a file")
-            return QFileDialog.getOpenFileName(
+            return QtWidgets.QFileDialog.getOpenFileName(
                 parent=None,
                 caption=dlg_title,
                 directory=str(start_dir.resolve()),
