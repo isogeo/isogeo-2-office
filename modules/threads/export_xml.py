@@ -20,7 +20,7 @@ from zipfile import ZipFile
 
 # 3rd party library
 from isogeo_pysdk.models import Metadata
-from PyQt5.QtCore import QLocale, QThread, pyqtSignal
+from PyQt5 import QtCore
 import requests
 
 # submodules - export
@@ -31,7 +31,7 @@ from modules.utils import isogeo2office_utils
 # ##################################
 
 app_utils = isogeo2office_utils()
-current_locale = QLocale()
+current_locale = QtCore.QLocale()
 logger = logging.getLogger("isogeo2office")
 
 
@@ -40,9 +40,9 @@ logger = logging.getLogger("isogeo2office")
 # ##################################
 
 # EXPORTS ---------------------------------------------------------------------
-class ThreadExportXml(QThread):
+class ThreadExportXml(QtCore.QThread):
     # signals
-    sig_step = pyqtSignal(int, str, name="ExportXML")
+    sig_step = QtCore.pyqtSignal(int, str, name="ExportXML")
 
     def __init__(
         self,
@@ -53,7 +53,7 @@ class ThreadExportXml(QThread):
         timestamp: str = "",
         length_uuid: int = 0,
     ):
-        QThread.__init__(self)
+        QtCore.QThread.__init__(self)
         # export settings
         self.search = search_to_export
         self.api_mngr = isogeo_api_mngr

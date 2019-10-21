@@ -17,7 +17,7 @@ import logging
 
 # 3rd party library
 from isogeo_pysdk.models import Share
-from PyQt5.QtCore import QDateTime, QLocale, QThread, pyqtSignal
+from PyQt5 import QtCore
 import requests
 
 # submodules - export
@@ -28,7 +28,7 @@ from modules.utils import isogeo2office_utils
 # ##################################
 
 app_utils = isogeo2office_utils()
-current_locale = QLocale()
+current_locale = QtCore.QLocale()
 logger = logging.getLogger("isogeo2office")
 
 
@@ -37,12 +37,12 @@ logger = logging.getLogger("isogeo2office")
 # ##################################
 
 # API REQUESTS ----------------------------------------------------------------
-class ThreadAppProperties(QThread):
+class ThreadAppProperties(QtCore.QThread):
     # signals
-    sig_finished = pyqtSignal(str, str, bool)
+    sig_finished = QtCore.pyqtSignal(str, str, bool)
 
     def __init__(self, api_manager: object):
-        QThread.__init__(self)
+        QtCore.QThread.__init__(self)
         self.api_mngr = api_manager
 
     # run method gets called when we start the thread
@@ -112,7 +112,7 @@ class ThreadAppProperties(QThread):
             # last modification (share renamed, changes in catalogs or applications, etc.)
             text += "<p>{} {}</p>".format(
                 self.tr("Updated:"),
-                QDateTime(app_utils.hlpr_datetimes(share._modified)).toString(),
+                QtCore.QDateTime(app_utils.hlpr_datetimes(share._modified)).toString(),
             )
 
             # workgroup contact owner of the share
