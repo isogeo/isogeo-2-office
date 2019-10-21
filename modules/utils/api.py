@@ -111,11 +111,12 @@ class IsogeoApiMngr(object):
             # handle forced SSL verification
             if int(getenv("OAUTHLIB_INSECURE_TRANSPORT", 0)) == 1:
                 logger.info("Forced disabled SSL verification")
+                self.ssl = False
                 self.isogeo.ssl = False
+                app_utils.ssl = False
 
             # ignore warnings related to the QA self-signed cert
-            if self.isogeo.ssl is False:
-                urllib3.disable_warnings()
+            # if self.isogeo.ssl is False:
 
             # start connection
             self.isogeo.connect()
