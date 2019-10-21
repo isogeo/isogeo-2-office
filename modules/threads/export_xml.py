@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-#! python3
+#! python3  # noqa: E265
 
 """
     Isogeo To Office - Threads used to subprocess some tasks
@@ -19,7 +19,7 @@ from tempfile import mkdtemp
 from zipfile import ZipFile
 
 # 3rd party library
-from isogeo_pysdk.models import Metadata, Share
+from isogeo_pysdk.models import Metadata
 from PyQt5.QtCore import QLocale, QThread, pyqtSignal
 import requests
 

@@ -3,8 +3,15 @@
 # Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/python
 
+# CONDITIONS WHICH TRIGGER OR NOT THE JOBS
 trigger:
-- master
+  batch: true
+  branches:
+    include:
+    - master
+  tags:
+    include:
+    - "*"
 
 pr:
 - master
@@ -25,13 +32,22 @@ jobs:
 
   - script: |
       python -m pip install -U pip
-      python -m pip install -U black
-    displayName: 'Install black dependencies'
+      python -m pip install -U black flake8
+    displayName: 'Install black and flake8 dependencies'
 
   - script: |
       python -m black --target-version=py37 .\modules
       python -m black --target-version=py37 .\IsogeoToOffice.py
     displayName: 'Apply black code formatting'
+
+  - script: |
+      # stop the build if there are Python syntax errors or undefined names
+      python -m flake8  ./IsogeoToOffice.py --count --select=E9,F63,F7,F82 --show-source --statistics
+      python -m flake8 ./modules --count --select=E9,F63,F7,F82 --show-source --statistics
+      # exit-zero treats all errors as warnings. Tolerance of line length fixed to 100.
+      python -m flake8  ./IsogeoToOffice.py --count --exit-zero --max-complexity=10 --max-line-length=100
+      python -m flake8 ./modules --count --exit-zero --max-complexity=10 --max-line-length=100
+    displayName: "Static code analisis (PEP8 conformance, imports...) with flake8"
 
 # LINT AND FORMATTING CODE
 - job: 'Test'
@@ -126,6 +142,14 @@ jobs:
   - script: python -OO -m PyInstaller -y bundle_isogeo2office.spec
     displayName: 'Building the executable with PyInstaller'
 
+  # Insert .env file
+  - task: CopyFiles@2
+    displayName: "Copy the '.env.example' file into the final folder"
+    inputs:
+      SourceFolder: '$(System.DefaultWorkingDirectory)/'
+      Contents: '.env.example'
+      TargetFolder: '$(System.DefaultWorkingDirectory)/dist/isogeo2office'
+
   # Archive Files
   - task: ArchiveFiles@2
     inputs:
@@ -146,3 +170,42 @@ jobs:
     inputs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)\ArtifactsToBePublished'
       ArtifactName: IsogeoToOffice
+
+- job: 'Publish'
+  dependsOn: 'Test'
+  pool:
+    vmImage: "windows-2019"
+  condition:
+    contains(variables['Build.SourceBranch'], 'tags')
+
+  steps:
+  - checkout: none
+
+  - task: DownloadPipelineArtifact@2
+    displayName: "Download artifact previously saved"
+    inputs:
+      buildType: "current"
+      artifactName: IsogeoToOffice
+      targetPath: "$(System.DefaultWorkingDirectory)"
+
+  - task: GitHubRelease@1
+    continueOnError: true
+    displayName: "Publish tagged code as Github Release"
+    inputs:
+      gitHubConnection: 'github_isogeo'
+      repositoryName: '$(Build.Repository.Name)'
+      action: 'create'
+      assets: "$(System.DefaultWorkingDirectory)/*"
+      target: '$(Build.SourceVersion)'
+      tagSource: 'gitTag'
+      changeLogCompareToRelease: 'lastFullRelease'
+      changeLogType: 'commitBased'
+
+  - task: AzureFileCopy@3
+    inputs:
+      SourcePath: '$(System.DefaultWorkingDirectory)/*'
+      azureSubscription: 'Isogeo - MPN (82885610-5841-4749-8d71-46f56b643ad2)'
+      Destination: 'AzureBlob'
+      storage: 'prodisogeohelp'
+      ContainerName: 'apps'
+      BlobPrefix: 'isogeo2office'

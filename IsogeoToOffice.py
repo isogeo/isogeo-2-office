@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-#! python3
+#! python3  # noqa: E265
 
 """
     Isogeo To Office - Main launcher
@@ -28,15 +28,9 @@ from dotenv import load_dotenv
 from isogeo_pysdk import __version__ as pysdk_version, MetadataSearch
 
 # PyQt
-from PyQt5.QtCore import QLocale, QSettings, QThread, QTranslator, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import QCloseEvent, QIcon
-from PyQt5.QtWidgets import (
-    QApplication,
-    QComboBox,
-    QMainWindow,
-    QMessageBox,
-    QStyleFactory,
-)
+from PyQt5.QtCore import QLocale, QSettings, QTranslator, pyqtSlot
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QApplication, QComboBox, QMainWindow, QMessageBox
 
 # submodules - functional
 from modules import (
@@ -61,7 +55,7 @@ from modules.ui.systray.ui_systraymenu import SystrayMenu
 # ##################################
 
 # load specific enviroment vars
-load_dotenv(".env")
+load_dotenv(".env", override=True)
 
 # required subfolders
 pathlib.Path("_auth/").mkdir(exist_ok=True)
@@ -82,7 +76,7 @@ current_locale = QLocale()
 api_mngr = IsogeoApiMngr()
 
 # VERSION
-__version__ = "2.1.0-beta1"
+__version__ = "2.5.1-beta1"
 
 # LOG FILE #
 # log level depends on version
@@ -629,6 +623,7 @@ class IsogeoToOffice_Main(QMainWindow):
         try:
             thumbnails_loaded = self.app_utils.thumbnails_mngr(thumbs_filepath)
         except IOError as e:
+            logger.error("Unable to open thumbnails table. {}".format(e))
             QMessageBox.critical(
                 self,
                 self.tr("Thumbnails - Table already opened"),
@@ -838,7 +833,7 @@ class IsogeoToOffice_Main(QMainWindow):
                 " authentication credentials).\n"
                 "application will be closed."
             ),
-            QMessageBox.Yes | QMessageBox.No
+            QMessageBox.Yes | QMessageBox.No,
         )
 
         # close only if the user clicked yes
@@ -852,12 +847,15 @@ class IsogeoToOffice_Main(QMainWindow):
     # -- UI Slots -------------------------------------------------------------
     @pyqtSlot(str, str, bool)
     def fill_app_props(
-        self, app_infos_retrieved: str = "", latest_online_version: str = "", opencatalog_warning: bool = 0
+        self,
+        app_infos_retrieved: str = "",
+        latest_online_version: str = "",
+        opencatalog_warning: bool = 0,
     ):
         """Get app properties and fillfull the share frame in settings tab.
 
         :param str app_infos_retrieved: application information to display into the settings tabs
-        :param str latest_online_version: latest version retrieved from GitHub to compare with the actual
+        :param str latest_online_version: latest version from GitHub to compare with the actual
         """
         # fill settings tab text
         self.ui.txt_shares.setText(app_infos_retrieved)
@@ -865,7 +863,10 @@ class IsogeoToOffice_Main(QMainWindow):
         try:
             if semver.compare(__version__, latest_online_version) < 0:
                 logger.info("A newer version is available.")
-                version_msg = self.tr("New version available. You can download it here: ") + "https://github.com/isogeo/isogeo-2-office/releases/latest"
+                version_msg = (
+                    self.tr("New version available. You can download it here: ")
+                    + "https://github.com/isogeo/isogeo-2-office/releases/latest"
+                )
                 self.setWindowTitle(self.windowTitle() + " ! " + version_msg)
             else:
                 logger.debug("Used version is up-to-date")
@@ -888,18 +889,13 @@ class IsogeoToOffice_Main(QMainWindow):
 
         # if needed, inform the user about a missing OpenCatalog
         if opencatalog_warning:
-            oc_msg = self.tr("OpenCatalog is missing in one share at least. Check the settings tab to identify which one and fix it.")
-            self.tray_icon.showMessage(
-                "Isogeo to Office",
-                oc_msg,
-                QIcon("resources/favicon.png"),
+            oc_msg = self.tr(
+                "OpenCatalog is missing in one share at least. Check the settings tab to identify which one and fix it."
             )
-            self.update_status_bar(
-                prog_step=0,
-                status_msg=oc_msg,
-                color="orange"
-                )
-
+            self.tray_icon.showMessage(
+                "Isogeo to Office", oc_msg, QIcon("resources/favicon.png")
+            )
+            self.update_status_bar(prog_step=0, status_msg=oc_msg, color="orange")
 
     @pyqtSlot()
     def update_credentials(self):
@@ -921,11 +917,14 @@ class IsogeoToOffice_Main(QMainWindow):
             self.processing("end")
             self.ui.pgb_exports.setRange(0, 1)
             # inform user
-            self.update_status_bar(prog_step=0, status_msg=self.tr("No results found. Please, try other filters."))
+            self.update_status_bar(
+                prog_step=0,
+                status_msg=self.tr("No results found. Please, try other filters."),
+            )
             # export button
             self.ui.btn_launch_export.setText(
                 self.tr("Export {} metadata").format(search.total)
-                )
+            )
             self.ui.btn_launch_export.setEnabled(False)
             return
 
@@ -1007,7 +1006,13 @@ class IsogeoToOffice_Main(QMainWindow):
         self.update_status_bar(prog_step=0, status_msg=self.tr("Search form updated"))
 
     @pyqtSlot(int, str)
-    def update_status_bar(self, prog_step: int = 1, status_msg: str = "", duration: int = 0, color: str = None):
+    def update_status_bar(
+        self,
+        prog_step: int = 1,
+        status_msg: str = "",
+        duration: int = 0,
+        color: str = None,
+    ):
         """Display message into status bar.
 
         :param int prog_step: step to increase the progress bar. Defaults to 1.

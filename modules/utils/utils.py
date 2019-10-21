@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-#! python3
+#! python3  # noqa: E265
 
 """
     Name:         Isogeo to Office utilitaries
@@ -44,7 +44,7 @@ else:
 # #################################
 
 if Path(".env").exists():
-    load_dotenv(".env")
+    load_dotenv(".env", override=True)
 logger = logging.getLogger("isogeo2office")  # LOG
 
 # ############################################################################
@@ -93,20 +93,30 @@ class isogeo2office_utils(IsogeoUtils):
             raise TypeError
 
     def proxy_settings(self):
-        """Retrieves network proxy settings from OS or an environment file."""
+        """Retrieves network proxy settings from system (OS settings) or an environment file."""
+        # first check in the system settings
         if getproxies():
             proxy_settings = getproxies()
-            logger.debug("Proxies settings found in the OS.")
-        elif environ.get("HTTP_PROXY") or environ.get("HTTPS_PROXY"):
+            logger.info(
+                "Proxies settings found in the system: {}".format(proxy_settings)
+            )
+        else:
+            proxy_settings = None
+            logger.info("No proxy detected in the system.")
+
+        # then check the environment file
+        if environ.get("HTTP_PROXY") or environ.get("HTTPS_PROXY"):
             proxy_settings = {
                 "http": environ.get("HTTP_PROXY"),
                 "https": environ.get("HTTPS_PROXY"),
             }
-            logger.debug(
-                "Proxies settings found in environment vars (loaded from .env file)."
+            logger.info(
+                "Proxies settings found in environment vars (maybe loaded from .env file): {}".format(
+                    proxy_settings
+                )
             )
         else:
-            logger.debug("No proxy settings found.")
+            logger.info("No proxy settings found in the environment vars.")
             proxy_settings = None
 
         return proxy_settings
@@ -270,11 +280,11 @@ class isogeo2office_utils(IsogeoUtils):
     def get_matching_share(
         self, metadata: Metadata, shares: list, mode: str = "simple"
     ) -> Share:
-        """[summary]
+        """Get the first Share which contains the metadata, basing match on workgroup UUID.
 
         :param Metadata metadata: metadata object to use for the matching
         :param list shares: list of shares to use for the matching
-        :param str mode: simple mode is based only on the UID 
+        :param str mode: simple mode is based only on the UID
         """
         if mode != "simple":
             raise NotImplementedError
