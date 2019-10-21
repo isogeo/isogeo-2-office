@@ -39,7 +39,7 @@ class Worker(QObject):
         self.__id = id
         self.__abort = False
 
-    @pyqtSlot()
+    @QtCore.pyqtSlot()
     def work(self):
         """
         Pretend this worker method does work that takes a long time. During this time, the thread's
@@ -143,12 +143,12 @@ class MyWidget(QWidget):
 
         # self.sig_start.emit()  # needed due to PyCharm debugger bug (!)
 
-    @pyqtSlot(int, str)
+    @QtCore.pyqtSlot(int, str)
     def on_worker_step(self, worker_id: int, data: str):
         self.log.append("Worker #{}: {}".format(worker_id, data))
         self.progress.append("{}: {}".format(worker_id, data))
 
-    @pyqtSlot(int)
+    @QtCore.pyqtSlot(int)
     def on_worker_done(self, worker_id):
         self.log.append("worker #{} done".format(worker_id))
         self.progress.append("-- Worker {} DONE".format(worker_id))
@@ -159,7 +159,7 @@ class MyWidget(QWidget):
             self.button_stop_threads.setDisabled(True)
             # self.__threads = None
 
-    @pyqtSlot()
+    @QtCore.pyqtSlot()
     def abort_workers(self):
         self.sig_abort_workers.emit()
         self.log.append("Asking each worker to abort")
