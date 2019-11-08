@@ -244,7 +244,7 @@ stages:
     - task: GitHubRelease@1
       displayName: "Publish tagged code as Github Release"
       inputs:
-        gitHubConnection: 'github.com_Guts'
+        gitHubConnection: 'github_isogeo'
         repositoryName: '$(Build.Repository.Name)'
         action: 'create'
         target: '$(Build.SourceVersion)'
