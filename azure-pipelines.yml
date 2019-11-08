@@ -176,7 +176,6 @@ stages:
     - script: |
         python -m pip install -U pip --cache-dir ./.pipcache
         python -m pip install -U -r ./requirements_dev.txt --cache-dir ./.pipcache
-        python -m pip install -U twine
       displayName: "Install dependencies"
 
     - script: |
