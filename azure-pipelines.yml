@@ -19,7 +19,7 @@ pr:
 # -- GLOBAL VARIABLES ------------------------------------------------------------------
 variables:
   packageFolderName: "isogeo_to_office"
-  pyPiPackageName: "isogeo-to-office"
+  pyPiPackageName: "IsogeoToOffice"
   vmImageName: "windows-2019"
 
 
@@ -204,21 +204,21 @@ stages:
       inputs:
         rootFolderOrFile: "dist/isogeo2office"
         archiveType: "zip" # Options: zip, 7z, tar, wim
-        archiveFile: "$(Build.ArtifactStagingDirectory)/IsogeoToOffice-$(python.arch)-$(Build.SourceBranchName)-b$(Build.BuildId).zip" 
+        archiveFile: "$(Build.ArtifactStagingDirectory)/$(pyPiPackageName)-$(python.arch)-$(Build.SourceBranchName)-b$(Build.BuildId)-v$(Build.SourceVersion).zip" 
         replaceExistingArchive: true 
 
     - task: CopyFiles@2
       displayName: "Copy File to: $(TargetFolder)"
       inputs:
         SourceFolder: "$(Build.ArtifactStagingDirectory)"
-        Contents: "IsogeoToOffice-$(python.arch)-$(Build.SourceBranchName)-b$(Build.BuildId)-v$(Build.SourceVersion).zip"
+        Contents: "$(pyPiPackageName)-$(python.arch)-$(Build.SourceBranchName)-b$(Build.BuildId)-v$(Build.SourceVersion).zip"
         TargetFolder: '$(Build.ArtifactStagingDirectory)\ArtifactsToBePublished'
 
     - task: PublishBuildArtifacts@1
-      displayName: "Publish Artifact: IsogeoToOffice"
+      displayName: "Publish Artifact: $(pyPiPackageName)"
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)\ArtifactsToBePublished'
-        ArtifactName: IsogeoToOffice
+        ArtifactName: $(pyPiPackageName)
 
 - stage: Deploy
   # -- DEPLOY --------------------------------------------------------------------------
@@ -249,7 +249,7 @@ stages:
       displayName: "Download artifact previously saved"
       inputs:
         buildType: "current"
-        artifactName: IsogeoToOffice
+        artifactName: $(pyPiPackageName)
         targetPath: "$(System.DefaultWorkingDirectory)"
 
     # publish to Github
