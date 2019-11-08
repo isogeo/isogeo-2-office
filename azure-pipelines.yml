@@ -72,7 +72,6 @@ stages:
 
   jobs:
   - job: 'Test'
-    dependsOn: 'Lint'
     pool:
       vmImage: $(vmImageName)
     variables:
@@ -132,9 +131,14 @@ stages:
         codeCoverageTool: Cobertura
         summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
 
-  # BUILD
+- stage: Deploy
+  displayName: Build and Deploy
+  dependsOn: Test
+  condition: succeeded()
+
+  jobs:
+  # BUILD Python package
   - job: 'Build'
-    dependsOn: 'Test'
     pool:
       vmImage: $(vmImageName)
     strategy:
@@ -148,16 +152,26 @@ stages:
       maxParallel: 2
 
     steps:
+    # no need for source code
+    - checkout: none
+
+    - task: DownloadPipelineArtifact@2
+      displayName: "Download artifact previously saved"
+      inputs:
+        buildType: "current"
+        artifact: "FORMATTED_$(pyPiPackageName)_$(Build.SourceBranchName)_$(Build.BuildId)"
+        targetPath: "$(System.DefaultWorkingDirectory)"
+
     - task: UsePythonVersion@0
       inputs:
         versionSpec: '$(python.version)'
         architecture: '$(python.arch)'
-        addToPath: True
+        addToPath: true
 
     - script: |
-        python -m pip install -U pip
-        python -m pip install -U -r ./requirements.txt
-        python -m pip install -U -r ./requirements_dev.txt
+        python -m pip install -U pip --cache-dir ./.pipcache
+        python -m pip install -U -r ./requirements_dev.txt --cache-dir ./.pipcache
+        python -m pip install -U twine
       displayName: 'Install dependencies'
 
     - script: |
