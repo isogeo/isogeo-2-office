@@ -176,6 +176,7 @@ stages:
     - script: |
         python -m pip install -U pip --cache-dir ./.pipcache
         python -m pip install -U -r ./requirements_dev.txt --cache-dir ./.pipcache
+        python -m pip install -U git+https://github.com/pyinstaller/pyinstaller.git@develop#egg=PyInstaller
       displayName: "Install dependencies"
 
     - script: |
