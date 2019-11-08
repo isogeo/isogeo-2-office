@@ -46,7 +46,7 @@ stages:
       - script: |
           python -m pip install -U pip --cache-dir ./.pipcache
           python -m pip install -U -r ./requirements_dev.txt --cache-dir ./.pipcache
-        displayName: 'Install black and flake8 dependencies (included in dev requirements)'
+        displayName: 'Install dependencies'
 
       - script: |
           python -m black --target-version=py37 ./modules
@@ -91,7 +91,7 @@ stages:
       
     - task: UsePythonVersion@0
       inputs:
-        versionSpec: '$(python.version)'
+        versionSpec: '3.7'
         architecture: 'x64'
         addToPath: true
 
