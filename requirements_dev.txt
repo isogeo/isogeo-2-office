@@ -9,6 +9,9 @@
 #   It's higly recomended to use it within a virtualenv.
 #
 
+# install basic requirements
+-r requirements.txt
+
 # art of code
 black
 flake8
@@ -17,7 +20,7 @@ pylint
 # tests
 codecov
 coverage
-pytest
+pytest==5.0.*
 pytest-cov
 pytest-qt
 
@@ -29,3 +32,6 @@ sip
 # packaging
 # PyInstaller==4.0.dev0+46286a1f4
 -e git+https://github.com/pyinstaller/pyinstaller.git@8196c57ab37e94ea5735479d04a5fd2169e638d8#egg=pyinstaller
+
+# doc
+sphinx
