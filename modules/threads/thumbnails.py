@@ -20,7 +20,7 @@ from os import path
 from openpyxl import Workbook
 from openpyxl.comments import Comment
 from openpyxl.cell import WriteOnlyCell
-from PyQt5.QtCore import QLocale, QThread, pyqtSignal
+from PyQt5 import QtCore
 
 # submodules - export
 from modules.utils import isogeo2office_utils
@@ -30,7 +30,7 @@ from modules.utils import isogeo2office_utils
 # ##################################
 
 app_utils = isogeo2office_utils()
-current_locale = QLocale()
+current_locale = QtCore.QLocale()
 logger = logging.getLogger("isogeo2office")
 
 
@@ -39,9 +39,9 @@ logger = logging.getLogger("isogeo2office")
 # ##################################
 
 # TO IMPORT LATER -------------------------------------------------------------
-class ThreadThumbnails(QThread):
+class ThreadThumbnails(QtCore.QThread):
     # signals
-    sig_step = pyqtSignal(int, str)
+    sig_step = QtCore.pyqtSignal(int, str)
 
     def __init__(
         self,
@@ -49,7 +49,7 @@ class ThreadThumbnails(QThread):
         output_path: str = r"thumbnails/thumbnails.xlsx",
         thumbnails: dict = {},
     ):
-        QThread.__init__(self)
+        QtCore.QThread.__init__(self)
         # export settings
         self.search = search_to_export
         self.output_xlsx_path = output_path

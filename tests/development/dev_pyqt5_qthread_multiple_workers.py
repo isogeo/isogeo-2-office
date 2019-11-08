@@ -25,7 +25,7 @@ sys.excepthook = trap_exc_during_debug
 
 class Worker(QObject):
     """
-    Must derive from QObject in order to emit signals, connect slots to other signals, and operate in a QThread.
+    Must derive from QObject in order to emit signals, connect slots to other signals, and operate in a QtCore.QThread.
     """
 
     sig_step = pyqtSignal(
@@ -39,7 +39,7 @@ class Worker(QObject):
         self.__id = id
         self.__abort = False
 
-    @pyqtSlot()
+    @QtCore.pyqtSlot()
     def work(self):
         """
         Pretend this worker method does work that takes a long time. During this time, the thread's
@@ -47,8 +47,8 @@ class Worker(QObject):
         thread (incl. main) a chance to process events, which in this sample means processing signals
         received from GUI (such as abort).
         """
-        thread_name = QThread.currentThread().objectName()
-        thread_id = int(QThread.currentThreadId())  # cast to int() is necessary
+        thread_name = QtCore.QThread.currentThread().objectName()
+        thread_id = int(QtCore.QThread.currentThreadId())  # cast to int() is necessary
         self.sig_msg.emit(
             'Running worker #{} from thread "{}" (#{})'.format(
                 self.__id, thread_name, thread_id
@@ -106,7 +106,7 @@ class MyWidget(QWidget):
         self.progress = QTextEdit()
         form_layout.addWidget(self.progress)
 
-        QThread.currentThread().setObjectName(
+        QtCore.QThread.currentThread().setObjectName(
             "main"
         )  # threads can be named, useful for log output
         self.__workers_done = None
@@ -121,7 +121,7 @@ class MyWidget(QWidget):
         self.__threads = []
         for idx in range(self.NUM_THREADS):
             worker = Worker(idx)
-            thread = QThread()
+            thread = QtCore.QThread()
             thread.setObjectName("thread_" + str(idx))
             self.__threads.append(
                 (thread, worker)
@@ -143,12 +143,12 @@ class MyWidget(QWidget):
 
         # self.sig_start.emit()  # needed due to PyCharm debugger bug (!)
 
-    @pyqtSlot(int, str)
+    @QtCore.pyqtSlot(int, str)
     def on_worker_step(self, worker_id: int, data: str):
         self.log.append("Worker #{}: {}".format(worker_id, data))
         self.progress.append("{}: {}".format(worker_id, data))
 
-    @pyqtSlot(int)
+    @QtCore.pyqtSlot(int)
     def on_worker_done(self, worker_id):
         self.log.append("worker #{} done".format(worker_id))
         self.progress.append("-- Worker {} DONE".format(worker_id))
@@ -159,7 +159,7 @@ class MyWidget(QWidget):
             self.button_stop_threads.setDisabled(True)
             # self.__threads = None
 
-    @pyqtSlot()
+    @QtCore.pyqtSlot()
     def abort_workers(self):
         self.sig_abort_workers.emit()
         self.log.append("Asking each worker to abort")

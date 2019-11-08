@@ -28,9 +28,8 @@ from dotenv import load_dotenv
 from isogeo_pysdk import __version__ as pysdk_version, MetadataSearch
 
 # PyQt
-from PyQt5.QtCore import QLocale, QSettings, QTranslator, pyqtSlot
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QComboBox, QMainWindow, QMessageBox
+from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 # submodules - functional
 from modules import (
@@ -71,7 +70,7 @@ app_logdir = path.join(app_dir, "_logs")
 app_outdir = path.join(app_dir, "_output")
 app_thbdir = path.join(app_dir, "_thumbnails")
 app_tpldir = path.join(app_dir, "_templates")
-current_locale = QLocale()
+current_locale = QtCore.QLocale()
 
 api_mngr = IsogeoApiMngr()
 
@@ -112,7 +111,7 @@ logger.info("================ Isogeo to office ===============")
 # #############################################################################
 # ########## Classes ###############
 # ##################################
-class IsogeoToOffice_Main(QMainWindow):
+class IsogeoToOffice_Main(QtWidgets.QMainWindow):
 
     # attributes and global actions
     logger.info("OS: {0}".format(platform.platform()))
@@ -128,7 +127,7 @@ class IsogeoToOffice_Main(QMainWindow):
         self.ui = Ui_win_IsogeoToOffice()
         self.ui.setupUi(self)
         # Settings
-        self.app_settings = QSettings("Isogeo", "IsogeoToOffice")
+        self.app_settings = QtCore.QSettings("Isogeo", "IsogeoToOffice")
         self.settings_noSave = 0
         # usage
         launch_counter = self.app_settings.value("usage/launch", 0)
@@ -254,14 +253,14 @@ class IsogeoToOffice_Main(QMainWindow):
 
         # system tray icon
         self.tray_icon = SystrayMenu(parent=self)
-        self.tray_icon.setIcon(QIcon("resources/icon.png"))
+        self.tray_icon.setIcon(QtGui.QIcon("resources/icon.png"))
         self.tray_icon.act_quit.triggered.connect(self.close)
         self.tray_icon.act_show.triggered.connect(self.show)
         self.tray_icon.act_hide.triggered.connect(self.hide)
 
         # -- DISPLAY  ---------------------------------------------------------
         # shortcuts
-        self.cbbs_filters = self.ui.grp_filters.findChildren(QComboBox)
+        self.cbbs_filters = self.ui.grp_filters.findChildren(QtWidgets.QComboBox)
         self.setWindowTitle("Isogeo to Office - v{}".format(__version__))
         try:
             self.settings_loader()
@@ -280,7 +279,7 @@ class IsogeoToOffice_Main(QMainWindow):
         # check credentials
         if not api_mngr.manage_api_initialization():
             logger.error("Connection to Isogeo API failed.")
-            QMessageBox.warning(
+            QtWidgets.QMessageBox.warning(
                 self,
                 self.tr("Authentication - Credentials missing"),
                 self.tr(
@@ -478,7 +477,7 @@ class IsogeoToOffice_Main(QMainWindow):
             self.ui.chb_output_xml.isChecked(),
         ]
         if not any(self.li_opts):
-            QMessageBox.critical(
+            QtWidgets.QMessageBox.critical(
                 self,
                 self.tr("Export option is missing"),
                 self.tr("At least one export option required."),
@@ -491,7 +490,7 @@ class IsogeoToOffice_Main(QMainWindow):
             )
             return True
 
-    @pyqtSlot(MetadataSearch)
+    @QtCore.pyqtSlot(MetadataSearch)
     def export_process(self, search_to_be_exported: MetadataSearch):
         """Export each metadata in checked output formats.
 
@@ -607,7 +606,7 @@ class IsogeoToOffice_Main(QMainWindow):
         else:
             pass
 
-    @pyqtSlot(MetadataSearch)
+    @QtCore.pyqtSlot(MetadataSearch)
     def thumbnails_generation(self, search_to_be_exported: MetadataSearch):
         """Process thumbnails table generation.
 
@@ -624,7 +623,7 @@ class IsogeoToOffice_Main(QMainWindow):
             thumbnails_loaded = self.app_utils.thumbnails_mngr(thumbs_filepath)
         except IOError as e:
             logger.error("Unable to open thumbnails table. {}".format(e))
-            QMessageBox.critical(
+            QtWidgets.QMessageBox.critical(
                 self,
                 self.tr("Thumbnails - Table already opened"),
                 self.tr(
@@ -641,7 +640,7 @@ class IsogeoToOffice_Main(QMainWindow):
             )
             return False
         except KeyError as e:
-            QMessageBox.warning(
+            QtWidgets.QMessageBox.warning(
                 self,
                 self.tr("Thumbnails - Table structure"),
                 self.tr(
@@ -660,7 +659,7 @@ class IsogeoToOffice_Main(QMainWindow):
             )
             thumbnails_loaded = {None: None}
         except Exception as e:
-            QMessageBox.warning(
+            QtWidgets.QMessageBox.warning(
                 self,
                 self.tr("Thumbnails - Unknown error"),
                 self.tr(
@@ -825,7 +824,7 @@ class IsogeoToOffice_Main(QMainWindow):
         """Reset settings to factiry defaults. Do not not remove authentication
         credentials. See #41
         """
-        reset_msgbox = QMessageBox.question(
+        reset_msgbox = QtWidgets.QMessageBox.question(
             self,
             self.tr("Settings - Reset to factory defaults"),
             self.tr(
@@ -833,11 +832,11 @@ class IsogeoToOffice_Main(QMainWindow):
                 " authentication credentials).\n"
                 "application will be closed."
             ),
-            QMessageBox.Yes | QMessageBox.No,
+            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
         )
 
         # close only if the user clicked yes
-        if reset_msgbox == QMessageBox.Yes:
+        if reset_msgbox == QtWidgets.QMessageBox.Yes:
             logger.info("Settings - Reset to factory defaults.")
             self.app_settings.remove("formats")
             self.app_settings.remove("settings")
@@ -845,7 +844,7 @@ class IsogeoToOffice_Main(QMainWindow):
             self.close()
 
     # -- UI Slots -------------------------------------------------------------
-    @pyqtSlot(str, str, bool)
+    @QtCore.pyqtSlot(str, str, bool)
     def fill_app_props(
         self,
         app_infos_retrieved: str = "",
@@ -879,7 +878,7 @@ class IsogeoToOffice_Main(QMainWindow):
         self.tray_icon.showMessage(
             "Isogeo to Office",
             self.tr("Application information has been retrieved.") + " " + version_msg,
-            QIcon("resources/favicon.png"),
+            QtGui.QIcon("resources/favicon.png"),
             2000,
         )
         self.update_status_bar(
@@ -893,18 +892,18 @@ class IsogeoToOffice_Main(QMainWindow):
                 "OpenCatalog is missing in one share at least. Check the settings tab to identify which one and fix it."
             )
             self.tray_icon.showMessage(
-                "Isogeo to Office", oc_msg, QIcon("resources/favicon.png")
+                "Isogeo to Office", oc_msg, QtGui.QIcon("resources/favicon.png")
             )
             self.update_status_bar(prog_step=0, status_msg=oc_msg, color="orange")
 
-    @pyqtSlot()
+    @QtCore.pyqtSlot()
     def update_credentials(self):
         """Executed after credentials have been updated.
         """
         api_mngr.manage_api_initialization()
         self.init_api_connection()
 
-    @pyqtSlot(MetadataSearch)
+    @QtCore.pyqtSlot(MetadataSearch)
     def update_search_form(self, search: MetadataSearch):
         """Update search form with tags.
 
@@ -1005,7 +1004,7 @@ class IsogeoToOffice_Main(QMainWindow):
         self.processing("end", progbar_max=search.total)
         self.update_status_bar(prog_step=0, status_msg=self.tr("Search form updated"))
 
-    @pyqtSlot(int, str)
+    @QtCore.pyqtSlot(int, str)
     def update_status_bar(
         self,
         prog_step: int = 1,
@@ -1039,7 +1038,7 @@ class IsogeoToOffice_Main(QMainWindow):
             self.tray_icon.showMessage(
                 "Isogeo to Office",
                 self.tr("Export operations are over."),
-                QIcon("resources/favicon.png"),
+                QtGui.QIcon("resources/favicon.png"),
                 2000,
             )
             # open output dir - see #27
@@ -1055,20 +1054,25 @@ if __name__ == "__main__":
     import sys
 
     # create the application and the main window
-    app = QApplication(sys.argv)
-    app.setOrganizationName("Isogeo")
-    app.setOrganizationDomain("isogeo.com")
-    app.setApplicationName("Isogeo To Office")
-    app.setApplicationVersion(__version__)
-    # apply dark style
-    app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
-    # apply language
-    locale_path = path.join(
-        app_dir, "i18n", "IsogeoToOffice_{}.qm".format(current_locale.system().name())
-    )
-    translator = QTranslator()
-    translator.load(path.realpath(locale_path))
-    app.installTranslator(translator)
-    # link to Isogeo to Office main UI
-    i2o = IsogeoToOffice_Main()
+    try:
+        app = QtWidgets.QApplication(sys.argv)
+        app.setOrganizationName("Isogeo")
+        app.setOrganizationDomain("isogeo.com")
+        app.setApplicationName("Isogeo To Office")
+        app.setApplicationVersion(__version__)
+        # apply dark style
+        app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+        # apply language
+        locale_path = path.join(
+            app_dir,
+            "i18n",
+            "IsogeoToOffice_{}.qm".format(current_locale.system().name()),
+        )
+        translator = QtCore.QTranslator()
+        translator.load(path.realpath(locale_path))
+        app.installTranslator(translator)
+        # link to Isogeo to Office main UI
+        i2o = IsogeoToOffice_Main()
+    except Exception as exp:
+        logging.error(exp)
     sys.exit(app.exec_())

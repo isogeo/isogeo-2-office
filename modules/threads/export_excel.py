@@ -19,7 +19,7 @@ from os import path
 # 3rd party library
 from isogeo_pysdk.models import Metadata, MetadataSearch
 from isogeotoxlsx import Isogeo2xlsx
-from PyQt5.QtCore import QLocale, QThread, pyqtSignal
+from PyQt5 import QtCore
 
 # submodules - export
 from modules.utils import isogeo2office_utils
@@ -29,7 +29,7 @@ from modules.utils import isogeo2office_utils
 # ##################################
 
 app_utils = isogeo2office_utils()
-current_locale = QLocale()
+current_locale = QtCore.QLocale()
 logger = logging.getLogger("isogeo2office")
 
 
@@ -38,9 +38,9 @@ logger = logging.getLogger("isogeo2office")
 # ##################################
 
 # EXPORTS ---------------------------------------------------------------------
-class ThreadExportExcel(QThread):
+class ThreadExportExcel(QtCore.QThread):
     # signals
-    sig_step = pyqtSignal(int, str, name="ExportExcel")
+    sig_step = QtCore.pyqtSignal(int, str, name="ExportExcel")
 
     def __init__(
         self,
@@ -54,7 +54,7 @@ class ThreadExportExcel(QThread):
         opt_fillfull: int = 0,
         opt_inspire: int = 0,
     ):
-        QThread.__init__(self)
+        QtCore.QThread.__init__(self)
         # export settings
         self.search = search_to_export
         self.output_xlsx_path = output_path

@@ -17,7 +17,7 @@ import logging
 
 # 3rd party library
 from isogeo_pysdk.models import MetadataSearch
-from PyQt5.QtCore import QLocale, QThread, pyqtSignal
+from PyQt5 import QtCore
 
 # submodules - export
 from modules.utils import isogeo2office_utils
@@ -27,7 +27,7 @@ from modules.utils import isogeo2office_utils
 # ##################################
 
 app_utils = isogeo2office_utils()
-current_locale = QLocale()
+current_locale = QtCore.QLocale()
 logger = logging.getLogger("isogeo2office")
 
 
@@ -36,12 +36,12 @@ logger = logging.getLogger("isogeo2office")
 # ##################################
 
 # API REQUESTS ----------------------------------------------------------------
-class ThreadSearch(QThread):
+class ThreadSearch(QtCore.QThread):
     # signals
-    sig_finished = pyqtSignal(MetadataSearch, name="IsogeoSearch")
+    sig_finished = QtCore.pyqtSignal(MetadataSearch, name="IsogeoSearch")
 
     def __init__(self, api_manager: object):
-        QThread.__init__(self)
+        QtCore.QThread.__init__(self)
         self.api_mngr = api_manager
         self.search_params = dict
 
