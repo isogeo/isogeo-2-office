@@ -25,7 +25,9 @@ variables:
 
 # -- STAGES ----------------------------------------------------------------------------
 stages:
+
 - stage: Lint
+  # -- LINT AND FORMAT -----------------------------------------------------------------
   displayName: Format and lint code
 
   jobs:
@@ -65,7 +67,9 @@ stages:
         artifact: "FORMATTED_$(pyPiPackageName)_$(Build.SourceBranchName)_$(Build.BuildId)"
         displayName: "Publish formatted code with dependencies"
 
+
 - stage: Test
+  # -- UNIT TESTS ----------------------------------------------------------------------
   displayName: Unit tests
   dependsOn: Lint
   condition: succeeded()
@@ -132,7 +136,8 @@ stages:
         summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/coverage.xml"
 
 - stage: Build
-  displayName: Build and Deploy
+  # --  BUILD --------------------------------------------------------------------------
+  displayName: Build application executables
   dependsOn: Test
   condition: succeeded()
 
@@ -216,15 +221,16 @@ stages:
         ArtifactName: IsogeoToOffice
 
 - stage: Deploy
-  displayName: Build and Deploy
+  # -- DEPLOY --------------------------------------------------------------------------
+  displayName: Deploy to Github and Azure
   dependsOn: Build
   # only with a tagged commit (see: https://github.com/MicrosoftDocs/vsts-docs/issues/3281)
   condition: |
-      and
-      (
-        succeeded(),
-        contains(variables["Build.SourceBranch"], "tags")
-      )
+    and
+    (
+      succeeded(),
+      contains(variables['Build.SourceBranch'], 'tags')
+    )
 
   jobs:
 
