@@ -16,193 +16,226 @@ trigger:
 pr:
 - master
 
-jobs:
+# -- GLOBAL VARIABLES ------------------------------------------------------------------
+variables:
+  packageFolderName: "isogeo_to_office"
+  pyPiPackageName: "isogeo-to-office"
+  vmImageName: "windows-2019"
 
-# LINT AND FORMATTING CODE
-- job: 'Lint'
-  pool:
-    vmImage: "windows-2019"
 
-  steps:
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: '3.7'
-      architecture: 'x64'
-      addToPath: true
+# -- STAGES ----------------------------------------------------------------------------
+stages:
+- stage: Lint
+  displayName: Format and lint code
 
-  - script: |
-      python -m pip install -U pip
-      python -m pip install -U black flake8
-    displayName: 'Install black and flake8 dependencies'
+  jobs:
+    - job: 'Lint'
+      pool:
+        vmImage: $(vmImageName)
 
-  - script: |
-      python -m black --target-version=py37 .\modules
-      python -m black --target-version=py37 .\IsogeoToOffice.py
-    displayName: 'Apply black code formatting'
+      steps:
+      - checkout: self  # self represents the repo where the initial Pipelines YAML file was found
+        fetchDepth: 10
 
-  - script: |
-      python -m flake8  ./IsogeoToOffice.py --count --select=E9,F63,F7,F82 --show-source --statistics
-      python -m flake8 ./modules --count --select=E9,F63,F7,F82 --show-source --statistics
-      python -m flake8  ./IsogeoToOffice.py --count --exit-zero --max-complexity=10 --max-line-length=100
-      python -m flake8 ./modules --count --exit-zero --max-complexity=10 --max-line-length=100
-    displayName: "Static code analisis (PEP8 conformance, imports...) with flake8"
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '3.7'
+          architecture: 'x64'
+          addToPath: true
 
-# LINT AND FORMATTING CODE
-- job: 'Test'
-  dependsOn: 'Lint'
-  pool:
-    vmImage: "windows-2019"
-  variables:
-    - group: QA
+      - script: |
+          python -m pip install -U pip --cache-dir ./.pipcache
+          python -m pip install -U -r ./requirements_dev.txt --cache-dir ./.pipcache
+        displayName: 'Install black and flake8 dependencies (included in dev requirements)'
 
-  steps:
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: '3.7'
-      architecture: 'x64'
-      addToPath: true
+      - script: |
+          python -m black --target-version=py37 ./modules
+          python -m black --target-version=py37 ./IsogeoToOffice.py
+        displayName: 'Apply black code formatting'
 
-  - script: |
-      python -m pip install -U pip setuptools wheel
-      python -m pip install -U -r ./requirements.txt
-      python -m pip install -U pytest-cov pytest-qt
-    displayName: 'Install dependencies'
+      - script: |
+          python -m flake8  ./IsogeoToOffice.py --count --select=E9,F63,F7,F82 --show-source --statistics
+          python -m flake8 ./modules --count --select=E9,F63,F7,F82 --show-source --statistics
+          python -m flake8  ./IsogeoToOffice.py --count --exit-zero --max-complexity=10 --max-line-length=100
+          python -m flake8 ./modules --count --exit-zero --max-complexity=10 --max-line-length=100
+        displayName: "Static code analisis (PEP8 conformance, imports...) with flake8"
 
-  - script: |
-        python .\tests\fixturing.py
-        python -m pytest --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html --cov-append tests
-    env:
-      # platform
-      ISOGEO_PLATFORM: $(ISOGEO_PLATFORM)
-      OAUTHLIB_INSECURE_TRANSPORT: $(OAUTHLIB_INSECURE_TRANSPORT)
-      # URLs
-      ISOGEO_API_URL: $(ISOGEO_API_URL)
-      ISOGEO_ID_URL: $(ISOGEO_ID_URL)
-      # oAuth2 Client Credentials Grant
-      ISOGEO_API_GROUP_CLIENT_ID: $(ISOGEO_API_GROUP_CLIENT_ID)
-      ISOGEO_API_GROUP_CLIENT_SECRET: $(ISOGEO_API_GROUP_CLIENT_SECRET)
-      # static fixtures
-      ISOGEO_FIXTURES_METADATA_COMPLETE: $(ISOGEO_FIXTURES_METADATA_COMPLETE)
-      ISOGEO_WORKGROUP_TEST_UUID: $(ISOGEO_WORKGROUP_TEST_UUID)
-    displayName: 'Unit tests'
+      # save formatted code to use later avoiding git clone again
+      - publish: $(System.DefaultWorkingDirectory)
+        artifact: "FORMATTED_$(pyPiPackageName)_$(Build.SourceBranchName)_$(Build.BuildId)"
+        displayName: 'Publish formatted code with dependencies'
 
-  - task: PublishTestResults@2
-    displayName: "Publish unit test results"
-    condition: succeededOrFailed()
-    inputs:
-      testResultsFiles: '**/test-*.xml'
-      testRunTitle: 'Publish test results for Python $(python.version)'
+- stage: Test
+  displayName: Unit tests
+  dependsOn: Lint
+  condition: succeeded()
 
-  - task: PublishCodeCoverageResults@1
-    displayName: "Publish coverage results to Azure Pipelines"
-    inputs:
-      codeCoverageTool: Cobertura
-      summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
+  jobs:
+  - job: 'Test'
+    dependsOn: 'Lint'
+    pool:
+      vmImage: $(vmImageName)
+    variables:
+      - group: QA
 
-# BUILD
-- job: 'Build'
-  dependsOn: 'Test'
-  pool:
-    vmImage: 'windows-2019'
-  strategy:
-    matrix:
-      Python37_VS17_64bits:
-        python.version: '3.7'
-        python.arch: 'x64'
-      Python37_VS17_32bits:
-        python.version: '3.7'
-        python.arch: 'x86'
-    maxParallel: 2
+    steps:
 
-  steps:
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: '$(python.version)'
-      architecture: '$(python.arch)'
-      addToPath: True
+    # no need for source code
+    - checkout: none
 
-  - script: |
-      python -m pip install -U pip
-      python -m pip install -U -r ./requirements.txt
-      python -m pip install -U -r ./requirements_dev.txt
-    displayName: 'Install dependencies'
+    - task: DownloadPipelineArtifact@2
+      displayName: "Download artifact previously saved"
+      inputs:
+        buildType: "current"
+        artifact: "FORMATTED_$(pyPiPackageName)_$(Build.SourceBranchName)_$(Build.BuildId)"
+        targetPath: "$(System.DefaultWorkingDirectory)"
+      
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '$(python.version)'
+        architecture: 'x64'
+        addToPath: true
 
-  - script: |
-      pylupdate5 -noobsolete -verbose isogeo2office.pro
-      lrelease .\i18n\IsogeoToOffice_fr.ts
-      pyrcc5 resources.qrc -o resources_rc.py
-      pyuic5 -x modules\\ui\\auth\\ui_authentication.ui -o modules\\ui\\auth\\ui_authentication.py
-      pyuic5 -x modules\\ui\\credits\\ui_credits.ui -o modules\\ui\\credits\\ui_credits.py
-      pyuic5 -x modules\\ui\\main\\ui_win_IsogeoToOffice.ui -o modules\\ui\\main\\ui_win_IsogeoToOffice.py
-    displayName: 'PyQt processing'
+    - script: |
+        python -m pip install -U pip --cache-dir ./.pipcache
+        python -m pip install -U -r ./requirements_dev.txt --cache-dir ./.pipcache
+      displayName: 'Install dependencies'
 
-  - script: python -OO -m PyInstaller -y bundle_isogeo2office.spec
-    displayName: 'Building the executable with PyInstaller'
+    - script: |
+          python .\tests\fixturing.py
+          python -m pytest --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html --cov-append tests
+      env:
+        # platform
+        ISOGEO_PLATFORM: $(ISOGEO_PLATFORM)
+        OAUTHLIB_INSECURE_TRANSPORT: $(OAUTHLIB_INSECURE_TRANSPORT)
+        # URLs
+        ISOGEO_API_URL: $(ISOGEO_API_URL)
+        ISOGEO_ID_URL: $(ISOGEO_ID_URL)
+        # oAuth2 Client Credentials Grant
+        ISOGEO_API_GROUP_CLIENT_ID: $(ISOGEO_API_GROUP_CLIENT_ID)
+        ISOGEO_API_GROUP_CLIENT_SECRET: $(ISOGEO_API_GROUP_CLIENT_SECRET)
+        # static fixtures
+        ISOGEO_FIXTURES_METADATA_COMPLETE: $(ISOGEO_FIXTURES_METADATA_COMPLETE)
+        ISOGEO_WORKGROUP_TEST_UUID: $(ISOGEO_WORKGROUP_TEST_UUID)
+      displayName: 'Unit tests'
 
-  # Insert .env file
-  - task: CopyFiles@2
-    displayName: "Copy the '.env.example' file into the final folder"
-    inputs:
-      SourceFolder: '$(System.DefaultWorkingDirectory)/'
-      Contents: '.env.example'
-      TargetFolder: '$(System.DefaultWorkingDirectory)/dist/isogeo2office'
+    - task: PublishTestResults@2
+      displayName: "Publish unit test results"
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFiles: '**/test-*.xml'
+        testRunTitle: 'Publish test results for Python $(python.version)'
 
-  # Archive Files
-  - task: ArchiveFiles@2
-    inputs:
-      rootFolderOrFile: 'dist/isogeo2office'
-      archiveType: 'zip' # Options: zip, 7z, tar, wim
-      archiveFile: '$(Build.ArtifactStagingDirectory)/IsogeoToOffice-$(python.arch)-$(Build.SourceBranchName)-b$(Build.BuildId).zip' 
-      replaceExistingArchive: true 
+    - task: PublishCodeCoverageResults@1
+      displayName: "Publish coverage results to Azure Pipelines"
+      inputs:
+        codeCoverageTool: Cobertura
+        summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
 
-  - task: CopyFiles@2
-    displayName: 'Copy File to: $(TargetFolder)'
-    inputs:
-      SourceFolder: '$(Build.ArtifactStagingDirectory)'
-      Contents: 'IsogeoToOffice-$(python.arch)-$(Build.SourceBranchName)-b$(Build.BuildId).zip'
-      TargetFolder: '$(Build.ArtifactStagingDirectory)\ArtifactsToBePublished'
+  # BUILD
+  - job: 'Build'
+    dependsOn: 'Test'
+    pool:
+      vmImage: $(vmImageName)
+    strategy:
+      matrix:
+        Python37_VS17_64bits:
+          python.version: '3.7'
+          python.arch: 'x64'
+        Python37_VS17_32bits:
+          python.version: '3.7'
+          python.arch: 'x86'
+      maxParallel: 2
 
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Artifact: IsogeoToOffice'
-    inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)\ArtifactsToBePublished'
-      ArtifactName: IsogeoToOffice
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '$(python.version)'
+        architecture: '$(python.arch)'
+        addToPath: True
 
-- job: 'Publish'
-  dependsOn: 'Test'
-  pool:
-    vmImage: "windows-2019"
-  condition:
-    contains(variables['Build.SourceBranch'], 'tags')
+    - script: |
+        python -m pip install -U pip
+        python -m pip install -U -r ./requirements.txt
+        python -m pip install -U -r ./requirements_dev.txt
+      displayName: 'Install dependencies'
 
-  steps:
-  - checkout: none
+    - script: |
+        pylupdate5 -noobsolete -verbose isogeo2office.pro
+        lrelease .\i18n\IsogeoToOffice_fr.ts
+        pyrcc5 resources.qrc -o resources_rc.py
+        pyuic5 -x modules\\ui\\auth\\ui_authentication.ui -o modules\\ui\\auth\\ui_authentication.py
+        pyuic5 -x modules\\ui\\credits\\ui_credits.ui -o modules\\ui\\credits\\ui_credits.py
+        pyuic5 -x modules\\ui\\main\\ui_win_IsogeoToOffice.ui -o modules\\ui\\main\\ui_win_IsogeoToOffice.py
+      displayName: 'PyQt processing'
 
-  - task: DownloadPipelineArtifact@2
-    displayName: "Download artifact previously saved"
-    inputs:
-      buildType: "current"
-      artifactName: IsogeoToOffice
-      targetPath: "$(System.DefaultWorkingDirectory)"
+    - script: python -OO -m PyInstaller -y bundle_isogeo2office.spec
+      displayName: 'Building the executable with PyInstaller'
 
-  - task: GitHubRelease@1
-    continueOnError: true
-    displayName: "Publish tagged code as Github Release"
-    inputs:
-      gitHubConnection: 'github_isogeo'
-      repositoryName: '$(Build.Repository.Name)'
-      action: 'create'
-      assets: "$(System.DefaultWorkingDirectory)/*"
-      target: '$(Build.SourceVersion)'
-      tagSource: 'gitTag'
-      changeLogCompareToRelease: 'lastFullRelease'
-      changeLogType: 'commitBased'
+    # Insert .env file
+    - task: CopyFiles@2
+      displayName: "Copy the '.env.example' file into the final folder"
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)/'
+        Contents: '.env.example'
+        TargetFolder: '$(System.DefaultWorkingDirectory)/dist/isogeo2office'
 
-  - task: AzureFileCopy@3
-    inputs:
-      SourcePath: '$(System.DefaultWorkingDirectory)/*'
-      azureSubscription: 'Isogeo - MPN (82885610-5841-4749-8d71-46f56b643ad2)'
-      Destination: 'AzureBlob'
-      storage: 'prodisogeohelp'
-      ContainerName: 'apps'
-      BlobPrefix: 'isogeo2office'
+    # Archive Files
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: 'dist/isogeo2office'
+        archiveType: 'zip' # Options: zip, 7z, tar, wim
+        archiveFile: '$(Build.ArtifactStagingDirectory)/IsogeoToOffice-$(python.arch)-$(Build.SourceBranchName)-b$(Build.BuildId).zip' 
+        replaceExistingArchive: true 
+
+    - task: CopyFiles@2
+      displayName: 'Copy File to: $(TargetFolder)'
+      inputs:
+        SourceFolder: '$(Build.ArtifactStagingDirectory)'
+        Contents: 'IsogeoToOffice-$(python.arch)-$(Build.SourceBranchName)-b$(Build.BuildId).zip'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)\ArtifactsToBePublished'
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: IsogeoToOffice'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)\ArtifactsToBePublished'
+        ArtifactName: IsogeoToOffice
+
+  - job: 'Publish'
+    dependsOn: 'Test'
+    pool:
+      vmImage: $(vmImageName)
+    condition:
+      contains(variables['Build.SourceBranch'], 'tags')
+
+    steps:
+    - checkout: none
+
+    - task: DownloadPipelineArtifact@2
+      displayName: "Download artifact previously saved"
+      inputs:
+        buildType: "current"
+        artifactName: IsogeoToOffice
+        targetPath: "$(System.DefaultWorkingDirectory)"
+
+    - task: GitHubRelease@1
+      continueOnError: true
+      displayName: "Publish tagged code as Github Release"
+      inputs:
+        gitHubConnection: 'github_isogeo'
+        repositoryName: '$(Build.Repository.Name)'
+        action: 'create'
+        assets: "$(System.DefaultWorkingDirectory)/*"
+        target: '$(Build.SourceVersion)'
+        tagSource: 'gitTag'
+        changeLogCompareToRelease: 'lastFullRelease'
+        changeLogType: 'commitBased'
+
+    - task: AzureFileCopy@3
+      inputs:
+        SourcePath: '$(System.DefaultWorkingDirectory)/*'
+        azureSubscription: 'Isogeo - MPN (82885610-5841-4749-8d71-46f56b643ad2)'
+        Destination: 'AzureBlob'
+        storage: 'prodisogeohelp'
+        ContainerName: 'apps'
+        BlobPrefix: 'isogeo2office'
