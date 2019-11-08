@@ -16,34 +16,33 @@
 import logging
 
 # 3rd party
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QSystemTrayIcon, QMenu, QAction
+from PyQt5 import QtGui, QtWidgets
 
 # #############################################################################
 # ########## Classes ###############
 # ##################################
 
 
-class SystrayMenu(QSystemTrayIcon):
+class SystrayMenu(QtWidgets.QSystemTrayIcon):
     """
-        Isogeo to Office  SystemTray Menu derived from QSystemTrayIcon
+        Isogeo to Office  SystemTray Menu derived from QtWidgets.QSystemTrayIcon
     """
 
     def __init__(self, parent=None, caption="Isogeo To Office"):
-        QSystemTrayIcon.__init__(self, parent)
+        QtWidgets.QSystemTrayIcon.__init__(self, parent)
         # tooltip
         self.setToolTip(caption)
         # set menu
-        self.menu = QMenu(parent)
+        self.menu = QtWidgets.QMenu(parent)
         # Available actions in Systray menu
-        self.act_show = QAction(
-            QIcon("resources/systray/window-restore.svg"), self.tr("Show"), self
+        self.act_show = QtWidgets.QAction(
+            QtGui.QIcon("resources/systray/window-restore.svg"), self.tr("Show"), self
         )
-        self.act_hide = QAction(
-            QIcon("resources/systray/window-minimize.svg"), self.tr("Hide"), self
+        self.act_hide = QtWidgets.QAction(
+            QtGui.QIcon("resources/systray/window-minimize.svg"), self.tr("Hide"), self
         )
-        self.act_quit = QAction(
-            QIcon("resources/systray/window-close-o.svg"), self.tr("Exit"), self
+        self.act_quit = QtWidgets.QAction(
+            QtGui.QIcon("resources/systray/window-close-o.svg"), self.tr("Exit"), self
         )
         # add actions to the menu
         self.menu.addActions([self.act_show, self.act_hide, self.act_quit])

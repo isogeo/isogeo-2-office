@@ -10,14 +10,12 @@ from pathlib import Path  # TODO: replace os.path by pathlib
 
 # 3rd party
 from dotenv import load_dotenv
-import urllib3
 
 # Isogeo
 from isogeo_pysdk import Isogeo
 
 # PyQT
-from PyQt5.QtCore import QLocale, QSettings
-from PyQt5.QtWidgets import QDialog
+from PyQt5 import QtCore, QtWidgets
 
 # submodules
 from .utils import isogeo2office_utils
@@ -28,9 +26,9 @@ from .utils import isogeo2office_utils
 
 load_dotenv(".env", override=True)
 app_utils = isogeo2office_utils()
-current_locale = QLocale()
+current_locale = QtCore.QLocale()
 logger = logging.getLogger("isogeo2office")
-qsettings = QSettings("Isogeo", "IsogeoToOffice")
+qsettings = QtCore.QSettings("Isogeo", "IsogeoToOffice")
 
 # ############################################################################
 # ########## Classes ###############
@@ -44,7 +42,7 @@ class IsogeoApiMngr(object):
     isogeo = Isogeo
     token = str
     # ui reference - authentication form
-    ui_auth_form = QDialog
+    ui_auth_form = QtWidgets.QDialog
     auth_form_request_url = "https://www.isogeo.com"
 
     # api parameters
@@ -114,9 +112,6 @@ class IsogeoApiMngr(object):
                 self.ssl = False
                 self.isogeo.ssl = False
                 app_utils.ssl = False
-
-            # ignore warnings related to the QA self-signed cert
-            # if self.isogeo.ssl is False:
 
             # start connection
             self.isogeo.connect()

@@ -20,7 +20,7 @@ from os import path
 from docxtpl import DocxTemplate
 from isogeo_pysdk.models import Metadata, MetadataSearch
 from isogeotodocx import Isogeo2docx
-from PyQt5.QtCore import QLocale, QThread, pyqtSignal
+from PyQt5 import QtCore
 
 # submodules - export
 from modules.utils import isogeo2office_utils
@@ -30,7 +30,7 @@ from modules.utils import isogeo2office_utils
 # ##################################
 
 app_utils = isogeo2office_utils()
-current_locale = QLocale()
+current_locale = QtCore.QLocale()
 logger = logging.getLogger("isogeo2office")
 
 
@@ -39,7 +39,7 @@ logger = logging.getLogger("isogeo2office")
 # ##################################
 
 # EXPORTS ---------------------------------------------------------------------
-class ThreadExportWord(QThread):
+class ThreadExportWord(QtCore.QThread):
     """QThread used to export an Isogeo search into metadata.
 
     :param MetadataSearch search_to_export: metadata to dumpinto the template
@@ -54,7 +54,7 @@ class ThreadExportWord(QThread):
     """
 
     # signals
-    sig_step = pyqtSignal(int, str, name="ExportWord")
+    sig_step = QtCore.pyqtSignal(int, str, name="ExportWord")
 
     def __init__(
         self,
@@ -68,7 +68,7 @@ class ThreadExportWord(QThread):
         timestamp: str = "",
         length_uuid: int = 0,
     ):
-        QThread.__init__(self)
+        QtCore.QThread.__init__(self)
         # export settings
         self.search = search_to_export
         self.output_docx_folder = output_path

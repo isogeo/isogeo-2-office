@@ -1,5 +1,5 @@
 import time
-from PyQt5 import QtGui, QtCore, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 
 
 class MyCustomWidget(QtWidgets.QWidget):
@@ -28,7 +28,7 @@ class MyCustomWidget(QtWidgets.QWidget):
         self.progressBar.setRange(0, 1)
 
 
-class TaskThread(QtCore.QThread):
+class TaskThread(QtCore.QtCore.QThread):
     taskFinished = QtCore.pyqtSignal()
 
     def run(self):
