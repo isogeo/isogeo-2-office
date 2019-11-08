@@ -188,7 +188,7 @@ stages:
         pyuic5 -x modules\\ui\\main\\ui_win_IsogeoToOffice.ui -o modules\\ui\\main\\ui_win_IsogeoToOffice.py
       displayName: "PyQt processing"
 
-    - script: python -m PyInstaller -y bundle_isogeo2office.spec
+    - script: python -m PyInstaller -y bundle_isogeo2office.spec --distpath="dist/$(pyPiPackageName)-$(python.arch)-v$(Build.SourceVersion)"
       displayName: "Building the executable with PyInstaller"
 
     # Insert .env file
@@ -197,12 +197,12 @@ stages:
       inputs:
         SourceFolder: "$(System.DefaultWorkingDirectory)/"
         Contents: ".env.example"
-        TargetFolder: "$(System.DefaultWorkingDirectory)/dist/isogeo2office"
+        TargetFolder: "$(System.DefaultWorkingDirectory)/dist/$(pyPiPackageName)-$(python.arch)-v$(Build.SourceVersion)"
 
     # Archive Files
     - task: ArchiveFiles@2
       inputs:
-        rootFolderOrFile: "dist/isogeo2office"
+        rootFolderOrFile: "dist/$(pyPiPackageName)-$(python.arch)-v$(Build.SourceVersion)"
         archiveType: "zip" # Options: zip, 7z, tar, wim
         archiveFile: "$(Build.ArtifactStagingDirectory)/$(pyPiPackageName)-$(python.arch)-$(Build.SourceBranchName)-b$(Build.BuildId)-v$(Build.SourceVersion).zip" 
         replaceExistingArchive: true 
