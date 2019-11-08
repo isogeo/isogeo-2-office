@@ -183,7 +183,7 @@ stages:
         pyuic5 -x modules\\ui\\main\\ui_win_IsogeoToOffice.ui -o modules\\ui\\main\\ui_win_IsogeoToOffice.py
       displayName: 'PyQt processing'
 
-    - script: python -OO -m PyInstaller -y bundle_isogeo2office.spec
+    - script: python -m PyInstaller -y bundle_isogeo2office.spec
       displayName: 'Building the executable with PyInstaller'
 
     # Insert .env file
