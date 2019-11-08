@@ -208,7 +208,7 @@ stages:
         replaceExistingArchive: true 
 
     - task: CopyFiles@2
-      displayName: "Copy File to: $(TargetFolder)"
+      displayName: "Copy to 'ArtifactsToBePublished'"
       inputs:
         SourceFolder: "$(Build.ArtifactStagingDirectory)"
         Contents: "$(pyPiPackageName)-$(python.arch)-$(Build.SourceBranchName)-b$(Build.BuildId)-v$(Build.SourceVersion).zip"
