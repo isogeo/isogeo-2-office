@@ -137,8 +137,8 @@ stages:
 
 - stage: Build
   # --  BUILD --------------------------------------------------------------------------
-  displayName: Build application executables
-  dependsOn: Test
+  displayName: Build executables
+  dependsOn: Lint
   condition: succeeded()
 
   jobs:
@@ -222,8 +222,10 @@ stages:
 
 - stage: Deploy
   # -- DEPLOY --------------------------------------------------------------------------
-  displayName: Deploy to Github and Azure
-  dependsOn: Build
+  displayName: Deploy
+  dependsOn:
+    - Build
+    - Test
   # only with a tagged commit (see: https://github.com/MicrosoftDocs/vsts-docs/issues/3281)
   condition: |
     and
