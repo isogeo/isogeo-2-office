@@ -75,7 +75,7 @@ current_locale = QtCore.QLocale()
 api_mngr = IsogeoApiMngr()
 
 # VERSION
-__version__ = "2.5.1-beta1"
+__version__ = "2.5.2-beta1"
 
 # LOG FILE #
 # log level depends on version
