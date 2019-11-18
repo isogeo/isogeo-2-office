@@ -188,7 +188,7 @@ stages:
         pyuic5 -x modules\\ui\\main\\ui_win_IsogeoToOffice.ui -o modules\\ui\\main\\ui_win_IsogeoToOffice.py
       displayName: "PyQt processing"
 
-    - script: python -m PyInstaller -y bundle_isogeo2office.spec --distpath="dist/$(pyPiPackageName)-$(python.arch)-v$(Build.SourceVersion)"
+    - script: python -m PyInstaller -y bundle_isogeo2office.spec --distpath="dist/$(pyPiPackageName)-$(python.arch)"
       displayName: "Building the executable with PyInstaller"
 
     # Insert .env file
@@ -197,21 +197,21 @@ stages:
       inputs:
         SourceFolder: "$(System.DefaultWorkingDirectory)/"
         Contents: ".env.example"
-        TargetFolder: "$(System.DefaultWorkingDirectory)/dist/$(pyPiPackageName)-$(python.arch)-v$(Build.SourceVersion)"
+        TargetFolder: "$(System.DefaultWorkingDirectory)/dist/$(pyPiPackageName)-$(python.arch)"
 
     # Archive Files
     - task: ArchiveFiles@2
       inputs:
-        rootFolderOrFile: "dist/$(pyPiPackageName)-$(python.arch)-v$(Build.SourceVersion)"
+        rootFolderOrFile: "dist/$(pyPiPackageName)-$(python.arch)"
         archiveType: "zip" # Options: zip, 7z, tar, wim
-        archiveFile: "$(Build.ArtifactStagingDirectory)/$(pyPiPackageName)-$(python.arch)-$(Build.SourceBranchName)-b$(Build.BuildId)-v$(Build.SourceVersion).zip" 
+        archiveFile: "$(Build.ArtifactStagingDirectory)/$(pyPiPackageName)-$(python.arch)-$(Build.SourceBranchName)-b$(Build.BuildId).zip" 
         replaceExistingArchive: true 
 
     - task: CopyFiles@2
       displayName: "Copy to 'ArtifactsToBePublished'"
       inputs:
         SourceFolder: "$(Build.ArtifactStagingDirectory)"
-        Contents: "$(pyPiPackageName)-$(python.arch)-$(Build.SourceBranchName)-b$(Build.BuildId)-v$(Build.SourceVersion).zip"
+        Contents: "$(pyPiPackageName)-$(python.arch)-$(Build.SourceBranchName)-b$(Build.BuildId).zip"
         TargetFolder: '$(Build.ArtifactStagingDirectory)\ArtifactsToBePublished'
 
     - task: PublishBuildArtifacts@1
