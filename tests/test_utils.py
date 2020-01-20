@@ -16,10 +16,7 @@
 # ##################################
 
 # Standard library
-from os import environ, path
-from six import string_types as str
-from sys import exit
-from tempfile import mkstemp
+from os import path
 import unittest
 import xml.etree.ElementTree as ET
 
