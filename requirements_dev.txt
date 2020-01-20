@@ -20,7 +20,7 @@ pylint
 # tests
 codecov
 coverage
-pytest==5.0.*
+pytest
 pytest-cov
 pytest-qt
 
