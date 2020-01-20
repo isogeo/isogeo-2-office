@@ -22,7 +22,6 @@ codecov
 coverage
 pytest
 pytest-cov
-pytest-qt
 
 # PyQt
 pypiwin32
