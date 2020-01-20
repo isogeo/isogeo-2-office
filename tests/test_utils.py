@@ -25,7 +25,7 @@ import xml.etree.ElementTree as ET
 
 # module target
 from modules import isogeo2office_utils
-
+from IsogeoToOffice import *
 
 # #############################################################################
 # ########## Classes ###############
