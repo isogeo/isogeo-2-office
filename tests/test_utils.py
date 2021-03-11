@@ -16,16 +16,12 @@
 # ##################################
 
 # Standard library
-from os import environ, path
-from six import string_types as str
-from sys import exit
-from tempfile import mkstemp
+from os import path
 import unittest
 import xml.etree.ElementTree as ET
 
 # module target
 from modules import isogeo2office_utils
-
 
 # #############################################################################
 # ########## Classes ###############
@@ -130,9 +126,7 @@ class TestIsogeo2officeUtils(unittest.TestCase):
     #  -- Thumbnails ----------------------------------------------------------
     def test_thumbnails_loader_complete(self):
         """Test filenames errors"""
-        expected_dict = {
-            "1234569732454beca1ab3ec1958ffa50": ("title-slugged", "resources/table.svg")
-        }
+        expected_dict = {"1234569732454beca1ab3ec1958ffa50": "resources/table.svg"}
         self.assertDictEqual(
             self.utils.thumbnails_mngr(self.thumbs_complete), expected_dict
         )

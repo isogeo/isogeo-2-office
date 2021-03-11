@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [dev-packages]
-black = "==19.3b0"
+black = "==19.10b0"
 flake8 = "*"
 pyqt5-tools = {version = "==5.13.0.1.5",sys_platform = "== 'win32'"}
 pip = "*"
@@ -13,16 +13,15 @@ pylint = "*"
 pypiwin32 = "*"
 pytest= "*"
 pytest-cov="*"
-pytest-qt="*"
 setuptools = "*"
 sip = "*"
 wheel = "*"
 
 [packages]
 docxtpl = "*"
-isogeo-export-docx = "==1.0.*"
+isogeo-export-docx = "==1.1.*"
 isogeo-export-xl = "==1.2.*"
-isogeo-pysdk = ">=3.2.*"
+isogeo-pysdk = ">=3.3,<3.4"
 progressbar2 = "*"
 "pyqt5" = "==5.13.*"
 python-dotenv = "*"

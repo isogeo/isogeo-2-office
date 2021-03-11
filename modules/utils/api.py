@@ -1,25 +1,21 @@
-# -*- coding: UTF-8 -*-
-#! python3
+# coding: utf-8
+#! python3  # noqa: E265
 
 # Standard library
 import logging
 import time
 from functools import partial
-from os import environ, path, rename
-from pathlib import Path  # TO DO: replace os.path by pathlib
-from urllib.request import getproxies
+from os import getenv, path, rename
+from pathlib import Path  # TODO: replace os.path by pathlib
 
 # 3rd party
 from dotenv import load_dotenv
-import urllib3
 
 # Isogeo
 from isogeo_pysdk import Isogeo
-from isogeo_pysdk import __version__ as pysdk_version
 
 # PyQT
-from PyQt5.QtCore import QLocale, QSettings
-from PyQt5.QtWidgets import QDialog, QErrorMessage
+from PyQt5 import QtCore, QtWidgets
 
 # submodules
 from .utils import isogeo2office_utils
@@ -28,11 +24,11 @@ from .utils import isogeo2office_utils
 # ########## Globals ###############
 # ##################################
 
-load_dotenv(".env")
+load_dotenv(".env", override=True)
 app_utils = isogeo2office_utils()
-current_locale = QLocale()
+current_locale = QtCore.QLocale()
 logger = logging.getLogger("isogeo2office")
-qsettings = QSettings("Isogeo", "IsogeoToOffice")
+qsettings = QtCore.QSettings("Isogeo", "IsogeoToOffice")
 
 # ############################################################################
 # ########## Classes ###############
@@ -46,7 +42,7 @@ class IsogeoApiMngr(object):
     isogeo = Isogeo
     token = str
     # ui reference - authentication form
-    ui_auth_form = QDialog
+    ui_auth_form = QtWidgets.QDialog
     auth_form_request_url = "https://www.isogeo.com"
 
     # api parameters
@@ -96,10 +92,6 @@ class IsogeoApiMngr(object):
             self.display_auth_form()
             return False
 
-        # ignore warnings related to the QA self-signed cert
-        if self.api_platform == "qa":
-            urllib3.disable_warnings()
-
         # start api wrapper
         try:
             logger.debug("Start connection attempts")
@@ -112,7 +104,16 @@ class IsogeoApiMngr(object):
                 lang=current_locale.name()[:2],
                 platform=self.api_platform,
                 proxy=app_utils.proxy_settings(),
+                timeout=(30, 200),
             )
+            # handle forced SSL verification
+            if int(getenv("OAUTHLIB_INSECURE_TRANSPORT", 0)) == 1:
+                logger.info("Forced disabled SSL verification")
+                self.ssl = False
+                self.isogeo.ssl = False
+                app_utils.ssl = False
+
+            # start connection
             self.isogeo.connect()
             logger.debug("Authentication succeeded")
             return True

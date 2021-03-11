@@ -19,10 +19,10 @@ progressbar2==3.42.*
 
 # isogeo to office
 docxtpl==0.6.*
-isogeo-export-docx==1.0.*
+isogeo-export-docx==1.1.*
 isogeo-export-xl==1.2.*
-isogeo-pysdk>=3.2.*
-openpyxl==2.6.*
-PyQt5==5.13.*
+isogeo-pysdk>=3.2.5,<3.4
+openpyxl==3.0.*
+# PyQt5==5.13.*
 QDarkStyle==2.7.*
 semver

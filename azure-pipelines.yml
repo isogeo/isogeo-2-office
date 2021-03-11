@@ -3,146 +3,275 @@
 # Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/python
 
+# CONDITIONS WHICH TRIGGER OR NOT THE JOBS
 trigger:
-- master
+  batch: true
+  branches:
+    include:
+    - master
+  tags:
+    include:
+    - "*"
 
 pr:
 - master
 
-jobs:
+# -- GLOBAL VARIABLES ------------------------------------------------------------------
+variables:
+  packageFolderName: "isogeo_to_office"
+  pyPiPackageName: "IsogeoToOffice"
+  vmImageName: "windows-2019"
 
-# LINT AND FORMATTING CODE
-- job: 'Lint'
-  pool:
-    vmImage: "windows-2019"
 
-  steps:
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: '3.7'
-      architecture: 'x64'
-      addToPath: true
+# -- STAGES ----------------------------------------------------------------------------
+stages:
 
-  - script: |
-      python -m pip install -U pip
-      python -m pip install -U black
-    displayName: 'Install black dependencies'
+- stage: Lint
+  # -- LINT AND FORMAT -----------------------------------------------------------------
+  displayName: Format and lint code
 
-  - script: |
-      python -m black --target-version=py37 .\modules
-      python -m black --target-version=py37 .\IsogeoToOffice.py
-    displayName: 'Apply black code formatting'
+  jobs:
+    - job: "Lint"
+      pool:
+        vmImage: $(vmImageName)
 
-# LINT AND FORMATTING CODE
-- job: 'Test'
-  dependsOn: 'Lint'
-  pool:
-    vmImage: "windows-2019"
-  variables:
-    - group: QA
+      steps:
+      - checkout: self  # self represents the repo where the initial Pipelines YAML file was found
+        fetchDepth: 10
 
-  steps:
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: '3.7'
-      architecture: 'x64'
-      addToPath: true
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: "3.7"
+          architecture: "x64"
+          addToPath: true
 
-  - script: |
-      python -m pip install -U pip setuptools wheel
-      python -m pip install -U -r ./requirements.txt
-      python -m pip install -U pytest-cov pytest-qt
-    displayName: 'Install dependencies'
+      - script: |
+          python -m pip install -U pip --cache-dir ./.pipcache
+          python -m pip install -U -r ./requirements_dev.txt --cache-dir ./.pipcache
+        displayName: "Install dependencies"
 
-  - script: |
-        python .\tests\fixturing.py
-        python -m pytest --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html --cov-append tests
-    env:
-      # platform
-      ISOGEO_PLATFORM: $(ISOGEO_PLATFORM)
-      OAUTHLIB_INSECURE_TRANSPORT: $(OAUTHLIB_INSECURE_TRANSPORT)
-      # URLs
-      ISOGEO_API_URL: $(ISOGEO_API_URL)
-      ISOGEO_ID_URL: $(ISOGEO_ID_URL)
-      # oAuth2 Client Credentials Grant
-      ISOGEO_API_GROUP_CLIENT_ID: $(ISOGEO_API_GROUP_CLIENT_ID)
-      ISOGEO_API_GROUP_CLIENT_SECRET: $(ISOGEO_API_GROUP_CLIENT_SECRET)
-      # static fixtures
-      ISOGEO_FIXTURES_METADATA_COMPLETE: $(ISOGEO_FIXTURES_METADATA_COMPLETE)
-      ISOGEO_WORKGROUP_TEST_UUID: $(ISOGEO_WORKGROUP_TEST_UUID)
-    displayName: 'Unit tests'
+      - script: |
+          python -m black --target-version=py37 ./modules
+          python -m black --target-version=py37 ./IsogeoToOffice.py
+        displayName: "Apply black code formatting"
 
-  - task: PublishTestResults@2
-    displayName: "Publish unit test results"
-    condition: succeededOrFailed()
-    inputs:
-      testResultsFiles: '**/test-*.xml'
-      testRunTitle: 'Publish test results for Python $(python.version)'
+      - script: |
+          python -m flake8  ./IsogeoToOffice.py --count --select=E9,F63,F7,F82 --show-source --statistics
+          python -m flake8 ./modules --count --select=E9,F63,F7,F82 --show-source --statistics
+          python -m flake8  ./IsogeoToOffice.py --count --exit-zero --max-complexity=10 --max-line-length=100
+          python -m flake8 ./modules --count --exit-zero --max-complexity=10 --max-line-length=100
+        displayName: "Static code analisis (PEP8 conformance, imports...) with flake8"
 
-  - task: PublishCodeCoverageResults@1
-    displayName: "Publish coverage results to Azure Pipelines"
-    inputs:
-      codeCoverageTool: Cobertura
-      summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
-      reportDirectory: '$(System.DefaultWorkingDirectory)/**/htmlcov'
+      # save formatted code to use later avoiding git clone again
+      - publish: $(System.DefaultWorkingDirectory)
+        artifact: "FORMATTED_$(pyPiPackageName)_$(Build.SourceBranchName)_$(Build.BuildId)"
+        displayName: "Publish formatted code with dependencies"
 
-# BUILD
-- job: 'Build'
-  dependsOn: 'Test'
-  pool:
-    vmImage: 'windows-2019'
-  strategy:
-    matrix:
-      Python37_VS17_64bits:
-        python.version: '3.7'
-        python.arch: 'x64'
-      Python37_VS17_32bits:
-        python.version: '3.7'
-        python.arch: 'x86'
-    maxParallel: 2
 
-  steps:
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: '$(python.version)'
-      architecture: '$(python.arch)'
-      addToPath: True
+- stage: Test
+  # -- UNIT TESTS ----------------------------------------------------------------------
+  displayName: Unit tests
+  dependsOn: Lint
+  condition: succeeded()
 
-  - script: |
-      python -m pip install -U pip
-      python -m pip install -U -r ./requirements.txt
-      python -m pip install -U -r ./requirements_dev.txt
-    displayName: 'Install dependencies'
+  jobs:
+  - job: "Test"
+    pool:
+      vmImage: $(vmImageName)
+    variables:
+      - group: QA
 
-  - script: |
-      pylupdate5 -noobsolete -verbose isogeo2office.pro
-      lrelease .\i18n\IsogeoToOffice_fr.ts
-      pyrcc5 resources.qrc -o resources_rc.py
-      pyuic5 -x modules\\ui\\auth\\ui_authentication.ui -o modules\\ui\\auth\\ui_authentication.py
-      pyuic5 -x modules\\ui\\credits\\ui_credits.ui -o modules\\ui\\credits\\ui_credits.py
-      pyuic5 -x modules\\ui\\main\\ui_win_IsogeoToOffice.ui -o modules\\ui\\main\\ui_win_IsogeoToOffice.py
-    displayName: 'PyQt processing'
+    steps:
 
-  - script: python -OO -m PyInstaller -y bundle_isogeo2office.spec
-    displayName: 'Building the executable with PyInstaller'
+    # no need for source code
+    - checkout: none
 
-  # Archive Files
-  - task: ArchiveFiles@2
-    inputs:
-      rootFolderOrFile: 'dist/isogeo2office'
-      archiveType: 'zip' # Options: zip, 7z, tar, wim
-      archiveFile: '$(Build.ArtifactStagingDirectory)/IsogeoToOffice-$(python.arch)-$(Build.SourceBranchName)-b$(Build.BuildId).zip' 
-      replaceExistingArchive: true 
+    - task: DownloadPipelineArtifact@2
+      displayName: "Download artifact previously saved"
+      inputs:
+        buildType: "current"
+        artifact: "FORMATTED_$(pyPiPackageName)_$(Build.SourceBranchName)_$(Build.BuildId)"
+        targetPath: "$(System.DefaultWorkingDirectory)"
+      
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: "3.7"
+        architecture: "x64"
+        addToPath: true
 
-  - task: CopyFiles@2
-    displayName: 'Copy File to: $(TargetFolder)'
-    inputs:
-      SourceFolder: '$(Build.ArtifactStagingDirectory)'
-      Contents: 'IsogeoToOffice-$(python.arch)-$(Build.SourceBranchName)-b$(Build.BuildId).zip'
-      TargetFolder: '$(Build.ArtifactStagingDirectory)\ArtifactsToBePublished'
+    - script: |
+        python -m pip install -U pip --cache-dir ./.pipcache
+        python -m pip install -U -r ./requirements_dev.txt --cache-dir ./.pipcache
+      displayName: "Install dependencies"
 
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Artifact: IsogeoToOffice'
-    inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)\ArtifactsToBePublished'
-      ArtifactName: IsogeoToOffice
+    - script: python -m pytest
+      displayName: "Unit tests"
+
+    - task: PublishTestResults@2
+      displayName: "Publish unit test results"
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFiles: "**/test-*.xml"
+        testRunTitle: "Publish test results for Python $(python.version)"
+
+    - task: PublishCodeCoverageResults@1
+      displayName: "Publish coverage results to Azure Pipelines"
+      inputs:
+        codeCoverageTool: Cobertura
+        summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/coverage.xml"
+
+- stage: Build
+  # --  BUILD --------------------------------------------------------------------------
+  displayName: Build executables
+  dependsOn: Lint
+  condition: succeeded()
+
+  jobs:
+  # BUILD Python package
+  - job: "Build"
+    pool:
+      vmImage: $(vmImageName)
+    strategy:
+      matrix:
+        Python37_VS17_64bits:
+          python.version: "3.7"
+          python.arch: "x64"
+        Python37_VS17_32bits:
+          python.version: "3.7"
+          python.arch: "x86"
+      maxParallel: 2
+
+    steps:
+    # no need for source code
+    - checkout: none
+
+    - task: DownloadPipelineArtifact@2
+      displayName: "Download artifact previously saved"
+      inputs:
+        buildType: "current"
+        artifact: "FORMATTED_$(pyPiPackageName)_$(Build.SourceBranchName)_$(Build.BuildId)"
+        targetPath: "$(System.DefaultWorkingDirectory)"
+
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: "$(python.version)"
+        architecture: "$(python.arch)"
+        addToPath: true
+
+    - script: |
+        python -m pip install -U pip --cache-dir ./.pipcache
+        python -m pip install -U -r ./requirements_dev.txt --cache-dir ./.pipcache
+        python -m pip install -U git+https://github.com/pyinstaller/pyinstaller.git@develop#egg=PyInstaller
+      displayName: "Install dependencies"
+
+    - script: |
+        pylupdate5 -noobsolete -verbose isogeo2office.pro
+        lrelease .\i18n\IsogeoToOffice_fr.ts
+        pyrcc5 resources.qrc -o resources_rc.py
+        pyuic5 -x modules\\ui\\auth\\ui_authentication.ui -o modules\\ui\\auth\\ui_authentication.py
+        pyuic5 -x modules\\ui\\credits\\ui_credits.ui -o modules\\ui\\credits\\ui_credits.py
+        pyuic5 -x modules\\ui\\main\\ui_win_IsogeoToOffice.ui -o modules\\ui\\main\\ui_win_IsogeoToOffice.py
+      displayName: "PyQt processing"
+
+    - script: python -m PyInstaller -y bundle_isogeo2office.spec --distpath="dist/$(pyPiPackageName)-$(python.arch)-v$(Build.SourceVersion)"
+      displayName: "Building the executable with PyInstaller"
+
+    # Insert .env file
+    - task: CopyFiles@2
+      displayName: "Copy the '.env.example' file into the final folder"
+      inputs:
+        SourceFolder: "$(System.DefaultWorkingDirectory)/"
+        Contents: ".env.example"
+        TargetFolder: "$(System.DefaultWorkingDirectory)/dist/$(pyPiPackageName)-$(python.arch)-v$(Build.SourceVersion)"
+
+    # Archive Files
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: "dist/$(pyPiPackageName)-$(python.arch)-v$(Build.SourceVersion)"
+        archiveType: "zip" # Options: zip, 7z, tar, wim
+        archiveFile: "$(Build.ArtifactStagingDirectory)/$(pyPiPackageName)-$(python.arch)-$(Build.SourceBranchName)-b$(Build.BuildId)-v$(Build.SourceVersion).zip" 
+        replaceExistingArchive: true 
+
+    - task: CopyFiles@2
+      displayName: "Copy to 'ArtifactsToBePublished'"
+      inputs:
+        SourceFolder: "$(Build.ArtifactStagingDirectory)"
+        Contents: "$(pyPiPackageName)-$(python.arch)-$(Build.SourceBranchName)-b$(Build.BuildId)-v$(Build.SourceVersion).zip"
+        TargetFolder: '$(Build.ArtifactStagingDirectory)\ArtifactsToBePublished'
+
+    - task: PublishBuildArtifacts@1
+      displayName: "Publish Artifact: $(pyPiPackageName)"
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)\ArtifactsToBePublished'
+        ArtifactName: $(pyPiPackageName)
+
+- stage: Deploy
+  # -- DEPLOY --------------------------------------------------------------------------
+  displayName: Deploy
+  dependsOn:
+    - Build
+    - Test
+  # only with a tagged commit (see: https://github.com/MicrosoftDocs/vsts-docs/issues/3281)
+  condition: |
+    and
+    (
+      succeeded(),
+      contains(variables['Build.SourceBranch'], 'tags')
+    )
+
+  jobs:
+
+  # PUBLISH TO GITHUB
+  - job: "DeployGithub"
+    pool:
+      vmImage: $(vmImageName)
+
+    steps:
+    # no need for source code
+    - checkout: none
+
+    - task: DownloadPipelineArtifact@2
+      displayName: "Download artifact previously saved"
+      inputs:
+        buildType: "current"
+        artifactName: $(pyPiPackageName)
+        targetPath: "$(System.DefaultWorkingDirectory)"
+
+    # publish to Github
+    - task: GitHubRelease@1
+      continueOnError: true
+      displayName: "Publish tagged code as Github Release"
+      inputs:
+        gitHubConnection: "github.com_SimonSAMPERE"
+        repositoryName: "$(Build.Repository.Name)"
+        action: "create"
+        target: "$(Build.SourceVersion)"
+        tagSource: "gitTag"
+        assets: "$(System.DefaultWorkingDirectory)/*"
+        changeLogCompareToRelease: "lastFullRelease"
+        changeLogType: "commitBased"
+
+  # PUBLISH TO AZURE
+  - job: "DeployAzure"
+    pool:
+      vmImage: $(vmImageName)
+
+    steps:
+    # no need for source code
+    - checkout: none
+
+    - task: DownloadPipelineArtifact@2
+      displayName: "Download artifact previously saved"
+      inputs:
+        buildType: "current"
+        artifactName: IsogeoToOffice
+        targetPath: "$(System.DefaultWorkingDirectory)"
+
+    - task: AzureFileCopy@3
+      inputs:
+        SourcePath: "$(System.DefaultWorkingDirectory)/*"
+        azureSubscription: "Isogeo - MPN (82885610-5841-4749-8d71-46f56b643ad2)"
+        Destination: "AzureBlob"
+        storage: "prodisogeohelp"
+        ContainerName: "apps"
+        BlobPrefix: "isogeo2office/$(Build.SourceVersion)"

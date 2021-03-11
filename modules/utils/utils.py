@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-#! python3
+#! python3  # noqa: E265
 
 """
     Name:         Isogeo to Office utilitaries
@@ -29,8 +29,8 @@ from xml.sax.saxutils import escape  # '<' -> '&lt;'
 from dotenv import load_dotenv
 from isogeo_pysdk import IsogeoUtils, Metadata, Share
 from openpyxl import load_workbook
-from PyQt5.QtCore import QUrl
-from PyQt5.QtWidgets import QFileDialog
+
+from PyQt5 import QtCore, QtWidgets
 
 # Depending on operating system
 if opersys == "win32":
@@ -44,7 +44,7 @@ else:
 # #################################
 
 if Path(".env").exists():
-    load_dotenv(".env")
+    load_dotenv(".env", override=True)
 logger = logging.getLogger("isogeo2office")  # LOG
 
 # ############################################################################
@@ -93,20 +93,30 @@ class isogeo2office_utils(IsogeoUtils):
             raise TypeError
 
     def proxy_settings(self):
-        """Retrieves network proxy settings from OS or an environment file."""
+        """Retrieves network proxy settings from system (OS settings) or an environment file."""
+        # first check in the system settings
         if getproxies():
             proxy_settings = getproxies()
-            logger.debug("Proxies settings found in the OS.")
-        elif environ.get("HTTP_PROXY") or environ.get("HTTPS_PROXY"):
+            logger.info(
+                "Proxies settings found in the system: {}".format(proxy_settings)
+            )
+        else:
+            proxy_settings = None
+            logger.info("No proxy detected in the system.")
+
+        # then check the environment file
+        if environ.get("HTTP_PROXY") or environ.get("HTTPS_PROXY"):
             proxy_settings = {
                 "http": environ.get("HTTP_PROXY"),
                 "https": environ.get("HTTPS_PROXY"),
             }
-            logger.debug(
-                "Proxies settings found in environment vars (loaded from .env file)."
+            logger.info(
+                "Proxies settings found in environment vars (maybe loaded from .env file): {}".format(
+                    proxy_settings
+                )
             )
         else:
-            logger.debug("No proxy settings found.")
+            logger.info("No proxy settings found in the environment vars.")
             proxy_settings = None
 
         return proxy_settings
@@ -120,7 +130,7 @@ class isogeo2office_utils(IsogeoUtils):
 
         :param list li_url: list of URLs to open in the default browser
         """
-        if isinstance(li_url, QUrl):
+        if isinstance(li_url, QtCore.QUrl):
             li_url = [li_url.toString()]
         x = 1
         for url in li_url:
@@ -192,9 +202,9 @@ class isogeo2office_utils(IsogeoUtils):
             start_dir = Path.home()
 
         # set options
-        options = QFileDialog.Options()
-        # options |= QFileDialog.DontUseNativeDialog
-        options |= QFileDialog.ReadOnly
+        options = QtWidgets.QFileDialog.Options()
+        # options |= QtWidgets.QFileDialog.DontUseNativeDialog
+        options |= QtWidgets.QFileDialog.ReadOnly
 
         # adapt file filters according to file_type option
         if file_type == "credentials":
@@ -202,7 +212,7 @@ class isogeo2office_utils(IsogeoUtils):
                 "Standard credentials file (client_secrets.json);;JSON Files (*.json)"
             )
             dlg_title = parent.tr("Open credentials file")
-            return QFileDialog.getOpenFileName(
+            return QtWidgets.QFileDialog.getOpenFileName(
                 parent=None,
                 caption=dlg_title,
                 directory=str(start_dir.resolve()),
@@ -214,7 +224,7 @@ class isogeo2office_utils(IsogeoUtils):
                 "Standard credentials file (client_secrets.json);;JSON Files (*.json)"
             )
             dlg_title = parent.tr("Select thumbnails file")
-            return QFileDialog.getOpenFileName(
+            return QtWidgets.QFileDialog.getOpenFileName(
                 parent=None,
                 caption=dlg_title,
                 directory=str(start_dir.resolve()),
@@ -222,9 +232,9 @@ class isogeo2office_utils(IsogeoUtils):
                 options=options,
             )
         elif file_type == "folder":
-            options |= QFileDialog.ShowDirsOnly
+            options |= QtWidgets.QFileDialog.ShowDirsOnly
             dlg_title = parent.tr("Select folder")
-            return QFileDialog.getExistingDirectory(
+            return QtWidgets.QFileDialog.getExistingDirectory(
                 parent=None,
                 caption=dlg_title,
                 directory=str(start_dir.resolve()),
@@ -233,7 +243,7 @@ class isogeo2office_utils(IsogeoUtils):
         else:
             file_filters = "All Files (*)"
             dlg_title = parent.tr("Pick a file")
-            return QFileDialog.getOpenFileName(
+            return QtWidgets.QFileDialog.getOpenFileName(
                 parent=None,
                 caption=dlg_title,
                 directory=str(start_dir.resolve()),
@@ -270,11 +280,11 @@ class isogeo2office_utils(IsogeoUtils):
     def get_matching_share(
         self, metadata: Metadata, shares: list, mode: str = "simple"
     ) -> Share:
-        """[summary]
+        """Get the first Share which contains the metadata, basing match on workgroup UUID.
 
         :param Metadata metadata: metadata object to use for the matching
         :param list shares: list of shares to use for the matching
-        :param str mode: simple mode is based only on the UID 
+        :param str mode: simple mode is based only on the UID
         """
         if mode != "simple":
             raise NotImplementedError
@@ -346,8 +356,8 @@ class isogeo2office_utils(IsogeoUtils):
 
         # parse worksheet and populate final dict
         for row in ws.iter_rows(min_row=2):
-            if len(row) == 3 and row[0].value:
-                thumbnails_dict[row[0].value] = (row[1].value, row[2].value)
+            if len(row) == 3 and row[0].value and row[2].value:
+                thumbnails_dict[row[0].value] = row[2].value
             else:
                 logger.debug("Thumbnails reader: empty cell spotted. Quit reading.")
                 break
