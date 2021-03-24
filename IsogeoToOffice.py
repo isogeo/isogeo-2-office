@@ -296,6 +296,7 @@ class IsogeoToOffice_Main(QtWidgets.QMainWindow):
 
         # instanciate search thread
         self.thread_search = ThreadSearch(api_mngr)
+        self.thread_search.sig_finished.connect(self.update_search_form)
         # launch empty search
         self.search(search_type="reset")
 
@@ -391,6 +392,7 @@ class IsogeoToOffice_Main(QtWidgets.QMainWindow):
                 "augment": 1,
                 "tags_as_dicts": 1,
             }
+            self.thread_search.sig_finished.disconnect()
             self.thread_search.sig_finished.connect(self.update_search_form)
             logger.info("Search  prepared - {}".format(search_type.upper()))
         elif search_type == "update":
