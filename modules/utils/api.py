@@ -4,6 +4,7 @@
 # Standard library
 import logging
 import time
+import urllib3
 from functools import partial
 from os import getenv, path, rename
 from pathlib import Path  # TODO: replace os.path by pathlib
@@ -109,6 +110,7 @@ class IsogeoApiMngr(object):
             # handle forced SSL verification
             if int(getenv("OAUTHLIB_INSECURE_TRANSPORT", 0)) == 1:
                 logger.info("Forced disabled SSL verification")
+                urllib3.disable_warnings(category=urllib3.exceptions.InsecureRequestWarning)
                 self.ssl = False
                 self.isogeo.ssl = False
                 app_utils.ssl = False
